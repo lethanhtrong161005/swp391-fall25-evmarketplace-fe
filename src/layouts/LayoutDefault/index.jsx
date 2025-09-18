@@ -1,31 +1,33 @@
+import React from "react";
+import { Outlet } from "react-router-dom";
+import { Layout } from "antd";
+import Navbar from "../../components/Navbar";
+import SiteFooter from "../../components/Footer";
 
-import React from 'react'
-import { Outlet, Link } from 'react-router-dom'
+const { Content } = Layout;
 
 const LayoutDefault = () => {
-    return (
-        <>
-            <header>
-                <div>
-                    Logo
-                </div>
-                <nav>
-                    <Link to="/">Home</Link> |{" "}
-                    <Link to="/login">Login</Link> |{" "}
-                    <Link to="/info-user">Info User</Link>
-                    <Link to="/about">About</Link>
-                </nav>
-            </header>
+  return (
+    <Layout style={{ minHeight: "100vh" }}>
+      <Navbar />
 
-            <main>
-                <Outlet />
-            </main>
+      <Content style={{ padding: "20px", background: "#f0f2f5" }}>
+        <div
+          style={{
+            background: "#fff",
+            minHeight: "280px",
+            padding: "24px",
+            borderRadius: "8px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+          }}
+        >
+          <Outlet />
+        </div>
+      </Content>
 
-            <footer>
-                Footer
-            </footer>
-        </>
-    )
-}
+      <SiteFooter />
+    </Layout>
+  );
+};
 
 export default LayoutDefault;
