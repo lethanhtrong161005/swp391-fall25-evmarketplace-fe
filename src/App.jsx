@@ -3,6 +3,7 @@ import { routes } from "@routes"
 
 
 //Example Data
+// eslint-disable-next-line
 const user1 = {
     id: 1,
     name: "Nguyen Van A",
@@ -14,7 +15,7 @@ const user2 = {
     name: "Nguyen Van B",
     role: "admin"
 }
-
+// eslint-disable-next-line
 const user3 = {
     id: 3,
     name: "Nguyen Van B",

@@ -35,7 +35,7 @@ class CookieUtils {
 
         try {
             return jwtDecode(token);
-        } catch (err) {
+        } catch {
             this.deleteUser();
             return undefined;
         }
