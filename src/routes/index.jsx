@@ -13,7 +13,6 @@ import About from "../pages/Member/About";
 import Car from "../pages/Member/Car";
 import Motor from "../pages/Member/Motor";
 import Bike from "../pages/Member/Bike";
-import Battery from "../pages/Member/Battery";
 
 export const routes = (user) => [
   //Route cho guest + member
@@ -44,10 +43,6 @@ export const routes = (user) => [
       {
         path: "bike",
         element: <Bike />,
-      },
-      {
-        path: "battery",
-        element: <Battery />,
       },
 
       //Route chỉ dành cho member
