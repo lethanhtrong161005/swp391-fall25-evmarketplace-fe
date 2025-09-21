@@ -9,7 +9,8 @@ import InfoUser from "../pages/Member/InfoUser"
 import StaffDashboard from "../pages/Staff/StaffDashboard"
 import Login from "../pages/Member/Login"
 import LayoutStaff from "../layouts/LayoutStaff"
-import About from "../pages/Member/About"
+import Battery from "../pages/Member/Battery"
+import Vehicle from "../pages/Member/Vehicle"
 
 
 export const routes = (user) => [
@@ -27,10 +28,14 @@ export const routes = (user) => [
                 element: <Login />
             },
             {
-                path: "about",
-                element: <About/>
+                path: "vehicle",
+                element: <Vehicle />
             },
-
+             {
+                path: "battery",
+                element: <Battery/>
+            },
+            
             //Route chỉ dành cho member
             {
                 element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} user={user} />,

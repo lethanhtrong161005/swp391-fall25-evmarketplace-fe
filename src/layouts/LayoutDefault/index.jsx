@@ -1,29 +1,23 @@
 
 import React from 'react'
+import { Layout } from 'antd';
 import { Outlet, Link } from 'react-router-dom'
+import DefaultHeader from '../../components/Header/DefaultHeader';
+
+const {Content} = Layout;
 
 const LayoutDefault = () => {
     return (
         <>
-            <header>
-                <div>
-                    Logo
-                </div>
-                <nav>
-                    <Link to="/">Home</Link> |{" "}
-                    <Link to="/login">Login</Link> |{" "}
-                    <Link to="/info-user">Info User</Link>
-                    <Link to="/about">About</Link>
-                </nav>
-            </header>
+        <Layout>
+
+            <DefaultHeader/>
 
             <main>
                 <Outlet />
             </main>
 
-            <footer>
-                Footer
-            </footer>
+        </Layout>
         </>
     )
 }
