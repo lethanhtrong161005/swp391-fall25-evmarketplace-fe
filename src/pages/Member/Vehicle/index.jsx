@@ -2,12 +2,12 @@
 
 import React from 'react'
 
-const About = () => {
+const Vehicle = () => {
     return (
         <div>
-            Page About
+            Page car
         </div>
     )
 }
 
-export default About;
+export default Vehicle;
