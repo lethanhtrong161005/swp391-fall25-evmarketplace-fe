@@ -47,51 +47,52 @@ export const routes = (user) => [
                 ]
             }
         ],
-    },
+  },
 
-    //Staff
-    {
-        path: "/",
-        element: <LayoutStaff/>,
+  //Staff
+  {
+    path: "/",
+    element: <LayoutStaff />,
+    children: [
+      {
+        element: (
+          <RoleBasedRoute allowedRoles={["staff", "admin"]} user={user} />
+        ),
         children: [
-            {
-                element: <RoleBasedRoute allowedRoles={["staff", "admin"]} user={user} />,
-                children: [
-                    {
-                        path: "staff",
-                        element: <StaffDashboard />,
-                    },
-                ],
-            },
+          {
+            path: "staff",
+            element: <StaffDashboard />,
+          },
         ],
-    },
+      },
+    ],
+  },
 
-    // Admin
-    {
-        path: "/",
-        element: <LayoutAdmin />,
+  // Admin
+  {
+    path: "/",
+    element: <LayoutAdmin />,
+    children: [
+      {
+        element: <RoleBasedRoute allowedRoles={["admin"]} user={user} />,
         children: [
-            {
-                element: <RoleBasedRoute allowedRoles={["admin"]} user={user} />,
-                children: [
-                    {
-                        path: "admin",
-                        element: <AdminDashboard />,
-                    },
-                ],
-            },
+          {
+            path: "admin",
+            element: <AdminDashboard />,
+          },
         ],
-    },
+      },
+    ],
+  },
 
-
-    //Chặn nếu không có quyền truy cập
-    {
-        path: "/403",
-        element: <Error403 />
-    },
-    //Nếu gọi tới đường dẫn không có
-    {
-        path: "*",
-        element: <Error404 />
-    }
-]
+  //Chặn nếu không có quyền truy cập
+  {
+    path: "/403",
+    element: <Error403 />,
+  },
+  //Nếu gọi tới đường dẫn không có
+  {
+    path: "*",
+    element: <Error404 />,
+  },
+];
