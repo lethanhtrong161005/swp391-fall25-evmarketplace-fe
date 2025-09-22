@@ -1,10 +1,9 @@
 import React from "react";
 import { Button, Dropdown, Menu } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 
-const HeaderAction = ({ isLoggedIn = false, user, onLoginClick, onLogout }) => {
-  const navigate = useNavigate();
+const HeaderAction = ({ isLoggedIn = false, user }) => {
+
 
   if (isLoggedIn) {
     const menuItems = [

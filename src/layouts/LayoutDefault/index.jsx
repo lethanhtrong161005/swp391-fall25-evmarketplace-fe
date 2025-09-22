@@ -4,7 +4,8 @@ import { Layout } from "antd";
 import SiteFooter from "../../components/Footer";
 import { Outlet, Link } from "react-router-dom";
 import DefaultHeader from "../../components/Header/DefaultHeader";
-const { Content } = Layout;
+import SearchBar from "../../components/SearchBar/SearchBar";
+const { Content, Header, Footer } = Layout;
 
 const LayoutDefault = () => {
   return (
@@ -14,7 +15,7 @@ const LayoutDefault = () => {
           style={{
             background: "#fff",
             padding: 0,
-            height: "auto",
+            height: "138px",
             lineHeight: "normal",
             gap: "64px",
           }}
@@ -22,8 +23,6 @@ const LayoutDefault = () => {
           <DefaultHeader />
           <SearchBar />
         </Header>
-
-        <DefaultHeader />
 
         <Content style={{ padding: "20px", background: "#f0f2f5" }}>
           <div
