@@ -16,7 +16,6 @@ const DefaultHeader = () => {
       style={{ background: "#fff", paddingLeft: "16px", paddingRight: "16px" }}
     >
       <Row align="middle" gutter={16}>
-        {" "}
         <Col
           xs={20}
           sm={20}
@@ -31,7 +30,7 @@ const DefaultHeader = () => {
           sm={2}
           md={2}
           lg={{ span: 14, offset: 8}}
-          xl={{ span: 14, offset: 8 }}
+          xl={{ span: 14, offset: 8}}
           style={{
             display: "flex",
             justifyContent: "space-between",
