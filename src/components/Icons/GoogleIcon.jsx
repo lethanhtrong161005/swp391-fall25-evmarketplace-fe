@@ -8,8 +8,5 @@ const GoogleIcon = (props) => (
     </svg>
 );
 
-<<<<<<< HEAD
 export default GoogleIcon; 
-=======
-export default GoogleIcon;
->>>>>>> main
+

@@ -1,17 +1,11 @@
 
 import api from "@utils/apiCaller";
 import cookieUtils from "@utils/cookieUtils";
-<<<<<<< HEAD
-import { normalizeAuthError } from "@utils/authErrorMapper";
 
-
-
-=======
 import config from "@config";
 import { normalizeAuthError } from "@utils/authErrorMapper";
 
 //Login With Phone Number
->>>>>>> main
 export const loginPhone = async (payload) => {
     const res = await api.post(
         "/api/auth/login-with-phone-number",
@@ -41,10 +35,7 @@ export const loginPhone = async (payload) => {
     err.status = data?.status;
     err.fieldErrors = viFieldErrors;
     throw err;
-<<<<<<< HEAD
 
-}
-=======
 }
 
 //Login google
@@ -90,4 +81,4 @@ export const exchangeGoogleCode = async (code) => {
 
 
 //End login google
->>>>>>> main
+

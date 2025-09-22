@@ -20,10 +20,9 @@ const HeaderAction = () => {
     if (key === "logout") await logout();
   };
 
- 
   const handleLoginSubmit = async (dto) => {
-    await login(dto);            // loginPhone + setUser đã nằm trong context
-    return true;                 // để modal tự đóng (vì resolve)
+    await login(dto); // loginPhone + setUser đã nằm trong context
+    return true; // để modal tự đóng (vì resolve)
   };
 
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
@@ -59,4 +58,3 @@ const HeaderAction = () => {
 };
 
 export default HeaderAction;
-
