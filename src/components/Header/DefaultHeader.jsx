@@ -29,10 +29,6 @@ const DefaultHeader = () => {
           xs={2}
           sm={2}
           md={2}
-<<<<<<< HEAD
-
-=======
->>>>>>> main
           lg={{ span: 14, offset: 8 }}
           xl={{ span: 14, offset: 8 }}
 
