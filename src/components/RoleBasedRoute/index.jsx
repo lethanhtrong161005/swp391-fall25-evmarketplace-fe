@@ -1,18 +1,23 @@
 
 import React from 'react'
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "@hooks/useAuth";
 
-const RoleBasedRoute = ({allowedRoles, user}) => {
-    if(!user){
-        //Nếu chưa login thì sẽ quay về trang login
-        return <Navigate to="/login" replace/>
+const RoleBasedRoute = ({ allowedRoles = [] }) => {
+    const { isLoggedIn, user } = useAuth();
+    const location = useLocation();
+
+    if (!isLoggedIn) {
+        return <Navigate to="/403" replace state={{ from: location }} />;
     }
 
-    if(!allowedRoles.includes(user.role)){
-        //Đã login nhưng không có quyền truy cập, user -> không thể truy cập vào trang admin
-        return <Navigate to="/403" replace/>
+
+    const role = (user?.role || "").toLowerCase();
+    if (allowedRoles.length && !allowedRoles.includes(role)) {
+        return <Navigate to="/403" replace />;
     }
 
+    
     return <Outlet />;
 }
 
