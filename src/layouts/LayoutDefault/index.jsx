@@ -2,6 +2,7 @@ import React from "react";
 import { Layout } from "antd";
 
 import SiteFooter from "../../components/Footer";
+
 import { Outlet, Link } from "react-router-dom";
 import DefaultHeader from "../../components/Header/DefaultHeader";
 import SearchBar from "../../components/SearchBar/SearchBar";
