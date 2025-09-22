@@ -7,13 +7,12 @@ import Error404 from "../pages/Errors/Error404"
 import Home from "../pages/Member/Home"
 import InfoUser from "../pages/Member/InfoUser"
 import StaffDashboard from "../pages/Staff/StaffDashboard"
-import Login from "../pages/Member/Login"
 import LayoutStaff from "../layouts/LayoutStaff"
 import Battery from "../pages/Member/Battery"
 import Vehicle from "../pages/Member/Vehicle"
 
 
-export const routes = (user) => [
+export const routes = () => [
     //Route cho guest + member
     {
         path: "/",
@@ -24,21 +23,17 @@ export const routes = (user) => [
                 element: <Home />,
             },
             {
-                path: "login",
-                element: <Login />
-            },
-            {
                 path: "vehicle",
                 element: <Vehicle />
             },
-             {
+            {
                 path: "battery",
                 element: <Battery/>
             },
             
             //Route chỉ dành cho member
             {
-                element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} user={user} />,
+                element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} />,
                 children: [
                     {
                         path: "info-user",
@@ -56,7 +51,7 @@ export const routes = (user) => [
     children: [
       {
         element: (
-          <RoleBasedRoute allowedRoles={["staff", "admin"]} user={user} />
+          <RoleBasedRoute allowedRoles={["staff", "admin"]}  />
         ),
         children: [
           {
@@ -74,7 +69,7 @@ export const routes = (user) => [
     element: <LayoutAdmin />,
     children: [
       {
-        element: <RoleBasedRoute allowedRoles={["admin"]} user={user} />,
+        element: <RoleBasedRoute allowedRoles={["admin"]}/>,
         children: [
           {
             path: "admin",

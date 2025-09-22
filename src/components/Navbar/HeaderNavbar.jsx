@@ -12,7 +12,7 @@ const items = [
 
 const { useBreakpoint } = Grid;
 
-const HeaderNavbar = ({ isLoggedIn, user }) => {
+const HeaderNavbar = () => {
   const navigate = useNavigate();
   const [current, setCurrent] = useState("home");
   const [open, setOpen] = useState(false);
@@ -60,7 +60,7 @@ const HeaderNavbar = ({ isLoggedIn, user }) => {
                 gap: 8,
               }}
             >
-              <HeaderAction isLoggedIn={isLoggedIn} user={user} />
+              <HeaderAction />
             </div>
           </Drawer>
         </>
@@ -76,7 +76,7 @@ const HeaderNavbar = ({ isLoggedIn, user }) => {
             onClick={onClick}
             style={{ flex: 1, borderBottom: "none" }}
           />
-          <HeaderAction isLoggedIn={isLoggedIn} user={user} />
+          <HeaderAction />
         </>
       )}
     </>

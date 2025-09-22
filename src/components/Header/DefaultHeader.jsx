@@ -30,7 +30,7 @@ const DefaultHeader = () => {
           xs={2}
           sm={2}
           md={2}
-          lg={{ span: 14, offset: 8}}
+          lg={{ span: 14, offset: 8 }}
           xl={{ span: 14, offset: 8 }}
           style={{
             display: "flex",
@@ -38,7 +38,7 @@ const DefaultHeader = () => {
             alignItems: "center",
           }}
         >
-          <HeaderNavbar isLoggedIn={false} user={null} />
+          <HeaderNavbar />
         </Col>
       </Row>
     </Header>

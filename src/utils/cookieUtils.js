@@ -8,11 +8,9 @@ class CookieUtils {
     getItem(key, defaultValue = "") {
         return cookies.get(key) ?? defaultValue;
     }
-
     setItem(key, value = "") {
         cookies.set(key, value, { path: "/" });
     }
-
     removeItem(key) {
         cookies.remove(key, { path: "/" });
     }
@@ -20,29 +18,31 @@ class CookieUtils {
     getToken() {
         return this.getItem(config.cookies.token);
     }
-
     setToken(value = "") {
         this.setItem(config.cookies.token, value);
     }
 
-    deleteUser() {
+    getRefreshToken() {
+        return this.getItem(config.cookies.refreshToken);
+    }
+    setRefreshToken(value = "") {
+        this.setItem(config.cookies.refreshToken, value);
+    }
+
+    clearAuth() {
         this.removeItem(config.cookies.token);
+        this.removeItem(config.cookies.refreshToken);
     }
 
     decodeJwt() {
         const token = this.getToken();
         if (!token) return undefined;
-
         try {
             return jwtDecode(token);
         } catch {
-            this.deleteUser();
+            this.clearAuth();
             return undefined;
         }
-    }
-
-    clear() {
-        this.removeItem(config.cookies.token);
     }
 }
 
