@@ -2,16 +2,24 @@ import React from "react";
 import { Layout } from "antd";
 
 import SiteFooter from "../../components/Footer";
+<<<<<<< HEAD
 
 import { Outlet, Link } from "react-router-dom";
 import DefaultHeader from "../../components/Header/DefaultHeader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 const { Content, Header, Footer } = Layout;
+=======
+import { Outlet, Link } from 'react-router-dom'
+import DefaultHeader from '../../components/Header/DefaultHeader';
+
+const { Content } = Layout;
+>>>>>>> main
 
 const LayoutDefault = () => {
   return (
     <>
       <Layout>
+<<<<<<< HEAD
         <Header
           style={{
             background: "#fff",
@@ -39,6 +47,25 @@ const LayoutDefault = () => {
           </div>
         </Content>
 
+=======
+
+        <DefaultHeader/>
+
+        <Content style={{ padding: "20px", background: "#f0f2f5" }}>
+          <div
+            style={{
+              background: "#fff",
+              minHeight: "280px",
+              padding: "24px",
+              borderRadius: "8px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+            }}
+          >
+            <Outlet />
+          </div>
+        </Content>
+
+>>>>>>> main
         <SiteFooter />
       </Layout>
     </>

@@ -2,6 +2,10 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import cookieUtils from "@utils/cookieUtils";
 import { loginPhone} from "@services/authService";
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 function getRoleFromPayload(payload) {
     const raw =
         payload?.role ||
@@ -46,8 +50,18 @@ export function AuthProvider({ children }) {
         }
     }, []);
 
+<<<<<<< HEAD
     return (
         <AuthContext.Provider value={{ user, isLoggedIn, login, logout }}>
+=======
+    const refreshUserFromCookie = useCallback(() => {
+        const payload = cookieUtils.decodeJwt();
+        setUser(payload ? { ...payload, role: getRoleFromPayload(payload) } : null);
+    }, []);
+
+    return (
+        <AuthContext.Provider value={{ user, isLoggedIn, login, logout, refreshUserFromCookie }}>
+>>>>>>> main
             {children}
         </AuthContext.Provider>
     );

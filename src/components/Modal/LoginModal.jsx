@@ -3,6 +3,11 @@ import { Modal, Form, Input, Button, message } from "antd";
 import GoogleIcon from "@/components/Icons/GoogleIcon";
 import { mapFieldErrorsToAntd } from "@utils/mapFieldErrors";
 import { LoginDto } from "../../dtos/user/LoginDto";
+<<<<<<< HEAD
+=======
+import { getGoogleAuthUrl } from "@services/authService";
+
+>>>>>>> main
 
 
 
@@ -17,6 +22,11 @@ const LoginModal = ({
 
     const [form] = Form.useForm();
     const [submitting, setSubmitting] = useState(false);
+<<<<<<< HEAD
+=======
+    const [messageApi, contextHolder] = message.useMessage();
+    const [googleLoading, setGoogleLoading] = useState(false);
+>>>>>>> main
 
     const handleFinish = async (values) => {
         // convert form values -> DTO
@@ -24,6 +34,7 @@ const LoginModal = ({
 
         setSubmitting(true);
         try {
+<<<<<<< HEAD
             // truyền LoginDto ra ngoài cho HeaderAction xử lý
             await onSubmit?.(loginDto);
 
@@ -33,11 +44,38 @@ const LoginModal = ({
         } catch (e) {
             mapFieldErrorsToAntd(form, e?.fieldErrors);
             message.error(e?.message || "Đăng nhập thất bại");
+=======
+
+            await onSubmit?.(loginDto);
+
+            messageApi.success("Đăng nhập thành công", 1.2);
+
+            setTimeout(() => onClose?.(), 0);
+
+        } catch (e) {
+            mapFieldErrorsToAntd(form, e?.fieldErrors);
+            messageApi.error(e?.message || "Đăng nhập thất bại", 1.2);
+>>>>>>> main
         } finally {
             setSubmitting(false);
         }
     };
 
+<<<<<<< HEAD
+=======
+    const handleGoogleLogin = async () => {
+        try {
+            setGoogleLoading(true);
+            const url = await getGoogleAuthUrl();
+            window.location.assign(url); // redirect tới Google 
+        } catch (e) {
+            messageApi.error(e?.message || "Không thể bắt đầu đăng nhập Google", 1.2);
+        } finally {
+            setGoogleLoading(false);
+        }
+    };
+
+>>>>>>> main
     return (
         <Modal
             title={null}
@@ -46,6 +84,10 @@ const LoginModal = ({
             footer={null}
             width={404}
             centered
+<<<<<<< HEAD
+=======
+            maskClosable={false}
+>>>>>>> main
             closeIcon={<span style={{ fontSize: 18, color: "#999" }}>×</span>}
             styles={{
                 content: {
@@ -64,6 +106,10 @@ const LoginModal = ({
             }}
             afterClose={() => form.resetFields()}
         >
+<<<<<<< HEAD
+=======
+            {contextHolder}
+>>>>>>> main
             {/* Header */}
             <div style={{ textAlign: "center", marginTop: -8 }}>
                 <div style={{ fontSize: 24, fontWeight: 800, lineHeight: "28px" }}>
@@ -128,6 +174,11 @@ const LoginModal = ({
                         type="primary"
                         htmlType="submit"
                         block
+<<<<<<< HEAD
+=======
+                        loading={submitting}
+                        disabled={googleLoading}
+>>>>>>> main
                         style={{ height: 44, borderRadius: 8, fontWeight: 600 }}
                     >
                         Đăng nhập
@@ -137,8 +188,13 @@ const LoginModal = ({
                 <Form.Item style={{ marginBottom: 8 }}>
                     <Button
                         block
+<<<<<<< HEAD
                         onClick={onGoogle}
                         icon={<GoogleIcon />}
+=======
+                        icon={<GoogleIcon />}
+                        onClick={handleGoogleLogin}
+>>>>>>> main
                         style={{
                             height: 44,
                             borderRadius: 8,

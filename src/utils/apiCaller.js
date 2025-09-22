@@ -11,7 +11,6 @@ const api = axios.create({
     },
 })
 
-
 // Interceptor để tự động gắn token vào header
 api.interceptors.request.use(
     (req) => {
@@ -34,7 +33,7 @@ const request = async (method, endpoint, { params = {}, body = {}, headers = {} 
             data: body,
             headers,
         });
-        return res.data; // Trả data cho tiện, thay vì full AxiosResponse
+        return res.data;
     } catch (err) {
         throw err.response?.data || err;
     }
