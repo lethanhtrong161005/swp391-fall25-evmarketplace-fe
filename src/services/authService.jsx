@@ -7,4 +7,4 @@ export const login = async (data) => {
         validateStatus: () => true 
     });
     return response.data;
-}
+};
