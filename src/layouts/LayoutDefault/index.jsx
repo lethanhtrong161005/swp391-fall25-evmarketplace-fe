@@ -1,15 +1,16 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
-import Navbar from "../../components/Navbar";
 import SiteFooter from "../../components/Footer";
-
-const { Content } = Layout;
+import { Outlet, Link } from 'react-router-dom'
+import DefaultHeader from '../../components/Header/DefaultHeader';
+const {Content} = Layout;
 
 const LayoutDefault = () => {
-  return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Navbar />
+    return (
+        <>
+        <Layout>
+
+            <DefaultHeader/>
 
       <Content style={{ padding: "20px", background: "#f0f2f5" }}>
         <div
@@ -27,7 +28,9 @@ const LayoutDefault = () => {
 
       <SiteFooter />
     </Layout>
+    </>
   );
 };
+
 
 export default LayoutDefault;
