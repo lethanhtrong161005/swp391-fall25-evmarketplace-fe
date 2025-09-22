@@ -1,13 +1,32 @@
-import React from "react";
-import { Input } from "antd";
+import { Input, Button, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import "../SearchBar/SearchBar.scss"
+const { Option } = Select;
 
 const SearchBar = () => {
   return (
-    <Input placeholder="Tìm kiếm..." 
-    prefix={<SearchOutlined />} 
-    allowClear 
-    />
+    <div className="search-bar">
+      <Select defaultValue="Danh mục" className="search-select">
+        <Option value="all">Danh mục</Option>
+        <Option value="xe">Vinfast</Option>
+        <Option value="nha">Yadea</Option>
+      </Select>
+
+      <Input
+        placeholder="Tìm sản phẩm..."
+        className="search-input"
+        allowClear
+      />
+
+      <Select defaultValue="Khu vực" className="search-select">
+        <Option value="hn">Hà Nội</Option>
+        <Option value="hcm">Hồ Chí Minh</Option>
+      </Select>
+
+      <Button type="primary" shape="round" icon={<SearchOutlined />}>
+        Tìm kiếm
+      </Button>
+    </div>
   );
 };
 
