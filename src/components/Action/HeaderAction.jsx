@@ -1,32 +1,15 @@
-<<<<<<< HEAD
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Dropdown } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import LoginModal from "@components/Modal/LoginModal";
 import { useAuth } from "@hooks/useAuth";
-
-=======
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Dropdown } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-import LoginModal from "@components/Modal/LoginModal";
-import { useAuth } from "@hooks/useAuth";
-
->>>>>>> main
 
 const HeaderAction = () => {
   const [showLogin, setShowLogin] = useState(false);
   const { isLoggedIn, user, login, logout } = useAuth();
   const navigate = useNavigate();
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> main
   const menuItems = [
     { key: "infouser", label: "Hồ sơ", path: "/infouser" },
     { key: "logout", label: "Đăng xuất", path: "/logout" },
