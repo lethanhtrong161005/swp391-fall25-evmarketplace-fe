@@ -2,7 +2,7 @@
 import React, { useMemo } from "react";
 import { Typography, Empty, Divider, Row, Col } from "antd";
 import { ClockCircleOutlined } from "@ant-design/icons";
-import ProductCard from "./ProductCard";
+import ProductCard from "@/components/ProductCard/ProductCard";
 import ViewAllLink from "@/components/ViewAllLinkButton/ViewAllLink";
 
 const { Title } = Typography;
