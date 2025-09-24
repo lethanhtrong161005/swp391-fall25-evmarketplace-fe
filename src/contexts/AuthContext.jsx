@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import cookieUtils from "@utils/cookieUtils";
-import { loginPhone} from "@services/authService";
+import { loginPhone } from "@services/authService";
 
 
 function getRoleFromPayload(payload) {
@@ -33,7 +33,14 @@ export function AuthProvider({ children }) {
     }, []);
 
     const login = useCallback(async (dto) => {
-        const res = await loginPhone(dto); // service đã lưu token
+        if (dto.accessToken) {
+            cookieUtils.setToken(dto.accessToken, dto.refreshToken);
+            const payload = cookieUtils.decodeJwt();
+            setUser(payload ? { ...payload, role: getRoleFromPayload(payload) } : null);
+            return dto;
+        }
+
+        const res = await loginPhone(dto);
         const payload = cookieUtils.decodeJwt();
         setUser(payload ? { ...payload, role: getRoleFromPayload(payload) } : null);
         return res;

@@ -59,7 +59,7 @@ export const exchangeGoogleCode = async (code) => {
     // endpoint BE đổi code -> token (theo mô tả của bạn)
     // ví dụ: POST /api/google/callback { code }
     const res = await api.post(
-        config.publicRuntime.OAUTH_GOOGLE_EXCHANGE || "/api/google/callback",
+        "/api/auth/google/callback",
         { code },
         { validateStatus: () => true }
     );
@@ -81,4 +81,7 @@ export const exchangeGoogleCode = async (code) => {
 
 
 //End login google
+
+
+
 

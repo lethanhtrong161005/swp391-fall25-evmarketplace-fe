@@ -1,4 +1,3 @@
-// src/utils/authErrorMapper.js
 import { getErrorMessage, isValidErrorCode } from "@config/errorMessage";
 
 function toViMessage(enMsg, fallback = "Đăng nhập thất bại") {
@@ -12,6 +11,11 @@ function toViMessage(enMsg, fallback = "Đăng nhập thất bại") {
         "Unauthorized": "Chưa đăng nhập hoặc phiên đã hết hạn",
         "Forbidden": "Bạn không có quyền thực hiện thao tác này",
         "Phone number not found": "Không tìm thấy số điện thoại",
+        "Phone number already exists": "Số điện thoại đã tồn tại",
+        "Invalid OTP": "Mã OTP không hợp lệ",
+        "OTP has expired": "Mã OTP đã hết hạn",
+        "OTP is already used": "Mã OTP đã được sử dụng",
+        "Token has expired": "Vui lòng thử lại"
     }[enMsg];
     if (exact) return exact;
 
@@ -37,6 +41,10 @@ function translateFieldErrors(fieldErrors = {}) {
             "Wrong password": "Mật khẩu không đúng !",
             "Invalid password": "Mật khẩu không đúng !",
         },
+        otp: {
+            "OTP is required": "Vui lòng nhập mã OTP",
+            "OTP must be exactly 6 digits": "OTP bắt buộc 6 số"
+        }
     };
     const DEFAULT = { phoneNumber: "Số điện thoại không hợp lệ !", password: "Mật khẩu không hợp lệ !" };
 
@@ -49,7 +57,7 @@ function translateFieldErrors(fieldErrors = {}) {
 }
 
 export function normalizeAuthError(beError) {
-    let viMessage = toViMessage(beError?.message, "Đăng nhập thất bại");
+    let viMessage = toViMessage(beError?.message);
     let viFieldErrors = translateFieldErrors(beError?.fieldErrors || {});
 
     // Fallback: BE không trả fieldErrors nhưng message cho biết nguyên nhân

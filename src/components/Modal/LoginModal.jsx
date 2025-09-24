@@ -13,10 +13,10 @@ import { getGoogleAuthUrl } from "@services/authService";
 const LoginModal = ({
     open,
     onClose,
-    onSubmit,      // (values) => Promise<void> | void
-    onForgot,      // () => void
-    onGoogle,      // () => void
-    onGoRegister,  // () => void
+    onSubmit,
+    onForgot,
+    onGoogle,
+    onGoRegister,
 }) => {
 
     const [form] = Form.useForm();
