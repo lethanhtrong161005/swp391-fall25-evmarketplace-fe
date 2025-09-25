@@ -145,7 +145,10 @@ const LoginModal = ({
                 </Form.Item>
 
                 <div style={{ marginBottom: 12 }}>
-                    <Button style={{ padding: 0 }} type="link">Bạn quên mật khẩu?</Button>
+                    <Button
+                    onClick={() => onForgot?.(form.getFieldValue("phoneNumber"))}
+                    style={{ padding: 0 }} 
+                    type="link">Bạn quên mật khẩu?</Button>
                 </div>
 
                 <Form.Item style={{ marginBottom: 12 }}>

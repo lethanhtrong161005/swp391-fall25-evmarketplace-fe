@@ -2,11 +2,11 @@ import api from "@utils/apiCaller";
 import { normalizeAuthError } from "@utils/authErrorMapper";
 
 //RequestOTP
-export const requestOtp = async (phoneNumber) => {
+export const requestOtp = async ({phoneNumber, type}) => {
     
     const res = await api.post(
         "/api/accounts/request-otp",
-        { phoneNumber },
+        { phoneNumber, type },
         { validateStatus: () => true }
     );
 

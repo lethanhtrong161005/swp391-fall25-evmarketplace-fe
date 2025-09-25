@@ -4,6 +4,7 @@ import config from "../config";
 
 const cookies = new Cookies(null, { path: "/" });
 
+
 class CookieUtils {
     getItem(key, defaultValue = "") {
         return cookies.get(key) ?? defaultValue;
