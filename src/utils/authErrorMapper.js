@@ -1,6 +1,6 @@
 import { getErrorMessage, isValidErrorCode } from "@config/errorMessage";
 
-function toViMessage(enMsg, fallback = "Đăng nhập thất bại") {
+function toViMessage(enMsg, fallback) {
     if (!enMsg) return fallback;
     if (isValidErrorCode?.(enMsg)) return getErrorMessage(enMsg, fallback);
 
@@ -15,7 +15,9 @@ function toViMessage(enMsg, fallback = "Đăng nhập thất bại") {
         "Invalid OTP": "Mã OTP không hợp lệ",
         "OTP has expired": "Mã OTP đã hết hạn",
         "OTP is already used": "Mã OTP đã được sử dụng",
-        "Token has expired": "Vui lòng thử lại"
+        "Token has expired": "Vui lòng thử lại",
+        "Phone number not exists": "Số điện thoại không tồn tại",
+        "Unsupported OTP type": "OTP không hỗ trợ"
     }[enMsg];
     if (exact) return exact;
 

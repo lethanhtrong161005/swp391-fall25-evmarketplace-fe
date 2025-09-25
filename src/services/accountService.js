@@ -46,3 +46,29 @@ export const createAccount = async ({tempToken, fullName, password}) => {
 
     throw error;
 }
+
+//Reset Password
+export const resetPassword = async({token, newPassword}) =>{
+    const res = await api.post(
+        "/api/accounts/reset-password",
+        {token, newPassword},
+        { validateStatus: () => true }
+    )
+    const data = res.data;
+    if (res?.status >= 200 && res?.status < 300)
+        return res.data;
+
+    const { viMessage, viFieldErrors } = normalizeAuthError(
+        {
+            status: data?.status ?? res?.status,
+            message: data?.message,
+            fieldErrors: data?.fieldErrors
+        }
+    );
+
+    const error = new Error(viMessage);
+    error.status = data?.status ?? res?.status;
+    error.fieldErrors = viFieldErrors
+
+    throw error;
+}
