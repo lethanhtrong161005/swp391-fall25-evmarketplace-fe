@@ -5,6 +5,9 @@ import * as path from "path";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    exclude: ['fsevents']
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"), // alias @ => src
