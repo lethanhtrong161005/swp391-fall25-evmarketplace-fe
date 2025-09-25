@@ -1,15 +1,17 @@
-import RoleBasedRoute from "../components/RoleBasedRoute"
-import LayoutAdmin from "../layouts/LayoutAdmin"
-import LayoutDefault from "../layouts/LayoutDefault"
-import AdminDashboard from "../pages/Admin/AdminDashboard"
-import Error403 from "../pages/Errors/Error403"
-import Error404 from "../pages/Errors/Error404"
-import Home from "../pages/Member/Home"
-import InfoUser from "../pages/Member/InfoUser"
-import StaffDashboard from "../pages/Staff/StaffDashboard"
-import LayoutStaff from "../layouts/LayoutStaff"
-import Battery from "../pages/Member/Battery"
-import Vehicle from "../pages/Member/Vehicle"
+import RoleBasedRoute from "@components/RoleBasedRoute"
+import LayoutAdmin from "@layouts/LayoutAdmin"
+import LayoutDefault from "@layouts/LayoutDefault"
+import AdminDashboard from "@pages/Admin/AdminDashboard"
+import Error403 from "@pages/Errors/Error403"
+import Error404 from "@pages/Errors/Error404"
+import Home from "@pages/Member/Home"
+import InfoUser from "@pages/Member/InfoUser"
+import StaffDashboard from "@pages/Staff/StaffDashboard"
+import LayoutStaff from "@layouts/LayoutStaff"
+import Battery from "@pages/Member/Battery"
+import Vehicle from "@pages/Member/Vehicle"
+import GoogleCallback from "@pages/Auth/GoogleCallback"
+
 
 
 export const routes = () => [
@@ -29,6 +31,10 @@ export const routes = () => [
             {
                 path: "battery",
                 element: <Battery/>
+            },
+            {
+                path: "auth/google/callback",
+                element: <GoogleCallback/>
             },
             
             //Route chỉ dành cho member
