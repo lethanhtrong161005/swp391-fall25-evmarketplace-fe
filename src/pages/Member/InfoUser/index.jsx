@@ -2,77 +2,77 @@ import React, { useEffect, useState } from "react";
 import { Card, Descriptions, Avatar, Button, Spin, Alert, Row, Col } from "antd";
 import { EditOutlined, ReloadOutlined, UserOutlined } from "@ant-design/icons";
 import UpdateProfileModal from "@components/Modal/UpdateProfileModal";
-// import { getUserProfile } from "../../../services/accountService";
+import { getUserProfile } from "../../../services/accountService";
 import { getAxiosErrorMessage, getErrorMessage, isValidErrorCode } from "../../../config/errorMessage";
 
-// import { calc } from "antd/es/theme/internal";
+const getAvatarUrl = (filename) => {
+        if (!filename) return null;
+        const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8089';
+        return `${API_BASE}/api/accounts/image/${filename}/avatar`;
+    }
+    
 export default function InfoUser() {
     const [profile, setProfile] = useState(null);
+    const [avatar, setAvatar] = useState(null);
     const [loading, setLoading] = useState(true);
     const [apiError, setApiError] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const fakeUserData = {
-        fullName: "Nguyễn Văn An",
-        email: "nguyenvan.an@example.com",
-        phoneNumber: "0987654321",
-        province: "TP. Hồ Chí Minh",
-        addressLine: "123 Đường ABC, Phường 1, Quận 1",
-        dateOfBirth: "1995-08-15",
-        avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=256&h=256&fit=crop&crop=faces",
-        role: "Member"
-    };
-
+    
 
     useEffect(() => {
-        let cancelled = false
+        let cancelled = false;
 
         async function loadProfile() {
             try {
-                setLoading(true)
-                setApiError("")
+                setLoading(true);
+                setApiError("");
 
-                // FAKE DATA
-                await new Promise((resolve) => setTimeout(resolve, 500)); // simulate network delay
-                if (!cancelled) setProfile(fakeUserData);
-                // END FAKE DATA
-
-                // const res = await getUserProfile();
-
-                // const data = res && res.data !== undefined ? res.data : res
-
-                // if (data?.message) {
-                //     const msg = isValidErrorCode(data.message)
-                //         ? getErrorMessage(data.message)
-                //         : String(data.message);
-                //     if (!cancelled)
-                //         setApiError(msg)
-                //     return
-                // }
-                // if (!cancelled) setProfile(data)
+                const res = await getUserProfile();
+                // apiCaller returns res.data directly. Expect envelope: { status, success, data, message }
+                if (res?.success && res?.data) {
+                    if (!cancelled) setProfile(res.data);
+                } else {
+                    const errorMsg = res?.message || "Lỗi không xác định";
+                    const msg = isValidErrorCode(errorMsg) ? getErrorMessage(errorMsg) : errorMsg;
+                    if (!cancelled) setApiError(msg);
+                }
             } catch (error) {
                 if (!cancelled) {
-                    const msg = getAxiosErrorMessage(error)
-                    setApiError(msg)
+                    const msg = getAxiosErrorMessage(error);
+                    setApiError(msg);
                 }
             } finally {
-                if (!cancelled)
-                    setLoading(false)
+                if (!cancelled) setLoading(false);
             }
         }
 
-        loadProfile()
-        return () => { cancelled = true }
+        loadProfile();
+        return () => { cancelled = true; };
     }, [])
 
+
+
     const handleRetry = () => {
+        // Re-run the effect logic by simply resetting state and calling API again
         setApiError("");
         setLoading(true);
-
-        setTimeout(() => {
-            setProfile(fakeUserData); // replace with real fetch call
-            setLoading(false);
-        }, 400)
+        (async () => {
+            try {
+                const res = await getUserProfile();
+                if (res?.success && res?.data) {
+                    setProfile(res.data);
+                } else {
+                    const errorMsg = res?.message || "Lỗi không xác định";
+                    const msg = isValidErrorCode(errorMsg) ? getErrorMessage(errorMsg) : errorMsg;
+                    setApiError(msg);
+                }
+            } catch (e) {
+                setApiError(getAxiosErrorMessage(e));
+            } finally {
+                setLoading(false);
+            }
+        })();
     }
 
     if (loading) {
@@ -107,6 +107,9 @@ export default function InfoUser() {
         );
     }
 
+// console.log('User Profile:', profile);
+// console.log('Avatar URL:', getAvatarUrl(profile?.profile?.avatarUrl));
+
     return (
         <div style={{ maxWidth: 900, margin: "20px auto", padding: 16 }}>
             <Card
@@ -119,20 +122,18 @@ export default function InfoUser() {
             >
                 <Row gutter={24}>
                     <Col xs={24} sm={8} style={{ textAlign: "center" }}>
-                        <Avatar size={130} src={profile.avatarUrl} icon={<UserOutlined />} style={{ marginBottom: 12 }} />
-                        <div style={{ fontWeight: 600, fontSize: 16 }}>{profile.fullName}</div>
-                        <div style={{ color: "#888" }}>{profile.role}</div>
+                        <Avatar size={130} src={getAvatarUrl(profile?.profile?.avatarUrl)} icon={<UserOutlined />} style={{ marginBottom: 12 }} />
+                        <div style={{ fontWeight: 600, fontSize: 16 }}>{profile?.profile?.fullName}</div>
+                        <div style={{ color: "#888" }}>{profile?.role}</div>
                     </Col>
 
                     <Col xs={24} sm={16}>
                         <Descriptions column={1} bordered size="middle">
-                            <Descriptions.Item label="Email">{profile.email}</Descriptions.Item>
-                            <Descriptions.Item label="Số điện thoại">{profile.phoneNumber}</Descriptions.Item>
-                            <Descriptions.Item label="Tỉnh/Thành phố">{profile.province}</Descriptions.Item>
-                            <Descriptions.Item label="Địa chỉ">{profile.addressLine}</Descriptions.Item>
-                            <Descriptions.Item label="Ngày sinh">
-                                {profile.dateOfBirth ? new Date(profile.dateOfBirth).toLocaleDateString("vi-VN") : "-"}
-                            </Descriptions.Item>
+                            <Descriptions.Item label="Họ và tên">{profile?.profile?.fullName}</Descriptions.Item>
+                            <Descriptions.Item label="Email">{profile?.email}</Descriptions.Item>
+                            <Descriptions.Item label="Số điện thoại">{profile?.phoneNumber}</Descriptions.Item>
+                            <Descriptions.Item label="Tỉnh/Thành phố">{profile?.profile?.province}</Descriptions.Item>
+                            <Descriptions.Item label="Địa chỉ">{profile?.profile?.addressLine}</Descriptions.Item>
                         </Descriptions>
                     </Col>
                 </Row>
@@ -143,7 +144,15 @@ export default function InfoUser() {
                 initialData={profile}
                 onClose={() => setIsModalOpen(false)}
                 onUpdated={(updated) => {
-                    setProfile((p) => ({ ...p, ...updated }));
+                    // Merge updated fields safely into current profile state
+                    setProfile((p) => ({
+                        ...p,
+                        ...updated,
+                        profile: {
+                            ...p?.profile,
+                            ...updated?.profile,
+                        }
+                    }));
                     setIsModalOpen(false);
                 }}
             />
