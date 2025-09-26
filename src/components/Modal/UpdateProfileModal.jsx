@@ -28,10 +28,11 @@ export default function UpdateProfileModal({ isOpen = true, initialData = {}, on
 
     useEffect(() => {
 
-        const profileData = initialData.profile || {};
+    const profileData = initialData.profile || {};
+    const fullNameValue = profileData.fullName ?? initialData.fullName ?? "";
 
         form.setFieldsValue({
-            fullName: initialData.fullName,
+            fullName: fullNameValue,
             email: initialData.email,
             phoneNumber: initialData.phoneNumber,
             address: profileData.addressLine,
