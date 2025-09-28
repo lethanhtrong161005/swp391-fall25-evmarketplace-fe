@@ -63,7 +63,7 @@ const RegisterModal = forwardRef(function RegisterModal(
             footer={null}
             centered
             maskClosable={false}
-            destroyOnClose
+            destroyOnHidden
             width={404}
             styles={{
                 content: {
