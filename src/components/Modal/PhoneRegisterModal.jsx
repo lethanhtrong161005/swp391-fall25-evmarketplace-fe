@@ -25,7 +25,7 @@ const PhoneRegisterModal = forwardRef(function PhoneRegisterModal(
             footer={null}
             centered
             maskClosable={false}
-            destroyOnHidden
+            destroyOnClose
             width={404}
             styles={{
                 content: {

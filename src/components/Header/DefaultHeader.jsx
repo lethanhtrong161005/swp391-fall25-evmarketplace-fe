@@ -22,7 +22,7 @@ const DefaultHeader = () => {
         >
           <Space>
             <Avatar shape="square" size={64} src={logo} />
-            <Typography.Title level={4} style={{ margin: 0 }}>
+            <Typography.Title level={3} style={{ margin: 0 }}>
               ReEV
             </Typography.Title>
           </Space>

@@ -110,7 +110,7 @@ const OtpVerifyModal = forwardRef(function OtpVerifyModal(
                 },
                 body: { padding: 0 },
             }}
-            destroyOnHidden
+            destroyOnClose
             closeIcon={<span style={{ fontSize: 20, color: token.colorTextSecondary }}>×</span>}
         >
             {contextHolder}

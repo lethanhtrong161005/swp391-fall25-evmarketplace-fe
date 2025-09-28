@@ -53,7 +53,7 @@ const ResetPasswordModal = forwardRef(function ResetPasswordModal(
             footer={null}
             centered
             maskClosable={false}
-            destroyOnHidden
+            destroyOnClose
             width={404}
             styles={{
                 content: {

@@ -27,7 +27,7 @@ const PhoneResetPasswordModal = forwardRef(function PhoneResetPasswordModal(
             footer={null}
             centered
             maskClosable={false}
-            destroyOnHidden
+            destroyOnClose
             width={404}
             styles={{
                 content: {
