@@ -1,6 +1,6 @@
 // src/pages/Member/Home/ProductCard.jsx
 import React, { useMemo, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Card,
   Image,
@@ -47,7 +47,6 @@ function toVND(n) {
 }
 
 export default function ProductCard({ listing, onClick, size }) {
-  const navigate = useNavigate();
   const screens = useBreakpoint();
   const SZ =
     DENSITY[
@@ -122,18 +121,11 @@ export default function ProductCard({ listing, onClick, size }) {
     position: "relative",
   };
 
-  const handleClick = () => {
-    if(onClick) {
-      onClick(listing);
-    } else if (listing?.id) {
-      navigate(`/detail/${listing.id}`)
-    }
-  }
-
   return (
     <Card
       hoverable
-      // onClick={() => onClick?.(listing)}
+      onClick={() => onClick?.(listing)}
+      // onClick={onClick()}
       styles={{ body: { padding: SZ.pad } }}
       style={{
         borderRadius: SZ.radius,
@@ -143,125 +135,126 @@ export default function ProductCard({ listing, onClick, size }) {
         flexDirection: "column",
       }}
     >
-       <Link to={`/detail/${listing.id}`} style={{ display: "block" }}>
-      {/* Tag góc trên: loại BATTERY + Verified cho xe */}
-      {kindIsBattery && (
-        <Tag
-          color="purple"
-          style={{ position: "absolute", top: 10, left: 10, zIndex: 2 }}
-        >
-          Battery
-        </Tag>
-      )}
-      {!kindIsBattery && data.verified && (
-        <Tag
-          color="green"
-          style={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}
-        >
-          Đã thẩm định
-        </Tag>
-      )}
-
-      <div style={frameStyle}>
-        {!data.imageUrl || imgError ? (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={
-              <Text style={{ color: "#8c8c8c" }}>Không có hình ảnh</Text>
-            }
-          />
-        ) : (
-          <Image
-            src={data.imageUrl}
-            alt={data.name}
-            width="100%"
-            height="100%"
-            style={{ objectFit: "cover" }}
-            preview={false}
-            onError={() => setImgError(true)}
-          />
+      {/* <Link to={`/detail/${listing.id}`} style={{ display: "block" }}> */}
+        {/* Tag góc trên: loại BATTERY + Verified cho xe */}
+        {kindIsBattery && (
+          <Tag
+            color="purple"
+            style={{ position: "absolute", top: 10, left: 10, zIndex: 2 }}
+          >
+            Battery
+          </Tag>
         )}
-      </div>
-
-      <div style={{ marginTop: SZ.pad }}>
-        <Title level={5} style={{ margin: 0, fontSize: SZ.title }}>
-          {data.name}
-        </Title>
-
-        {/* Meta line khác nhau theo loại */}
-        {kindIsBattery ? (
-          <Space direction="vertical" size={2} style={{ marginTop: 6 }}>
-            <Text type="secondary">Chemistry: {data.chemistry}</Text>
-            <Text type="secondary">{data.location}</Text>
-          </Space>
-        ) : (
-          <Space direction="vertical" size={2} style={{ marginTop: 6 }}>
-            <Text type="secondary">Năm: {data.year}</Text>
-            <Text type="secondary">{data.location}</Text>
-          </Space>
+        {!kindIsBattery && data.verified && (
+          <Tag
+            color="green"
+            style={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}
+          >
+            Đã thẩm định
+          </Tag>
         )}
 
-        {/* Chips thông số */}
-        <Row gutter={[6, 6]} style={{ marginTop: 8 }}>
-          {kindIsBattery ? (
-            <>
-              {data.weightKg != null && (
-                <Col>
-                  <Tag color="blue" style={{ fontSize: SZ.tag }}>
-                    {Number(data.weightKg).toLocaleString("vi-VN")} kg
-                  </Tag>
-                </Col>
-              )}
-              {data.capacityKwh != null && (
-                <Col>
-                  <Tag color="green" style={{ fontSize: SZ.tag }}>
-                    {Number(data.capacityKwh).toLocaleString("vi-VN")} kWh
-                  </Tag>
-                </Col>
-              )}
-              {data.dimension && (
-                <Col>
-                  <Tag color="gold" style={{ fontSize: SZ.tag }}>
-                    {data.dimension}
-                  </Tag>
-                </Col>
-              )}
-            </>
+        <div style={frameStyle}>
+          {!data.imageUrl || imgError ? (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={
+                <Text style={{ color: "#8c8c8c" }}>Không có hình ảnh</Text>
+              }
+            />
           ) : (
-            <>
-              {data.sohPercent != null && (
-                <Col>
-                  <Tag color="blue" style={{ fontSize: SZ.tag }}>
-                    SOH: {data.sohPercent}%
-                  </Tag>
-                </Col>
-              )}
-              {data.mileageKm != null && (
-                <Col>
-                  <Tag color="green" style={{ fontSize: SZ.tag }}>
-                    {Number(data.mileageKm).toLocaleString("vi-VN")} km
-                  </Tag>
-                </Col>
-              )}
-              {data.powerKw != null && (
-                <Col>
-                  <Tag color="gold" style={{ fontSize: SZ.tag }}>
-                    {data.powerKw} kW
-                  </Tag>
-                </Col>
-              )}
-            </>
+            <Image
+              src={data.imageUrl}
+              alt={data.name}
+              width="100%"
+              height="100%"
+              style={{ objectFit: "cover" }}
+              preview={false}
+              onError={() => setImgError(true)}
+            />
           )}
-        </Row>
+        </div>
 
-        <Text
-          strong
-          style={{ color: "#ff4d4f", display: "block", marginTop: 8 }}
-        >
-          {toVND(data.price)}
-        </Text>
-      </div>
-      </Link>
+        <div style={{ marginTop: SZ.pad }}>
+          <Title level={5} style={{ margin: 0, fontSize: SZ.title }}>
+            {data.name}
+          </Title>
+
+          {/* Meta line khác nhau theo loại */}
+          {kindIsBattery ? (
+            <Space direction="vertical" size={2} style={{ marginTop: 6 }}>
+              <Text type="secondary">Chemistry: {data.chemistry}</Text>
+              <Text type="secondary">{data.location}</Text>
+            </Space>
+          ) : (
+            <Space direction="vertical" size={2} style={{ marginTop: 6 }}>
+              <Text type="secondary">Năm: {data.year}</Text>
+              <Text type="secondary">{data.location}</Text>
+            </Space>
+          )}
+
+          {/* Chips thông số */}
+          <Row gutter={[6, 6]} style={{ marginTop: 8 }}>
+            {kindIsBattery ? (
+              <>
+                {data.weightKg != null && (
+                  <Col>
+                    <Tag color="blue" style={{ fontSize: SZ.tag }}>
+                      {Number(data.weightKg).toLocaleString("vi-VN")} kg
+                    </Tag>
+                  </Col>
+                )}
+                {data.capacityKwh != null && (
+                  <Col>
+                    <Tag color="green" style={{ fontSize: SZ.tag }}>
+                      {Number(data.capacityKwh).toLocaleString("vi-VN")} kWh
+                    </Tag>
+                  </Col>
+                )}
+                {data.dimension && (
+                  <Col>
+                    <Tag color="gold" style={{ fontSize: SZ.tag }}>
+                      {data.dimension}
+                    </Tag>
+                  </Col>
+                )}
+              </>
+            ) : (
+              <>
+                {data.sohPercent != null && (
+                  <Col>
+                    <Tag color="blue" style={{ fontSize: SZ.tag }}>
+                      SOH: {data.sohPercent}%
+                    </Tag>
+                  </Col>
+                )}
+                {data.mileageKm != null && (
+                  <Col>
+                    <Tag color="green" style={{ fontSize: SZ.tag }}>
+                      {Number(data.mileageKm).toLocaleString("vi-VN")} km
+                    </Tag>
+                  </Col>
+                )}
+                {data.powerKw != null && (
+                  <Col>
+                    <Tag color="gold" style={{ fontSize: SZ.tag }}>
+                      {data.powerKw} kW
+                    </Tag>
+                  </Col>
+                )}
+              </>
+            )}
+          </Row>
+
+          <Text
+            strong
+            style={{ color: "#ff4d4f", display: "block", marginTop: 8 }}
+          >
+            {toVND(data.price)}
+          </Text>
+        </div>
+      {/* </Link> */}
     </Card>
   );
 }
+

@@ -1,12 +1,16 @@
-import { useRoutes } from "react-router-dom"
-import { routes } from "@routes"
-
+import { useRoutes } from "react-router-dom";
+import { routes } from "@routes";
+import ScrollToTop from "./components/ScrollTop/ScrollTop";
 
 const App = () => {
+  const element = useRoutes(routes()); // ✅ đặt bên ngoài JSX
 
-    const element = useRoutes(routes());
-    return element;
-
-}
+  return (
+    <>
+      <ScrollToTop /> {/* ✅ chạy scroll mỗi khi đổi route */}
+      {element} {/* ✅ render routes */}
+    </>
+  );
+};
 
 export default App;

@@ -11,7 +11,7 @@ import LayoutStaff from "@layouts/LayoutStaff";
 import Battery from "@pages/Member/Battery";
 import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
-import ProductDetail from "../pages/Member/ProductDetail";
+import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 
 export const routes = () => [
   //Route cho guest + member
@@ -36,7 +36,7 @@ export const routes = () => [
         element: <GoogleCallback />,
       },
       {
-        path: "detail/:id",
+        path: "detail/:type/:id",
         element: <ProductDetail/>,
       },
 
