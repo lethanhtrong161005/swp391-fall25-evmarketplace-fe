@@ -1,66 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, DatePicker, Select, Upload, Avatar, Button, message, Row, Col } from "antd";
-import { UploadOutlined, UserOutlined } from "@ant-design/icons";
+import { Modal, Form, Input, Select, Upload, Avatar, Button, message, Row, Col, Space, Tooltip } from "antd";
+import { ExclamationCircleTwoTone, CheckCircleTwoTone, UploadOutlined, UserOutlined, MessageTwoTone } from "@ant-design/icons";
+import useUpdateProfileModal from "@/hooks/useUpdateProfileModal";
 
 const { Option } = Select;
 
 export default function UpdateProfileModal({ isOpen = true, initialData = {}, onClose, onUpdated }) {
     const [form] = Form.useForm();
-    const [loading, setLoading] = useState(false);
-    const [preview, setPreview] = useState(initialData.avatar || initialData.avatarUrl || null);
+    const [msgApi, contextHolder] = message.useMessage();
+    const {
+        preview,
+        avatarUploading,
+        loading,
+        otpSending,
+        otpVerifying,
+        otpRequested,
+        phoneVerified,
+        emailExist,
+        initForm,
+        handleUploadBefore,
+        handleRequestOtp,
+        handleVerifyOtp,
+        onFinish,
+    } = useUpdateProfileModal({ initialData, onUpdated, msgApi });
 
     useEffect(() => {
-        form.setFieldsValue({
-            fullName: initialData.fullName || initialData.name,
-            email: initialData.email,
-            phoneNumber: initialData.phoneNumber || initialData.phone,
-            address: initialData.address || initialData.addressLine,
-            province: initialData.province,
-        });
-        setPreview(initialData.avatar || initialData.avatarUrl || null);
-    }, [initialData, form]);
-
-    const handleUploadBefore = (file) => {
-        const ok = file.type.startsWith("image/");
-        if (!ok) {
-            message.error("Chỉ chấp nhận ảnh.");
-            return Upload.LIST_IGNORE;
+        if (isOpen) {
+            initForm(form);
         }
-        const isLt5 = file.size / 1024 / 1024 < 5;
-        if (!isLt5) {
-            message.error("Kích thước phải < 5MB.");
-            return Upload.LIST_IGNORE;
-        }
-        const reader = new FileReader();
-        reader.onload = (e) => setPreview(e.target.result);
-        reader.readAsDataURL(file);
-        return false; // prevent auto upload
-    };
-
-    const onFinish = async (values) => {
-        setLoading(true);
-        try {
-            // simulate API update or call real update service
-            const updated = {
-                ...values,
-                avatar: preview,
-            };
-            message.success("Cập nhật thông tin thành công");
-            onUpdated && onUpdated(updated);
-        } catch (err) {
-            message.error("Cập nhật thất bại");
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [initForm, form, isOpen]);
 
     return (
+        <>
+        {contextHolder}
         <Modal
             title="Cập nhật thông tin cá nhân"
             open={isOpen}
             onCancel={onClose}
             footer={null}
-            destroyOnClose
+            destroyOnHidden={true}
             width={700}
         >
             <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false}>
@@ -68,53 +46,115 @@ export default function UpdateProfileModal({ isOpen = true, initialData = {}, on
                     <Col xs={24} sm={8} style={{ textAlign: "center" }}>
                         <Avatar size={110} src={preview} icon={<UserOutlined />} />
                         <div style={{ marginTop: 12 }}>
-                            <Upload accept="image/*" beforeUpload={handleUploadBefore} showUploadList={false}>
-                                <Button icon={<UploadOutlined />}>Thay ảnh</Button>
+                            <Upload
+                                accept="image/*"
+                                beforeUpload={handleUploadBefore}
+                                showUploadList={false}
+                                disabled={avatarUploading}
+                            >
+                                <Button icon={<UploadOutlined />} loading={avatarUploading}>Thay ảnh</Button>
                             </Upload>
+
                         </div>
                     </Col>
 
                     <Col xs={24} sm={16}>
-                        <Form.Item name="fullName" label="Họ và tên" rules={[{ required: true, message: "Nhập họ tên" }]}>
-                            <Input />
+                        <Form.Item name="fullName" label="Họ và tên"
+                            rules={[{ required: true, message: "Nhập họ tên" }]}>
+                            <Input placeholder="Họ và tên" />
                         </Form.Item>
 
-                        <Form.Item name="email" label="Email" rules={[{ type: "email", message: "Email không hợp lệ" }]}>
-                            <Input />
+                        <Form.Item name="email"
+                            label={
+                                <Space>
+                                    <span>Email</span>
+                                    {emailExist ? (
+                                        <Tooltip title="Email đã được xác thực">
+                                            <CheckCircleTwoTone twoToneColor="#52c41a" />
+                                        </Tooltip>
+                                    ) : null}
+                                </Space>
+                            }
+                            rules={[
+                                { required: !emailExist, message: "Nhập email" },
+                                { type: "email", message: "Email không hợp lệ" }
+                            ]}>
+                            <Input placeholder="example@email.com" disabled={emailExist} />
                         </Form.Item>
 
-                        <Row gutter={12}>
-                            <Col span={12}>
-                                <Form.Item name="phoneNumber" label="Số điện thoại" rules={[{ pattern: /^[0-9]{9,11}$/, message: "Số điện thoại không hợp lệ" }]}>
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                        <Form.Item
+                            name="phoneNumber"
+                            label={
+                                <Space>
+                                    <span>Số điện thoại</span>
+                                    {phoneVerified ? (
+                                        <Tooltip title="Đã xác thực">
+                                            <CheckCircleTwoTone twoToneColor="#52c41a" />
+                                        </Tooltip>
+                                    ) : (
+                                        <Tooltip title="Chưa xác thực">
+                                            <ExclamationCircleTwoTone twoToneColor="#faad14" />
+                                        </Tooltip>
+                                    )}
+                                </Space>
+                            }
+                            rules={[
+                                { pattern: /^[0-9]{9,11}$/, message: "Số điện thoại không hợp lệ" },
+                            ]}
+                        >
+                            <Input placeholder="0987654321" disabled={phoneVerified} />
+                        </Form.Item>
 
-                        <Form.Item name="province" label="Tỉnh/Thành">
-                            <Select showSearch placeholder="Chọn tỉnh">
+                        {!phoneVerified && (
+                            <>
+                                <Space style={{ marginBottom: 12 }}>
+                                    <Button onClick={() => handleRequestOtp(form)} loading={otpSending} icon={<MessageTwoTone />}>
+                                        Gửi OTP
+                                    </Button>
+                                </Space>
+
+                                {otpRequested && (
+                                    <>
+                                        <Form.Item name="otpCode" label="Mã OTP" rules={[{ required: true, message: "Nhập mã OTP" }]}>
+                                            <Input placeholder="Nhập mã OTP" maxLength={6} />
+                                        </Form.Item>
+                                        <Button type="primary" onClick={() => handleVerifyOtp(form)} loading={otpVerifying}>
+                                            Xác thực OTP
+                                        </Button>
+                                    </>
+                                )}
+                            </>
+                        )}
+
+
+
+                        <Form.Item name="province" label="Tỉnh/Thành phố">
+                            <Select showSearch placeholder="Chọn tỉnh/thành phố">
                                 <Option value="Hà Nội">Hà Nội</Option>
                                 <Option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</Option>
                                 <Option value="Đà Nẵng">Đà Nẵng</Option>
-                                {/* thêm các tỉnh nếu cần */}
+                                <Option value="Hải Phòng">Hải Phòng</Option>
+                                <Option value="Cần Thơ">Cần Thơ</Option>
+                                {/* Thêm các tỉnh khác nếu cần */}
                             </Select>
                         </Form.Item>
 
                         <Form.Item name="address" label="Địa chỉ">
-                            <Input />
+                            <Input placeholder="Số nhà, tên đường, phường/xã..." />
                         </Form.Item>
                     </Col>
                 </Row>
 
                 <div style={{ textAlign: "right", marginTop: 16 }}>
-                    <Button style={{ marginRight: 8 }} onClick={onClose}>
+                    <Button style={{ marginRight: 8 }} onClick={onClose} disabled={loading}>
                         Hủy
                     </Button>
                     <Button type="primary" htmlType="submit" loading={loading}>
-                        Lưu
+                        {loading ? "Đang lưu..." : "Lưu thay đổi"}
                     </Button>
                 </div>
             </Form>
         </Modal>
+        </>
     );
 }

@@ -9,6 +9,7 @@ const api = axios.create({
     headers: {
         "Content-Type": "application/json",
     },
+    withCredentials: true,
 })
 
 // Interceptor để tự động gắn token vào header

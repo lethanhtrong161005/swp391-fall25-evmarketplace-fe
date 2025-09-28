@@ -24,8 +24,6 @@ const HeaderAction = () => {
   const [openResetPhone, setOpenResetPhone] = useState(false);
   const [openResetForm, setOpenResetForm] = useState(false);
 
-
-
   const [registerSubmitting, setRegisterSubmitting] = useState(false);
   const [resetSubmitting, setResetSubmitting] = useState(false);
   const [resetPwdSubmitting, setResetPwdSubmitting] = useState(false);
@@ -50,9 +48,26 @@ const HeaderAction = () => {
     if (key === "logout") await logout();
   };
 
+  const [redirectAfterLogin, setRedirectAfterLogin] = useState(null);
+
   const handleLoginSubmit = async (dto) => {
     await login(dto);
+    if (redirectAfterLogin) {
+      navigate(redirectAfterLogin);
+      setRedirectAfterLogin(null);
+    }
     return true;
+  };
+
+  // ⬇️ click “Đăng tin”
+  const handleClickCreateListing = () => {
+    if (isLoggedIn) {
+      navigate("/listing/new"); // đã đăng nhập → vào trang đăng tin
+    } else {
+      setRedirectAfterLogin("/listing/new"); // chưa login → mở login, xong thì vào
+      messageApi.info("Vui lòng đăng nhập để đăng tin");
+      setOpenLogin(true);
+    }
   };
 
   // ===== Nhập SĐT → gửi OTP → nếu OK thì mở OTP modal =====
@@ -64,10 +79,10 @@ const HeaderAction = () => {
       phoneRegisterRef.current?.clearErrors?.();
 
       await requestOtp({ phoneNumber: phone, type: "REGISTER" });
-      setRegPhone(phone);               // show trong OTP modal
-      setOpenRegister(false);           // đóng modal nhập SĐT
-      setOtpPurpose('REGISTER');
-      setOpenOtp(true);                 // mở modal OTP
+      setRegPhone(phone); // show trong OTP modal
+      setOpenRegister(false); // đóng modal nhập SĐT
+      setOtpPurpose("REGISTER");
+      setOpenOtp(true); // mở modal OTP
       messageApi.success("Đã gửi mã OTP");
     } catch (e) {
       phoneRegisterRef.current?.setFieldErrors?.(e?.fieldErrors || {});
@@ -82,14 +97,12 @@ const HeaderAction = () => {
     try {
       setResetSubmitting(true);
       phoneResetRef.current?.clearErrors?.();
-      await requestOtp(
-        {
-          phoneNumber: phone,
-          type: "RESET"
-        }
-      );
+      await requestOtp({
+        phoneNumber: phone,
+        type: "RESET",
+      });
       setRegPhone(phone);
-      setOtpPurpose('RESET');
+      setOtpPurpose("RESET");
       setOpenResetPhone(false);
       setOpenOtp(true);
       messageApi.success("Đã gửi mã OTP");
@@ -120,7 +133,9 @@ const HeaderAction = () => {
         setOpenResetForm(true);
       }
     } catch (e) {
-      otpRef.current?.setFieldErrors?.({ otp: [e?.message || "Mã OTP không hợp lệ"] });
+      otpRef.current?.setFieldErrors?.({
+        otp: [e?.message || "Mã OTP không hợp lệ"],
+      });
       messageApi.error(e?.message || "Mã OTP không hợp lệ");
     } finally {
       setOtpSubmitting(false);
@@ -144,33 +159,27 @@ const HeaderAction = () => {
 
   const handleRegisterSubmit = async ({ fullName, password }) => {
     try {
-      const { accessToken, refreshToken } = await createAccount(
-        {
-          tempToken: tokenOtp,
-          fullName,
-          password
-        }
-      )
+      const { accessToken, refreshToken } = await createAccount({
+        tempToken: tokenOtp,
+        fullName,
+        password,
+      });
       await login({ accessToken, refreshToken });
       messageApi.success("Đăng ký tài khoản thành công");
       setOpenRegisterForm(false);
     } catch (e) {
       messageApi.error(e?.message || "Đăng ký tài khoản thất bại");
     }
-
-
   };
 
   // ===== Reset password submit (nhận { newPassword })
   const handleResetPasswordSubmit = async ({ newPassword }) => {
     try {
       setResetPwdSubmitting(true);
-      await resetPassword(
-        {
-          token: tokenOtp,
-          newPassword: newPassword
-        }
-      )
+      await resetPassword({
+        token: tokenOtp,
+        newPassword: newPassword,
+      });
       messageApi.success("Đặt lại mật khẩu thành công");
       setOpenResetForm(false);
       setOpenLogin(true); // cho user đăng nhập lại
@@ -181,28 +190,38 @@ const HeaderAction = () => {
     }
   };
 
-
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
 
   return (
     <div style={{ display: "flex", gap: 8 }}>
       {contextHolder}
 
-      <Button>Đăng tin</Button>
+      <Button onClick={handleClickCreateListing}>Đăng tin</Button>
 
       {isLoggedIn ? (
-        <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }} placement="bottomRight" trigger={["click"]}>
-          <Button icon={<UserOutlined />} type="text">{displayName}</Button>
+        <Dropdown
+          menu={{ items: menuItems, onClick: handleMenuClick }}
+          placement="bottomRight"
+          trigger={["click"]}
+        >
+          <Button icon={<UserOutlined />} type="text">
+            {displayName}
+          </Button>
         </Dropdown>
       ) : (
-        <Button type="primary" onClick={() => setOpenLogin(true)}>Đăng nhập</Button>
+        <Button type="primary" onClick={() => setOpenLogin(true)}>
+          Đăng nhập
+        </Button>
       )}
 
       <LoginModal
         open={openLogin}
         onClose={() => setOpenLogin(false)}
         onSubmit={handleLoginSubmit}
-        onGoRegister={() => { setOpenLogin(false); setOpenRegister(true); }}
+        onGoRegister={() => {
+          setOpenLogin(false);
+          setOpenRegister(true);
+        }}
         onForgot={(prefillPhone) => {
           if (prefillPhone) setRegPhone(prefillPhone);
           setOpenLogin(false);
@@ -216,7 +235,10 @@ const HeaderAction = () => {
         onClose={() => setOpenRegister(false)}
         onContinue={handleRegisterContinue}
         submitting={registerSubmitting}
-        onGoLogin={() => { setOpenRegister(false); setOpenLogin(true); }}
+        onGoLogin={() => {
+          setOpenRegister(false);
+          setOpenLogin(true);
+        }}
       />
 
       <PhoneResetPasswordModal
@@ -225,7 +247,10 @@ const HeaderAction = () => {
         onClose={() => setOpenResetPhone(false)}
         onContinue={handleResetContinue}
         submitting={resetSubmitting}
-        onGoLogin={() => { setOpenResetPhone(false); setOpenLogin(true); }}
+        onGoLogin={() => {
+          setOpenResetPhone(false);
+          setOpenLogin(true);
+        }}
       />
 
       <OtpVerifyModal
@@ -245,7 +270,10 @@ const HeaderAction = () => {
         phone={regPhone}
         onClose={() => setOpenRegisterForm(false)}
         onSubmit={handleRegisterSubmit}
-        onGoLogin={() => { setOpenRegisterForm(false); setOpenLogin(true); }}
+        onGoLogin={() => {
+          setOpenRegisterForm(false);
+          setOpenLogin(true);
+        }}
       />
 
       <ResetPasswordModal
@@ -253,11 +281,13 @@ const HeaderAction = () => {
         onClose={() => setOpenResetForm(false)}
         onSubmit={handleResetPasswordSubmit}
         submitting={resetPwdSubmitting}
-        onGoLogin={() => { setOpenResetForm(false); setOpenLogin(true); }}
+        onGoLogin={() => {
+          setOpenResetForm(false);
+          setOpenLogin(true);
+        }}
       />
     </div>
   );
 };
 
 export default HeaderAction;
-
