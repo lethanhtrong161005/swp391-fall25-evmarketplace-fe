@@ -11,11 +11,8 @@ import LayoutStaff from "@layouts/LayoutStaff";
 import Battery from "@pages/Member/Battery";
 import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
-<<<<<<< HEAD
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
-=======
 import ListingCreate from "@pages/Member/ListingCreate";
->>>>>>> 69e0ac66b674a6fcf720a9f9fac6942f717b19ad
 
 export const routes = () => [
   //Route cho guest + member
@@ -39,13 +36,10 @@ export const routes = () => [
         path: "auth/google/callback",
         element: <GoogleCallback />,
       },
-<<<<<<< HEAD
       {
         path: "detail/:type/:id",
         element: <ProductDetail/>,
       },
-=======
->>>>>>> 69e0ac66b674a6fcf720a9f9fac6942f717b19ad
 
       //Route chỉ dành cho member
       {
