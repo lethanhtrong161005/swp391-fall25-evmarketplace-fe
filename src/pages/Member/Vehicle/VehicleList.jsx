@@ -1,10 +1,12 @@
-import React from "react";
-import { Row, Col } from "antd";
+import React, { useState } from "react";
+import { Row, Col, Pagination } from "antd";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../../../components/ProductCard/ProductCard";
 
 const VehicleList = ({ listings, onClick }) => {
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 8; // mỗi trang 8 sản phẩm
 
   const handleClick = (listing) => {
     if (onClick) {
@@ -28,15 +30,22 @@ const VehicleList = ({ listings, onClick }) => {
       navigate(`/detail/${type}/${listing.id}`);
     }
   };
+
+  // lọc ra sản phẩm là phương tiện
+  const vehicles = listings.filter((listing) =>
+    ["EV_CAR", "E_MOTORBIKE", "E_BIKE"].includes(
+      listing.category?.toUpperCase()
+    )
+  );
+
+  // tính toán sản phẩm của trang hiện tại
+  const startIdx = (currentPage - 1) * pageSize;
+  const currentData = vehicles.slice(startIdx, startIdx + pageSize);
+
   return (
-    <Row gutter={[16, 16]} align="stretch">
-      {listings
-        .filter((listing) =>
-          ["EV_CAR", "E_MOTORBIKE", "E_BIKE"].includes(
-            listing.category?.toUpperCase()
-          )
-        )
-        .map((listing) => (
+    <>
+      <Row gutter={[16, 16]} align="stretch">
+        {currentData.map((listing) => (
           <Col
             key={listing.id}
             xs={24}
@@ -52,7 +61,22 @@ const VehicleList = ({ listings, onClick }) => {
             />
           </Col>
         ))}
-    </Row>
+      </Row>
+
+      {/* Pagination */}
+      <div style={{ marginTop: 24, textAlign: "center" }}>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={vehicles.length}
+          onChange={(page) => {
+            setCurrentPage(page);
+            window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 cuộn lên đầu khi đổi trang
+          }}
+          showSizeChanger={false}
+        />
+      </div>
+    </>
   );
 };
 
