@@ -11,6 +11,7 @@ import LayoutStaff from "@layouts/LayoutStaff";
 import Battery from "@pages/Member/Battery";
 import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
+import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
 
 export const routes = () => [
@@ -34,6 +35,10 @@ export const routes = () => [
       {
         path: "auth/google/callback",
         element: <GoogleCallback />,
+      },
+      {
+        path: "detail/:type/:id",
+        element: <ProductDetail/>,
       },
 
       //Route chỉ dành cho member
