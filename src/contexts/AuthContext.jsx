@@ -16,7 +16,7 @@ export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);     // ⬅️ thêm
+    const [loading, setLoading] = useState(true);
     const isLoggedIn = !!user;
 
     // hydrate khi F5
@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
         } else {
             setUser(null);
         }
-        setLoading(false);                              // ⬅️ kết thúc hydrate
+        setLoading(false);
     }, []);
 
     // nếu interceptor refresh thất bại sẽ phát event này
@@ -37,16 +37,6 @@ export function AuthProvider({ children }) {
         return () => window.removeEventListener("auth-logout", onAuthLogout);
     }, []);
 
-    // const login = useCallback(async (dto) => {
-    //     if (dto?.accessToken) {
-    //         cookieUtils.setToken(dto.accessToken, dto.refreshToken);
-    //     } else {
-    //         await loginPhone(dto);
-    //     }
-    //     const payload = cookieUtils.decodeJwt();
-    //     setUser(payload ? { ...payload, role: getRoleFromPayload(payload) } : null);
-    //     return dto;
-    // }, []);
     const login = useCallback(async (dto) => {
         let access = dto.accessToken;
         let refresh = dto.refreshToken;
@@ -68,7 +58,7 @@ export function AuthProvider({ children }) {
 
             setUser(newUser);
 
-            return { user: newUser, role }; 
+            return { user: newUser, role };
         }
 
         return null;

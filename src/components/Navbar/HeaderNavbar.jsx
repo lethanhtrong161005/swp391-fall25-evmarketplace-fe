@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { MenuOutlined } from "@ant-design/icons";
 import { Menu, Button, Drawer, Grid } from "antd";
 import HeaderAction from "../Action/HeaderAction";
@@ -14,9 +14,25 @@ const { useBreakpoint } = Grid;
 
 const HeaderNavbar = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Lấy URL hiện tại
   const [current, setCurrent] = useState("home");
   const [open, setOpen] = useState(false);
   const screens = useBreakpoint();
+
+
+useEffect(() => {
+  // Tìm trong mảng items phần tử có path trùng với URL hiện tại
+  const matchedItem = items.find((item) => item.path === location.pathname);
+
+  // Nếu tìm thấy item khớp
+  if (matchedItem) {
+    // Cập nhật state current = key của item đó (để Menu highlight đúng)
+    setCurrent(matchedItem.key);
+  }
+
+// useEffect sẽ chạy lại mỗi khi URL (location.pathname) thay đổi
+}, [location.pathname]);
+
 
   const onClick = (e) => {
     setCurrent(e.key); // Đánh dấu menu đang chọn

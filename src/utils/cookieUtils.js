@@ -4,7 +4,6 @@ import config from "../config";
 
 const cookies = new Cookies(null, { path: "/" });
 
-
 class CookieUtils {
     getItem(key, defaultValue = "") {
         return cookies.get(key) ?? defaultValue;
@@ -36,11 +35,11 @@ class CookieUtils {
     }
 
     decodeJwt(token) {
-        const t = token || this.getToken(); // nếu có token truyền vào thì dùng luôn
+        const t = token || this.getToken(); 
         if (!t) return undefined;
         try {
             const payload = jwtDecode(t);
-            console.log("Decoded JWT:", payload); // debug để xem role/authorities
+            console.log("Decoded JWT:", payload);
             return payload;
         } catch (e) {
             this.clearAuth();

@@ -195,7 +195,7 @@ const HeaderAction = () => {
       });
       messageApi.success("Đặt lại mật khẩu thành công");
       setOpenResetForm(false);
-      setOpenLogin(true); // cho user đăng nhập lại
+      setOpenLogin(true);
     } catch (e) {
       messageApi.error(e?.message || "Đặt lại mật khẩu thất bại");
     } finally {
