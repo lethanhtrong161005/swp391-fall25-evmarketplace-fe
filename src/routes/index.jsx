@@ -13,7 +13,7 @@ import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
-import StaffListingManagement from "../pages/Staff/StaffListingManagement/StaffListingManagement"
+import StaffListingManagement from "../pages/Staff/StaffListingManagement/StaffListingManagement";
 
 export const routes = () => [
   {
@@ -23,6 +23,7 @@ export const routes = () => [
       { index: true, element: <HomeWrapper /> },
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
+      { path: "detail/:type/:id", element: <ProductDetail /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
 
       {
@@ -47,7 +48,11 @@ export const routes = () => [
             path: "staff",
             element: <StaffDashboard />,
           },
-           { path: "staff/listingmanagement", element: <StaffListingManagement/> },
+          {
+            path: "staff/listingmanagement",
+            element: <StaffListingManagement />,
+          },
+          { path: "staff/info", element: <InfoUser /> },
         ],
       },
     ],

@@ -7,6 +7,18 @@
 
   &__stats {
     margin-bottom: 16px;
+
+    .ant-statistic {
+      transition: all 0.2s;
+    }
+
+    .ant-statistic:hover {
+      background: #fafafa;
+    }
+
+    span {
+      transition: all 0.2s;
+    }
   }
 
   &__table {
