@@ -14,54 +14,34 @@ import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ListingCreate from "@pages/Member/ListingCreate";
 
 export const routes = () => [
-  //Route cho guest + member
   {
     path: "/",
     element: <LayoutDefault />,
     children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: "vehicle",
-        element: <Vehicle />,
-      },
-      {
-        path: "battery",
-        element: <Battery />,
-      },
-      {
-        path: "auth/google/callback",
-        element: <GoogleCallback />,
-      },
+      { index: true, element: <Home /> },
+      { path: "vehicle", element: <Vehicle /> },
+      { path: "battery", element: <Battery /> },
+      { path: "auth/google/callback", element: <GoogleCallback /> },
 
-      //Route chỉ dành cho member
+      // ✅ TẤT CẢ ROUTE CẦN LOGIN/ROLE để ở ĐÂY
       {
         element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} />,
         children: [
-          {
-            path: "info-user",
-            element: <InfoUser />,
-          },
+          { path: "info-user", element: <InfoUser /> },
+          { path: "listing/new", element: <ListingCreate /> }, // <- chuyển vào đây
         ],
       },
     ],
   },
 
-  //Staff
+  // Staff (nếu muốn có layout riêng)
   {
     path: "/",
     element: <LayoutStaff />,
     children: [
       {
         element: <RoleBasedRoute allowedRoles={["staff", "admin"]} />,
-        children: [
-          {
-            path: "staff",
-            element: <StaffDashboard />,
-          },
-        ],
+        children: [{ path: "staff", element: <StaffDashboard /> }],
       },
     ],
   },
@@ -73,33 +53,11 @@ export const routes = () => [
     children: [
       {
         element: <RoleBasedRoute allowedRoles={["admin"]} />,
-        children: [
-          {
-            path: "admin",
-            element: <AdminDashboard />,
-          },
-        ],
+        children: [{ path: "admin", element: <AdminDashboard /> }],
       },
     ],
   },
 
-  //Chặn nếu không có quyền truy cập
-  {
-    path: "/403",
-    element: <Error403 />,
-  },
-  //Nếu gọi tới đường dẫn không có
-  {
-    path: "*",
-    element: <Error404 />,
-  },
-  
-//Tạo Đăng tin
-  {
-    element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} />,
-    children: [
-      { path: "info-user", element: <InfoUser /> },
-      { path: "listing/new", element: <ListingCreate /> },
-    ],
-  },
+  { path: "/403", element: <Error403 /> },
+  { path: "*", element: <Error404 /> },
 ];
