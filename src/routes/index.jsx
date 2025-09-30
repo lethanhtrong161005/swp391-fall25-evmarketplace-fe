@@ -1,5 +1,8 @@
 import RoleBasedRoute from "@components/RoleBasedRoute";
 import LayoutAdmin from "@layouts/LayoutAdmin";
+import ManageListingPage from "@pages/Admin/ManageListing";
+import ManageListingDetail from "@pages/Admin/ManageListingDetail";
+import ManageAccounts from "@pages/Admin/ManageAccounts";
 import LayoutDefault from "@layouts/LayoutDefault";
 import AdminDashboard from "@pages/Admin/AdminDashboard";
 import Error403 from "@pages/Errors/Error403";
@@ -52,8 +55,13 @@ export const routes = () => [
     element: <LayoutAdmin />,
     children: [
       {
-        element: <RoleBasedRoute allowedRoles={["admin"]} />,
-        children: [{ path: "admin", element: <AdminDashboard /> }],
+        element: <RoleBasedRoute allowedRoles={["admin", "staff"]} />, // Staff dùng chung layout nếu muốn
+        children: [
+          { path: "admin", element: <AdminDashboard /> },
+          { path: "admin/listings", element: <ManageListingPage /> },
+          { path: "admin/listings/:id", element: <ManageListingDetail /> },
+          { path: "admin/accounts", element: <ManageAccounts /> },
+        ],
       },
     ],
   },

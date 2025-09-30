@@ -5,23 +5,24 @@ import { ConfigProvider, App as AntApp, message } from "antd";
 import "@styles/styles.scss";
 import App from "./App.jsx";
 import { AuthProvider } from "@contexts/AuthContext";
+import "@ant-design/v5-patch-for-react-19";
 
 message.config({
-  duration: 3,     // hiển thị 3 giây (sweet spot)
-  maxCount: 3,     // tối đa 3 toast cùng lúc
+  duration: 3, // hiển thị 3 giây (sweet spot)
+  maxCount: 3, // tối đa 3 toast cùng lúc
 });
 
 const theme = {
   token: {
     motion: true,
     motionDurationFast: "120ms",
-    motionDurationMid:  "200ms",
+    motionDurationMid: "200ms",
     motionDurationSlow: "280ms",
     zIndexPopupBase: 2100,
   },
 };
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ConfigProvider theme={theme}>
       <AntApp>
@@ -33,4 +34,4 @@ createRoot(document.getElementById('root')).render(
       </AntApp>
     </ConfigProvider>
   </StrictMode>
-)
+);
