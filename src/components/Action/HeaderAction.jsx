@@ -51,13 +51,26 @@ const HeaderAction = () => {
   const [redirectAfterLogin, setRedirectAfterLogin] = useState(null);
 
   const handleLoginSubmit = async (dto) => {
-    await login(dto);
-    if (redirectAfterLogin) {
-      navigate(redirectAfterLogin);
-      setRedirectAfterLogin(null);
+    const result = await login(dto);
+    if (!result) return false;
+
+    const role = result.role;
+
+    if (role === "staff") {
+      navigate("/staff", { replace: true });
+    } else if (role === "admin") {
+      navigate("/admin", { replace: true });
+    } else {
+      if (redirectAfterLogin) {
+        navigate(redirectAfterLogin, { replace: true });
+        setRedirectAfterLogin(null);
+      } else {
+        navigate("/", { replace: true });
+      }
     }
+
     return true;
-  };
+  }
 
   // ⬇️ click “Đăng tin”
   const handleClickCreateListing = () => {
@@ -182,7 +195,7 @@ const HeaderAction = () => {
       });
       messageApi.success("Đặt lại mật khẩu thành công");
       setOpenResetForm(false);
-      setOpenLogin(true); // cho user đăng nhập lại
+      setOpenLogin(true);
     } catch (e) {
       messageApi.error(e?.message || "Đặt lại mật khẩu thất bại");
     } finally {

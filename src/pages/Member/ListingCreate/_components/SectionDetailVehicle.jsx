@@ -1,5 +1,11 @@
 import React from "react";
 import { Form, Row, Col, InputNumber } from "antd";
+import {
+  vehicleBatteryCapacityRule,
+  vehicleSOHRule,
+  mileageRule,
+  vehiclePriceRule,
+} from "@/validators/vehicle.rules";
 
 export default function SectionDetailVehicle() {
   return (
@@ -9,7 +15,7 @@ export default function SectionDetailVehicle() {
           <Form.Item
             label="Dung lượng pin (kWh)"
             name="battery_capacity_kwh"
-            rules={[{ required: true, message: "Nhập dung lượng pin" }]}
+            rules={vehicleBatteryCapacityRule}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -24,22 +30,7 @@ export default function SectionDetailVehicle() {
           <Form.Item
             label="Tình trạng pin (%SOH)"
             name="soh_percent"
-            rules={[
-              {
-                required: true,
-                message: "Nhập SOH (%)",
-              },
-              {
-                validator: (_, v) => {
-                  const n = Number(v);
-                  return !Number.isNaN(n) && n > 0 && n <= 100
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("SOH phải trong khoảng (0; 100]")
-                      );
-                },
-              },
-            ]}
+            rules={vehicleSOHRule}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -57,7 +48,7 @@ export default function SectionDetailVehicle() {
           <Form.Item
             label="Số Km đã đi"
             name="mileage_km"
-            rules={[{ required: true, message: "Nhập số Km" }]}
+            rules={mileageRule}
           >
             <InputNumber
               style={{ width: "100%" }}
@@ -71,7 +62,7 @@ export default function SectionDetailVehicle() {
           <Form.Item
             label="Giá bán (VND)"
             name="price"
-            rules={[{ required: true, message: "Nhập giá" }]}
+            rules={vehiclePriceRule}
           >
             <InputNumber
               style={{ width: "100%" }}

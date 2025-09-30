@@ -1,12 +1,19 @@
-import { post } from "@utils/apiCaller";
+import { buildCreateListingFormData } from "@/pages/Member/ListingCreate/_shared/normalizeListingPayload";
+import api from "@utils/apiCaller";
 
 /**
  * Tạo tin đăng.
  * BE gợi ý endpoint: POST /listings
  * dto: { brand, model, year, price, description, province, city, ... }
  */
-export const createListing = (dto) => post("/listings", dto);
+export async function createListing(values, tax, postType) {
+  const fd = buildCreateListingFormData(values, tax, postType);
 
+  // 👉 KHÔNG tự set Content-Type, để browser tự thêm boundary
+  const res = api.post("/api/listing/post", fd);
+  console.log(res.data);
+  return res.data;
+}
 /**
  * (Tuỳ chọn) Upload media sau khi có listingId
  * files: mảng File từ Upload (originFileObj)

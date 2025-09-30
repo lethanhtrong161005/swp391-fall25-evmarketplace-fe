@@ -1,16 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { Modal, Form, Select } from "antd"; // ⬅️ bỏ Input
+// pages/listing/_components/AddressModal.jsx
+import React, { useMemo, useState, useEffect } from "react";
+import { Modal, Form, Select, Input } from "antd";
 import {
   getProvinces,
   getDistrictsByProvinceCode,
   getWardsByDistrictCode,
 } from "@/services/address.service";
 
-export default function AddressModal({ open, onCancel, onOk }) {
+export default function AddressModal({ open, onCancel, onOk, initialAddress }) {
   const provinces = useMemo(() => getProvinces(), []);
   const [province, setProvince] = useState(null);
   const [district, setDistrict] = useState(null);
   const [ward, setWard] = useState(null);
+  const [line, setLine] = useState("");
 
   const districts = useMemo(
     () => (province ? getDistrictsByProvinceCode(province.value) : []),
@@ -21,14 +23,22 @@ export default function AddressModal({ open, onCancel, onOk }) {
     [district]
   );
 
+  useEffect(() => {
+    if (open && initialAddress) {
+      setLine(initialAddress.line || "");
+      setProvince(initialAddress.province || null);
+      setDistrict(initialAddress.district || null);
+      setWard(initialAddress.ward || null);
+    }
+  }, [open, initialAddress]);
+
   const handleOk = () => {
-    if (!province || !district || !ward) return;
-    // Không còn line
-    const addrObj = { province, district, ward };
-    const display = [ward?.label, district?.label, province?.label]
+    if (!line?.trim() || !province || !district || !ward) return;
+    const addrObj = { line: line.trim(), province, district, ward };
+    const display = [line?.trim(), ward?.label, district?.label, province?.label]
       .filter(Boolean)
       .join(", ");
-    onOk(addrObj, display);
+    onOk?.(addrObj, display);
   };
 
   return (
@@ -41,17 +51,29 @@ export default function AddressModal({ open, onCancel, onOk }) {
       destroyOnHidden
     >
       <Form layout="vertical">
+        <Form.Item label="Địa chỉ chi tiết *" required>
+          <Input
+            placeholder="Số nhà, ngõ/ngách, tên đường, toà nhà…"
+            value={line}
+            maxLength={120}
+            onChange={(e) => setLine(e.target.value)}
+          />
+        </Form.Item>
+
         <Form.Item label="Tỉnh, thành phố *" required>
           <Select
             showSearch
             options={provinces}
             placeholder="Chọn tỉnh/thành"
+            value={province?.value}
             onChange={(_, option) => {
               setProvince(option);
               setDistrict(null);
               setWard(null);
             }}
-            value={province?.value}
+            filterOption={(i, opt) =>
+              (opt?.label ?? "").toLowerCase().includes(i.toLowerCase())
+            }
           />
         </Form.Item>
 
@@ -60,12 +82,15 @@ export default function AddressModal({ open, onCancel, onOk }) {
             showSearch
             options={districts}
             placeholder="Chọn quận/huyện"
+            value={district?.value}
+            disabled={!province}
             onChange={(_, option) => {
               setDistrict(option);
               setWard(null);
             }}
-            value={district?.value}
-            disabled={!province}
+            filterOption={(i, opt) =>
+              (opt?.label ?? "").toLowerCase().includes(i.toLowerCase())
+            }
           />
         </Form.Item>
 
@@ -74,9 +99,12 @@ export default function AddressModal({ open, onCancel, onOk }) {
             showSearch
             options={wards}
             placeholder="Chọn phường/xã"
-            onChange={(_, option) => setWard(option)}
             value={ward?.value}
             disabled={!district}
+            onChange={(_, option) => setWard(option)}
+            filterOption={(i, opt) =>
+              (opt?.label ?? "").toLowerCase().includes(i.toLowerCase())
+            }
           />
         </Form.Item>
       </Form>

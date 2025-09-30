@@ -1,6 +1,6 @@
 /**
  * SectionTitleDesc
- * - Tạo tiêu đề tự động từ brand/model/year/mileage_km.
+ * - Tạo tiêu đề tự động từ brand/model/year/color/mileage_km.
  * - Khi user gõ tay khác gợi ý → sẽ giữ theo người dùng.
  * - Mô tả có placeholder checklist, max 1500 ký tự.
  */
@@ -8,11 +8,27 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Form, Input, Typography, Alert } from "antd";
 const { TextArea } = Input;
 
-function buildAutoTitle({ brand, model, year, mileage_km }) {
-  if (!brand && !model && !year && !mileage_km) return "";
-  const left = [brand, model, year].filter(Boolean).join(" ");
-  const right = mileage_km ? ` - ${mileage_km} km` : "";
-  return `${left}${right}`.trim();
+function formatKm(n) {
+  if (n === undefined || n === null || n === "") return "";
+  const num = Number(n);
+  if (Number.isNaN(num)) return "";
+  return num.toLocaleString("vi-VN");
+}
+
+function buildAutoTitle({ brand, model, year, color, mileage_km }) {
+  if (!brand && !model && !year && !color && !mileage_km) return "";
+
+  // Brand + Model + Year
+  const left = [brand, model, year].filter(Boolean).join(" ").trim();
+
+  // Màu sắc
+  const mid = color ? ` – ${color}` : "";
+
+  // Quãng đường
+  const km = formatKm(mileage_km);
+  const right = km ? ` - ${km} km` : "";
+
+  return `${left}${mid}${right}`.trim();
 }
 
 export default function SectionTitleDesc() {
@@ -22,17 +38,17 @@ export default function SectionTitleDesc() {
   const brand = Form.useWatch("brand", form);
   const model = Form.useWatch("model", form);
   const year = Form.useWatch("year", form);
+  const color = Form.useWatch("color", form);
   const mileage_km = Form.useWatch("mileage_km", form);
 
-  // Ghi nhớ: user đã sửa tay chưa?
   const userEditedTitleRef = useRef(false);
 
   const computedTitle = useMemo(
-    () => buildAutoTitle({ brand, model, year, mileage_km }),
-    [brand, model, year, mileage_km]
+    () => buildAutoTitle({ brand, model, year, color, mileage_km }),
+    [brand, model, year, color, mileage_km]
   );
 
-  // Nếu chưa sửa tay → luôn cập nhật theo gợi ý
+  // Nếu user chưa sửa tay → update auto
   useEffect(() => {
     if (!form) return;
     const current = form.getFieldValue("title");
@@ -59,7 +75,7 @@ export default function SectionTitleDesc() {
         <Input
           showCount
           maxLength={50}
-          placeholder="VD: VinFast VF3 2024 - 2.000 km"
+          placeholder="VD: VinFast VF e34 2022 – Đen - 15.000 km"
           onFocus={() => setShowHint(true)}
           onBlur={() => setShowHint(false)}
           onChange={onTitleChange}
@@ -75,12 +91,10 @@ export default function SectionTitleDesc() {
             <div>
               <Typography.Text strong>Tiêu đề tốt nên có:</Typography.Text>
               <div>
-                Loại xe + Thương hiệu + Model + Năm + Màu sắc + Tình trạng +
-                Quãng đường
+                Thương hiệu + Model + Năm + <u>Màu sắc</u> + Quãng đường
               </div>
               <div>
-                <em>Ví dụ:</em> “VinFast VF3 2024 đen đã lăn bánh 6 tháng -
-                5.000 km”
+                <em>Ví dụ:</em> “VinFast VF3 2024 Đen - 5.000 km”
               </div>
             </div>
           }
