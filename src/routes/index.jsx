@@ -4,7 +4,6 @@ import LayoutDefault from "@layouts/LayoutDefault";
 import AdminDashboard from "@pages/Admin/AdminDashboard";
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
-import Home from "@pages/Member/Home";
 import InfoUser from "@pages/Member/InfoUser";
 import StaffDashboard from "@pages/Staff/StaffDashboard";
 import LayoutStaff from "@layouts/LayoutStaff";
@@ -13,6 +12,8 @@ import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
+import HomeWrapper from "../pages/Member/HomeWrapper/HomeWrapper";
+import StaffListingManagement from "../pages/Staff/StaffListingManagement/StaffListingManagement"
 
 export const routes = () => [
   //Route cho guest + member
@@ -22,7 +23,7 @@ export const routes = () => [
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <HomeWrapper />,
       },
       {
         path: "vehicle",
@@ -38,7 +39,7 @@ export const routes = () => [
       },
       {
         path: "detail/:type/:id",
-        element: <ProductDetail/>,
+        element: <ProductDetail />,
       },
 
       //Route chỉ dành cho member
@@ -54,7 +55,7 @@ export const routes = () => [
     ],
   },
 
-  //Staff
+  // Staff
   {
     path: "/",
     element: <LayoutStaff />,
@@ -66,6 +67,7 @@ export const routes = () => [
             path: "staff",
             element: <StaffDashboard />,
           },
+           { path: "staff/listingmanagement", element: <StaffListingManagement/> },
         ],
       },
     ],
@@ -98,8 +100,8 @@ export const routes = () => [
     path: "*",
     element: <Error404 />,
   },
-  
-//Tạo Đăng tin
+
+  //Tạo Đăng tin
   {
     element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} />,
     children: [

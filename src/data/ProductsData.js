@@ -1,4 +1,4 @@
-const vehicleData = [
+const productsData = [
   {
     id: "1",
     title: "VinFast VF e34 – SUV điện",
@@ -626,4 +626,4 @@ const vehicleData = [
 
 ];
  
-export default vehicleData;
+export default productsData;
