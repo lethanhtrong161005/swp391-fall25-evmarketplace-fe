@@ -4,6 +4,7 @@ import LayoutDefault from "@layouts/LayoutDefault";
 import AdminDashboard from "@pages/Admin/AdminDashboard";
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
+import HomeWrapper from "@pages/Member/HomeWrapper/HomeWrapper";
 import InfoUser from "@pages/Member/InfoUser";
 import StaffDashboard from "@pages/Staff/StaffDashboard";
 import LayoutStaff from "@layouts/LayoutStaff";
@@ -12,44 +13,23 @@ import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
-import HomeWrapper from "../pages/Member/HomeWrapper/HomeWrapper";
 import StaffListingManagement from "../pages/Staff/StaffListingManagement/StaffListingManagement"
 
 export const routes = () => [
-  //Route cho guest + member
   {
     path: "/",
     element: <LayoutDefault />,
     children: [
-      {
-        index: true,
-        element: <HomeWrapper />,
-      },
-      {
-        path: "vehicle",
-        element: <Vehicle />,
-      },
-      {
-        path: "battery",
-        element: <Battery />,
-      },
-      {
-        path: "auth/google/callback",
-        element: <GoogleCallback />,
-      },
-      {
-        path: "detail/:type/:id",
-        element: <ProductDetail />,
-      },
+      { index: true, element: <HomeWrapper /> },
+      { path: "vehicle", element: <Vehicle /> },
+      { path: "battery", element: <Battery /> },
+      { path: "auth/google/callback", element: <GoogleCallback /> },
 
-      //Route chỉ dành cho member
       {
         element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} />,
         children: [
-          {
-            path: "info-user",
-            element: <InfoUser />,
-          },
+          { path: "info-user", element: <InfoUser /> },
+          { path: "listing/new", element: <ListingCreate /> },
         ],
       },
     ],
@@ -80,33 +60,11 @@ export const routes = () => [
     children: [
       {
         element: <RoleBasedRoute allowedRoles={["admin"]} />,
-        children: [
-          {
-            path: "admin",
-            element: <AdminDashboard />,
-          },
-        ],
+        children: [{ path: "admin", element: <AdminDashboard /> }],
       },
     ],
   },
 
-  //Chặn nếu không có quyền truy cập
-  {
-    path: "/403",
-    element: <Error403 />,
-  },
-  //Nếu gọi tới đường dẫn không có
-  {
-    path: "*",
-    element: <Error404 />,
-  },
-
-  //Tạo Đăng tin
-  {
-    element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} />,
-    children: [
-      { path: "info-user", element: <InfoUser /> },
-      { path: "listing/new", element: <ListingCreate /> },
-    ],
-  },
+  { path: "/403", element: <Error403 /> },
+  { path: "*", element: <Error404 /> },
 ];

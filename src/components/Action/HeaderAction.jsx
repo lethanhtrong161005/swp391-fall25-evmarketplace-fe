@@ -50,29 +50,6 @@ const HeaderAction = () => {
 
   const [redirectAfterLogin, setRedirectAfterLogin] = useState(null);
 
-  // const handleLoginSubmit = async (dto) => {
-  //   await login(dto);
-
-  //   // check role từ AuthContext
-  //   const role = (user?.role || "").toLowerCase();
-
-  //   if (role === "staff") {
-  //     navigate("/staff"); // đi tới layout staff
-  //   } else if (role === "admin") {
-  //     navigate("/admin"); // đi tới layout admin
-  //   } else {
-  //     // member hoặc guest
-  //     if (redirectAfterLogin) {
-  //       navigate(redirectAfterLogin);
-  //       setRedirectAfterLogin(null);
-  //     } else {
-  //       navigate("/"); // mặc định về home
-  //     }
-  //   }
-
-  //   return true;
-  // };
-
   const handleLoginSubmit = async (dto) => {
     const result = await login(dto);
     if (!result) return false;
@@ -80,7 +57,7 @@ const HeaderAction = () => {
     const role = result.role;
 
     if (role === "staff") {
-      navigate("/staff", { replace: true }); // ⬅️ replace để không quay lại được trang trước
+      navigate("/staff", { replace: true });
     } else if (role === "admin") {
       navigate("/admin", { replace: true });
     } else {
@@ -93,7 +70,7 @@ const HeaderAction = () => {
     }
 
     return true;
-  };
+  }
 
   // ⬇️ click “Đăng tin”
   const handleClickCreateListing = () => {
@@ -218,7 +195,7 @@ const HeaderAction = () => {
       });
       messageApi.success("Đặt lại mật khẩu thành công");
       setOpenResetForm(false);
-      setOpenLogin(true); // cho user đăng nhập lại
+      setOpenLogin(true);
     } catch (e) {
       messageApi.error(e?.message || "Đặt lại mật khẩu thất bại");
     } finally {

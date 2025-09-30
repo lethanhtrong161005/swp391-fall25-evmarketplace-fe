@@ -1,18 +1,16 @@
 import React from "react";
 import { Form, Row, Col, InputNumber, Input } from "antd";
-export default function SectionDetailBattery() {
-  // validate SOH: (0, 100]
-  const sohRule = {
-    validator: (_, v) => {
-      if (v === undefined || v === null || v === "")
-        return Promise.reject(new Error("Nhập SOH (%)"));
-      const n = Number(v);
-      if (Number.isNaN(n) || n <= 0 || n > 100)
-        return Promise.reject(new Error("SOH phải trong khoảng (0; 100]"));
-      return Promise.resolve();
-    },
-  };
+import {
+  batteryCapacityRule,
+  batterySOHRule,
+  voltageRule,
+  chemistryOptionalRule,
+  weightOptionalRule,
+  dimensionOptionalRule,
+} from "@/validators/battery.rules";
+import { priceRule } from "@/validators/common.rules";
 
+export default function SectionDetailBattery() {
   return (
     <>
       <Row gutter={16}>
@@ -20,7 +18,7 @@ export default function SectionDetailBattery() {
           <Form.Item
             label="Dung lượng (kWh)"
             name="battery_capacity_kwh"
-            rules={[{ required: true, message: "Nhập dung lượng kWh" }]}
+            rules={batteryCapacityRule}
           >
             <InputNumber
               min={0}
@@ -35,7 +33,7 @@ export default function SectionDetailBattery() {
           <Form.Item
             label="Tình trạng pin (%SOH)"
             name="soh_percent"
-            rules={[{ required: true }, sohRule]}
+            rules={batterySOHRule}
           >
             <InputNumber
               min={0}
@@ -50,11 +48,7 @@ export default function SectionDetailBattery() {
 
       <Row gutter={16}>
         <Col xs={24} md={12}>
-          <Form.Item
-            label="Điện áp (V)"
-            name="voltage"
-            rules={[{ required: true, message: "Nhập điện áp (V)" }]}
-          >
+          <Form.Item label="Điện áp (V)" name="voltage" rules={voltageRule}>
             <InputNumber
               min={0}
               step={1}
@@ -66,11 +60,9 @@ export default function SectionDetailBattery() {
 
         <Col xs={24} md={12}>
           <Form.Item
-            label="Hoá học pin (tuỳ chọn)"
+            label="Hoá học pin (tùy chọn)"
             name="chemistry"
-            rules={[
-              { required: true, message: "Nhập hoá học pin (LFP, NMC,…)" },
-            ]}
+            rules={chemistryOptionalRule}
           >
             <Input placeholder="VD: LFP, NMC…" />
           </Form.Item>
@@ -80,9 +72,9 @@ export default function SectionDetailBattery() {
       <Row gutter={16}>
         <Col xs={24} md={12}>
           <Form.Item
-            label="Khối lượng (kg) (tuỳ chọn)"
+            label="Khối lượng (kg) (tùy chọn)"
             name="weight_kg"
-            rules={[{ required: true, message: "Nhập khối lượng (kg)" }]}
+            rules={weightOptionalRule}
           >
             <InputNumber
               min={0}
@@ -95,14 +87,17 @@ export default function SectionDetailBattery() {
 
         <Col xs={24} md={12}>
           <Form.Item
-            label="Kích thước (mm) (tuỳ chọn)"
+            label="Kích thước (mm) (tùy chọn)"
             name="dimension"
-            rules={[{ required: true, message: "Nhập kích thước (mm)" }]}
+            rules={dimensionOptionalRule}
           >
             <Input placeholder="VD: 1700x1200x180" />
           </Form.Item>
         </Col>
       </Row>
+
+      {/* 🔹 Giá bán thêm riêng một row */}
+      
     </>
   );
 }

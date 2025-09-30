@@ -14,8 +14,8 @@ export default function CreateListingFooter({
   const BAR_H = 52;
   const label =
     currentPostType === "PAID"
-      ? "Đã chọn Đăng tin trả phí"
-      : "Đã chọn Đăng tin thường (Miễn phí)";
+      ? "Đăng tin trả phí"
+      : "Đăng tin thường (Miễn phí)";
 
   return (
     <Affix offsetBottom={0}>
