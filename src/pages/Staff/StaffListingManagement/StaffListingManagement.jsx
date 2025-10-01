@@ -1,3 +1,4 @@
+// src/pages/Staff/StaffListingManagement/StaffListingManagement.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import {
   Card,
@@ -10,47 +11,24 @@ import {
   Select,
   Statistic,
   Space,
-  message,
   Badge,
 } from "antd";
 import productsData from "@/data/productsData";
+import {
+  statusColors,
+  visibilityColors,
+  statusLabels,
+  visibilityLabels,
+} from "./StaffListingManagement.config";
+import {
+  handleAccept,
+  handleReject,
+  handleUndo,
+  handleWaitPayment,
+} from "./StaffListingManagement.actions";
 import "./StaffListingManagement.scss";
 
 const { Search } = Input;
-
-// Màu trạng thái
-const statusColors = {
-  PENDING: "gold",
-  APPROVED: "blue",
-  ACTIVE: "green",
-  RESERVED: "cyan",
-  SOLD: "purple",
-  EXPIRED: "volcano",
-  REJECTED: "red",
-  ARCHIVED: "default",
-  UNKNOWN: "default", // cho trường hợp null
-};
-
-// Màu visibility
-const visibilityColors = {
-  NORMAL: "default",
-  BOOSTED: "magenta",
-};
-
-// 🔹 Map nhãn hiển thị
-const statusLabels = {
-  PENDING: "Chờ xét duyệt",
-  APPROVED: "Đã kiểm duyệt",
-  ACTIVE: "Đã đăng",
-  REJECTED: "Từ chối",
-  UNKNOWN: "Chưa xác định",
-};
-
-const visibilityLabels = {
-  NORMAL: "Tin miễn phí",
-  BOOSTED: "Tin trả phí",
-};
-
 const STORAGE_KEY = "staffListings";
 
 const StaffListingManagement = () => {
@@ -59,17 +37,25 @@ const StaffListingManagement = () => {
     const saved = localStorage.getItem(STORAGE_KEY);
     return saved ? JSON.parse(saved) : productsData;
   });
-  const [filterStatus, setFilterStatus] = useState("PENDING"); 
-  const [filterVisibility, setFilterVisibility] = useState("NORMAL"); 
-  const [filterType, setFilterType] = useState("all"); 
-  const [searchText, setSearchText] = useState(""); 
+
+  const [filterStatus, setFilterStatus] = useState("PENDING");
+  const [filterVisibility, setFilterVisibility] = useState("NORMAL");
+  const [filterType, setFilterType] = useState("all");
+  const [searchText, setSearchText] = useState("");
 
   // 🔹 Cập nhật localStorage mỗi khi listings thay đổi
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(listings));
   }, [listings]);
 
-  // 🔹 Convert productData -> dataSource cho Table
+  // 🔹 Cập nhật status
+  const updateStatus = (id, newStatus) => {
+    setListings((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
+    );
+  };
+
+  // 🔹 Convert listings -> dataSource cho Table
   const dataSource = useMemo(() => {
     return listings
       .filter(
@@ -111,41 +97,12 @@ const StaffListingManagement = () => {
             ? "Pin"
             : "Khác",
         visibility: p.listingExtra?.visibility?.toUpperCase() || "NORMAL",
-        status: p.status || "UNKNOWN",
+        status: p.status, // ❌ bỏ fallback UNKNOWN
         date: new Date(p.createdAt).toLocaleString("vi-VN"),
       }));
   }, [listings, filterStatus, filterVisibility, filterType, searchText]);
 
-  // 🔹 Thống kê động theo status tùy visibility
-  const statsByVisibility = useMemo(() => {
-    const count = (status) =>
-      listings.filter(
-        (p) =>
-          (p.listingExtra?.visibility?.toUpperCase() || "NORMAL") ===
-            filterVisibility && (p.status || "UNKNOWN") === status
-      ).length;
-
-    if (filterVisibility === "NORMAL") {
-      return {
-        PENDING: count("PENDING"),
-        ACTIVE: count("ACTIVE"),
-        REJECTED: count("REJECTED"),
-        UNKNOWN: count("UNKNOWN"),
-      };
-    }
-    if (filterVisibility === "BOOSTED") {
-      return {
-        PENDING: count("PENDING"),
-        APPROVED: count("APPROVED"),
-        ACTIVE: count("ACTIVE"),
-        REJECTED: count("REJECTED"),
-        UNKNOWN: count("UNKNOWN"),
-      };
-    }
-    return {};
-  }, [listings, filterVisibility]);
-
-  // 🔹 Thống kê theo visibility (cho badge nút)
+  // 🔹 Thống kê theo visibility
   const statsVisibility = useMemo(() => {
     const count = (vis) =>
       listings.filter(
@@ -165,33 +122,24 @@ const StaffListingManagement = () => {
     };
   }, [listings]);
 
-  // 🔹 Action handlers
-  const updateStatus = (id, newStatus) => {
-    setListings((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
-    );
-  };
+  // 🔹 Thống kê theo status (theo visibility hiện tại)
+  const statsByVisibility = useMemo(() => {
+    const count = (status) =>
+      listings.filter(
+        (p) =>
+          (p.listingExtra?.visibility?.toUpperCase() || "NORMAL") ===
+            filterVisibility && p.status === status
+      ).length;
 
-  const handleAccept = (id) => {
-    updateStatus(id, "ACTIVE");
-    message.success("Bài đăng đã được chuyển sang trạng thái Đã đăng");
-  };
-
-  const handleReject = (id) => {
-    updateStatus(id, "REJECTED");
-    message.error("Bài đăng đã bị từ chối");
-  };
-
-  const handleWaitPayment = (id) => {
-    updateStatus(id, "APPROVED");
-    message.info("Bài đăng đã được kiểm duyệt");
-  };
-
-  const handleUndo = (id) => {
-    updateStatus(id, "PENDING");
-    message.info("Bài đăng đã được hoàn tác trạng thái");
-  };
-
+    return {
+      PENDING: count("PENDING"),
+      APPROVED: count("APPROVED"),
+      ACTIVE: count("ACTIVE"),
+      SOLD: count("SOLD"),
+      EXPIRED: count("EXPIRED"),
+      REJECTED: count("REJECTED"),
+    };
+  }, [listings, filterVisibility]);
   // 🔹 Cấu hình cột bảng
   const columns = [
     { title: "Tiêu đề", dataIndex: "title", key: "title" },
@@ -218,63 +166,95 @@ const StaffListingManagement = () => {
         </Tag>
       ),
     },
-    { title: "Ngày tạo", dataIndex: "date", key: "date" },
+    {
+      title: "Ngày tạo",
+      dataIndex: "date",
+      key: "date",
+      sorter: (a, b) => new Date(a.date) - new Date(b.date),
+      defaultSortOrder: "descend",
+    },
     {
       title: "Thao tác",
       key: "action",
       align: "right",
       render: (_, record) => {
-        const { status, visibility, id } = record;
+        const { status, id } = record;
 
-        if (status === "PENDING" && visibility === "NORMAL") {
+        // PENDING (dù NORMAL hay BOOSTED)
+        if (status === "PENDING") {
           return (
             <Space>
-              <Button type="primary" size="small" onClick={() => handleAccept(id)}>
-                Chấp nhận
-              </Button>
-              <Button danger size="small" onClick={() => handleReject(id)}>
-                Từ chối
-              </Button>
-            </Space>
-          );
-        }
-
-        if (status === "PENDING" && visibility === "BOOSTED") {
-          return (
-            <Space>
-              <Button type="primary" size="small" onClick={() => handleWaitPayment(id)}>
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => handleWaitPayment(id, updateStatus)}
+              >
                 Kiểm duyệt
               </Button>
-              <Button danger size="small" onClick={() => handleReject(id)}>
+              <Button
+                danger
+                size="small"
+                onClick={() => handleReject(id, updateStatus)}
+              >
                 Từ chối
               </Button>
             </Space>
           );
         }
 
-        if (status === "APPROVED" && visibility === "BOOSTED") {
+        // APPROVED
+        if (status === "APPROVED") {
           return (
             <Space>
-              <Button type="primary" size="small" onClick={() => handleAccept(id)}>
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => handleAccept(id, updateStatus)}
+              >
                 Đăng tin
               </Button>
-              <Button danger size="small" onClick={() => handleReject(id)}>
-                Từ chối
-              </Button>
-            </Space>
-          );
-        }
-
-        if (status === "ACTIVE") {
-          return (
-            <Space>
-              <Button type="dashed" size="small" onClick={() => handleUndo(id)}>
+              <Button
+                type="dashed"
+                size="small"
+                onClick={() => handleUndo(id, updateStatus)}
+              >
                 Hoàn tác
               </Button>
             </Space>
           );
         }
 
+        // ACTIVE
+        if (status === "ACTIVE") {
+          return (
+            <Space>
+              <Button
+                danger
+                size="small"
+                onClick={() => handleUndo(id, updateStatus)}
+              >
+                Gỡ tin
+              </Button>
+            </Space>
+          );
+        }
+
+        // REJECTED
+        if (status === "REJECTED") {
+          return (
+            <Space>
+              <Button
+                type="dashed"
+                size="small"
+                onClick={() => handleUndo(id, updateStatus)}
+              >
+                Hoàn tác
+              </Button>
+            </Space>
+          );
+        }
+
+        // SOLD, EXPIRED → không có action
         return null;
       },
     },
