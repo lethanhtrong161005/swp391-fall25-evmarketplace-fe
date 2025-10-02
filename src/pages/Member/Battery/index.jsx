@@ -1,11 +1,14 @@
 
 import React from 'react'
-
+import batteriesData from "../../../data/ProductsData"
+import BatteryList from './BatteryList';
 const Battery = () => {
   return (
-    <>
-        Page battery
-    </>
+   <div style={{ minHeight: "100vh"}}>
+      <main style={{ padding: "40px 40px", width:"maxWidth", margin: "0 auto" }}>
+        <BatteryList listings={batteriesData} />
+      </main>
+    </div>
   )
 }
 

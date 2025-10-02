@@ -13,13 +13,13 @@
     "@ant-design/icons": "^6.0.2",
     "antd": "^5.27.4",
     "axios": "^1.12.2",
-
     "i18n": "0.8.6",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.1",
+    "sub-vn": "^0.0.2",
     "universal-cookie": "^8.0.1"
   },
   "devDependencies": {

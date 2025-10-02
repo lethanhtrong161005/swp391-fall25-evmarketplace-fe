@@ -12,17 +12,21 @@ const api = axios.create({
     withCredentials: true,
 })
 
-// Interceptor để tự động gắn token vào header
-api.interceptors.request.use(
-    (req) => {
-        const token = cookieUtils.getToken();
-        if (token) {
-            req.headers.Authorization = `Bearer ${token}`;
-        }
-        return req;
-    },
-    (error) => Promise.reject(error)
-);
+// Gắn token
+api.interceptors.request.use((req) => {
+    const token = cookieUtils.getToken();
+    if (token) req.headers.Authorization = `Bearer ${token}`;
+
+    // Nếu là FormData → gỡ Content-Type để browser tự set boundary
+    if (req.data instanceof FormData) {
+        // Axios có thể đã set từ nơi khác -> xóa chắc ăn
+        delete req.headers["Content-Type"];
+    } else {
+        // Còn lại mặc định gửi JSON
+        req.headers["Content-Type"] = "application/json";
+    }
+    return req;
+});
 
 // Hàm gọi API chung
 const request = async (method, endpoint, { params = {}, body = {}, headers = {} } = {}) => {

@@ -4,7 +4,6 @@ import config from "../config";
 
 const cookies = new Cookies(null, { path: "/" });
 
-
 class CookieUtils {
     getItem(key, defaultValue = "") {
         return cookies.get(key) ?? defaultValue;
@@ -35,16 +34,20 @@ class CookieUtils {
         this.removeItem(config.cookies.refreshToken);
     }
 
-    decodeJwt() {
-        const token = this.getToken();
-        if (!token) return undefined;
+    decodeJwt(token) {
+        const t = token || this.getToken(); 
+        if (!t) return undefined;
         try {
-            return jwtDecode(token);
-        } catch {
+            const payload = jwtDecode(t);
+            console.log("Decoded JWT:", payload);
+            return payload;
+        } catch (e) {
             this.clearAuth();
+            console.error("Decode JWT error:", e);
             return undefined;
         }
     }
+
 }
 
 export default new CookieUtils();

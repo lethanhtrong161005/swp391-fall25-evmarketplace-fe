@@ -3,17 +3,17 @@ import { Layout } from "antd";
 
 import SiteFooter from "../../components/Footer";
 
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import DefaultHeader from "../../components/Header/DefaultHeader";
 import SearchBar from "../../components/SearchBar/SearchBar";
 const { Content, Header, Footer } = Layout;
 
-
 const LayoutDefault = () => {
+  const location = useLocation();
+  const hideFooter = location.pathname.startsWith("/listing/new");
   return (
     <>
       <Layout>
-
         <Header
           style={{
             background: "#fff",
@@ -27,22 +27,12 @@ const LayoutDefault = () => {
           <SearchBar />
         </Header>
 
-        <Content style={{ padding: "20px", background: "#f0f2f5" }}>
-          <div
-            style={{
-              background: "#fff",
-              minHeight: "280px",
-              padding: "24px",
-              borderRadius: "8px",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-            }}
-          >
-            <Outlet />
-          </div>
+        <Content style={{ padding: "16px 40px", background: "#f0f2f5" }}>
+          <Outlet />
         </Content>
 
 
-        <SiteFooter />
+        {!hideFooter && <SiteFooter />}
       </Layout>
     </>
   );
