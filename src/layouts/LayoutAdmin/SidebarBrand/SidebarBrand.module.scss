@@ -5,4 +5,38 @@
   padding-inline: 16px;
   font-weight: 700;
   font-size: 18px;
+  position: relative;
+  background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,1) 100%);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, rgba(248,250,252,1) 0%, rgba(241,245,249,1) 100%);
+  }
+}
+
+.brandContent {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.icon {
+  font-size: 20px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.brandText {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    opacity: 0.8;
+  }
 }

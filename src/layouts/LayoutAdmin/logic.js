@@ -15,6 +15,13 @@ export function useLayoutAdmin() {
     return "dashboard";
   })();
 
+  // Get header title based on current route
+  const getHeaderTitle = () => {
+    if (pathname.startsWith("/admin/accounts")) return "Quản lý tài khoản";
+    if (pathname === "/admin") return "Bảng điều khiển Admin";
+    return "Admin Panel";
+  };
+
   // Mock thông báo – sau nối BE/WS
   const notifications = [
     { id: 1, title: "Tài khoản mới được tạo", time: "5 phút trước" },
@@ -41,6 +48,7 @@ export function useLayoutAdmin() {
     notiOpen,
     setNotiOpen,
     selected,
+    headerTitle: getHeaderTitle(),
     notifications,
     user,
     handleMenuClick,

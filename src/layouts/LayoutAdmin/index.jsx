@@ -17,6 +17,7 @@ export default function LayoutAdmin() {
     notiOpen,
     setNotiOpen,
     selected,
+    headerTitle,
     notifications,
     user,
     handleMenuClick,
@@ -48,7 +49,7 @@ export default function LayoutAdmin() {
 
       <Layout>
         <Header className={s.header}>
-          <div>Admin Panel</div>
+          <div>{headerTitle}</div>
         </Header>
         <Content className={s.content}>
           <Outlet />
