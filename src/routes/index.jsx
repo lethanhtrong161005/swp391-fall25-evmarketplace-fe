@@ -13,7 +13,10 @@ import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
-import StaffListingManagement from "../pages/Staff/StaffListingManagement/StaffListingManagement";
+import StaffListingManagement from "@pages/Staff/StaffListingManagement/StaffListingManagement";
+import CategoryManagement from "@pages/Staff/CategoryManagement/CategoryManagement";
+import BrandManagement from "../pages/Staff/BrandManagement/BrandManagement";
+import ModelManagement from "../pages/Staff/ModelManagement/ModelManagement";
 
 export const routes = () => [
   {
@@ -52,7 +55,21 @@ export const routes = () => [
             path: "staff/listingmanagement",
             element: <StaffListingManagement />,
           },
-          { path: "staff/info", element: <InfoUser /> },
+          { path: "staff/info", 
+            element: <InfoUser /> 
+          },
+          {
+            path: "/staff/product/category",
+            element: <CategoryManagement />
+          },
+          {
+            path: "/staff/product/brand",
+            element: <BrandManagement />
+          },
+           {
+            path: "/staff/product/model",
+            element: <ModelManagement />
+          }
         ],
       },
     ],
