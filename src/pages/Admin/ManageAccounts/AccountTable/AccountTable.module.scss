@@ -1,0 +1,453 @@
+.tableContainer {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.accountTable {
+  .ant-table-thead > tr > th {
+    background: #fafafa;
+    border-bottom: 2px solid #f0f0f0;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+    padding: 16px 12px;
+    
+    &:first-child {
+      border-radius: 0;
+    }
+    
+    &:last-child {
+      border-radius: 0;
+    }
+  }
+  
+  .ant-table-tbody > tr {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: #f8f9ff !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+  }
+  
+  .ant-table-tbody > tr > td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #f5f5f5;
+    vertical-align: middle;
+  }
+}
+
+.tableRow {
+  &.activeRow {
+    border-left: 3px solid #52c41a;
+  }
+  
+  &.inactiveRow {
+    border-left: 3px solid #faad14;
+    background: rgba(255, 247, 230, 0.3);
+  }
+}
+
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 2px solid #ffffff;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userEmail,
+.userPhone {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  
+  .icon {
+    margin-right: 4px;
+    font-size: 11px;
+  }
+}
+
+.roleTag {
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-weight: 500;
+  font-size: 12px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.statusTag {
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-weight: 500;
+  font-size: 12px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  
+  .anticon {
+    font-size: 10px;
+  }
+}
+
+.verificationBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: #f5f5f5;
+  margin: 0 2px;
+  
+  .verified {
+    color: #52c41a;
+    font-size: 10px;
+  }
+  
+  .unverified {
+    color: #d9d9d9;
+    font-size: 10px;
+  }
+}
+
+.dateText {
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+}
+
+// Actions Container - Grid Layout
+.actionsContainer {
+  position: relative;
+  width: 100%;
+}
+
+// Desktop Actions Layout (>=768px) - Grid System
+.desktopActions {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  gap: 12px;
+  align-items: center;
+  justify-content: start;
+  width: 100%;
+  
+  // Large screens - more spacing
+  @media (min-width: 1200px) {
+    gap: 16px;
+    grid-template-columns: minmax(140px, auto) minmax(80px, auto) minmax(80px, auto);
+  }
+  
+  // Medium screens
+  @media (min-width: 992px) and (max-width: 1199px) {
+    gap: 14px;
+  }
+  
+  @media (max-width: 767px) {
+    display: none;
+  }
+}
+
+// Mobile Actions Layout (<768px)
+.mobileActions {
+  display: none;
+  width: 100%;
+  justify-content: center;
+  
+  @media (max-width: 767px) {
+    display: flex;
+  }
+}
+
+// Primary Actions Group - Flex within Grid Cell
+.primaryActions {
+  display: flex;
+  gap: 8px;
+  grid-column: span 2; // Takes 2 grid columns
+  align-items: center;
+  
+  // On large screens, allow more space
+  @media (min-width: 1200px) {
+    gap: 10px;
+    grid-column: span 1; // Single column on large screens
+  }
+}
+
+.primaryButton {
+  height: 32px;
+  padding: 4px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid #d9d9d9;
+  min-width: 80px; // Consistent width
+  max-width: 80px; // Fixed width to prevent layout shift
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  white-space: nowrap; // Prevent text wrapping
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  // Make buttons equal width - remove individual sizing
+  &:nth-child(1), &:nth-child(2) {
+    flex: 0 0 80px; // Fixed flex-basis instead of flex: 1
+  }
+}
+
+// Lock/Unlock Button - Single Grid Cell
+.lockButton {
+  height: 32px;
+  padding: 4px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid #d9d9d9;
+  min-width: 96px; // Increased width for "Mở khóa" + icon
+  max-width: 96px; // Fixed width to prevent layout shift
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap; // Prevent text wrapping
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  &.lockDanger {
+    color: #ff4d4f;
+    border-color: #ffccc7;
+    background: #fff2f0;
+    
+    &:hover {
+      color: #fff;
+      background: #ff4d4f;
+      border-color: #ff4d4f;
+    }
+  }
+  
+  &.lockSuccess {
+    color: #52c41a;
+    border-color: #b7eb8f;
+    background: #f6ffed;
+    
+    &:hover {
+      color: #fff;
+      background: #52c41a;
+      border-color: #52c41a;
+    }
+  }
+}
+
+// More Button - Single Grid Cell
+.moreButton {
+  height: 32px;
+  padding: 4px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid #d9d9d9;
+  color: #666;
+  min-width: 80px; // Fixed width to match other buttons
+  max-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #1890ff;
+    border-color: #1890ff;
+    background: #f0f8ff;
+  }
+}
+
+// Mobile Action Button
+.mobileActionButton {
+  height: 36px;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 100px;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+  }
+}
+
+.actionButton {
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #f0f0f0;
+    transform: translateY(-1px);
+  }
+  
+  &.lockButton {
+    &:hover {
+      background: #fff2e8;
+      color: #fa8c16;
+    }
+  }
+  
+  &.unlockButton {
+    &:hover {
+      background: #f6ffed;
+      color: #52c41a;
+    }
+  }
+}
+
+.pagination {
+  padding: 16px 24px;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+  
+  .ant-pagination-item {
+    border-radius: 6px;
+    border: 1px solid #d9d9d9;
+    
+    &.ant-pagination-item-active {
+      background: #1890ff;
+      border-color: #1890ff;
+    }
+  }
+  
+  .ant-pagination-prev,
+  .ant-pagination-next {
+    border-radius: 6px;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .userCell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .userDetails {
+    flex-direction: column;
+  }
+  
+  .actionButton {
+    width: 28px;
+    height: 28px;
+  }
+  
+  // Hide action column text on mobile, show dropdown only
+  .desktopActions {
+    display: none !important;
+  }
+  
+  .mobileActions {
+    display: flex !important;
+  }
+  
+  // Adjust table actions column width on mobile
+  .actionsContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+// Medium screens - adjust grid
+@media (min-width: 768px) and (max-width: 991px) {
+  .desktopActions {
+    gap: 10px;
+    grid-template-columns: auto auto auto;
+  }
+  
+  .primaryActions {
+    grid-column: span 1; // Reduce span on medium screens
+  }
+  
+  .primaryButton,
+  .lockButton,
+  .moreButton {
+    min-width: 60px;
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+}
+
+// Extra small screens
+@media (max-width: 480px) {
+  .tableContainer {
+    margin: 0 -16px;
+    border-radius: 0;
+  }
+  
+  .accountTable {
+    .ant-table-tbody > tr > td {
+      padding: 12px 8px;
+    }
+    
+    .ant-table-thead > tr > th {
+      padding: 12px 8px;
+    }
+  }
+  
+  .mobileActionButton {
+    height: 32px;
+    padding: 4px 12px;
+    font-size: 13px;
+    min-width: 80px;
+  }
+}

@@ -1,21 +1,31 @@
 import RoleBasedRoute from "@components/RoleBasedRoute";
-import LayoutAdmin from "@layouts/LayoutAdmin";
-import ManageListingPage from "@pages/Admin/ManageListing";
-import ManageListingDetail from "@pages/Admin/ManageListingDetail";
-import ManageAccounts from "@pages/Admin/ManageAccounts";
+
+// Layouts
 import LayoutDefault from "@layouts/LayoutDefault";
+import LayoutAdmin from "@layouts/LayoutAdmin";
+import LayoutStaff from "@layouts/LayoutStaff";
+
+// Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
-import Error403 from "@pages/Errors/Error403";
-import Error404 from "@pages/Errors/Error404";
+import ManageAccounts from "@pages/Admin/ManageAccounts";
+
+// Staff pages
+import StaffDashboard from "@pages/Staff/StaffDashboard";
+import ManageListingPage from "@pages/Staff/ManageListing";
+import ManageListingDetail from "@pages/Staff/ManageListingDetail";
+
+// Common (member)
 import HomeWrapper from "@pages/Member/HomeWrapper/HomeWrapper";
 import InfoUser from "@pages/Member/InfoUser";
-import StaffDashboard from "@pages/Staff/StaffDashboard";
-import LayoutStaff from "@layouts/LayoutStaff";
 import Battery from "@pages/Member/Battery";
 import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
+
+// Errors
+import Error403 from "@pages/Errors/Error403";
+import Error404 from "@pages/Errors/Error404";
 
 export const routes = () => [
   {
@@ -37,35 +47,36 @@ export const routes = () => [
     ],
   },
 
-  // Staff (nếu muốn có layout riêng)
+  // STAFF
   {
     path: "/",
     element: <LayoutStaff />,
     children: [
       {
-        element: <RoleBasedRoute allowedRoles={["staff", "admin"]} />,
-        children: [{ path: "staff", element: <StaffDashboard /> }],
-      },
-    ],
-  },
-
-  // Admin
-  {
-    path: "/",
-    element: <LayoutAdmin />,
-    children: [
-      {
-        element: <RoleBasedRoute allowedRoles={["admin", "staff"]} />, // Staff dùng chung layout nếu muốn
+        element: <RoleBasedRoute allowedRoles={["staff"]} />,
         children: [
-          { path: "admin", element: <AdminDashboard /> },
-          { path: "admin/listings", element: <ManageListingPage /> },
-          { path: "admin/listings/:id", element: <ManageListingDetail /> },
-          { path: "admin/accounts", element: <ManageAccounts /> },
+          { path: "staff", element: <StaffDashboard /> },
+          { path: "staff/listings", element: <ManageListingPage /> },
+          { path: "staff/listings/:id", element: <ManageListingDetail /> },
         ],
       },
     ],
   },
 
+  // ADMIN
+  {
+    path: "/",
+    element: <LayoutAdmin />,
+    children: [
+      {
+        element: <RoleBasedRoute allowedRoles={["admin"]} />,
+        children: [
+          { path: "admin", element: <AdminDashboard /> },
+          { path: "admin/accounts", element: <ManageAccounts /> },
+        ],
+      },
+    ],
+  },
   { path: "/403", element: <Error403 /> },
   { path: "*", element: <Error404 /> },
 ];

@@ -1,12 +1,3 @@
-
-import React from 'react'
-
-const StaffDashboard = () => {
-    return (
-        <>
-            <h1>Welcome To Staff</h1>
-        </>
-    )
+export default function StaffDashboard() {
+  return <div>Staff Dashboard (để trống tạm thời)</div>;
 }
-
-export default StaffDashboard;

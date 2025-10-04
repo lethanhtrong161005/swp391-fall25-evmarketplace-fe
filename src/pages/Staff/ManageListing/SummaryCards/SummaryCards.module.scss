@@ -1,0 +1,17 @@
+.summaryRow {
+  margin-bottom: 16px;
+}
+
+.summaryCard {
+  text-align: center;
+  
+  .ant-statistic-title {
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 14px;
+  }
+  
+  .ant-statistic-content {
+    font-size: 24px;
+    font-weight: 600;
+  }
+}

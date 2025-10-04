@@ -5,7 +5,6 @@ import { ConfigProvider, App as AntApp, message } from "antd";
 import "@styles/styles.scss";
 import App from "./App.jsx";
 import { AuthProvider } from "@contexts/AuthContext";
-import "@ant-design/v5-patch-for-react-19";
 
 message.config({
   duration: 3, // hiển thị 3 giây (sweet spot)
