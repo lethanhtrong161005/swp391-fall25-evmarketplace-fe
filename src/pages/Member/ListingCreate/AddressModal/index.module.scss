@@ -1,0 +1,108 @@
+$radius: 12px;
+$text-2: #8c8c8c;
+$input-height: 40px;
+
+.modal {
+    border-radius: 16px;
+    overflow: hidden;
+
+    :global(.ant-modal-header) {
+        padding: 12px 10px;
+        margin-bottom: 0px;
+        padding-bottom: 5px;
+    }
+
+    :global(.ant-modal-title) {
+        font-weight: 600;
+    }
+
+    :global(.ant-modal-body) {
+        padding: 16px;
+        padding-top: 5px;
+        max-height: min(70vh, 640px);
+        overflow: auto;
+    }
+
+    :global(.ant-modal-footer) {
+        padding: 12px 16px;
+    }
+
+    :global(.ant-btn-primary) {
+        border-radius: 10px;
+    }
+}
+
+.form {
+    margin-top: 4px;
+
+    :global(.ant-form-item-label > label) {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    :global(.ant-form-item-explain-error) {
+        font-size: 12px;
+        margin-top: 6px;
+    }
+}
+
+.rowGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.input,
+.select {
+    height: $input-height;
+
+    :global(.ant-input) {
+        height: $input-height;
+        border-radius: $radius;
+        padding: 0 11px;
+        line-height: $input-height;
+    }
+
+    :global(.ant-input::placeholder) {
+        color: $text-2;
+    }
+
+    :global(.ant-select-selector) {
+        height: $input-height;
+        min-height: $input-height;
+        border-radius: $radius;
+        padding: 0 11px;
+    }
+
+    :global(.ant-select-selection-item),
+    :global(.ant-select-selection-placeholder) {
+        line-height: $input-height;
+        color: $text-2;
+    }
+
+    :global(.ant-input:focus),
+    :global(.ant-select-focused .ant-select-selector) {
+        box-shadow: 0 0 0 3px rgba(22, 119, 255, .12);
+    }
+
+    :global(.ant-input[disabled]),
+    :global(.ant-select-disabled .ant-select-selector) {
+        color: $text-2;
+        opacity: .75;
+    }
+}
+
+.dropdown {
+    :global(.ant-select-item) {
+        line-height: 32px;
+        min-height: 32px;
+    }
+
+    :global(.ant-select-item-option-active) {
+        background: rgba(22, 119, 255, .06);
+    }
+}

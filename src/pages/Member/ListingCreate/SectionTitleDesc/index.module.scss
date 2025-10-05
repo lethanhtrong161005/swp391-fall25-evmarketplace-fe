@@ -1,0 +1,71 @@
+$radius: 12px;
+$text-2: #8c8c8c;
+$input-height: 40px;
+
+.formItem {
+    margin-bottom: 16px;
+
+    :global(.ant-form-item-label > label) {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    :global(.ant-form-item-explain-error) {
+        font-size: 12px;
+        margin-top: 6px;
+    }
+}
+
+$radius: 12px;
+$text-2: #8c8c8c;
+$input-height: 40px;
+
+/* Root affix wrapper khi Input có prefix/suffix/showCount */
+.inputRoot:global(.ant-input-affix-wrapper),
+:global(.ant-input-affix-wrapper).inputRoot {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    min-width: 0;
+    padding: 4px 11px;
+    line-height: 1.5714285714;
+    border-radius: $radius;
+    transition: all 200ms;
+    align-items: center;
+    height: $input-height;
+    box-sizing: border-box;
+
+    input.ant-input {
+        height: 100%;
+        line-height: $input-height;
+        padding: 0;
+        border-radius: $radius;
+        box-sizing: border-box;
+        text-align: left;
+
+        &::placeholder {
+            color: $text-2;
+        }
+    }
+
+    /* prefix/suffix (kể cả counter của showCount) */
+    .ant-input-prefix,
+    .ant-input-suffix {
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+        gap: 6px;
+    }
+    
+}
+.inputRoot:global(.ant-input) {
+    height: $input-height;
+    line-height: $input-height;
+    width: 100%;
+    padding: 0 11px;
+    border-radius: $radius;
+
+    &::placeholder {
+        color: $text-2;
+    }
+}

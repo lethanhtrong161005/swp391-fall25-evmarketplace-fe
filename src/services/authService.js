@@ -63,6 +63,7 @@ export const exchangeGoogleCode = async (code) => {
         { code },
         { validateStatus: () => true }
     );
+    console.log(res.data);
     const data = res.data;
 
     if (data?.status === 200 && data?.success) {
