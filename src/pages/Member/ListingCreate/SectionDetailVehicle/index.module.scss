@@ -1,0 +1,75 @@
+$radius: 12px;
+$text-2: #8c8c8c;
+$input-height: 40px;
+
+.row {
+    margin-bottom: 16px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.formItem {
+    :global(.ant-form-item-label > label) {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    :global(.ant-form-item-explain-error) {
+        font-size: 12px;
+        margin-top: 6px;
+    }
+}
+
+.input {
+    width: 100%;
+    height: $input-height;
+
+    :global(.ant-input) {
+        height: $input-height;
+        border-radius: $radius;
+        padding: 0 11px;
+        line-height: $input-height;
+    }
+
+    :global(.ant-input::placeholder) {
+        color: $text-2;
+    }
+
+    :global(.ant-input:focus) {
+        box-shadow: 0 0 0 3px rgba(22, 119, 255, .12);
+    }
+}
+
+.number {
+    width: 100%;
+    height: $input-height;
+    border-radius: $radius;
+
+    :global(.ant-input-number) {
+        width: 100%;
+        height: $input-height;
+        border-radius: $radius;
+    }
+
+    :global(.ant-input-number-input-wrap) {
+        height: 100%;
+    }
+
+    :global(.ant-input-number-input) {
+        height: 100%;
+        line-height: 1.5;
+        text-align: left;
+        padding: 8px 11px;
+        box-sizing: border-box;
+    }
+
+    :global(.ant-input-number-input::placeholder) {
+        color: $text-2;
+    }
+
+    :global(.ant-input-number-focused) {
+        box-shadow: 0 0 0 3px rgba(22, 119, 255, .12);
+    }
+}
