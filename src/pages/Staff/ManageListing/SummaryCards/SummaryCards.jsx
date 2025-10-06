@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Col, Row, Skeleton, Statistic } from "antd";
 import s from "./SummaryCards.module.scss";
-import { useSummaryCards } from "./logic";
+import { useSummaryCards } from "./useSummaryCards";
 
 export default function SummaryCards({ stats = {}, loading, onQuickFilter }) {
   const { items } = useSummaryCards();
@@ -13,7 +13,7 @@ export default function SummaryCards({ stats = {}, loading, onQuickFilter }) {
   };
 
   return (
-    <Row gutter={12} className={s.summaryRow}>
+    <Row gutter={12} className={s.summaryRow} justify="center" align="middle">
       {items.map((it) => (
         <Col key={it.key} xs={12} md={6} lg={4}>
           <Card

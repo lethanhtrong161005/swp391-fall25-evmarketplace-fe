@@ -6,7 +6,7 @@ import {
   CalendarOutlined,
 } from "@ant-design/icons";
 import s from "./InfoCards.module.scss";
-import { useInfoCards } from "./logic";
+import { useInfoCards } from "./useInfoCards";
 
 const { Text, Title } = Typography;
 

@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { Form, message } from "antd";
+import { Form } from "antd";
 
+/**
+ * Logic hook cho CreateAccountForm
+ * Xử lý form state và submit logic
+ */
 export function useCreateAccountForm({ onFinish }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -10,22 +14,18 @@ export function useCreateAccountForm({ onFinish }) {
       setLoading(true);
       await onFinish(values);
       form.resetFields();
-      message.success("Tạo tài khoản thành công");
-    } catch {
-      message.error("Có lỗi xảy ra khi tạo tài khoản");
+      // Success message handled by parent
+    } catch (error) {
+      // Error handling is done by parent component
+      console.error("Create account error:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Override form's onFinish to use our handler
-  const formProps = {
-    ...form,
-    submit: () => form.validateFields().then(handleFinish),
-  };
-
   return {
-    form: formProps,
+    form,
     loading,
+    handleFinish,
   };
 }

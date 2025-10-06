@@ -17,9 +17,8 @@ export function useLayoutAdmin() {
 
   // Get header title based on current route
   const getHeaderTitle = () => {
-    if (pathname.startsWith("/admin/accounts")) return "Quản lý tài khoản";
-    if (pathname === "/admin") return "Bảng điều khiển Admin";
-    return "Admin Panel";
+    // Bỏ title ở header để tránh trùng lặp với title trong content
+    return "";
   };
 
   // Mock thông báo – sau nối BE/WS

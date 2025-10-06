@@ -16,9 +16,9 @@ export function useStaffLayout() {
   }, [pathname]);
 
   const headerTitle = React.useMemo(() => {
-    if (pathname.startsWith("/staff/listings")) return "Quản lý bài đăng";
-    return "Bảng điều khiển";
-  }, [pathname]);
+    // Bỏ title ở header để tránh trùng lặp với title trong content
+    return "";
+  }, []);
 
   const [notifications] = React.useState([
     { id: 1, title: "Có 1 tin chờ duyệt", time: "10:35 hôm nay" },

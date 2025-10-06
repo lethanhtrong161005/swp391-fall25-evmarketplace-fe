@@ -6,11 +6,15 @@ import {
   ExperimentOutlined,
   DollarOutlined,
 } from "@ant-design/icons";
-import s from "./styles.module.scss";
-import { useAdminDashboard } from "./logic";
+import s from "./AdminDashboard.module.scss";
+import { useAdminDashboard } from "./useAdminDashboard";
 
 const { Title } = Typography;
 
+/**
+ * Trang Dashboard chính của Admin
+ * Hiển thị các thống kê tổng quan về hệ thống
+ */
 export default function AdminDashboard() {
   const { stats, loading } = useAdminDashboard();
 

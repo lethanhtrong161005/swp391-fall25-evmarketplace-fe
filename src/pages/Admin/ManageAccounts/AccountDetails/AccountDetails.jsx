@@ -10,7 +10,7 @@ import {
 } from "antd";
 import { EditOutlined, HistoryOutlined } from "@ant-design/icons";
 import s from "./AccountDetails.module.scss";
-import { useAccountDetails } from "./logic.jsx";
+import { useAccountDetails } from "./useAccountDetails.jsx";
 
 const { Title } = Typography;
 
@@ -48,34 +48,65 @@ export default function AccountDetails({
     >
       <div className={s.content}>
         <Descriptions
-          title="Thông tin cơ bản"
+          title="Thông tin tài khoản"
           bordered
           column={1}
           className={s.descriptions}
         >
-          <Descriptions.Item label="Họ và tên">
-            {account.fullName}
+          <Descriptions.Item label="ID">{account.id}</Descriptions.Item>
+          <Descriptions.Item label="Số điện thoại">
+            {account.phoneNumber}
           </Descriptions.Item>
           <Descriptions.Item label="Email">{account.email}</Descriptions.Item>
-          <Descriptions.Item label="Số điện thoại">
-            {account.phone}
-          </Descriptions.Item>
           <Descriptions.Item label="Vai trò">
             {getRoleTag(account.role)}
           </Descriptions.Item>
           <Descriptions.Item label="Trạng thái">
             {getStatusTag(account.status)}
           </Descriptions.Item>
-          <Descriptions.Item label="Ngày tạo">
-            {formatDate(account.createdAt)}
+          <Descriptions.Item label="Xác thực SĐT">
+            {account.phoneVerified ? "Đã xác thực" : "Chưa"}
           </Descriptions.Item>
-          <Descriptions.Item label="Lần đăng nhập cuối">
-            {account.lastLoginAt
-              ? formatDate(account.lastLoginAt)
-              : "Chưa đăng nhập"}
+          <Descriptions.Item label="Xác thực Email">
+            {account.emailVerified ? "Đã xác thực" : "Chưa"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Ngày tạo">
+            {(() => {
+              const date =
+                account.createdAt ||
+                account.created_at ||
+                account.profile?.createdAt ||
+                account.profile?.created_at;
+              return formatDate(date) || "—";
+            })()}
+          </Descriptions.Item>
+          <Descriptions.Item label="Ngày cập nhật">
+            {(() => {
+              const date =
+                account.updatedAt ||
+                account.updated_at ||
+                account.profile?.updatedAt ||
+                account.profile?.updated_at;
+              return formatDate(date) || "—";
+            })()}
           </Descriptions.Item>
         </Descriptions>
-
+        <Descriptions
+          title="Thông tin cá nhân"
+          bordered
+          column={1}
+          className={s.descriptions}
+        >
+          <Descriptions.Item label="Họ tên">
+            {account.profile?.fullName || account.fullName || "—"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Tỉnh/Thành phố">
+            {account.profile?.province || account.province || "—"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Địa chỉ">
+            {account.profile?.addressLine || account.addressLine || "—"}
+          </Descriptions.Item>
+        </Descriptions>
         {logs && logs.length > 0 && (
           <div className={s.logsSection}>
             <Title level={5}>

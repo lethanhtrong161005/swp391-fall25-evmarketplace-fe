@@ -1,5 +1,5 @@
 import { buildCreateListingFormData } from "@/pages/Member/ListingCreate/_shared/normalizeListingPayload";
-import api from "@utils/apiCaller";
+import api, { post } from "@utils/apiCaller";
 
 /**
  * Tạo tin đăng.
@@ -11,7 +11,6 @@ export async function createListing(values, tax, postType) {
 
   // 👉 KHÔNG tự set Content-Type, để browser tự thêm boundary
   const res = api.post("/api/listing/post", fd);
-  console.log(res.data);
   return res.data;
 }
 /**
@@ -22,7 +21,12 @@ export const uploadListingMedia = (listingId, files = []) => {
   const form = new FormData();
   files.forEach((f) => form.append("files", f));
   // override header sang multipart/form-data
-  return post(`/listings/${listingId}/media`, form, {}, {
-    "Content-Type": "multipart/form-data",
-  });
+  return post(
+    `/listings/${listingId}/media`,
+    form,
+    {},
+    {
+      "Content-Type": "multipart/form-data",
+    }
+  );
 };

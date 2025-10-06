@@ -2,9 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Grid, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  getListingDetail,
-  getListingHistory,
-} from "@services/admin/listing.admin.service";
+  getStaffListingDetail,
+} from "@services/staff/listing.staff.service";
 
 const { useBreakpoint } = Grid;
 
@@ -26,27 +25,26 @@ export function useManageListingDetail() {
   const screens = useBreakpoint();
   const [loading, setLoading] = useState(true);
   const [listing, setListing] = useState(null);
-  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       try {
-        const detail = await getListingDetail(id);
-        setListing(detail);
-        const hist = await getListingHistory(id);
-        setHistory(hist || []);
+        // Get listing detail only
+        const listingData = await getStaffListingDetail(id);
+        setListing(listingData);
       } catch (e) {
-        console.error(e);
+        console.error("Failed to load listing detail:", e);
         message.error("Không tải được chi tiết bài đăng");
       } finally {
         setLoading(false);
       }
     };
-    load();
-  }, [id]);
-
-  const metaItems = useMemo(() => {
+    
+    if (id) {
+      load();
+    }
+  }, [id]);  const metaItems = useMemo(() => {
     if (!listing) return [];
     return [
       {
@@ -86,7 +84,6 @@ export function useManageListingDetail() {
   return {
     loading,
     listing,
-    history,
     metaItems,
     screens,
     fmtVND,

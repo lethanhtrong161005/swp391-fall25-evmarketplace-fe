@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Timeline } from "antd";
 import StatusTag from "../../ManageListing/StatusTag/StatusTag";
 import s from "./StatusHistory.module.scss";
-import { useStatusHistory } from "./logic";
+import { useStatusHistory } from "./useStatusHistory";
 
 export default function StatusHistory({ items = [] }) {
   const { normalizedItems } = useStatusHistory(items);

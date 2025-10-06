@@ -149,31 +149,22 @@
   font-family: 'Courier New', monospace;
 }
 
-// Actions Container - Grid Layout
+// Actions Container - Flex Layout
 .actionsContainer {
   position: relative;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-// Desktop Actions Layout (>=768px) - Grid System
+// Desktop Actions Layout (>=768px) - Flex System
 .desktopActions {
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  gap: 12px;
+  display: flex;
+  gap: 16px;
   align-items: center;
-  justify-content: start;
-  width: 100%;
-  
-  // Large screens - more spacing
-  @media (min-width: 1200px) {
-    gap: 16px;
-    grid-template-columns: minmax(140px, auto) minmax(80px, auto) minmax(80px, auto);
-  }
-  
-  // Medium screens
-  @media (min-width: 992px) and (max-width: 1199px) {
-    gap: 14px;
-  }
+  justify-content: center;
+  width: auto;
   
   @media (max-width: 767px) {
     display: none;
@@ -195,14 +186,14 @@
 .primaryActions {
   display: flex;
   gap: 8px;
-  grid-column: span 2; // Takes 2 grid columns
   align-items: center;
   
   // On large screens, allow more space
   @media (min-width: 1200px) {
-    gap: 10px;
-    grid-column: span 1; // Single column on large screens
+     gap: 10px;
+     justify-content: center;
   }
+    justify-content: center;
 }
 
 .primaryButton {

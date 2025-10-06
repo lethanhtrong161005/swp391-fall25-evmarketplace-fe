@@ -3,7 +3,7 @@ import { Table, Space, Button, Drawer, List, Typography } from "antd";
 import { HistoryOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import s from "./ListingTable.module.scss";
-import { useListingTable } from "./logic.jsx";
+import { useListingTable } from "./useListingTable.jsx";
 import StatusTag from "../StatusTag/StatusTag";
 
 const { Text } = Typography;
@@ -25,41 +25,22 @@ export default function ListingTable({
   onRenew,
 }) {
   const navigate = useNavigate();
-  const {
-    columns,
-    historyOpen,
-    setHistoryOpen,
-    historyData,
-    showGlobalHistory,
-  } = useListingTable({
-    onApprove,
-    onReject,
-    onEdit,
-    onActivate,
-    onDeactivate,
-    onDelete,
-    onRestore,
-    onRenew,
-    navigate,
-  });
+  const { columns, historyOpen, setHistoryOpen, historyData } = useListingTable(
+    {
+      onApprove,
+      onReject,
+      onEdit,
+      onActivate,
+      onDeactivate,
+      onDelete,
+      onRestore,
+      onRenew,
+      navigate,
+    }
+  );
 
   return (
     <>
-      {/* Nút xem log chung */}
-      <div style={{ marginBottom: 16, textAlign: "right" }}>
-        <Button
-          icon={<HistoryOutlined />}
-          onClick={showGlobalHistory}
-          style={{
-            fontWeight: 500,
-            height: 36,
-            borderRadius: 6,
-          }}
-        >
-          Xem log chung
-        </Button>
-      </div>
-
       <Table
         rowKey="id"
         loading={loading}

@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import s from "./MediaGallery.module.scss";
-import { useMediaGallery } from "./logic";
+import { useMediaGallery } from "./useMediaGallery";
 
 const { Text } = Typography;
 

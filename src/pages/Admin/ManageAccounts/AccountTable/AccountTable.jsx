@@ -9,6 +9,8 @@ import {
   Typography,
   Tooltip,
   Popconfirm,
+  Input,
+  Card,
 } from "antd";
 import {
   UserOutlined,
@@ -22,12 +24,15 @@ import {
   PhoneOutlined,
   MailOutlined,
   SwapOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import s from "./AccountTable.module.scss";
-import { useAccountTable } from "./logic";
+import { useAccountTable } from "./useAccountTable";
+import { useAuth } from "@hooks/useAuth";
 
 const { Text } = Typography;
 
+// Role tag component with color coding
 const RoleTag = ({ role }) => {
   const roleConfig = {
     ADMIN: { color: "#f5222d", text: "Quản trị viên" },
@@ -44,6 +49,7 @@ const RoleTag = ({ role }) => {
   );
 };
 
+// Status tag component (Active/Blocked)
 const StatusTag = ({ status }) => {
   const isActive = status === "ACTIVE";
   return (
@@ -57,19 +63,49 @@ const StatusTag = ({ status }) => {
   );
 };
 
+// Verification badge for phone/email
 const VerificationBadge = ({ verified, type }) => (
-  <Tooltip title={`${type} ${verified ? "đã xác minh" : "chưa xác minh"}`}>
-    <span className={s.verificationBadge}>
-      {type === "phone" ? <PhoneOutlined /> : <MailOutlined />}
-      {verified ? (
-        <CheckCircleOutlined className={s.verified} />
+  <Tooltip
+    title={`${type === "phone" ? "Số điện thoại" : "Email"} ${
+      verified ? "đã xác minh" : "chưa xác minh"
+    }`}
+  >
+    <div
+      className={s.verificationBadge}
+      style={{
+        background: verified ? "#f6ffed" : "#fff2f0",
+        padding: "4px 8px",
+        borderRadius: "8px",
+        display: "flex",
+        alignItems: "center",
+        gap: "4px",
+      }}
+    >
+      {type === "phone" ? (
+        <PhoneOutlined style={{ fontSize: "12px" }} />
       ) : (
-        <CloseCircleOutlined className={s.unverified} />
+        <MailOutlined style={{ fontSize: "12px" }} />
       )}
-    </span>
+      {verified ? (
+        <CheckCircleOutlined
+          className={s.verified}
+          style={{ fontSize: "12px", color: "#52c41a" }}
+        />
+      ) : (
+        <CloseCircleOutlined
+          className={s.unverified}
+          style={{ fontSize: "12px", color: "#ff4d4f" }}
+        />
+      )}
+    </div>
   </Tooltip>
 );
 
+/**
+ * Admin Account Management Table Component
+ * Displays account list with actions (view, edit, lock/unlock)
+ * Security: Admins can only edit their own profile
+ */
 export default function AccountTable({
   rows,
   loading,
@@ -80,7 +116,9 @@ export default function AccountTable({
   onChanged,
   onShowDetail,
   onShowEdit,
+  onSearch,
 }) {
+  const { user } = useAuth(); // Current logged in user
   const {
     onChangeRole,
     onToggleLock,
@@ -88,42 +126,49 @@ export default function AccountTable({
     onShowEdit: handleShowEdit,
   } = useAccountTable({ onChanged });
 
-  // Wrapper handlers provide a single place to log and call either prop handlers
+  const [searchValue, setSearchValue] = React.useState("");
+
+  // Handle search input
+  const handleSearch = (value) => {
+    const trimmedValue = value?.trim();
+    onSearch?.({ search: trimmedValue });
+  };
+
+  // Safe wrapper for detail view
   const handleDetailClick = (record) => {
-    console.log("AccountTable: detail click", record?.id);
     try {
       if (typeof onShowDetail === "function") return onShowDetail(record);
       return handleShowDetail?.(record);
-    } catch (err) {
-      console.error("Error in handleDetailClick:", err);
+    } catch {
+      // Silent error handling
     }
   };
 
+  // Safe wrapper for edit action
   const handleEditClick = (record) => {
-    console.log("AccountTable: edit click", record?.id);
     try {
       if (typeof onShowEdit === "function") return onShowEdit(record);
       return handleShowEdit?.(record);
-    } catch (err) {
-      console.error("Error in handleEditClick:", err);
+    } catch {
+      // Silent error handling
     }
   };
 
+  // Safe wrapper for lock/unlock action
   const handleToggleLock = (record) => {
-    console.log("AccountTable: toggle lock", record?.id);
     try {
       return onToggleLock?.(record);
-    } catch (err) {
-      console.error("Error in handleToggleLock:", err);
+    } catch {
+      // Silent error handling
     }
   };
 
+  // Safe wrapper for role change (currently unused)
   const handleChangeRole = (record, role) => {
-    console.log("AccountTable: change role", record?.id, role);
     try {
       return onChangeRole?.(record, role);
-    } catch (err) {
-      console.error("Error in handleChangeRole:", err);
+    } catch {
+      // Silent error handling
     }
   };
 
@@ -137,7 +182,7 @@ export default function AccountTable({
         <div className={s.userCell}>
           <Avatar
             size={40}
-            src={record.profile?.avatar_url}
+            src={record.profile?.avatarUrl}
             icon={<UserOutlined />}
             className={s.avatar}
             style={{
@@ -151,7 +196,7 @@ export default function AccountTable({
           />
           <div className={s.userInfo}>
             <Text strong className={s.userName}>
-              {record.profile?.full_name || record.phone_number}
+              {record.profile?.fullName || record.phoneNumber}
             </Text>
             <div className={s.userDetails}>
               <Text type="secondary" className={s.userEmail}>
@@ -160,7 +205,7 @@ export default function AccountTable({
               </Text>
               <Text type="secondary" className={s.userPhone}>
                 <PhoneOutlined className={s.icon} />
-                {record.phone_number}
+                {record.phoneNumber}
               </Text>
             </div>
           </div>
@@ -184,24 +229,50 @@ export default function AccountTable({
     {
       title: "Xác minh",
       key: "verification",
-      width: 100,
+      width: 120,
       align: "center",
       render: (_, record) => (
-        <Space size={8}>
-          <VerificationBadge verified={record.verified_phone} type="phone" />
-          <VerificationBadge verified={record.verified_email} type="email" />
+        <Space size={12} direction="vertical">
+          <VerificationBadge verified={record.phoneVerified} type="phone" />
+          <VerificationBadge verified={record.emailVerified} type="email" />
         </Space>
       ),
     },
     {
       title: "Ngày tạo",
-      dataIndex: "created_at",
+      key: "createdAt",
       width: 140,
       align: "center",
-      render: (value) => (
-        <Text type="secondary" className={s.dateText}>
-          {value ? new Date(value).toLocaleDateString("vi-VN") : "—"}
-        </Text>
+      render: (_, record) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "2px",
+          }}
+        >
+          <Text
+            strong
+            style={{ fontSize: "13px", color: "rgba(0, 0, 0, 0.85)" }}
+          >
+            {record.profile?.createdAt
+              ? new Date(record.profile.createdAt).toLocaleDateString("vi-VN", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })
+              : "—"}
+          </Text>
+          <Text type="secondary" style={{ fontSize: "11px" }}>
+            {record.profile?.createdAt
+              ? new Date(record.profile.createdAt).toLocaleTimeString("vi-VN", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : ""}
+          </Text>
+        </div>
       ),
     },
     {
@@ -212,6 +283,42 @@ export default function AccountTable({
       align: "center",
       render: (_, record) => {
         const isActive = record.status === "ACTIVE";
+        const isAdmin = record.role === "ADMIN";
+
+        // Admin accounts - only allow editing own profile for security
+        if (isAdmin) {
+          const isOwnProfile = user && user.phoneNumber === record.phoneNumber;
+
+          return (
+            <div className={s.actionsContainer}>
+              <Space size={8}>
+                <Button
+                  type="primary"
+                  icon={<EyeOutlined />}
+                  onClick={() => handleDetailClick(record)}
+                  className={s.primaryButton}
+                  size="small"
+                >
+                  Chi tiết
+                </Button>
+                <Button
+                  icon={<EditOutlined />}
+                  onClick={() => handleEditClick(record)}
+                  className={s.primaryButton}
+                  size="small"
+                  disabled={!isOwnProfile}
+                  title={
+                    isOwnProfile
+                      ? "Sửa thông tin của tôi"
+                      : "Không thể chỉnh sửa tài khoản Admin khác"
+                  }
+                >
+                  Sửa
+                </Button>
+              </Space>
+            </div>
+          );
+        }
 
         // Primary Actions - Visible on all screen sizes
         const primaryActions = (
@@ -234,38 +341,6 @@ export default function AccountTable({
               Sửa
             </Button>
           </Space>
-        );
-
-        // Role Change Action
-        const roleChangeAction = (
-          <Dropdown
-            menu={{
-              items: [
-                {
-                  key: "STAFF",
-                  label: "Đổi thành Nhân viên",
-                  onClick: () => handleChangeRole(record, "STAFF"),
-                  disabled: record.role === "STAFF",
-                },
-                {
-                  key: "MEMBER",
-                  label: "Đổi thành Thành viên",
-                  onClick: () => handleChangeRole(record, "MEMBER"),
-                  disabled: record.role === "MEMBER",
-                },
-              ],
-            }}
-            trigger={["click"]}
-            placement="bottomRight"
-          >
-            <Button
-              icon={<SwapOutlined />}
-              className={s.primaryButton}
-              size="small"
-            >
-              Đổi vai trò
-            </Button>
-          </Dropdown>
         );
 
         // Lock/Unlock Action with Popconfirm
@@ -302,7 +377,6 @@ export default function AccountTable({
             {/* Desktop Layout */}
             <div className={s.desktopActions}>
               {primaryActions}
-              {roleChangeAction}
               {lockAction}
             </div>
 
@@ -327,18 +401,19 @@ export default function AccountTable({
                       key: "changeRole",
                       label: "Đổi vai trò",
                       icon: <SwapOutlined />,
+                      disabled: true, // Disable until backend API is available
                       children: [
                         {
                           key: "STAFF",
                           label: "Đổi thành Nhân viên",
                           onClick: () => handleChangeRole(record, "STAFF"),
-                          disabled: record.role === "STAFF",
+                          disabled: true, // Backend API not available
                         },
                         {
                           key: "MEMBER",
                           label: "Đổi thành Thành viên",
                           onClick: () => handleChangeRole(record, "MEMBER"),
-                          disabled: record.role === "MEMBER",
+                          disabled: true, // Backend API not available
                         },
                       ],
                     },
@@ -374,6 +449,22 @@ export default function AccountTable({
 
   return (
     <div className={s.tableContainer}>
+      {/* Search Bar */}
+      <Card size="small" className={s.searchCard} style={{ marginBottom: 16 }}>
+        <Input.Search
+          placeholder="Tìm kiếm theo tên, email, số điện thoại..."
+          allowClear
+          enterButton={<SearchOutlined />}
+          size="middle"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          onSearch={handleSearch}
+          className={s.searchInput}
+          style={{ maxWidth: 400 }}
+        />
+      </Card>
+
+      {/* Account Table */}
       <Table
         rowKey="id"
         columns={columns}

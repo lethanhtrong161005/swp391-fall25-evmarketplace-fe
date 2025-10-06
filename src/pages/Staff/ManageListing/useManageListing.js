@@ -5,7 +5,7 @@ import {
   fakeApprove,
   fakeReject,
 } from "@/data/admin/manageListing.fake";
-// Khi nối BE: import { listAdminListings, approveListing, rejectListing, archiveListing } from "@services/admin/listing.admin.service";
+// Khi nối BE: import { getStaffListings, approveStaffListing, rejectStaffListing, reactivateStaffListing } from "@services/staff/listing.staff.service";
 
 const PAGE_SIZE = 10;
 

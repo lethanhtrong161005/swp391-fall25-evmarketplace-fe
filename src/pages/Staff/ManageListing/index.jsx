@@ -1,11 +1,15 @@
 import React from "react";
 import { Card, Space } from "antd";
-import s from "./style.module.scss";
-import { useManageListing } from "./logic";
-import FilterBar from "./FilterBar";
-import SummaryCards from "./SummaryCards";
-import ListingTable from "./ListingTable";
+import s from "./ManageListing.module.scss";
+import { useManageListing } from "./useManageListing";
+import FilterBar from "./FilterBar/FilterBar";
+import SummaryCards from "./SummaryCards/SummaryCards";
+import ListingTable from "./ListingTable/ListingTable";
 
+/**
+ * Staff Listing Management Page
+ * Features: Filter, approve/reject listings, view stats, manage listing lifecycle
+ */
 export default function ManageListingPage() {
   const {
     loading,

@@ -10,11 +10,10 @@ import {
   Typography,
 } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import s from "./style.module.scss";
-import { useManageListingDetail } from "./logic";
+import s from "./ManageListingDetail.module.scss";
+import { useManageListingDetail } from "./useManageListingDetail";
 import MediaGallery from "./MediaGallery/MediaGallery";
 import InfoCards from "./InfoCards/InfoCards";
-import StatusHistory from "./StatusHistory/StatusHistory";
 import StatusTag from "../ManageListing/StatusTag/StatusTag";
 
 const { Title, Text } = Typography;
@@ -23,7 +22,6 @@ export default function ManageListingDetail() {
   const {
     loading,
     listing,
-    history,
     metaItems,
     screens,
     fmtVND,
@@ -88,9 +86,6 @@ export default function ManageListingDetail() {
                     ))}
                   </Descriptions>
                 </Card>
-
-                {/* Lịch sử trạng thái */}
-                <StatusHistory items={history} />
               </Space>
             </Col>
 

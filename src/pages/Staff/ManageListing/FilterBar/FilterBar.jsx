@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Col, DatePicker, Form, Input, Row, Select, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import s from "./FilterBar.module.scss";
-import { useFilterBar } from "./logic";
+import { useFilterBar } from "./useFilterBar";
 
 const { RangePicker } = DatePicker;
 

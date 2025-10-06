@@ -12,12 +12,14 @@ import NotificationDrawer from "./NotificationDrawer";
 
 const { Sider, Header, Content } = Layout;
 
+/**
+ * Layout chính cho trang Admin - bao gồm sidebar và content area
+ */
 export default function LayoutAdmin() {
   const {
     notiOpen,
     setNotiOpen,
     selected,
-    headerTitle,
     notifications,
     user,
     handleMenuClick,
@@ -47,14 +49,10 @@ export default function LayoutAdmin() {
         />
       </Sider>
 
-      <Layout>
-        <Header className={s.header}>
-          <div>{headerTitle}</div>
-        </Header>
-        <Content className={s.content}>
-          <Outlet />
-        </Content>
-      </Layout>
+      {/* Bỏ hẳn Header component */}
+      <Content className={s.content}>
+        <Outlet />
+      </Content>
 
       <NotificationDrawer
         open={notiOpen}

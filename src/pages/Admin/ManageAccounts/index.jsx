@@ -1,15 +1,20 @@
 import React from "react";
 import { Button, Card, Space, Typography } from "antd";
-import { PlusOutlined, HistoryOutlined } from "@ant-design/icons";
-import s from "./style.module.scss";
-import { useManageAccounts } from "./logic";
-import AccountTable from "./AccountTable";
-import CreateAccountForm from "./CreateAccountForm";
-import AccountDetails from "./AccountDetails";
-import EditAccountForm from "./EditAccountForm";
+import { PlusOutlined } from "@ant-design/icons";
+import s from "./ManageAccounts.module.scss";
+import { useManageAccounts } from "./useManageAccounts";
+import AccountTable from "./AccountTable/AccountTable";
+import CreateAccountForm from "./CreateAccountForm/CreateAccountForm";
+import AccountDetails from "./AccountDetails/AccountDetails";
+import EditAccountForm from "./EditAccountForm/EditAccountForm";
 
 const { Title } = Typography;
 
+/**
+ * Admin Account Management Page
+ * Features: View accounts, create new accounts, edit profiles, lock/unlock accounts
+ * Security: Admins can only edit their own profile
+ */
 export default function ManageAccounts() {
   const {
     loading,
@@ -21,12 +26,12 @@ export default function ManageAccounts() {
     handleSearch,
     openCreate,
     setOpenCreate,
-    onCreateFinish,
     detailRow,
     setDetailRow,
     detailLogs,
     editRow,
     setEditRow,
+    onCreateFinish,
     onEditFinish,
   } = useManageAccounts();
 
@@ -41,16 +46,6 @@ export default function ManageAccounts() {
         }
         extra={
           <Space>
-            <Button
-              icon={<HistoryOutlined />}
-              onClick={() => {
-                // TODO: Implement global log viewing functionality
-                console.log("View all account logs");
-              }}
-              className={s.actionButton}
-            >
-              Xem log chung
-            </Button>
             <Button
               type="primary"
               icon={<PlusOutlined />}

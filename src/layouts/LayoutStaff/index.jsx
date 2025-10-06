@@ -12,12 +12,14 @@ import StaffMenu from "./StaffMenu";
 
 const { Sider, Header, Content } = Layout;
 
+/**
+ * Layout chính cho trang Staff - bao gồm sidebar và content area cho nhân viên
+ */
 export default function LayoutStaff() {
   const {
     token,
     user,
     selectedKey,
-    headerTitle,
     notifications,
     notiOpen,
     openNoti,
@@ -44,25 +46,15 @@ export default function LayoutStaff() {
         <SidebarBottomActions onOpenNoti={openNoti} onLogout={logout} />
       </Sider>
 
-      <Layout className={s.main}>
-        <Header
-          className={s.header}
-          style={{
-            background: "#fff",
-            borderBottom: `1px solid ${token.colorBorderSecondary}`,
-          }}
-        >
-          {headerTitle}
-        </Header>
-        <Content
-          className={s.content}
-          style={{ background: token.colorBgLayout }}
-        >
-          <div className={s.inner}>
-            <Outlet />
-          </div>
-        </Content>
-      </Layout>
+      {/* Bỏ hẳn Header component */}
+      <Content
+        className={s.content}
+        style={{ background: token.colorBgLayout }}
+      >
+        <div className={s.inner}>
+          <Outlet />
+        </div>
+      </Content>
 
       <NotificationDrawer
         open={notiOpen}
