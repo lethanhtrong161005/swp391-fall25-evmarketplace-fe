@@ -14,10 +14,13 @@ export function useUserProfile() {
   const [error, setError] = useState(null);
 
   // Create stable user identifier for dependency
-  const userIdentifier = useMemo(() => ({
-    id: user?.sub || user?.phoneNumber,
-    isLoggedIn
-  }), [user?.sub, user?.phoneNumber, isLoggedIn]);
+  const userIdentifier = useMemo(
+    () => ({
+      id: user?.sub || user?.phoneNumber,
+      isLoggedIn,
+    }),
+    [user?.sub, user?.phoneNumber, isLoggedIn]
+  );
 
   // Fetch profile data when user is logged in
   useEffect(() => {
@@ -30,9 +33,9 @@ export function useUserProfile() {
       try {
         setLoading(true);
         setError(null);
-        
+
         const response = await getUserProfile();
-        
+
         if (response?.status === 200 && response?.success) {
           // Normalize the profile data to handle both snake_case and camelCase
           const normalizedProfile = normalizeUserData(response.data);
@@ -52,7 +55,7 @@ export function useUserProfile() {
   }, [userIdentifier]); // Re-fetch when user identifier changes
 
   // Merge JWT user data with profile data for complete user info
-  const enhancedUser = profile 
+  const enhancedUser = profile
     ? normalizeUserData({
         ...user,
         ...profile,
@@ -66,13 +69,13 @@ export function useUserProfile() {
 
   const refetchProfile = async () => {
     if (!isLoggedIn) return;
-    
+
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await getUserProfile();
-      
+
       if (response?.status === 200 && response?.success) {
         // Normalize the profile data to handle both snake_case and camelCase
         const normalizedProfile = normalizeUserData(response.data);

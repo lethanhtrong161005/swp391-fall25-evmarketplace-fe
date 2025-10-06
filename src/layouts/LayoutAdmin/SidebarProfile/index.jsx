@@ -12,13 +12,13 @@ export default function SidebarProfile({ user, onClick }) {
   return (
     <div onClick={onClick} className={s.profile}>
       <Space align="center">
-        <Avatar 
-          size={40} 
+        <Avatar
+          size={40}
           src={avatarUrl}
           icon={<UserOutlined />}
           style={{
-            backgroundColor: avatarUrl ? 'transparent' : '#1890ff',
-            border: avatarUrl ? '1px solid #d9d9d9' : 'none',
+            backgroundColor: avatarUrl ? "transparent" : "#1890ff",
+            border: avatarUrl ? "1px solid #d9d9d9" : "none",
           }}
         />
         <div className={s.userInfo}>

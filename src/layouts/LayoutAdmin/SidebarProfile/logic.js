@@ -1,4 +1,8 @@
-import { getDisplayName, getDisplayContact, getAvatarUrl } from "@utils/userDataUtils";
+import {
+  getDisplayName,
+  getDisplayContact,
+  getAvatarUrl,
+} from "@utils/userDataUtils";
 
 export function useSidebarProfile(user) {
   const displayName = getDisplayName(user);
