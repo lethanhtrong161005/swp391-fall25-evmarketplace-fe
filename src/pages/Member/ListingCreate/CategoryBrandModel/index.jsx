@@ -1,10 +1,10 @@
-// pages/listing/_components/CategoryBrandModel.jsx
 import React, { useMemo } from "react";
 import { Row, Col, Form, Select, AutoComplete, Input } from "antd";
+import styles from "./index.module.scss";
 
 export default function CategoryBrandModel({ form, tax }) {
     const categoryId = Form.useWatch("category", form);
-    const brandId = Form.useWatch("brand_id", form); // lưu id thật
+    const brandId = Form.useWatch("brand_id", form);
 
     const brandOptions = useMemo(
         () => (categoryId && tax ? tax.brandsByCategory[categoryId] || [] : []),
@@ -20,11 +20,14 @@ export default function CategoryBrandModel({ form, tax }) {
     return (
         <>
             <Form.Item
+                className={styles.formItem}
                 name="category"
                 label="Danh mục"
                 rules={[{ required: true, message: "Chọn danh mục" }]}
             >
                 <Select
+                    className={styles.select}
+                    popupClassName={styles.dropdown}  
                     options={tax?.categoryOptions}
                     placeholder="Chọn danh mục"
                     showSearch
@@ -32,7 +35,6 @@ export default function CategoryBrandModel({ form, tax }) {
                         String(opt?.label || "").toLowerCase().includes(i.toLowerCase())
                     }
                     onChange={() => {
-                        // Reset khi đổi category
                         form.setFieldsValue({
                             brand: undefined,
                             brand_id: null,
@@ -43,19 +45,21 @@ export default function CategoryBrandModel({ form, tax }) {
                 />
             </Form.Item>
 
-            <Row gutter={16}>
+            <Row gutter={16} className={styles.rowSpacing}>
                 <Col xs={24} md={12}>
                     <Form.Item
+                        className={styles.formItem}
                         name="brand"
                         label="Hãng"
                         rules={[{ required: true, message: "Nhập hoặc chọn Hãng" }]}
                     >
                         <AutoComplete
+                            className={styles.autoComplete}
+                            popupClassName={styles.dropdown}
                             options={brandOptions}
                             placeholder="Nhập hoặc chọn Hãng"
                             allowClear
                             onSelect={(_, option) => {
-                                // chọn từ hệ thống → set id & tên
                                 form.setFieldsValue({
                                     brand: option.label,
                                     brand_id: option.id,
@@ -64,7 +68,6 @@ export default function CategoryBrandModel({ form, tax }) {
                                 });
                             }}
                             onChange={() => {
-                                // đang gõ tự do → clear id
                                 form.setFieldsValue({
                                     brand_id: null,
                                     model: undefined,
@@ -84,15 +87,17 @@ export default function CategoryBrandModel({ form, tax }) {
 
                 <Col xs={24} md={12}>
                     <Form.Item
+                        className={styles.formItem}
                         name="model"
                         label="Model"
                         rules={[{ required: true, message: "Nhập hoặc chọn Model" }]}
                     >
                         <AutoComplete
+                            className={styles.autoComplete}
+                            popupClassName={styles.dropdown}
                             options={modelOptions}
                             placeholder="Nhập hoặc chọn Model"
                             allowClear
-                            //disabled={!brandId && !form.getFieldValue("brand")}
                             onSelect={(_, option) =>
                                 form.setFieldsValue({ model: option.label, model_id: option.id })
                             }
@@ -102,7 +107,6 @@ export default function CategoryBrandModel({ form, tax }) {
                             }
                         />
                     </Form.Item>
-                    {/* hidden: giữ id để submit */}
                     <Form.Item name="model_id" hidden>
                         <Input />
                     </Form.Item>

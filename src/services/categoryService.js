@@ -1,20 +1,27 @@
-// src/services/categoryService.js
 import api from "@utils/apiCaller";
 
-export const getAllCategoryDetail = async () => {
+export const getAllCategoryDetail = async ({ activeOnly = true } = {}) => {
   const res = await api.get("/api/category/all/detail", {
+    params: { activeOnly },
     validateStatus: () => true,
   });
 
-  // Kiểm tra HTTP & payload
-  if (res?.status !== 200 || !res?.data) {
-    throw new Error(res?.data?.message || `Request failed (${res?.status})`);
+  const { status, data } = res ?? {};
+  if (status !== 200 || !data) {
+    throw new Error(data?.message || `Request failed (${status})`);
   }
-  // API mẫu của bạn: { status, success, message, data: [...] }
-  const arr = res.data?.data;
-  if (!Array.isArray(arr)) {
-    // Handle unexpected response format gracefully
-    return []; // để UI không crash
+
+  // BE có thể trả array trực tiếp hoặc bọc data
+  const arr = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.data)
+    ? data.data
+    : null;
+  if (!arr) {
+    ƒ;
+    if (import.meta?.env?.DEV)
+      console.warn("categoryService: unexpected payload", data);
+    return [];
   }
   return arr;
 };

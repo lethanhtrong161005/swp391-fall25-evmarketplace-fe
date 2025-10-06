@@ -5,7 +5,6 @@ export const CATEGORIES = {
   BATTERY: "BATTERY",
 };
 
-// Demo gợi ý; thực tế -> call API /taxonomy
 export const BRANDS_BY_CATEGORY = {
   EV_CAR: [
     {
