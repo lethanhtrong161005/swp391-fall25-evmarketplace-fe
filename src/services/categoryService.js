@@ -12,9 +12,15 @@ export const getAllCategoryDetail = async ({ activeOnly = true } = {}) => {
   }
 
   // BE có thể trả array trực tiếp hoặc bọc data
-  const arr = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : null;
-  if (!arr) {ƒ
-    if (import.meta?.env?.DEV) console.warn("categoryService: unexpected payload", data);
+  const arr = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.data)
+    ? data.data
+    : null;
+  if (!arr) {
+    ƒ;
+    if (import.meta?.env?.DEV)
+      console.warn("categoryService: unexpected payload", data);
     return [];
   }
   return arr;
