@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Grid, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  getStaffListingDetail,
-} from "@services/staff/listing.staff.service";
+import { getStaffListingDetail } from "@services/staff/listing.staff.service";
 
 const { useBreakpoint } = Grid;
 
@@ -40,11 +38,12 @@ export function useManageListingDetail() {
         setLoading(false);
       }
     };
-    
+
     if (id) {
       load();
     }
-  }, [id]);  const metaItems = useMemo(() => {
+  }, [id]);
+  const metaItems = useMemo(() => {
     if (!listing) return [];
     return [
       {

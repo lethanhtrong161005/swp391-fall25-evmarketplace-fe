@@ -2,10 +2,12 @@ import React from "react";
 import { theme } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@hooks/useUserProfile";
 
 export function useStaffLayout() {
   const { token } = theme.useToken();
-  const { user, logout: rawLogout } = useAuth();
+  const { logout: rawLogout } = useAuth();
+  const { user: enhancedUser } = useUserProfile(); // Use enhanced user data
   const nav = useNavigate();
   const { pathname } = useLocation();
 
@@ -39,7 +41,7 @@ export function useStaffLayout() {
 
   return {
     token,
-    user,
+    user: enhancedUser, // Return enhanced user with profile data
     selectedKey,
     headerTitle,
     notifications,

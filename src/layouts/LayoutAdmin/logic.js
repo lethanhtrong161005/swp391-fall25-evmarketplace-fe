@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@hooks/useUserProfile";
 
 export function useLayoutAdmin() {
   const [notiOpen, setNotiOpen] = useState(false);
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
+  const { user: enhancedUser } = useUserProfile(); // Use enhanced user data
 
   // Chọn menu theo path
   const selected = (() => {
@@ -49,7 +51,7 @@ export function useLayoutAdmin() {
     selected,
     headerTitle: getHeaderTitle(),
     notifications,
-    user,
+    user: enhancedUser, // Return enhanced user with profile data
     handleMenuClick,
     handleProfileClick,
     handleLogout,

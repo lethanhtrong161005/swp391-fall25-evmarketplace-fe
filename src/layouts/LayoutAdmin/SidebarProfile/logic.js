@@ -1,14 +1,13 @@
+import { getDisplayName, getDisplayContact, getAvatarUrl } from "@utils/userDataUtils";
+
 export function useSidebarProfile(user) {
-  const displayName =
-    user?.profile?.fullName ||
-    user?.name ||
-    user?.sub ||
-    user?.phoneNumber ||
-    "Admin User";
-  const displayEmail = user?.email || user?.phoneNumber || "admin@reev.com";
+  const displayName = getDisplayName(user);
+  const displayEmail = getDisplayContact(user);
+  const avatarUrl = getAvatarUrl(user);
 
   return {
     displayName,
     displayEmail,
+    avatarUrl,
   };
 }

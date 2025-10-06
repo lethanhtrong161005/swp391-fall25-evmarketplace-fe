@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 
 /**
  * Fake data cho trang Admin/Manage Listing

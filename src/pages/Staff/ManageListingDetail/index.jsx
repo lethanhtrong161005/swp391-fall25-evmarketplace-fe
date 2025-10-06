@@ -19,15 +19,8 @@ import StatusTag from "../ManageListing/StatusTag/StatusTag";
 const { Title, Text } = Typography;
 
 export default function ManageListingDetail() {
-  const {
-    loading,
-    listing,
-    metaItems,
-    screens,
-    fmtVND,
-    fmtDate,
-    handleBack,
-  } = useManageListingDetail();
+  const { loading, listing, metaItems, screens, fmtVND, fmtDate, handleBack } =
+    useManageListingDetail();
 
   return (
     <Space direction="vertical" size={16} className={s.wrapper}>

@@ -39,7 +39,6 @@ class CookieUtils {
         if (!t) return undefined;
         try {
             const payload = jwtDecode(t);
-            console.log("Decoded JWT:", payload);
             return payload;
         } catch (e) {
             this.clearAuth();
