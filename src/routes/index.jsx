@@ -1,13 +1,22 @@
 import RoleBasedRoute from "@components/RoleBasedRoute";
-import LayoutAdmin from "@layouts/LayoutAdmin";
+
+// Layouts
 import LayoutDefault from "@layouts/LayoutDefault";
+import LayoutAdmin from "@layouts/LayoutAdmin";
+import LayoutStaff from "@layouts/LayoutStaff";
+
+// Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
-import Error403 from "@pages/Errors/Error403";
-import Error404 from "@pages/Errors/Error404";
+import ManageAccounts from "@pages/Admin/ManageAccounts";
+
+// Staff pages
+import StaffDashboard from "@pages/Staff/StaffDashboard";
+import ManageListingPage from "@pages/Staff/ManageListing";
+import ManageListingDetail from "@pages/Staff/ManageListingDetail";
+
+// Common (member)
 import HomeWrapper from "@pages/Member/HomeWrapper/HomeWrapper";
 import InfoUser from "@pages/Member/InfoUser";
-import StaffDashboard from "@pages/Staff/StaffDashboard";
-import LayoutStaff from "@layouts/LayoutStaff";
 import Battery from "@pages/Member/Battery";
 import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
@@ -19,6 +28,10 @@ import BrandManagement from "../pages/Admin/BrandManagement/BrandManagement";
 import ModelManagement from "../pages/Admin/ModelManagement/ModelManagement";
 import ProductVehicleManagement from "../pages/Admin/ProductVehicleManagement/ProductVehicleManagement";
 import ProductBatteryManagement from "../pages/Admin/ProductBatteryManagement/ProductBatteryManagement";
+
+// Errors
+import Error403 from "@pages/Errors/Error403";
+import Error404 from "@pages/Errors/Error404";
 
 export const routes = () => [
   {
@@ -41,29 +54,23 @@ export const routes = () => [
     ],
   },
 
-  // Staff
+  // STAFF
   {
     path: "/",
     element: <LayoutStaff />,
     children: [
       {
-        element: <RoleBasedRoute allowedRoles={["staff", "admin"]} />,
+        element: <RoleBasedRoute allowedRoles={["staff"]} />,
         children: [
-          {
-            path: "staff",
-            element: <StaffDashboard />,
-          },
-          {
-            path: "staff/listingmanagement",
-            element: <StaffListingManagement />,
-          },
-          { path: "staff/info", element: <InfoUser /> },
+          { path: "staff", element: <StaffDashboard /> },
+          { path: "staff/listings", element: <ManageListingPage /> },
+          { path: "staff/listings/:id", element: <ManageListingDetail /> },
         ],
       },
     ],
   },
 
-  // Admin
+  // ADMIN
   {
     path: "/",
     element: <LayoutAdmin />,
@@ -92,11 +99,11 @@ export const routes = () => [
             path: "/admin/product/battery",
             element: <ProductBatteryManagement />,
           },
+          { path: "admin/accounts", element: <ManageAccounts /> },
         ],
       },
     ],
   },
-
   { path: "/403", element: <Error403 /> },
   { path: "*", element: <Error404 /> },
 ];

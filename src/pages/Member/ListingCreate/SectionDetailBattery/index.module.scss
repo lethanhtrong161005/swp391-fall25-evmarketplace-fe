@@ -1,0 +1,49 @@
+$radius: 12px;
+$text-2: #8c8c8c;
+
+.row {
+    margin-bottom: 12px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.formItem {
+    :global(.ant-form-item-label > label) {
+        font-weight: 500;
+    }
+
+    :global(.ant-form-item-explain-error) {
+        font-size: 12px;
+        margin-top: 6px;
+    }
+}
+
+.input {
+    width: 100%;
+    border-radius: $radius;
+
+    &::placeholder {
+        color: $text-2;
+    }
+
+}
+
+.number {
+    width: 100%;
+    border-radius: $radius;
+
+    :global(.ant-input-number) {
+        width: 100%;
+        border-radius: $radius;
+    }
+
+    :global(.ant-input-number-input) {
+        text-align: left;
+    }
+
+    :global(.ant-input-number-input::placeholder) {
+        color: $text-2;
+    }
+}

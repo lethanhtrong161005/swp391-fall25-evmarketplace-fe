@@ -1,77 +1,47 @@
-// pages/Member/ListingCreate/_shared/normalizeListingPayload.js
 import { normalizeAddressForBE } from "./address.mapper";
 
-const isNil = (v) => v === null || v === undefined;
+export function normalizeListingPayload(values, tax, postType, visibility = "NORMAL") {
+    // 1) Category đang chọn
+    const selectedCat = (tax?.categoryOptions || []).find(o => o.value === values.category);
+    const code = selectedCat?.code ?? ""; // EV_CAR | E_MOTORBIKE | E_BIKE | BATTERY
+    const itemType = code === "BATTERY" ? "BATTERY" : "VEHICLE";
 
-function getCategoryMeta(tax, categoryId) {
-    const cat = (tax?.categoryOptions || []).find((o) => o.value === categoryId);
-    return { code: cat?.code ?? null, isBattery: cat?.code === "BATTERY" };
-}
-const normalizePostType = (pt) => (pt === "PAID" ? "PAID" : "FREE");
-const mapPostTypeToVisibility = (pt) => (pt === "PAID" ? "BOOSTED" : "NORMAL");
-
-export function normalizeListingPayload(values, tax, postType) {
+    // 2) Địa chỉ
     const { province, district, ward, address } = normalizeAddressForBE(values.address);
-    const { code: categoryCode, isBattery } = getCategoryMeta(tax, values.category);
-    const _postType = normalizePostType(postType);
-    const _visibility = mapPostTypeToVisibility(_postType);
 
-    const base = {
-        // ✅ tên camelCase theo CreateListingRequest
+    // 3) Map sang BE DTO
+    const payload = {
         categoryId: values.category,
-        categoryCode,
-        itemType: isBattery ? "BATTERY" : "VEHICLE",
+        categoryCode: code,
+        itemType,
+
         brand: values.brand || "",
-        brandId: values.brand_id ?? values.brandId ?? null,
+        brandId: values.brand_id ?? null,
+
         model: values.model || "",
-        modelId: values.model_id ?? values.modelId ?? null,
-        title: values.title ?? null,
+        modelId: values.model_id ?? null,
+
+        title: values.title || "",
         year: values.year ?? null,
-        color: values.color ?? null,
-        description: values.description ?? null,
-        price: values.price,
+        color: values.color || null,
+
+        batteryCapacityKwh: values.battery_capacity_kwh ?? null,
+        sohPercent: values.soh_percent ?? null,
+        mileageKm: values.mileage_km ?? null,
+
+        price: values.price ?? null,
+        description: values.description || "",
+
         province, district, ward, address,
-        postType: _postType,          // FREE | PAID
-        visibility: _visibility,      // NORMAL | BOOSTED
+
+        postType,       // "FREE" | "PAID"
+        visibility,     // "NORMAL" | "BOOSTED"
     };
 
-    return isBattery
-        ? {
-            ...base,
-            batteryCapacityKwh: values.battery_capacity_kwh ?? null,
-            sohPercent: values.soh_percent ?? null,
-        }
-        : {
-            ...base,
-            batteryCapacityKwh: values.battery_capacity_kwh ?? null,
-            sohPercent: values.soh_percent ?? null,
-            mileageKm: values.mileage_km ?? null,
-        };
-}
-
-export function buildCreateListingFormData(values, tax, postType) {
-    const json = normalizeListingPayload(values, tax, postType);
-    const fd = new FormData();
-
-    // text/number fields — bỏ qua null/undefined để tránh gửi "null" (string)
-    Object.entries(json).forEach(([k, v]) => {
-        if (isNil(v)) return;
-        fd.append(k, String(v));
+    // 4) Ép kiểu số lớn sang string cho chắc
+    ["price", "batteryCapacityKwh", "sohPercent"].forEach(k => {
+        if (payload[k] != null) payload[k] = String(payload[k]);
     });
 
-    // files từ Ant Upload
-    (values.images || []).forEach((f, idx) => {
-        const file = f.originFileObj || f.file || f;
-        if (file instanceof File || file instanceof Blob) {
-            fd.append("images", file, file.name ?? `image_${idx}.jpg`);
-        }
-    });
-    (values.videos || []).forEach((f, idx) => {
-        const file = f.originFileObj || f.file || f;
-        if (file instanceof File || file instanceof Blob) {
-            fd.append("videos", file, file.name ?? `video_${idx}.mp4`);
-        }
-    });
-
-    return fd;
+    return payload;
 }

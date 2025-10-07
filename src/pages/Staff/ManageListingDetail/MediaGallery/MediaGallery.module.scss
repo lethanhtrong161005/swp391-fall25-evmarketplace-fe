@@ -1,0 +1,41 @@
+.container {
+  position: relative;
+}
+
+.navButton {
+  position: absolute;
+  top: 45%;
+  z-index: 2;
+}
+
+.carousel {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+}
+
+.mainImage {
+  object-fit: cover;
+}
+
+.thumbnail {
+  width: 76px;
+  height: 76px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid #f0f0f0;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  
+  &.active {
+    border-color: #1677ff;
+  }
+  
+  &:hover {
+    border-color: #4096ff;
+  }
+}
+
+.thumbImage {
+  object-fit: cover;
+}

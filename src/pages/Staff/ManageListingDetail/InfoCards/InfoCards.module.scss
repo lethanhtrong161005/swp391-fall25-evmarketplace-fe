@@ -1,0 +1,21 @@
+.container {
+  width: 100%;
+}
+
+.sellerInfo {
+  line-height: 1.6;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.divider {
+  margin: 8px 0;
+}
