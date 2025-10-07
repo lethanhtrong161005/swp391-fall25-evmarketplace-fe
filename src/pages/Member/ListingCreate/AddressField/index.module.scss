@@ -1,0 +1,110 @@
+$field-radius: 12px;
+$text-2: #8c8c8c;
+$primary: #1677ff;
+$danger: #ff4d4f;
+$border: #d9d9d9;
+$input-height: 40px;
+
+.fieldItem {
+    margin-bottom: 16px;
+
+    :global(.ant-form-item-label > label) {
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    :global(.ant-form-item-explain-error) {
+        font-size: 12px;
+        margin-top: 6px;
+    }
+}
+
+/* Root affix wrapper + căn giữa dọc + width 100% như bạn set trong DevTools */
+.input:global(.ant-input-affix-wrapper),
+:global(.ant-input-affix-wrapper).input {
+    position: relative;
+    display: inline-flex;
+    /* giống DevTools */
+    width: 100%;
+    min-width: 0;
+    padding: 4px 11px;
+    line-height: 1.5714285714;
+    border-radius: $field-radius;
+    transition: all 200ms;
+    align-items: center;
+    /* ⬅️ căn giữa dọc */
+    cursor: pointer;
+    box-sizing: border-box;
+
+    /* ô nhập bên trong */
+    input.ant-input {
+        height: $input-height;
+        line-height: $input-height;
+        padding: 0;
+        /* padding đã ở wrapper */
+        border-radius: $field-radius;
+        box-sizing: border-box;
+        text-align: left;
+    }
+
+    /* prefix/suffix */
+    .ant-input-prefix,
+    .ant-input-suffix {
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+        gap: 6px;
+    }
+
+    ::placeholder {
+        color: $text-2;
+        text-align: left;
+    }
+
+    /* hover/focus */
+    &:hover {
+        border-color: color-mix(in srgb, $border 90%, #000);
+    }
+
+    &:focus,
+    &:focus-within {
+        border-color: $primary;
+        box-shadow: 0 0 0 3px rgba(22, 119, 255, .12);
+    }
+}
+
+.input:global(.ant-input) {
+    height: $input-height;
+    line-height: $input-height;
+    width: 100%;
+    padding: 0 11px;
+    border-radius: $field-radius;
+
+    &::placeholder {
+        color: $text-2;
+    }
+}
+
+
+.inputError {
+    box-shadow: 0 0 0 3px rgba(255, 77, 79, .12);
+}
+
+/* icon màu & hover */
+.suffixIcon {
+    font-size: 16px;
+    color: $text-2;
+    transition: transform .12s ease, color .12s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.clearIcon {
+    color: $text-2;
+
+    &:hover {
+        color: $danger;
+    }
+}

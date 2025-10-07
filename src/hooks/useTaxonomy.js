@@ -1,23 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAllCategoryDetail } from "@services/categoryService";
 import { normalizeTaxonomy } from "@pages/Member/ListingCreate/_shared/normalizeTaxonomy";
 
-export function useTaxonomy(msg) {
+export function useTaxonomy(msg, options) {
+
+    const { activeOnly = true, pruneEmpty = true, sort = true } = options || {};
+
     const [loading, setLoading] = useState(true);
     const [tax, setTax] = useState(null);
 
+    const msgRef = useRef(msg);
+    useEffect(() => { msgRef.current = msg; }, [msg]);
+
+    const fetchIdRef = useRef(0);
+
     useEffect(() => {
-        (async () => {
-            try {
-                const raw = await getAllCategoryDetail();
-                setTax(normalizeTaxonomy(raw));
-            } catch (e) {
-                msg?.error(e?.message || "Không tải được danh mục/brand/model");
-            } finally {
+        const id = ++fetchIdRef.current;
+        let cancelled = false;
+
+        setLoading(true);
+
+        getAllCategoryDetail({ activeOnly })
+            .then((raw) => {
+                if (cancelled || id !== fetchIdRef.current) return;
+                const data = normalizeTaxonomy(raw, { activeOnly, pruneEmpty, sort });
+                setTax(data);
+            })
+            .catch((e) => {
+                if (cancelled || id !== fetchIdRef.current) return;
+                msgRef.current?.error(e?.message || "Không tải được danh mục/brand/model");
+                setTax(null);
+            })
+            .finally(() => {
+                if (cancelled || id !== fetchIdRef.current) return;
                 setLoading(false);
-            }
-        })();
-    }, [msg]);
+            });
+
+        return () => { cancelled = true; };
+    }, [activeOnly, pruneEmpty, sort]);
 
     return { loading, tax };
 }

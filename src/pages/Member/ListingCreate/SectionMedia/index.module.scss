@@ -1,0 +1,64 @@
+$radius: 12px;
+$border: #e5e7eb;
+$muted: #8c8c8c;
+
+.wrapper {
+    width: 100%;
+}
+
+.header {
+    margin: 0 0 4px 0;
+    font-weight: 600;
+}
+
+.subtle {
+    margin: 0;
+    color: $muted;
+}
+
+.box {
+    border: 1px dashed $border;
+    border-radius: 8px;
+    padding: 12px;
+    background: #fff;
+}
+
+.videoBox {
+    @extend .box;
+    background: #fff7e6;
+    border-color: #fde3cf;
+}
+
+.sectionLabel {
+    display: block;
+    margin-bottom: 8px;
+    color: $muted;
+}
+
+.formItemTight {
+    margin: 0 !important;
+}
+
+.addCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.draggable {
+    cursor: grab;
+}
+
+.note {
+    margin-top: 6px;
+    color: $muted;
+}
+
+:global(.ant-upload.ant-upload-select-picture-card) {
+    border-radius: 8px;
+}
+
+:global(.ant-upload-list-picture-card .ant-upload-list-item) {
+    border-radius: 8px;
+}

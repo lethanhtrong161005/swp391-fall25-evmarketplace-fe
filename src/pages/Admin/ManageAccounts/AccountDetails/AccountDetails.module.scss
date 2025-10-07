@@ -1,0 +1,42 @@
+.drawer {
+  .ant-drawer-header {
+    border-bottom: 1px solid #f0f0f0;
+  }
+}
+
+.content {
+  padding: 0;
+}
+
+.descriptions {
+  margin-bottom: 24px;
+  
+  .ant-descriptions-item-label {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+  }
+}
+
+.logsSection {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.logAction {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.logTime {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  margin-top: 4px;
+}
+
+.logNote {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.65);
+  margin-top: 4px;
+  font-style: italic;
+}

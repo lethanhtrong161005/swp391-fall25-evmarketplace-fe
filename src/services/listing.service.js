@@ -1,19 +1,27 @@
-import { buildCreateListingFormData } from "@/pages/Member/ListingCreate/_shared/normalizeListingPayload";
 import api from "@utils/apiCaller";
 
-/**
- * Tạo tin đăng.
- * BE gợi ý endpoint: POST /listings
- * dto: { brand, model, year, price, description, province, city, ... }
- */
-export async function createListing(values, tax, postType) {
-  const fd = buildCreateListingFormData(values, tax, postType);
+export async function createListing(payload, images = [], videos = []) {
+  const fd = new FormData();
+  const blob = new Blob([JSON.stringify(payload)], {
+    type: "application/json",
+  });
+  fd.append("payload", blob);
 
-  // 👉 KHÔNG tự set Content-Type, để browser tự thêm boundary
-  const res = api.post("/api/listing/post", fd);
-  console.log(res.data);
+  (images || []).forEach((f) => fd.append("images", f?.originFileObj || f));
+  (videos || []).forEach((f) => fd.append("videos", f?.originFileObj || f));
+
+  const res = await api.post("/api/listing/post", fd, {
+    validateStatus: () => true,
+  });
+
+  const ok =
+    res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok) {
+    throw new Error(res?.data?.message || `Upload failed (${res?.status})`);
+  }
   return res.data;
 }
+
 /**
  * (Tuỳ chọn) Upload media sau khi có listingId
  * files: mảng File từ Upload (originFileObj)
@@ -22,7 +30,12 @@ export const uploadListingMedia = (listingId, files = []) => {
   const form = new FormData();
   files.forEach((f) => form.append("files", f));
   // override header sang multipart/form-data
-  return post(`/listings/${listingId}/media`, form, {}, {
-    "Content-Type": "multipart/form-data",
-  });
+  return api.post(
+    `/listings/${listingId}/media`,
+    form,
+    {},
+    {
+      "Content-Type": "multipart/form-data",
+    }
+  );
 };

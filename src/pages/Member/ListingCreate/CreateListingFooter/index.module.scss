@@ -1,0 +1,69 @@
+$border: #f0f0f0;
+$shadow: 0 -2px 10px rgba(0, 0, 0, .06);
+$tablet: 768px; 
+
+.bar {
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid $border;
+    box-shadow: $shadow;
+    z-index: 1000;
+}
+
+.inner {
+    max-width: var(--max-w, 1024px);
+    margin: 0 auto;
+    padding: 10px 16px;
+
+    @media (max-width: ($tablet - 0.02px)) {
+        padding: 8px 12px;
+    }
+}
+
+.layoutRow {
+    @media (max-width: ($tablet - 0.02px)) {
+    
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+
+.postTypeBtn {
+    min-width: 280px;
+    height: 40px;
+    text-align: left;
+
+    :global(.anticon) {
+        margin-left: 6px;
+    }
+
+    @media (max-width: ($tablet - 0.02px)) {
+        min-width: 0;
+        width: 100%;
+
+    }
+}
+
+.actionsRow {
+    @media (max-width: ($tablet - 0.02px)) {
+        display: flex !important;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+
+        /* các Col con full-width */
+        :global(.ant-col) {
+            width: 100%;
+        }
+    }
+}
+
+.actionBtn {
+    height: 40px;
+
+    @media (max-width: ($tablet - 0.02px)) {
+        width: 100%;
+    }
+}
