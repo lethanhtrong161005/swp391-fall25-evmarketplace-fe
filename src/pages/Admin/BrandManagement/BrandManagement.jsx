@@ -73,7 +73,12 @@ const BrandManagement = () => {
           <Button type="link" onClick={() => handleOpenModal(record)}>
             Chỉnh sửa
           </Button>
-          <Button danger type="link" onClick={() => setDeleteId(record.id)}>
+          <Button
+            danger
+            type="link"
+            onClick={() => setDeleteId(record.id)}
+            disabled={record.status === "HIDDEN"}
+          >
             Ẩn
           </Button>
         </>
@@ -191,7 +196,7 @@ const BrandManagement = () => {
         open={!!deleteId}
         onCancel={() => setDeleteId(null)}
         onOk={handleDelete}
-        okText="Xóa"
+        okText="Ẩn"
         okType="danger"
         cancelText="Hủy"
       >

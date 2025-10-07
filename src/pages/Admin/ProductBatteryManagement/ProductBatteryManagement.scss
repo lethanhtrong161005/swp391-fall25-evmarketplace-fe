@@ -1,0 +1,137 @@
+.product-battery-management {
+  padding: 24px;
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .ant-card {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f0f0f0;
+    overflow: hidden;
+
+    .ant-card-head {
+      background-color: #fafafa;
+      border-bottom: 1px solid #f0f0f0;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .ant-card-head-title {
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .ant-card-extra .ant-btn {
+      font-weight: 500;
+      border-radius: 6px;
+    }
+  }
+
+  .ant-table {
+    border-radius: 10px;
+    overflow: hidden;
+
+    th {
+      background-color: #fafafa !important;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    td {
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .ant-tag {
+      font-weight: 500;
+      border-radius: 6px;
+
+      &.ant-tag-green {
+        background-color: #f6ffed;
+        border-color: #b7eb8f;
+        color: #389e0d;
+      }
+
+      &.ant-tag-gray {
+        background-color: #fff2f0; // nền đỏ nhạt
+        border-color: #ffccc7; // viền đỏ nhạt
+        color: #cf1322; // chữ đỏ đậm
+      }
+
+      &.ant-tag-red {
+        background-color: #fff2f0;
+        border-color: #ffccc7;
+        color: #cf1322;
+      }
+    }
+  }
+
+  .ant-modal {
+    .ant-modal-header {
+      background-color: #fafafa;
+      border-radius: 8px 8px 0 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .ant-modal-title {
+      font-weight: 600;
+      font-size: 17px;
+      color: #333;
+    }
+
+    .ant-modal-body {
+      padding-top: 16px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .ant-form-item-label > label {
+      font-weight: 500;
+      color: #444;
+    }
+
+    .ant-input,
+    .ant-input-number,
+    .ant-select-selector {
+      border-radius: 6px;
+    }
+
+    .ant-btn-primary {
+      border-radius: 6px;
+      font-weight: 500;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    h2 {
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .ant-card {
+      .ant-card-head-title {
+        text-align: center;
+      }
+
+      .ant-card-extra {
+        text-align: center;
+        margin-top: 8px;
+      }
+    }
+
+    .ant-table {
+      font-size: 13px;
+    }
+
+    .ant-modal {
+      width: 100% !important;
+    }
+  }
+}

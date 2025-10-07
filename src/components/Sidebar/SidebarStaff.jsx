@@ -40,19 +40,29 @@ export default function SidebarStaff() {
         {
           key: "category",
           label: "Quản lý danh mục",
-          path: "/staff/product/category",
+          path: "/admin/product/category",
         },
 
         {
           key: "brand",
           label: "Quản lý thương hiệu",
-          path: "/staff/product/brand",
+          path: "/admin/product/brand",
         },
 
         {
           key: "model",
           label: "Quản lý mẫu mã",
-          path: "/staff/product/model",
+          path: "/admin/product/model",
+        },
+        {
+          key: "vehicle",
+          label: "Quản lý phương tiện",
+          path: "/admin/product/vehicle",
+        },
+        {
+          key: "battery",
+          label: "Quản lý pin",
+          path: "/admin/product/battery",
         },
       ],
     },
@@ -70,7 +80,7 @@ export default function SidebarStaff() {
     },
   ];
 
-  // 🧩 Flatten items để tính selected & openKeys chính xác
+  // Flatten items để tính selected & openKeys chính xác
   const flatItems = useMemo(() => {
     const acc = [];
     const walk = (items, parentKey = null) => {
@@ -81,9 +91,9 @@ export default function SidebarStaff() {
     };
     walk(menuItems);
     return acc;
-  }, []); // menuItems là hằng trong file; nếu bạn tạo động, thêm vào deps
+  }, []);
 
-  // 🟩 Tìm key khớp nhất theo URL (ưu tiên path dài nhất)
+  // Tìm key khớp nhất theo URL (ưu tiên path dài nhất)
   const currentKey = useMemo(() => {
     const p = location.pathname;
     const candidates = flatItems.filter((i) => {
@@ -101,7 +111,7 @@ export default function SidebarStaff() {
     return candidates[0].key;
   }, [location.pathname, flatItems]);
 
-  // 🧱 Tính chuỗi parent để mở submenu (openKeys controlled)
+  // Tính chuỗi parent để mở submenu (openKeys controlled)
   const parentMap = useMemo(() => {
     const m = new Map();
     flatItems.forEach((i) => m.set(i.key, i.parentKey));
@@ -126,7 +136,7 @@ export default function SidebarStaff() {
     setOpenKeys(computeOpenKeys(currentKey));
   }, [currentKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 👤 Dropdown user
+  // Dropdown user
   const userMenu = {
     items: [
       {
@@ -145,9 +155,7 @@ export default function SidebarStaff() {
     ],
   };
 
-  // 🟨 Click item: điều hướng theo path
   const handleMenuClick = ({ key }) => {
-    // Tìm item theo key trong flat
     const found = flatItems.find((i) => i.key === key);
     if (found?.path) navigate(found.path);
   };

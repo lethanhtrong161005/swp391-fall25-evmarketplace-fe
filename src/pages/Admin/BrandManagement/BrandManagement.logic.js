@@ -1,43 +1,45 @@
 import { useState, useEffect } from "react";
 import { Form, message } from "antd";
-import { get, post, put, remove } from "@/utils/apiCaller";
-import { fetchCategories } from "@pages/Staff/CategoryManagement/CategoryManagement.logic";
-
-// ✅ Export để ModelManagement có thể dùng chung
-export const fetchBrands = async (setBrands, setLoading) => {
-  setLoading(true);
-  try {
-    const res = await get("/api/brand/all");
-    if (res.success) {
-      setBrands(res.data || []);
-    } else {
-      message.error(res.message || "Không tải được danh sách brand");
-    }
-  } catch {
-    message.error("Lỗi khi tải brand!");
-  }
-  setLoading(false);
-};
+import { getAllCategories } from "@/services/categoryService";
+import {
+  getAllBrands,
+  addBrand,
+  updateBrand,
+  deleteBrand,
+} from "@/services/brandService";
 
 export const useBrandManagementLogic = () => {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  // 🔁 Filter theo Category
   const [selectedCategory, setSelectedCategory] = useState(1);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingBrand, setEditingBrand] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
-
   const [form] = Form.useForm();
 
+  // ✅ Load dữ liệu ban đầu
   useEffect(() => {
-    fetchCategories(setCategories, setLoading);
-    fetchBrands(setBrands, setLoading);
+    reloadData();
   }, []);
 
+  const reloadData = async () => {
+    setLoading(true);
+    try {
+      const [catRes, brandRes] = await Promise.all([
+        getAllCategories(),
+        getAllBrands(),
+      ]);
+      if (catRes.success) setCategories(catRes.data || []);
+      if (brandRes.success) setBrands(brandRes.data || []);
+    } catch {
+      message.error("Lỗi khi tải dữ liệu");
+    }
+    setLoading(false);
+  };
+
+  // ✅ Mở modal thêm/sửa
   const handleOpenModal = (record = null) => {
     setEditingBrand(record);
     if (record) {
@@ -53,24 +55,20 @@ export const useBrandManagementLogic = () => {
     setIsModalVisible(true);
   };
 
+  // ✅ Submit form
   const handleSubmit = async (values) => {
     try {
-      if (editingBrand) {
-        const res = await put(`/api/brand/update/${editingBrand.id}`, values);
-        if (res.success) {
-          message.success("Cập nhật brand thành công");
-          await fetchBrands(setBrands, setLoading);
-        } else {
-          message.error(res.message || "Lỗi khi cập nhật brand");
-        }
+      const res = editingBrand
+        ? await updateBrand(editingBrand.id, values)
+        : await addBrand(values);
+
+      if (res.success) {
+        message.success(
+          editingBrand ? "Cập nhật brand thành công" : "Thêm brand mới thành công"
+        );
+        await reloadData();
       } else {
-        const res = await post("/api/brand/add", values);
-        if (res.success) {
-          message.success("Thêm mới brand thành công");
-          await fetchBrands(setBrands, setLoading);
-        } else {
-          message.error(res.message || "Lỗi khi thêm mới brand");
-        }
+        message.error(res.message || "Lỗi khi lưu brand");
       }
     } catch {
       message.error("Có lỗi khi lưu brand!");
@@ -78,13 +76,14 @@ export const useBrandManagementLogic = () => {
     setIsModalVisible(false);
   };
 
+  // ✅ Xóa brand
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      const res = await remove(`/api/brand/delete/${deleteId}`, undefined);
+      const res = await deleteBrand(deleteId);
       if (res.success) {
         message.success("Xóa brand thành công");
-        await fetchBrands(setBrands, setLoading);
+        await reloadData();
       } else {
         message.error(res.message || "Lỗi khi xóa brand");
       }
@@ -94,16 +93,16 @@ export const useBrandManagementLogic = () => {
     setDeleteId(null);
   };
 
-  // ✅ Filter theo category (nếu có selectedCategory)
+  // ✅ Filter brand theo category
   const filteredBrands =
-    selectedCategory
+    selectedCategory && selectedCategory !== "ALL"
       ? brands.filter(
           (b) => Array.isArray(b.categoryIds) && b.categoryIds.includes(selectedCategory)
         )
       : brands;
 
   return {
-    brands: filteredBrands, // dùng danh sách đã filter
+    brands: filteredBrands,
     categories,
     loading,
     selectedCategory,

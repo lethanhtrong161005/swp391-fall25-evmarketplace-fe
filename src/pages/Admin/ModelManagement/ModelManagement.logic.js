@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
 import { Form, message } from "antd";
-import { fetchCategories } from "@pages/Staff/CategoryManagement/CategoryManagement.logic";
-import { fetchBrands } from "@pages/Staff/BrandManagement/BrandManagement.logic";
-import { get, post, put, remove } from "@/utils/apiCaller";
+import { getAllCategories } from "@/services/categoryService";
+import { getAllBrands } from "@/services/brandService";
+import {
+  getAllModels,
+  addModel,
+  updateModel,
+  deleteModel,
+} from "@/services/modelService";
 
 export const useModelManagementLogic = () => {
   const [categories, setCategories] = useState([]);
@@ -13,26 +18,27 @@ export const useModelManagementLogic = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingModel, setEditingModel] = useState(null);
-  const [deleteId, setDeleteId] = useState(null); // ✅ state modal xóa
+  const [deleteId, setDeleteId] = useState(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
-    fetchCategories(setCategories, setLoading);
-    fetchBrands(setBrands, setLoading);
-    reloadModels();
+    reloadData();
   }, []);
 
-  const reloadModels = async () => {
+  const reloadData = async () => {
     setLoading(true);
     try {
-      const res = await get("/api/model/all");
-      if (res.success) {
-        setModels(res.data || []);
-      } else {
-        message.error(res.message || "Không tải được models");
-      }
+      const [catRes, brandRes, modelRes] = await Promise.all([
+        getAllCategories(),
+        getAllBrands(),
+        getAllModels(),
+      ]);
+
+      if (catRes.success) setCategories(catRes.data || []);
+      if (brandRes.success) setBrands(brandRes.data || []);
+      if (modelRes.success) setModels(modelRes.data || []);
     } catch {
-      message.error("Lỗi khi tải models");
+      message.error("Lỗi khi tải dữ liệu!");
     }
     setLoading(false);
   };
@@ -56,33 +62,15 @@ export const useModelManagementLogic = () => {
 
   const handleSubmit = async (values) => {
     try {
-      if (editingModel) {
-        const res = await put(`/api/model/update/${editingModel.id}`, {
-          name: values.name,
-          year: values.year,
-          categoryId: values.categoryId,
-          brandId: values.brandId,
-          status: values.status,
-        });
-        if (res.success) {
-          message.success("Cập nhật model thành công");
-          await reloadModels();
-        } else {
-          message.error(res.message || "Lỗi khi cập nhật model");
-        }
+      const res = editingModel
+        ? await updateModel(editingModel.id, values)
+        : await addModel(values);
+
+      if (res.success) {
+        message.success(editingModel ? "Cập nhật model thành công" : "Thêm model mới thành công");
+        await reloadData();
       } else {
-        const res = await post("/api/model/add", {
-          name: values.name,
-          year: values.year,
-          categoryId: values.categoryId,
-          brandId: values.brandId,
-        });
-        if (res.success) {
-          message.success("Thêm mới model thành công");
-          await reloadModels();
-        } else {
-          message.error(res.message || "Lỗi khi thêm mới model");
-        }
+        message.error(res.message || "Lỗi khi lưu model");
       }
     } catch {
       message.error("Có lỗi khi lưu model!");
@@ -92,21 +80,24 @@ export const useModelManagementLogic = () => {
 
   const handleDelete = async () => {
     if (!deleteId) return;
+
     try {
-      const res = await remove(`/api/model/delete/${deleteId}`, undefined);
+      const res = await deleteModel(deleteId);
       if (res.success) {
         message.success("Xóa model thành công");
-        await reloadModels();
+        await reloadData();
       } else {
         message.error(res.message || "Lỗi khi xóa model");
       }
     } catch {
       message.error("Có lỗi khi xóa model!");
     }
-    setDeleteId(null); // đóng modal
+    setDeleteId(null);
   };
 
-  const filteredModels = models.filter((m) => m.categoryId === selectedCategory);
+  const filteredModels = models.filter(
+    (m) => m.categoryId === selectedCategory
+  );
 
   return {
     categories,

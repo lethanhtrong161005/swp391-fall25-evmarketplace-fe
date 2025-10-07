@@ -43,7 +43,10 @@ export default function CategoryManagement() {
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        const info = statusLabels[status] || { label: status, color: "default" };
+        const info = statusLabels[status] || {
+          label: status,
+          color: "default",
+        };
         return (
           <Tag color={info.color} style={{ fontWeight: 500 }}>
             {info.label}
@@ -73,7 +76,7 @@ export default function CategoryManagement() {
 
   return (
     <div className="category-management">
-      <h2>Quản lý Danh mục</h2>
+      <h2>Quản lý danh mục</h2>
 
       {/* Danh sách danh mục */}
       <Card title="Danh sách Danh mục">

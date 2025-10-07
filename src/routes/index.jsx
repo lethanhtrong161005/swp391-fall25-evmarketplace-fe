@@ -14,9 +14,11 @@ import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
 import StaffListingManagement from "@pages/Staff/StaffListingManagement/StaffListingManagement";
-import CategoryManagement from "@pages/Staff/CategoryManagement/CategoryManagement";
-import BrandManagement from "../pages/Staff/BrandManagement/BrandManagement";
-import ModelManagement from "../pages/Staff/ModelManagement/ModelManagement";
+import CategoryManagement from "@pages/Admin/CategoryManagement/CategoryManagement";
+import BrandManagement from "../pages/Admin/BrandManagement/BrandManagement";
+import ModelManagement from "../pages/Admin/ModelManagement/ModelManagement";
+import ProductVehicleManagement from "../pages/Admin/ProductVehicleManagement/ProductVehicleManagement";
+import ProductBatteryManagement from "../pages/Admin/ProductBatteryManagement/ProductBatteryManagement";
 
 export const routes = () => [
   {
@@ -55,21 +57,7 @@ export const routes = () => [
             path: "staff/listingmanagement",
             element: <StaffListingManagement />,
           },
-          { path: "staff/info", 
-            element: <InfoUser /> 
-          },
-          {
-            path: "/staff/product/category",
-            element: <CategoryManagement />
-          },
-          {
-            path: "/staff/product/brand",
-            element: <BrandManagement />
-          },
-           {
-            path: "/staff/product/model",
-            element: <ModelManagement />
-          }
+          { path: "staff/info", element: <InfoUser /> },
         ],
       },
     ],
@@ -82,7 +70,29 @@ export const routes = () => [
     children: [
       {
         element: <RoleBasedRoute allowedRoles={["admin"]} />,
-        children: [{ path: "admin", element: <AdminDashboard /> }],
+        children: [
+          { path: "admin", element: <AdminDashboard /> },
+          {
+            path: "/admin/product/category",
+            element: <CategoryManagement />,
+          },
+          {
+            path: "/admin/product/brand",
+            element: <BrandManagement />,
+          },
+          {
+            path: "/admin/product/model",
+            element: <ModelManagement />,
+          },
+          {
+            path: "/admin/product/vehicle",
+            element: <ProductVehicleManagement />,
+          },
+          {
+            path: "/admin/product/battery",
+            element: <ProductBatteryManagement />,
+          },
+        ],
       },
     ],
   },

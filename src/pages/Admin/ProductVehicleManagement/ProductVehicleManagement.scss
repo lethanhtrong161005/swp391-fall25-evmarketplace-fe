@@ -1,0 +1,22 @@
+.product-vehicle-management {
+  h2 {
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .ant-card {
+    border-radius: 10px;
+  }
+
+  .ant-table {
+    background: #fff;
+  }
+
+  .ant-card-hoverable {
+    transition: all 0.2s ease;
+    &:hover {
+      border-color: #1890ff !important;
+      box-shadow: 0 0 5px rgba(24, 144, 255, 0.3);
+    }
+  }
+}
