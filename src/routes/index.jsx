@@ -8,6 +8,11 @@ import LayoutStaff from "@layouts/LayoutStaff";
 // Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
 import ManageAccounts from "@pages/Admin/ManageAccounts";
+import CategoryManagement from "@pages/Admin/CategoryManagement/CategoryManagement";
+import BrandManagement from "@pages/Admin/BrandManagement/BrandManagement";
+import ModelManagement from "@pages/Admin/ModelManagement/ModelManagement";
+import ProductVehicleManagement from "@pages/Admin/ProductVehicleManagement/ProductVehicleManagement";
+import ProductBatteryManagement from "@pages/Admin/ProductBatteryManagement/ProductBatteryManagement";
 
 // Staff pages
 import StaffDashboard from "@pages/Staff/StaffDashboard";
@@ -22,12 +27,6 @@ import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
-import StaffListingManagement from "@pages/Staff/StaffListingManagement/StaffListingManagement";
-import CategoryManagement from "@pages/Admin/CategoryManagement/CategoryManagement";
-import BrandManagement from "../pages/Admin/BrandManagement/BrandManagement";
-import ModelManagement from "../pages/Admin/ModelManagement/ModelManagement";
-import ProductVehicleManagement from "../pages/Admin/ProductVehicleManagement/ProductVehicleManagement";
-import ProductBatteryManagement from "../pages/Admin/ProductBatteryManagement/ProductBatteryManagement";
 
 // Errors
 import Error403 from "@pages/Errors/Error403";
@@ -72,34 +71,34 @@ export const routes = () => [
 
   // ADMIN
   {
-    path: "/",
+    path: "/admin",
     element: <LayoutAdmin />,
     children: [
       {
         element: <RoleBasedRoute allowedRoles={["admin"]} />,
         children: [
-          { path: "admin", element: <AdminDashboard /> },
+          { path: "", element: <AdminDashboard /> },
           {
-            path: "/admin/product/category",
+            path: "product/category",
             element: <CategoryManagement />,
           },
           {
-            path: "/admin/product/brand",
+            path: "product/brand",
             element: <BrandManagement />,
           },
           {
-            path: "/admin/product/model",
+            path: "product/model",
             element: <ModelManagement />,
           },
           {
-            path: "/admin/product/vehicle",
+            path: "product/vehicle",
             element: <ProductVehicleManagement />,
           },
           {
-            path: "/admin/product/battery",
+            path: "product/battery",
             element: <ProductBatteryManagement />,
           },
-          { path: "admin/accounts", element: <ManageAccounts /> },
+          { path: "accounts", element: <ManageAccounts /> },
         ],
       },
     ],
