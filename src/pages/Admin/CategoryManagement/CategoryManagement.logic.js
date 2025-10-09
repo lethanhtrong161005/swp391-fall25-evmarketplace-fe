@@ -6,7 +6,6 @@ import {
   hideCategory,
 } from "@/services/categoryService";
 
-// Hook
 export const useCategoryManagementLogic = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -15,7 +14,6 @@ export const useCategoryManagementLogic = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [form] = Form.useForm();
 
-  // Load danh mục ban đầu
   const reloadCategories = async () => {
     setLoading(true);
     try {
@@ -35,19 +33,16 @@ export const useCategoryManagementLogic = () => {
     reloadCategories();
   }, []);
 
-  // Mở modal chỉnh sửa
   const handleOpenModal = (record = null) => {
     setEditingCategory(record);
 
     if (record) {
-      // chỉnh sửa
       form.setFieldsValue({
         name: record.name,
         description: record.description,
         status: record.status,
       });
     } else {
-      // thêm mới
       form.resetFields();
       form.setFieldsValue({ status: "ACTIVE" });
     }
@@ -55,7 +50,6 @@ export const useCategoryManagementLogic = () => {
     setIsModalVisible(true);
   };
 
-  // Lưu chỉnh sửa danh mục
   const handleSubmit = async (values) => {
     if (!editingCategory) return;
 
@@ -74,7 +68,6 @@ export const useCategoryManagementLogic = () => {
     setIsModalVisible(false);
   };
 
-  // Ẩn danh mục (xóa mềm)
   const handleDelete = async () => {
     if (!deleteId) return;
 

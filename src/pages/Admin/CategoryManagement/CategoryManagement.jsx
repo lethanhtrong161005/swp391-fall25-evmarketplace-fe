@@ -2,6 +2,8 @@ import React from "react";
 import { Table, Button, Modal, Form, Input, Select, Card, Tag } from "antd";
 import "./CategoryManagement.scss";
 import { useCategoryManagementLogic } from "./CategoryManagement.logic";
+import CategoryModal from "../../../components/Modal/CategoryModal/CategoryModal";
+import HiddenModal from "../../../components/Modal/HiddenModal/HiddenModal";
 
 const { Option } = Select;
 
@@ -20,7 +22,6 @@ export default function CategoryManagement() {
     handleDelete,
   } = useCategoryManagementLogic();
 
-  // ✅ Map trạng thái sang nhãn màu + tiếng Việt
   const statusLabels = {
     ACTIVE: { label: "Hoạt động", color: "green" },
     HIDDEN: { label: "Đang ẩn", color: "red" },
@@ -78,7 +79,6 @@ export default function CategoryManagement() {
     <div className="category-management">
       <h2>Quản lý danh mục</h2>
 
-      {/* Danh sách danh mục */}
       <Card title="Danh sách Danh mục">
         <Table
           rowKey="id"
@@ -89,53 +89,19 @@ export default function CategoryManagement() {
         />
       </Card>
 
-      {/* Modal chỉnh sửa */}
-      <Modal
-        title={editingCategory ? "Chỉnh sửa Danh mục" : "Thêm mới Danh mục"}
-        open={isModalVisible}
+      <CategoryModal
+        form={form}
+        visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
-        onOk={() => form.submit()}
-        okText="Lưu"
-        cancelText="Hủy"
-      >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            label="Tên danh mục"
-            name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên danh mục" }]}
-          >
-            <Input placeholder="Nhập tên danh mục" />
-          </Form.Item>
+        onSubmit={handleSubmit}
+        editingCategory={editingCategory}
+      />
 
-          <Form.Item label="Mô tả" name="description">
-            <Input.TextArea rows={3} placeholder="Nhập mô tả (nếu có)" />
-          </Form.Item>
-
-          <Form.Item
-            label="Trạng thái"
-            name="status"
-            rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
-          >
-            <Select placeholder="Chọn trạng thái">
-              <Option value="ACTIVE">Hoạt động</Option>
-              <Option value="HIDDEN">Đang ẩn</Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* Modal xác nhận ẩn danh mục */}
-      <Modal
-        title="Xác nhận ẩn Danh mục"
-        open={!!deleteId}
+      <HiddenModal
+        visible={!!deleteId}
         onCancel={() => setDeleteId(null)}
-        onOk={handleDelete}
-        okText="Ẩn"
-        okType="danger"
-        cancelText="Hủy"
-      >
-        <p>Bạn có chắc chắn muốn ẩn danh mục này?</p>
-      </Modal>
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

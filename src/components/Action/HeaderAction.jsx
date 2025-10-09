@@ -55,22 +55,22 @@ const HeaderAction = () => {
     if (!result) return false;
 
     const role = result.role;
-
-    if (role === "staff") {
-      navigate("/staff", { replace: true });
-    } else if (role === "admin") {
-      navigate("/admin", { replace: true });
-    } else {
-      if (redirectAfterLogin) {
-        navigate(redirectAfterLogin, { replace: true });
-        setRedirectAfterLogin(null);
+    setTimeout(() => {
+      if (role === "staff") {
+        navigate("/staff", { replace: true });
+      } else if (role === "admin") {
+        navigate("/admin", { replace: true });
       } else {
-        navigate("/", { replace: true });
+        if (redirectAfterLogin) {
+          navigate(redirectAfterLogin, { replace: true });
+          setRedirectAfterLogin(null);
+        } else {
+          navigate("/", { replace: true });
+        }
       }
-    }
-
+    });
     return true;
-  }
+  };
 
   // ⬇️ click “Đăng tin”
   const handleClickCreateListing = () => {

@@ -13,6 +13,9 @@ import {
 } from "antd";
 import { useBrandManagementLogic } from "./BrandManagement.logic";
 import "./BrandManagement.scss";
+import CategoryFilter from "../../../components/CategoryFilter/CategoryFilter";
+import BrandModal from "../../../components/Modal/BrandModal/BrandModal";
+import HiddenModal from "../../../components/Modal/HiddenModal/HiddenModal";
 
 const { Option } = Select;
 
@@ -34,7 +37,6 @@ const BrandManagement = () => {
     handleDelete,
   } = useBrandManagementLogic();
 
-  // ✅ Map trạng thái sang nhãn tiếng Việt + màu
   const statusLabels = {
     ACTIVE: { label: "Hoạt động", color: "green" },
     HIDDEN: { label: "Đang ẩn", color: "red" },
@@ -90,41 +92,12 @@ const BrandManagement = () => {
     <div className="brand-management">
       <h2>Quản lý thương hiệu</h2>
 
-      {/* Bộ lọc danh mục */}
-      <Card title="Lọc theo danh mục" style={{ marginBottom: 20 }}>
-        <Row gutter={[16, 16]} className="category-statistics">
-          {categories.map((cat) => (
-            <Col key={cat.id} span={24 / categories.length}>
-              <Card
-                hoverable
-                onClick={() => setSelectedCategory(cat.id)}
-                style={{
-                  textAlign: "center",
-                  cursor: "pointer",
-                  border:
-                    selectedCategory === cat.id
-                      ? "2px solid #1890ff"
-                      : "1px solid #f0f0f0",
-                }}
-              >
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "#333",
-                    margin: 0,
-                    fontWeight: 500,
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {cat.description}
-                </p>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </Card>
+      <CategoryFilter
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelect={setSelectedCategory}
+      />
 
-      {/* Danh sách thương hiệu */}
       <Card
         title="Danh sách thương hiệu"
         extra={
@@ -140,68 +113,20 @@ const BrandManagement = () => {
           columns={columns}
         />
       </Card>
-
-      {/* Modal thêm/sửa thương hiệu */}
-      <Modal
-        title={editingBrand ? "Chỉnh sửa thương hiệu" : "Thêm mới thương hiệu"}
-        open={isModalVisible}
+      <BrandModal
+        form={form}
+        visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
-        onOk={() => form.submit()}
-        okText="Lưu"
-        cancelText="Hủy"
-      >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            label="Tên thương hiệu"
-            name="name"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên thương hiệu" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+        onSubmit={handleSubmit}
+        editingBrand={editingBrand}
+        categories={categories}
+      />
 
-          <Form.Item
-            label="Trạng thái"
-            name="status"
-            rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
-          >
-            <Select placeholder="Chọn trạng thái">
-              <Option value="ACTIVE">Hoạt động</Option>
-              <Option value="HIDDEN">Đang ẩn</Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            label="Danh mục"
-            name="categoryIds"
-            rules={[
-              { required: true, message: "Vui lòng chọn ít nhất một danh mục" },
-            ]}
-          >
-            <Select mode="multiple" placeholder="Chọn danh mục">
-              {categories.map((c) => (
-                <Option key={c.id} value={c.id}>
-                  {c.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* Modal xác nhận xóa */}
-      <Modal
-        title="Xác nhận xóa"
-        open={!!deleteId}
+      <HiddenModal
+        visible={!!deleteId}
         onCancel={() => setDeleteId(null)}
-        onOk={handleDelete}
-        okText="Ẩn"
-        okType="danger"
-        cancelText="Hủy"
-      >
-        <p>Bạn có chắc chắn muốn xóa thương hiệu này?</p>
-      </Modal>
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };

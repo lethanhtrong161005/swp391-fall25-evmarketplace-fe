@@ -55,7 +55,6 @@ export const useModelManagementLogic = () => {
       });
     } else {
       form.resetFields();
-      form.setFieldsValue({ status: "ACTIVE" });
     }
     setIsModalVisible(true);
   };

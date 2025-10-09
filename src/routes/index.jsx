@@ -71,34 +71,34 @@ export const routes = () => [
 
   // ADMIN
   {
-    path: "/admin",
+    path: "/",
     element: <LayoutAdmin />,
     children: [
       {
         element: <RoleBasedRoute allowedRoles={["admin"]} />,
         children: [
-          { path: "", element: <AdminDashboard /> },
+          { path: "admin", element: <AdminDashboard /> },
           {
-            path: "product/category",
+            path: "admin/product/category",
             element: <CategoryManagement />,
           },
           {
-            path: "product/brand",
+            path: "admin/product/brand",
             element: <BrandManagement />,
           },
           {
-            path: "product/model",
+            path: "admin/product/model",
             element: <ModelManagement />,
           },
           {
-            path: "product/vehicle",
+            path: "admin/product/vehicle",
             element: <ProductVehicleManagement />,
           },
           {
-            path: "product/battery",
+            path: "admin/product/battery",
             element: <ProductBatteryManagement />,
           },
-          { path: "accounts", element: <ManageAccounts /> },
+          { path: "admin/accounts", element: <ManageAccounts /> },
         ],
       },
     ],

@@ -17,8 +17,8 @@ const DefaultHeader = () => {
           xs={20}
           sm={20}
           md={20}
-          lg={{ span: 2, offset: 0 }}
-          xl={{ span: 2, offset: 0 }}
+          lg={{ span: 4, offset: 0 }}
+          xl={{ span: 4, offset: 0 }}
         >
           <Space>
             <Avatar shape="square" size={64} src={logo} />
@@ -31,8 +31,8 @@ const DefaultHeader = () => {
           xs={2}
           sm={2}
           md={2}
-          lg={{ span: 14, offset: 8 }}
-          xl={{ span: 14, offset: 8 }}
+          lg={{ span: 14, offset: 6 }}
+          xl={{ span: 14, offset: 6 }}
           style={{
             display: "flex",
             justifyContent: "space-between",

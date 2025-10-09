@@ -19,7 +19,6 @@ export const useProductVehicleManagementLogic = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
-  const [deleteId, setDeleteId] = useState(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -50,50 +49,54 @@ export const useProductVehicleManagementLogic = () => {
     setEditingVehicle(record);
 
     if (record) {
-      // Điền dữ liệu cơ bản
+      const car = record.car || record.carDetail;
+      const bike = record.bike || record.bikeDetail;
+      const ebike = record.ebike || record.ebikeDetail;
+
       form.setFieldsValue({
         category: record.category,
         name: record.name,
         description: record.description,
-        releaseYear: record.releaseYear,
-        batteryCapacityKwh: record.batteryCapacityKwh,
-        rangeKm: record.rangeKm,
-        motorPowerKw: record.motorPowerKw,
-        acChargingKw: record.acChargingKw,
-        dcChargingKw: record.dcChargingKw,
+        releaseYear: record.releaseYear ?? 2020,
+        batteryCapacityKwh: record.batteryCapacityKwh ?? 0,
+        rangeKm: record.rangeKm ?? 0,
+        motorPowerKw: record.motorPowerKw ?? 0,
+        acChargingKw: record.acChargingKw ?? 0,
+        dcChargingKw: record.dcChargingKw ?? 0,
         acConnector: record.acConnector,
         dcConnector: record.dcConnector,
       });
 
-      // Điền chi tiết theo loại
-      if (record.category === "EV_CAR" && record.car) {
+      if (record.category === "EV_CAR" && car) {
         form.setFieldsValue({
-          seatingCapacity: record.car.seatingCapacity,
-          bodyType: record.car.bodyType,
-          drivetrain: record.car.drivetrain,
-          trunkRearL: record.car.trunkRearL,
+          seatingCapacity: car.seatingCapacity ?? 5,
+          bodyType: car.bodyType ?? "SEDAN",
+          drivetrain: car.drivetrain ?? "RWD",
+          trunkRearL: car.trunkRearL ?? 400,
         });
-      } else if (record.category === "E_MOTORBIKE" && record.bike) {
+      } else if (record.category === "E_MOTORBIKE" && bike) {
         form.setFieldsValue({
-          motorLocation: record.bike.motorLocation,
-          wheelSize: record.bike.wheelSize,
-          brakeType: record.bike.brakeType,
-          weightKg: record.bike.weightKg,
+          motorLocation: bike.motorLocation ?? "HUB",
+          wheelSize: bike.wheelSize ?? "14",
+          brakeType: bike.brakeType ?? "DISC",
+          weightKg: bike.weightKg ?? 90,
         });
-      } else if (record.category === "E_BIKE" && record.ebike) {
+      } else if (record.category === "E_BIKE" && ebike) {
         form.setFieldsValue({
-          frameSize: record.ebike.frameSize,
-          wheelSize: record.ebike.wheelSize,
-          weightKg: record.ebike.weightKg,
-          maxLoad: record.ebike.maxLoad,
-          gears: record.ebike.gears,
-          removableBattery: !!record.ebike.removableBattery,
-          throttle: !!record.ebike.throttle,
+          frameSize: ebike.frameSize ?? "M",
+          wheelSize: ebike.wheelSize ?? "27.5",
+          weightKg: ebike.weightKg ?? 25,
+          maxLoad: ebike.maxLoad ?? 120,
+          gears: ebike.gears ?? 7,
+          removableBattery: !!ebike.removableBattery,
+          throttle: !!ebike.throttle,
         });
       }
     } else {
       form.resetFields();
-      form.setFieldsValue({ category: selectedCategory || "EV_CAR" });
+      form.setFieldsValue({
+        category: selectedCategory || "EV_CAR",
+      });
     }
 
     setIsModalVisible(true);
@@ -186,6 +189,7 @@ export const useProductVehicleManagementLogic = () => {
         if (!payload.carDetail) payload.carDetail = null;
         if (!payload.bikeDetail) payload.bikeDetail = null;
         if (!payload.ebikeDetail) payload.ebikeDetail = null;
+        delete payload.status;
         const res = await addVehicle(payload);
         if (res.success) {
           message.success("Thêm xe mới thành công");
@@ -221,7 +225,5 @@ export const useProductVehicleManagementLogic = () => {
     form,
     handleOpenModal,
     handleSubmit,
-    deleteId,
-    setDeleteId,
   };
 };

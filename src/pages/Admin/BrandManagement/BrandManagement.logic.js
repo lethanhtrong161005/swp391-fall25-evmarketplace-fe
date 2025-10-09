@@ -19,7 +19,6 @@ export const useBrandManagementLogic = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [form] = Form.useForm();
 
-  // ✅ Load dữ liệu ban đầu
   useEffect(() => {
     reloadData();
   }, []);
@@ -39,7 +38,6 @@ export const useBrandManagementLogic = () => {
     setLoading(false);
   };
 
-  // ✅ Mở modal thêm/sửa
   const handleOpenModal = (record = null) => {
     setEditingBrand(record);
     if (record) {
@@ -55,7 +53,6 @@ export const useBrandManagementLogic = () => {
     setIsModalVisible(true);
   };
 
-  // ✅ Submit form
   const handleSubmit = async (values) => {
     try {
       const res = editingBrand
@@ -76,7 +73,6 @@ export const useBrandManagementLogic = () => {
     setIsModalVisible(false);
   };
 
-  // ✅ Xóa brand
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
@@ -93,7 +89,6 @@ export const useBrandManagementLogic = () => {
     setDeleteId(null);
   };
 
-  // ✅ Filter brand theo category
   const filteredBrands =
     selectedCategory && selectedCategory !== "ALL"
       ? brands.filter(

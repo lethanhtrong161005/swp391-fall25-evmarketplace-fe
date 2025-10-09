@@ -43,7 +43,6 @@ export const useProductBatteryManagementLogic = () => {
     setEditingBattery(record);
 
     if (record) {
-      // === Sửa ===
       form.setFieldsValue({
         modelId: record.modelId,
         chemistry: record.chemistry,
@@ -54,9 +53,7 @@ export const useProductBatteryManagementLogic = () => {
         status: record.status || "ACTIVE",
       });
     } else {
-      // === Thêm mới ===
       form.resetFields();
-      form.setFieldsValue({ status: "ACTIVE" });
     }
 
     setIsModalVisible(true);
@@ -73,12 +70,16 @@ export const useProductBatteryManagementLogic = () => {
         dimension: values.dimension?.trim() || null,
       };
 
-      const res = editingBattery
-        ? await updateBattery(editingBattery.id, {
-            ...payload,
-            status: values.status,
-          })
-        : await addBattery(payload);
+      let res;
+
+      if (editingBattery) {
+        res = await updateBattery(editingBattery.id, {
+          ...payload,
+          status: values.status,
+        });
+      } else {
+        res = await addBattery(payload);
+      }
 
       if (res.success) {
         message.success(
@@ -89,6 +90,7 @@ export const useProductBatteryManagementLogic = () => {
         message.error(res.message || "Lỗi khi lưu pin");
       }
     } catch (err) {
+      console.error("handleSubmit error:", err);
       message.error("Có lỗi khi lưu pin!");
     }
 

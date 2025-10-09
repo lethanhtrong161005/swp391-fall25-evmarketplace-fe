@@ -14,6 +14,9 @@ import {
 } from "antd";
 import { useModelManagementLogic } from "./ModelManagement.logic";
 import "./ModelManagement.scss";
+import HiddenModal from "../../../components/Modal/HiddenModal/HiddenModal";
+import ModelModal from "../../../components/Modal/ModelModal/ModelModal";
+import CategoryFilter from "../../../components/CategoryFilter/CategoryFilter";
 
 const { Option } = Select;
 
@@ -36,7 +39,6 @@ const ModelManagement = () => {
     handleDelete,
   } = useModelManagementLogic();
 
-  // ✅ Map trạng thái -> nhãn tiếng Việt + màu
   const statusLabels = {
     ACTIVE: { label: "Hoạt động", color: "green" },
     HIDDEN: { label: "Đang ẩn", color: "red" },
@@ -96,41 +98,12 @@ const ModelManagement = () => {
     <div className="model-management">
       <h2>Quản lý mẫu mã</h2>
 
-      {/* Bộ lọc danh mục */}
-      <Card title="Lọc theo danh mục" style={{ marginBottom: 20 }}>
-        <Row gutter={[16, 16]} className="category-statistics">
-          {categories.map((cat) => (
-            <Col key={cat.id} span={24 / categories.length}>
-              <Card
-                hoverable
-                onClick={() => setSelectedCategory(cat.id)}
-                style={{
-                  textAlign: "center",
-                  cursor: "pointer",
-                  border:
-                    selectedCategory === cat.id
-                      ? "2px solid #1890ff"
-                      : "1px solid #f0f0f0",
-                }}
-              >
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "#333",
-                    margin: 0,
-                    fontWeight: 500,
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {cat.description}
-                </p>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </Card>
+      <CategoryFilter
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelect={setSelectedCategory}
+      />
 
-      {/* Danh sách model */}
       <Card
         title="Danh sách mẫu mã"
         extra={
@@ -147,88 +120,22 @@ const ModelManagement = () => {
         />
       </Card>
 
-      {/* Modal thêm/sửa model */}
-      <Modal
-        title={editingModel ? "Chỉnh sửa Model" : "Thêm mới Model"}
-        open={isModalVisible}
+      <ModelModal
+        form={form}
+        visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
-        onOk={() => form.submit()}
-        okText="Lưu"
-        cancelText="Hủy"
-      >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            label="Danh mục"
-            name="categoryId"
-            rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
-          >
-            <Select
-              placeholder="Chọn danh mục"
-              onChange={(val) => setSelectedCategory(val)}
-            >
-              {categories.map((cat) => (
-                <Option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+        onSubmit={handleSubmit}
+        editingModel={editingModel}
+        categories={categories}
+        brands={brands}
+        setSelectedCategory={setSelectedCategory}
+      />
 
-          <Form.Item
-            label="Thương hiệu"
-            name="brandId"
-            rules={[{ required: true, message: "Vui lòng chọn thương hiệu" }]}
-          >
-            <Select placeholder="Chọn thương hiệu">
-              {brands.map((b) => (
-                <Option key={b.id} value={b.id}>
-                  {b.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            label="Tên Model"
-            name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên Model" }]}
-          >
-            <Input placeholder="Nhập tên Model" />
-          </Form.Item>
-
-          <Form.Item
-            label="Năm sản xuất"
-            name="year"
-            rules={[{ required: true, message: "Vui lòng nhập năm sản xuất" }]}
-          >
-            <InputNumber style={{ width: "100%" }} placeholder="VD: 2024" />
-          </Form.Item>
-
-          <Form.Item
-            label="Trạng thái"
-            name="status"
-            rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
-          >
-            <Select placeholder="Chọn trạng thái">
-              <Option value="ACTIVE">Hoạt động</Option>
-              <Option value="HIDDEN">Đang ẩn</Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* Modal xác nhận xóa */}
-      <Modal
-        title="Xác nhận xóa Model"
-        open={!!deleteId}
+      <HiddenModal
+        visible={!!deleteId}
         onCancel={() => setDeleteId(null)}
-        onOk={handleDelete}
-        okText="Ẩn"
-        okType="danger"
-        cancelText="Hủy"
-      >
-        <p>Bạn có chắc chắn muốn xóa mẫu này?</p>
-      </Modal>
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };
