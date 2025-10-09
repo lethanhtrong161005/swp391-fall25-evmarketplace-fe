@@ -20,7 +20,6 @@ const { Option } = Select;
 
 const ProductBatteryManagement = () => {
   const {
-    brands,
     models,
     batteries,
     loading,
