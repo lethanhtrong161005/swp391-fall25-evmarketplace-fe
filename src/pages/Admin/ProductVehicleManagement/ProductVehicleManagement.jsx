@@ -126,7 +126,7 @@ const ProductVehicleManagement = () => {
         title="Danh sách sản phẩm"
         extra={
           <Button type="primary" onClick={() => handleOpenModal()}>
-            Thêm sản phẩm
+            Thêm phương tiện mới
           </Button>
         }
       >

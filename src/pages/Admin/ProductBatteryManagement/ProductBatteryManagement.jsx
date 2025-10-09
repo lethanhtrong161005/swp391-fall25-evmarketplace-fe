@@ -112,7 +112,7 @@ const ProductBatteryManagement = () => {
         title="Danh sách pin"
         extra={
           <Button type="primary" onClick={() => handleOpenModal()}>
-            + Thêm pin mới
+            Thêm pin mới
           </Button>
         }
       >

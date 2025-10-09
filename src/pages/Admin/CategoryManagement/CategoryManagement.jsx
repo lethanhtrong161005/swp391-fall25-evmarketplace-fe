@@ -66,7 +66,7 @@ export default function CategoryManagement() {
             danger
             type="link"
             onClick={() => setDeleteId(record.id)}
-            disabled={record.status === "HIDDEN"} // ẩn thì không cần xóa lại
+            disabled={record.status === "HIDDEN"} 
           >
             Ẩn
           </Button>
@@ -79,7 +79,7 @@ export default function CategoryManagement() {
     <div className="category-management">
       <h2>Quản lý danh mục</h2>
 
-      <Card title="Danh sách Danh mục">
+      <Card title="Danh sách danh mục">
         <Table
           rowKey="id"
           loading={loading}
