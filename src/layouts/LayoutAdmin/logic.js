@@ -11,10 +11,8 @@ export function useLayoutAdmin() {
   const { logout } = useAuth();
   const { user: enhancedUser } = useUserProfile(); // Use enhanced user data
 
-  // 🔹 Lấy menuItems từ SidebarMenu
   const { menuItems } = useSidebarMenu({});
 
-  // 🔹 Hàm đệ quy tìm path theo key
   const findPathByKey = (items, targetKey) => {
     for (const item of items) {
       if (item.key === targetKey && item.path) return item.path;
@@ -26,7 +24,6 @@ export function useLayoutAdmin() {
     return null;
   };
 
-  // 🔹 Tự động detect key đang selected theo URL
   const selected = (() => {
     const findKeyByPath = (items, currentPath) => {
       for (const item of items) {
