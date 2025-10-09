@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@hooks/useUserProfile";
+import { useSidebarMenu } from "./SidebarMenu/logic";
 
 export function useLayoutAdmin() {
   const [notiOpen, setNotiOpen] = useState(false);
@@ -10,11 +11,31 @@ export function useLayoutAdmin() {
   const { logout } = useAuth();
   const { user: enhancedUser } = useUserProfile(); // Use enhanced user data
 
-  // Chọn menu theo path
+  const { menuItems } = useSidebarMenu({});
+
+  const findPathByKey = (items, targetKey) => {
+    for (const item of items) {
+      if (item.key === targetKey && item.path) return item.path;
+      if (item.children) {
+        const found = findPathByKey(item.children, targetKey);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
   const selected = (() => {
-    if (pathname.startsWith("/admin/accounts")) return "accounts";
-    if (pathname.startsWith("/admin")) return "dashboard";
-    return "dashboard";
+    const findKeyByPath = (items, currentPath) => {
+      for (const item of items) {
+        if (item.path && currentPath.startsWith(item.path)) return item.key;
+        if (item.children) {
+          const found = findKeyByPath(item.children, currentPath);
+          if (found) return found;
+        }
+      }
+      return "dashboard";
+    };
+    return findKeyByPath(menuItems, pathname);
   })();
 
   // Get header title based on current route
@@ -31,8 +52,8 @@ export function useLayoutAdmin() {
   ];
 
   const handleMenuClick = ({ key }) => {
-    if (key === "dashboard") nav("/admin");
-    if (key === "accounts") nav("/admin/accounts");
+    const path = findPathByKey(menuItems, key);
+    if (path) nav(path);
   };
 
   const handleProfileClick = () => {

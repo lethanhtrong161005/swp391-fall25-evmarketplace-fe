@@ -1,5 +1,9 @@
 import React from "react";
-import { DashboardOutlined, TeamOutlined } from "@ant-design/icons";
+import {
+  DashboardOutlined,
+  TeamOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
 
 export function useSidebarMenu(token) {
   const menuConfig = {
@@ -17,11 +21,47 @@ export function useSidebarMenu(token) {
       key: "dashboard",
       icon: <DashboardOutlined />,
       label: "Dashboard",
+      path: "/admin",
     },
     {
       key: "accounts",
       icon: <TeamOutlined />,
       label: "Quản lý tài khoản",
+      path: "/admin/accounts",
+    },
+    {
+      key: "product-management",
+      icon: <AppstoreOutlined />,
+      label: "Quản lý sản phẩm",
+      children: [
+        {
+          key: "category",
+          label: "Quản lý danh mục",
+          path: "/admin/product/category",
+        },
+
+        {
+          key: "brand",
+          label: "Quản lý thương hiệu",
+          path: "/admin/product/brand",
+        },
+
+        {
+          key: "model",
+          label: "Quản lý mẫu mã",
+          path: "/admin/product/model",
+        },
+        {
+          key: "vehicle",
+          label: "Quản lý phương tiện",
+          path: "/admin/product/vehicle",
+        },
+        {
+          key: "battery",
+          label: "Quản lý pin",
+          path: "/admin/product/battery",
+        },
+      ],
     },
   ];
 

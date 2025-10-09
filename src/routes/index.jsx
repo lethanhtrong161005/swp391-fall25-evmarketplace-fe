@@ -8,6 +8,11 @@ import LayoutStaff from "@layouts/LayoutStaff";
 // Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
 import ManageAccounts from "@pages/Admin/ManageAccounts";
+import CategoryManagement from "@pages/Admin/CategoryManagement/CategoryManagement";
+import BrandManagement from "@pages/Admin/BrandManagement/BrandManagement";
+import ModelManagement from "@pages/Admin/ModelManagement/ModelManagement";
+import ProductVehicleManagement from "@pages/Admin/ProductVehicleManagement/ProductVehicleManagement";
+import ProductBatteryManagement from "@pages/Admin/ProductBatteryManagement/ProductBatteryManagement";
 
 // Staff pages
 import StaffDashboard from "@pages/Staff/StaffDashboard";
@@ -35,6 +40,7 @@ export const routes = () => [
       { index: true, element: <HomeWrapper /> },
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
+      { path: "detail/:type/:id", element: <ProductDetail /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
 
       {
@@ -72,6 +78,26 @@ export const routes = () => [
         element: <RoleBasedRoute allowedRoles={["admin"]} />,
         children: [
           { path: "admin", element: <AdminDashboard /> },
+          {
+            path: "admin/product/category",
+            element: <CategoryManagement />,
+          },
+          {
+            path: "admin/product/brand",
+            element: <BrandManagement />,
+          },
+          {
+            path: "admin/product/model",
+            element: <ModelManagement />,
+          },
+          {
+            path: "admin/product/vehicle",
+            element: <ProductVehicleManagement />,
+          },
+          {
+            path: "admin/product/battery",
+            element: <ProductBatteryManagement />,
+          },
           { path: "admin/accounts", element: <ManageAccounts /> },
         ],
       },

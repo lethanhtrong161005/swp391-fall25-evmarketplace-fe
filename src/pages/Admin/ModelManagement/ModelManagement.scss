@@ -1,0 +1,49 @@
+.model-management {
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .ant-table {
+    margin-top: 16px;
+    background: #fff;
+    border-radius: 8px;
+  }
+
+  .ant-table-thead > tr > th {
+    background-color: #fafafa;
+    font-weight: 600;
+  }
+
+  .ant-table-cell {
+    .ant-btn-link {
+      margin-right: 8px;
+      padding: 0;
+      font-weight: 500;
+    }
+
+    .ant-btn-link:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .category-statistics {
+    margin-bottom: 20px;
+
+    .ant-card {
+      cursor: pointer;
+      text-align: center;
+      border-radius: 10px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        border-color: #1890ff;
+        box-shadow: 0 0 8px rgba(24, 144, 255, 0.25);
+      }
+    }
+  }
+}

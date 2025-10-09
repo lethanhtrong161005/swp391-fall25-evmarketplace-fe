@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Row, Col, Pagination } from "antd";
+import { Row, Col, Pagination, Empty } from "antd";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "../../../components/ProductCard/ProductCard";
 
@@ -24,18 +24,19 @@ const VehicleList = ({ listings, onClick }) => {
       ) {
         type = "vehicle";
       } else {
-        console.warn("⚠️ Category không xác định:", cat);
+        console.warn("Category không xác định:", cat);
       }
 
       navigate(`/detail/${type}/${listing.id}`);
     }
   };
 
-  // lọc ra sản phẩm là phương tiện
-  const vehicles = listings.filter((listing) =>
-    ["EV_CAR", "E_MOTORBIKE", "E_BIKE"].includes(
-      listing.category?.toUpperCase()
-    )
+  // lọc ra sản phẩm là phương tiện và ACTIVE
+  const vehicles = listings.filter(
+    (listing) =>
+      ["EV_CAR", "E_MOTORBIKE", "E_BIKE"].includes(
+        listing.category?.toUpperCase()
+      ) && listing.status?.toUpperCase() === "ACTIVE"
   );
 
   // tính toán sản phẩm của trang hiện tại
@@ -44,38 +45,41 @@ const VehicleList = ({ listings, onClick }) => {
 
   return (
     <>
-      <Row gutter={[16, 16]} align="stretch">
-        {currentData.map((listing) => (
-          <Col
-            key={listing.id}
-            xs={24}
-            sm={12}
-            md={8}
-            lg={6}
-            xl={6} // 4 cột mỗi hàng
-          >
-            <ProductCard
-              listing={listing}
-              onClick={() => handleClick(listing)}
-              style={{ height: "100%" }}
-            />
-          </Col>
-        ))}
-      </Row>
+      {vehicles.length === 0 ? (
+        <div style={{ textAlign: "center", marginTop: 40 }}>
+          <Empty description="Không có sản phẩm nào được tìm thấy" />
+        </div>
+      ) : (
+        <>
+          <Row gutter={[16, 16]} align="stretch">
+            {currentData.map((listing) => (
+              <Col key={listing.id} xs={24} sm={12} md={8} lg={6} xl={6}>
+                <ProductCard
+                  listing={listing}
+                  onClick={() => handleClick(listing)}
+                  style={{ height: "100%" }}
+                />
+              </Col>
+            ))}
+          </Row>
 
-      {/* Pagination */}
-      <div style={{ marginTop: 24, textAlign: "center" }}>
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={vehicles.length}
-          onChange={(page) => {
-            setCurrentPage(page);
-            window.scrollTo({ top: 0, behavior: "smooth" }); // 👈 cuộn lên đầu khi đổi trang
-          }}
-          showSizeChanger={false}
-        />
-      </div>
+          {/* Pagination chỉ hiện khi có sản phẩm */}
+          {vehicles.length > 0 && (
+            <div style={{ marginTop: 24, textAlign: "center" }}>
+              <Pagination
+                current={currentPage}
+                pageSize={pageSize}
+                total={vehicles.length}
+                onChange={(page) => {
+                  setCurrentPage(page);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                showSizeChanger={false}
+              />
+            </div>
+          )}
+        </>
+      )}
     </>
   );
 };
