@@ -33,10 +33,12 @@ export default function ManageAccounts() {
     setEditRow,
     onCreateFinish,
     onEditFinish,
+    contextHolder,
   } = useManageAccounts();
 
   return (
     <div className={s.wrap}>
+      {contextHolder}
       <Card
         className={s.pageHeader}
         title={

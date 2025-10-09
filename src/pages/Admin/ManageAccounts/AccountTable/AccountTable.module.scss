@@ -4,6 +4,8 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   transition: box-shadow 0.3s ease;
+  max-width: 100%;
+  overflow-x: hidden;
   
   &:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -11,6 +13,8 @@
 }
 
 .accountTable {
+  max-width: 100%;
+  overflow-x: auto;
   .ant-table-thead > tr > th {
     background: #fafafa;
     border-bottom: 2px solid #f0f0f0;
@@ -198,14 +202,14 @@
 
 .primaryButton {
   height: 32px;
-  padding: 4px 16px;
+  padding: 4px 12px;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s ease;
   border: 1px solid #d9d9d9;
-  min-width: 80px; // Consistent width
-  max-width: 80px; // Fixed width to prevent layout shift
+  min-width: auto;
+  max-width: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,24 +221,19 @@
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  
-  // Make buttons equal width - remove individual sizing
-  &:nth-child(1), &:nth-child(2) {
-    flex: 0 0 80px; // Fixed flex-basis instead of flex: 1
-  }
 }
 
 // Lock/Unlock Button - Single Grid Cell
 .lockButton {
   height: 32px;
-  padding: 4px 16px;
+  padding: 4px 12px;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s ease;
   border: 1px solid #d9d9d9;
-  min-width: 96px; // Increased width for "Mở khóa" + icon
-  max-width: 96px; // Fixed width to prevent layout shift
+  min-width: auto;
+  max-width: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -274,15 +273,15 @@
 // More Button - Single Grid Cell
 .moreButton {
   height: 32px;
-  padding: 4px 16px;
+  padding: 4px 12px;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s ease;
   border: 1px solid #d9d9d9;
   color: #666;
-  min-width: 80px; // Fixed width to match other buttons
-  max-width: 80px;
+  min-width: auto;
+  max-width: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -441,4 +440,40 @@
     font-size: 13px;
     min-width: 80px;
   }
+}
+
+// Small laptop screens: tighten spacings to avoid horizontal squeeze
+@media (max-width: 1366px) {
+  .accountTable {
+    .ant-table-tbody > tr > td,
+    .ant-table-thead > tr > th {
+      padding: 12px 10px;
+    }
+  }
+
+  .desktopActions {
+    gap: 12px;
+  }
+
+  .primaryButton {
+    min-width: auto;
+    max-width: none;
+    padding: 4px 12px;
+  }
+
+  .lockButton {
+    min-width: auto;
+    max-width: none;
+    padding: 4px 12px;
+  }
+
+  .moreButton {
+    min-width: auto;
+    max-width: none;
+  }
+}
+
+// Hide button text on narrow screens, keep icons via tooltip
+@media (max-width: 991px) {
+  .btnLabel { display: none; }
 }

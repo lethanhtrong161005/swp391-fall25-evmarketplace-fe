@@ -11,6 +11,7 @@ import {
   Popconfirm,
   Input,
   Card,
+  Grid,
 } from "antd";
 import {
   UserOutlined,
@@ -119,6 +120,7 @@ export default function AccountTable({
   onSearch,
 }) {
   const { user } = useAuth(); // Current logged in user
+  const screens = Grid.useBreakpoint();
   const {
     onChangeRole,
     onToggleLock,
@@ -172,12 +174,13 @@ export default function AccountTable({
     }
   };
 
+  // Table columns with responsive widths; hide less-important columns on smaller screens
   const columns = [
     {
       title: "Người dùng",
       dataIndex: "name",
       key: "name",
-      width: 280,
+      width: screens.xl ? 280 : 240,
       render: (_, record) => (
         <div className={s.userCell}>
           <Avatar
@@ -215,21 +218,23 @@ export default function AccountTable({
     {
       title: "Vai trò",
       key: "role",
-      width: 140,
+      width: 120,
       align: "center",
       render: (_, record) => <RoleTag role={record.role} />,
+      responsive: ["sm"],
     },
     {
       title: "Trạng thái",
       key: "status",
-      width: 120,
+      width: 110,
       align: "center",
       render: (_, record) => <StatusTag status={record.status} />,
+      responsive: ["sm"],
     },
     {
       title: "Xác minh",
       key: "verification",
-      width: 120,
+      width: 110,
       align: "center",
       render: (_, record) => (
         <Space size={12} direction="vertical">
@@ -237,11 +242,12 @@ export default function AccountTable({
           <VerificationBadge verified={record.emailVerified} type="email" />
         </Space>
       ),
+      responsive: ["md"],
     },
     {
       title: "Ngày tạo",
       key: "createdAt",
-      width: 140,
+      width: 130,
       align: "center",
       render: (_, record) => (
         <div
@@ -274,12 +280,13 @@ export default function AccountTable({
           </Text>
         </div>
       ),
+      responsive: ["lg"],
     },
     {
       title: "Thao tác",
       key: "actions",
       fixed: "right",
-      width: 320,
+      width: screens.xl ? 300 : 260,
       align: "center",
       render: (_, record) => {
         const isActive = record.status === "ACTIVE";
@@ -323,23 +330,28 @@ export default function AccountTable({
         // Primary Actions - Visible on all screen sizes
         const primaryActions = (
           <Space size={8} className={s.primaryActions}>
-            <Button
-              type="primary"
-              icon={<EyeOutlined />}
-              onClick={() => handleDetailClick(record)}
-              className={s.primaryButton}
-              size="small"
-            >
-              Chi tiết
-            </Button>
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => handleEditClick(record)}
-              className={s.primaryButton}
-              size="small"
-            >
-              Sửa
-            </Button>
+            <Tooltip title="Xem chi tiết" placement="top">
+              <Button
+                type="primary"
+                icon={<EyeOutlined />}
+                onClick={() => handleDetailClick(record)}
+                className={s.primaryButton}
+                size="small"
+              >
+                <span className={s.btnLabel}>Chi tiết</span>
+              </Button>
+            </Tooltip>
+
+            <Tooltip title="Chỉnh sửa" placement="top">
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => handleEditClick(record)}
+                className={s.primaryButton}
+                size="small"
+              >
+                <span className={s.btnLabel}>Sửa</span>
+              </Button>
+            </Tooltip>
           </Space>
         );
 
@@ -357,16 +369,19 @@ export default function AccountTable({
             cancelText="Hủy"
             okType={isActive ? "danger" : "primary"}
           >
-            <Button
-              type="text"
-              icon={isActive ? <LockOutlined /> : <UnlockOutlined />}
-              className={`${s.lockButton} ${
-                isActive ? s.lockDanger : s.lockSuccess
-              }`}
-              size="small"
-            >
-              {isActive ? "Khóa" : "Mở khóa"}
-            </Button>
+            <Tooltip title={isActive ? "Khóa tài khoản" : "Mở khóa tài khoản"}>
+              <Button
+                icon={isActive ? <LockOutlined /> : <UnlockOutlined />}
+                className={`${s.lockButton} ${
+                  isActive ? s.lockDanger : s.lockSuccess
+                }`}
+                size="small"
+              >
+                <span className={s.btnLabel}>
+                  {isActive ? "Khóa" : "Mở khóa"}
+                </span>
+              </Button>
+            </Tooltip>
           </Popconfirm>
         );
 
@@ -447,6 +462,18 @@ export default function AccountTable({
     },
   ];
 
+  // On smaller screens hide less-important columns to avoid horizontal scroll
+  const visibleColumns = React.useMemo(() => {
+    let cols = [...columns];
+    if (!screens.xl) {
+      cols = cols.filter((c) => c.key !== "verification");
+    }
+    if (!screens.lg) {
+      cols = cols.filter((c) => c.key !== "createdAt");
+    }
+    return cols;
+  }, [columns, screens.xl, screens.lg]);
+
   return (
     <div className={s.tableContainer}>
       {/* Search Bar */}
@@ -467,7 +494,7 @@ export default function AccountTable({
       {/* Account Table */}
       <Table
         rowKey="id"
-        columns={columns}
+        columns={visibleColumns}
         dataSource={rows}
         loading={loading}
         pagination={{
@@ -482,7 +509,8 @@ export default function AccountTable({
           className: s.pagination,
         }}
         className={s.accountTable}
-        scroll={{ x: 1300 }}
+        // Remove forced horizontal scroll; AntD will wrap within container
+        scroll={screens.md ? undefined : { x: 900 }}
         rowClassName={(record) =>
           `${s.tableRow} ${
             record.status === "ACTIVE" ? s.activeRow : s.inactiveRow

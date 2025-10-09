@@ -37,7 +37,7 @@ export default function ListingCreate() {
     return (
       <div style={{ padding: 40, textAlign: "center" }}>
         {contextHolder}
-        <Spin tip="Đang tải danh mục..." />
+        <Spin />
       </div>
     );
   }
@@ -46,7 +46,10 @@ export default function ListingCreate() {
     <>
       {contextHolder}
 
-      <Card style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }} variant="bordered">
+      <Card
+        style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }}
+        variant="bordered"
+      >
         <Form form={form} layout="vertical">
           <Row gutter={16}>
             <Col xs={24} md={8}>
@@ -72,7 +75,7 @@ export default function ListingCreate() {
       </Card>
 
       <CreateListingFooter
-        currentMode={visibility}                // 👈 dùng visibility để hiển thị
+        currentMode={visibility} // 👈 dùng visibility để hiển thị
         onChoosePostType={() => setPostTypeOpen(true)}
         onPreview={handlePreview}
         onDraft={handleDraft}
@@ -83,12 +86,11 @@ export default function ListingCreate() {
 
       <PostTypeModal
         open={postTypeOpen}
-        value={visibility}                      // 👈 bind vào visibility
-        onChange={handleChangeVisibility}       // 👈 cập nhật visibility + postType
+        value={visibility} // 👈 bind vào visibility
+        onChange={handleChangeVisibility} // 👈 cập nhật visibility + postType
         onCancel={() => setPostTypeOpen(false)}
         onOk={() => setPostTypeOpen(false)}
       />
-
     </>
   );
 }

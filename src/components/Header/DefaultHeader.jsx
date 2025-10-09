@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Row, Col, Avatar, Typography, Space } from "antd";
+import { Layout, Row, Col, Avatar, Typography, Space, Grid } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import HeaderNavbar from "../Navbar/HeaderNavbar";
 import SearchBar from "../SearchBar/SearchBar";
@@ -8,6 +8,14 @@ import logo from "@assets/images/logo/Logo_Brand.png";
 const { Header } = Layout;
 
 const DefaultHeader = () => {
+  const screens = Grid.useBreakpoint();
+  const avatarSize = screens.lg ? 64 : screens.md ? 56 : 48;
+  const titleStyle = {
+    margin: 0,
+    whiteSpace: "nowrap",
+    fontSize: screens.lg ? 20 : screens.md ? 18 : 16,
+    lineHeight: 1.2,
+  };
   return (
     <Header
       style={{ background: "#fff", paddingLeft: "16px", paddingRight: "16px" }}
@@ -20,9 +28,9 @@ const DefaultHeader = () => {
           lg={{ span: 2, offset: 0 }}
           xl={{ span: 2, offset: 0 }}
         >
-          <Space>
-            <Avatar shape="square" size={64} src={logo} />
-            <Typography.Title level={4} style={{ margin: 0 }}>
+          <Space wrap={false}>
+            <Avatar shape="square" size={avatarSize} src={logo} />
+            <Typography.Title level={4} style={titleStyle}>
               ReEV
             </Typography.Title>
           </Space>

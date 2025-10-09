@@ -10,7 +10,7 @@ import {
 import cookieUtils from "@utils/cookieUtils";
 
 export function useManageAccounts() {
-  const [msg] = message.useMessage();
+  const [msg, contextHolder] = message.useMessage();
   const [loading, setLoading] = React.useState(false);
   const [rows, setRows] = React.useState([]);
 
@@ -324,5 +324,6 @@ export function useManageAccounts() {
     editRow,
     setEditRow,
     onEditFinish,
+    contextHolder,
   };
 }
