@@ -10,7 +10,7 @@ export default function ProductBatteryModal({
   onCancel,
   onSubmit,
   editingBattery,
-  models,
+  models, 
 }) {
   return (
     <Modal
@@ -29,15 +29,16 @@ export default function ProductBatteryModal({
         onFinish={onSubmit}
         initialValues={{ status: "ACTIVE" }}
       >
+
         {!editingBattery && (
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
                 label="Model"
                 name="modelId"
-                rules={[{ required: true, message: "Chọn model" }]}
+                rules={[{ required: true, message: "Vui lòng chọn model" }]}
               >
-                <Select placeholder="Chọn model">
+                <Select placeholder="Chọn model có pin">
                   {models.map((m) => (
                     <Option key={m.id} value={m.id}>
                       {m.name} ({m.year})

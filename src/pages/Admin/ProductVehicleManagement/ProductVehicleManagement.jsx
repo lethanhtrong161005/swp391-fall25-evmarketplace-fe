@@ -16,18 +16,19 @@ import { useProductVehicleManagementLogic } from "./ProductVehicleManagement.log
 import "./ProductVehicleManagement.scss";
 import ProductVehicleModal from "../../../components/Modal/ProductVehicleModal/ProductVehicleModal";
 
-
 const { Option } = Select;
 
 const ProductVehicleManagement = () => {
   const {
-    // categories,
+    categories,
     brands,
     models,
     vehicles,
     loading,
     selectedCategory,
     setSelectedCategory,
+    selectedBrand,
+    setSelectedBrand,
     isModalVisible,
     setIsModalVisible,
     editingVehicle,
@@ -145,8 +146,13 @@ const ProductVehicleManagement = () => {
         onCancel={() => setIsModalVisible(false)}
         onSubmit={handleSubmit}
         editingVehicle={editingVehicle}
+        categories={categories}
         brands={brands}
         models={models}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        selectedBrand={selectedBrand}
+        setSelectedBrand={setSelectedBrand}
       />
     </div>
   );

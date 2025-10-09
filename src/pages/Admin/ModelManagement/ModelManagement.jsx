@@ -128,6 +128,7 @@ const ModelManagement = () => {
         editingModel={editingModel}
         categories={categories}
         brands={brands}
+        selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
 

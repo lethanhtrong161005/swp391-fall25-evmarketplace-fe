@@ -15,6 +15,7 @@ export const useProductVehicleManagementLogic = () => {
   const [models, setModels] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("EV_CAR");
+  const [selectedBrand, setSelectedBrand] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -49,6 +50,9 @@ export const useProductVehicleManagementLogic = () => {
     setEditingVehicle(record);
 
     if (record) {
+      setSelectedCategory(record.category);
+      setSelectedBrand(record.brandId || null);
+
       const car = record.car || record.carDetail;
       const bike = record.bike || record.bikeDetail;
       const ebike = record.ebike || record.ebikeDetail;
@@ -97,6 +101,7 @@ export const useProductVehicleManagementLogic = () => {
       form.setFieldsValue({
         category: selectedCategory || "EV_CAR",
       });
+      setSelectedBrand(null);
     }
 
     setIsModalVisible(true);
@@ -190,6 +195,7 @@ export const useProductVehicleManagementLogic = () => {
         if (!payload.bikeDetail) payload.bikeDetail = null;
         if (!payload.ebikeDetail) payload.ebikeDetail = null;
         delete payload.status;
+
         const res = await addVehicle(payload);
         if (res.success) {
           message.success("Thêm xe mới thành công");
@@ -218,6 +224,8 @@ export const useProductVehicleManagementLogic = () => {
     vehicles: filteredVehicles,
     selectedCategory,
     setSelectedCategory,
+    selectedBrand,
+    setSelectedBrand,
     loading,
     isModalVisible,
     setIsModalVisible,

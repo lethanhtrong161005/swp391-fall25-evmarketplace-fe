@@ -1,4 +1,5 @@
 import React from "react";
+import { useMemo } from "react";
 import { Modal, Form, Input, Select, InputNumber } from "antd";
 import "./ModelModal.scss";
 
@@ -13,7 +14,18 @@ export default function ModelModal({
   categories,
   brands,
   setSelectedCategory,
+  selectedCategory,
 }) {
+  const filteredBrands = useMemo(() => {
+    if (!selectedCategory) return [];
+
+    const result = brands.filter(
+      (b) =>
+        Array.isArray(b.categoryIds) &&
+        b.categoryIds.includes(Number(selectedCategory))
+    );
+    return result;
+  }, [brands, selectedCategory]);
   return (
     <Modal
       className="model-form-modal"
@@ -31,8 +43,10 @@ export default function ModelModal({
           rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
         >
           <Select
-            placeholder="Chọn danh mục"
-            onChange={(val) => setSelectedCategory(val)}
+            onChange={(val) => {
+              setSelectedCategory(val);
+              form.setFieldsValue({ brandId: undefined });
+            }}
           >
             {categories.map((cat) => (
               <Option key={cat.id} value={cat.id}>
@@ -47,8 +61,15 @@ export default function ModelModal({
           name="brandId"
           rules={[{ required: true, message: "Vui lòng chọn thương hiệu" }]}
         >
-          <Select placeholder="Chọn thương hiệu">
-            {brands.map((b) => (
+          <Select
+            placeholder={
+              selectedCategory
+                ? "Chọn thương hiệu"
+                : "Chọn danh mục trước để lọc thương hiệu"
+            }
+            disabled={!selectedCategory}
+          >
+            {filteredBrands.map((b) => (
               <Option key={b.id} value={b.id}>
                 {b.name}
               </Option>

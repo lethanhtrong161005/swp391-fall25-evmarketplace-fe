@@ -31,7 +31,12 @@ export const useProductBatteryManagementLogic = () => {
         getAllBatteries(),
       ]);
       if (brandRes.success) setBrands(brandRes.data || []);
-      if (modelRes.success) setModels(modelRes.data || []);
+      if (modelRes.success) {
+        const filteredModels = (modelRes.data || []).filter((m) =>
+          ["BATTERY"].includes(m.categoryName)
+        );
+        setModels(filteredModels);
+      }
       if (batteryRes.success) setBatteries(batteryRes.data || []);
     } catch {
       message.error("Lỗi khi tải dữ liệu");

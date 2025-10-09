@@ -1,5 +1,15 @@
-import React from "react";
-import { Modal, Form, Input, InputNumber, Select, Card, Row, Col, Switch } from "antd";
+import React, { useMemo } from "react";
+import {
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Card,
+  Row,
+  Col,
+  Switch,
+} from "antd";
 import "./ProductVehicleModal.scss";
 
 const { Option } = Select;
@@ -12,8 +22,29 @@ export default function ProductVehicleModal({
   editingVehicle,
   brands,
   models,
+  categories,
+  selectedBrand,
+  setSelectedBrand,
 }) {
   const category = form.getFieldValue("category") || editingVehicle?.category;
+  const selectedCatName = Form.useWatch("category", form);
+  // ✅ Lọc brand theo category
+  const filteredBrands = useMemo(() => {
+    if (!selectedCatName) return [];
+    const matchedCat = categories.find((c) => c.name === selectedCatName);
+    if (!matchedCat) return [];
+    return brands.filter(
+      (b) =>
+        Array.isArray(b.categoryIds) &&
+        b.categoryIds.includes(Number(matchedCat.id))
+    );
+  }, [brands, categories, selectedCatName]);
+
+  // ✅ Lọc model theo brand được chọn
+  const filteredModels = useMemo(() => {
+    if (!selectedBrand) return [];
+    return models.filter((m) => Number(m.brandId) === Number(selectedBrand));
+  }, [models, selectedBrand]);
 
   return (
     <Modal
@@ -32,29 +63,55 @@ export default function ProductVehicleModal({
         onFinish={onSubmit}
         initialValues={{ category: "EV_CAR" }}
       >
+        {/* ===== CATEGORY + BRAND + MODEL ===== */}
         {!editingVehicle && (
           <>
+            {/* Category */}
             <Form.Item
               label="Danh mục"
               name="category"
               rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
             >
-              <Select placeholder="Chọn danh mục">
+              <Select
+                placeholder="Chọn danh mục"
+                onChange={() => {
+                  form.setFieldsValue({
+                    brandId: undefined,
+                    modelId: undefined,
+                  });
+                  setSelectedBrand(null); // reset brand
+                }}
+              >
                 <Option value="EV_CAR">Ô tô điện</Option>
                 <Option value="E_MOTORBIKE">Xe máy điện</Option>
                 <Option value="E_BIKE">Xe đạp điện</Option>
               </Select>
             </Form.Item>
 
+            {/* Brand + Model */}
             <Row gutter={16}>
+              {/* Brand */}
               <Col span={12}>
                 <Form.Item
                   label="Thương hiệu"
                   name="brandId"
-                  rules={[{ required: true, message: "Vui lòng chọn thương hiệu" }]}
+                  rules={[
+                    { required: true, message: "Vui lòng chọn thương hiệu" },
+                  ]}
                 >
-                  <Select placeholder="Chọn thương hiệu">
-                    {brands.map((b) => (
+                  <Select
+                    placeholder={
+                      form.getFieldValue("category")
+                        ? "Chọn thương hiệu"
+                        : "Chọn danh mục trước"
+                    }
+                    disabled={!form.getFieldValue("category")}
+                    onChange={(val) => {
+                      setSelectedBrand(Number(val));
+                      form.setFieldsValue({ modelId: undefined });
+                    }}
+                  >
+                    {filteredBrands.map((b) => (
                       <Option key={b.id} value={b.id}>
                         {b.name}
                       </Option>
@@ -63,14 +120,20 @@ export default function ProductVehicleModal({
                 </Form.Item>
               </Col>
 
+              {/* Model */}
               <Col span={12}>
                 <Form.Item
                   label="Model"
                   name="modelId"
                   rules={[{ required: true, message: "Vui lòng chọn model" }]}
                 >
-                  <Select placeholder="Chọn model">
-                    {models.map((m) => (
+                  <Select
+                    placeholder={
+                      selectedBrand ? "Chọn model" : "Chọn thương hiệu trước"
+                    }
+                    disabled={!selectedBrand}
+                  >
+                    {filteredModels.map((m) => (
                       <Option key={m.id} value={m.id}>
                         {m.name} ({m.year})
                       </Option>
@@ -145,6 +208,7 @@ export default function ProductVehicleModal({
           </Form.Item>
         )}
 
+        {/* ===== Đầu nối ===== */}
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Đầu nối AC" name="acConnector">
@@ -168,7 +232,11 @@ export default function ProductVehicleModal({
 
         {/* ===== Detail theo loại ===== */}
         {category === "EV_CAR" && (
-          <Card className="detail-section" title="Thông tin ô tô điện" size="small">
+          <Card
+            className="detail-section"
+            title="Thông tin ô tô điện"
+            size="small"
+          >
             <Row gutter={16}>
               <Col span={8}>
                 <Form.Item label="Số chỗ ngồi" name="seatingCapacity">
@@ -201,7 +269,11 @@ export default function ProductVehicleModal({
         )}
 
         {category === "E_MOTORBIKE" && (
-          <Card className="detail-section" title="Thông tin xe máy điện" size="small">
+          <Card
+            className="detail-section"
+            title="Thông tin xe máy điện"
+            size="small"
+          >
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item label="Vị trí động cơ" name="motorLocation">
@@ -236,7 +308,11 @@ export default function ProductVehicleModal({
         )}
 
         {category === "E_BIKE" && (
-          <Card className="detail-section" title="Thông tin xe đạp điện" size="small">
+          <Card
+            className="detail-section"
+            title="Thông tin xe đạp điện"
+            size="small"
+          >
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item label="Kích thước khung" name="frameSize">

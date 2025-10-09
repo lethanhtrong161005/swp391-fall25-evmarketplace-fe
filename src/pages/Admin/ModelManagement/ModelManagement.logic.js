@@ -13,7 +13,7 @@ export const useModelManagementLogic = () => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [models, setModels] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -53,8 +53,10 @@ export const useModelManagementLogic = () => {
         year: record.year,
         status: record.status || "ACTIVE",
       });
+      setSelectedCategory(record.categoryId);
     } else {
       form.resetFields();
+      setSelectedCategory(null);
     }
     setIsModalVisible(true);
   };
@@ -66,7 +68,11 @@ export const useModelManagementLogic = () => {
         : await addModel(values);
 
       if (res.success) {
-        message.success(editingModel ? "Cập nhật model thành công" : "Thêm model mới thành công");
+        message.success(
+          editingModel
+            ? "Cập nhật model thành công"
+            : "Thêm model mới thành công"
+        );
         await reloadData();
       } else {
         message.error(res.message || "Lỗi khi lưu model");
@@ -95,7 +101,7 @@ export const useModelManagementLogic = () => {
   };
 
   const filteredModels = models.filter(
-    (m) => m.categoryId === selectedCategory
+    (m) => !selectedCategory || m.categoryId === selectedCategory
   );
 
   return {
