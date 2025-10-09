@@ -12,6 +12,9 @@ import { requestOtp, verifyOtp } from "@services/otpService";
 import { createAccount, resetPassword } from "@services/accountService";
 import { useAuth } from "@hooks/useAuth";
 
+const MANAGE_LISTINGS_PATH = "/my-ads"; // đổi path nếu bạn dùng route khác
+
+
 const HeaderAction = () => {
   const { isLoggedIn, user, login, logout } = useAuth();
   const [messageApi, contextHolder] = message.useMessage();
@@ -203,11 +206,30 @@ const HeaderAction = () => {
     }
   };
 
+  // ⬇️ click “Quản lý tin”
+  const handleClickManageListing = () => {
+    if (isLoggedIn) {
+      navigate(MANAGE_LISTINGS_PATH);
+    } else {
+      setRedirectAfterLogin(MANAGE_LISTINGS_PATH);
+      messageApi.info("Vui lòng đăng nhập để quản lý tin");
+      setOpenLogin(true);
+    }
+  };
+
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
+
+
 
   return (
     <div style={{ display: "flex", gap: 8 }}>
       {contextHolder}
+
+      
+        <Button onClick={handleClickManageListing}>
+          Quản lý tin
+        </Button>
+      
 
       <Button onClick={handleClickCreateListing}>Đăng tin</Button>
 

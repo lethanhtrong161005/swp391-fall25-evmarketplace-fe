@@ -3,8 +3,9 @@ import { Form, message } from "antd";
 import { useTaxonomy } from "@hooks/useTaxonomy";
 import { createListing } from "@services/listing.service";
 import { normalizeListingPayload } from "@pages/Member/ListingCreate/_shared/normalizeListingPayload";
+import { listingDrafts } from "@/utils/listingDrafts";
 
-export function useListingCreate() {
+export function useListingCreate({ userId = null } = {}) {
     const [form] = Form.useForm();
     const [msg, contextHolder] = message.useMessage();
 
@@ -13,9 +14,10 @@ export function useListingCreate() {
     const [postTypeOpen, setPostTypeOpen] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
-    // 👉 tách rõ 2 state
     const [postType, setPostType] = useState("FREE");       // FREE | PAID
     const [visibility, setVisibility] = useState("NORMAL"); // NORMAL | BOOSTED
+
+    const [draftId, setDraftId] = useState(() => listingDrafts.getCurrentId(userId));
 
     const categoryId = Form.useWatch("category", form);
     const selectedCategory = useMemo(
@@ -31,35 +33,98 @@ export function useListingCreate() {
     }, []);
     const safeSetSubmitting = (v) => { if (mountedRef.current) setSubmitting(v); };
 
-    // 👉 handler khi chọn trong modal (phát ra NORMAL/BOOSTED)
     const handleChangeVisibility = useCallback((v) => {
         setVisibility(v);
         setPostType(v === "BOOSTED" ? "PAID" : "FREE");
+        if (draftId) listingDrafts.update(draftId, { visibility: v, postType: v === "BOOSTED" ? "PAID" : "FREE" }, userId);
+    }, [draftId, userId]);
+
+    // ===== Khôi phục nháp hiện tại nếu có
+    useEffect(() => {
+        const curId = listingDrafts.getCurrentId(userId);
+        const id = draftId || curId;
+        if (!id) return;
+        const d = listingDrafts.load(id, userId);
+        if (!d) return;
+        if (d.formValues) form.setFieldsValue(d.formValues);
+        if (d.visibility) setVisibility(d.visibility);
+        if (d.postType) setPostType(d.postType);
+        setDraftId(id);
+        msg.info("Đã khôi phục bản nháp từ máy.");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleSubmit = useCallback(async () => {
+    // ===== Autosave (debounce 600ms) — chỉ khi đã có draftId
+    const autosaveTimer = useRef(null);
+    const onValuesChange = useCallback((_, all) => {
+        if (!draftId) return; // chưa lưu nháp lần đầu -> chưa autosave
+        clearTimeout(autosaveTimer.current);
+        autosaveTimer.current = setTimeout(() => {
+            listingDrafts.update(
+                draftId,
+                {
+                    formValues: all,
+                    title: all?.title || "(Không tiêu đề)",
+                    visibility,
+                    postType,
+                },
+                userId
+            );
+        }, 600);
+    }, [draftId, visibility, postType, userId]);
+    useEffect(() => () => clearTimeout(autosaveTimer.current), []);
+
+    // ===== Lưu nháp thủ công (tạo mới nếu chưa có id)
+    const handleDraft = useCallback(() => {
+        const id = draftId || undefined; // nếu chưa có -> helper sẽ tạo id mới
+        const formValues = form.getFieldsValue(true);
+        const data = {
+            id,
+            formValues,
+            visibility,
+            postType,
+            title: form.getFieldValue("title") || "(Không tiêu đề)",
+        };
+        const newId = listingDrafts.save(data, userId);
+        setDraftId(newId);
+        msg.success(`Đã lưu nháp #${String(newId).slice(-6)} trên máy.`);
+    }, [draftId, form, visibility, postType, userId, msg]);
+
+    // ===== Submit thật (PENDING). Thành công -> xoá nháp local
+    const handleSubmit = useCallback(async (extra) => {
         if (submitting) return;
         try {
             const values = await form.validateFields();
             safeSetSubmitting(true);
 
-            const payload = normalizeListingPayload(values, tax, postType, visibility);
-            await createListing(payload, values.images, values.videos);
+            const status = extra?.status || "PENDING";
+            const payload = normalizeListingPayload(values, tax, postType, visibility, status);
 
+            // LƯU Ý: localStorage không lưu được ảnh/video — user cần upload lại nếu refresh.
+            const res = await createListing(payload, values.images, values.videos);
+
+            const listingId = res?.data?.listingId;
             msg.success("Đăng tin thành công!");
+
+            if (draftId) {
+                listingDrafts.remove(draftId, userId);
+                setDraftId(null);
+            }
             form.resetFields();
+            // (tuỳ chọn) điều hướng về trang quản lý:
+            // navigate(`/my/listings?tab=PENDING&highlight=${listingId}`, { replace: true });
         } catch (e) {
             if (e?.errorFields) msg.error("Vui lòng điền đầy đủ các trường bắt buộc.");
             else msg.error(e?.message || "Đăng tin thất bại.");
         } finally {
             safeSetSubmitting(false);
         }
-    }, [form, tax, postType, visibility, msg, submitting]);
+    }, [form, tax, postType, visibility, msg, submitting, draftId, userId]);
 
     const handlePreview = useCallback(async () => {
         try {
             const values = await form.validateFields();
-            const preview = normalizeListingPayload(values, tax, postType, visibility);
+            const preview = normalizeListingPayload(values, tax, postType, visibility, "PENDING");
             localStorage.setItem("listing_preview", JSON.stringify(preview));
             msg.success("Đã lưu bản xem trước.");
         } catch {
@@ -67,21 +132,38 @@ export function useListingCreate() {
         }
     }, [form, tax, postType, visibility, msg]);
 
-    const handleDraft = useCallback(() => {
-        const values = form.getFieldsValue(true);
-        const payload = normalizeListingPayload(values, tax, postType, visibility);
-        localStorage.setItem("listing_draft", JSON.stringify(payload));
-        msg.success("Đã lưu nháp.");
-    }, [form, tax, postType, visibility, msg]);
+    // ===== Expose thêm utility để làm “Danh sách nháp”
+    const listLocalDrafts = useCallback(() => listingDrafts.list(userId), [userId]);
+    const loadLocalDraftById = useCallback((id) => {
+        const d = listingDrafts.load(id, userId);
+        if (!d) return false;
+        if (d.formValues) form.setFieldsValue(d.formValues);
+        if (d.visibility) setVisibility(d.visibility);
+        if (d.postType) setPostType(d.postType);
+        setDraftId(id);
+        listingDrafts.setCurrentId(id, userId);
+        msg.success(`Đã mở nháp #${String(id).slice(-6)}.`);
+        return true;
+    }, [form, userId, msg]);
+
+    const deleteLocalDraftById = useCallback((id) => {
+        listingDrafts.remove(id, userId);
+        if (draftId === id) setDraftId(null);
+        msg.success("Đã xoá nháp.");
+    }, [draftId, userId, msg]);
 
     return {
         form, msg, contextHolder,
         loading, tax, isBattery,
-
-        // expose cả 2 state + modal
         postType, visibility, postTypeOpen, submitting,
         setPostTypeOpen, handleChangeVisibility,
-
         handleSubmit, handlePreview, handleDraft,
+        onValuesChange,
+
+        // quản lý nhiều nháp
+        draftId,
+        listLocalDrafts,
+        loadLocalDraftById,
+        deleteLocalDraftById,
     };
 }

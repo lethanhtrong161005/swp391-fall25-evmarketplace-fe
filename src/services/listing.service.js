@@ -16,18 +16,62 @@ export async function createListing(payload, images = [], videos = []) {
   if (!ok) {
     throw new Error(res?.data?.message || `Upload failed (${res?.status})`);
   }
-  return res.data; 
+  console.log(res.data);
+  return res.data;
 }
 
-/**
- * (Tuỳ chọn) Upload media sau khi có listingId
- * files: mảng File từ Upload (originFileObj)
- */
+export async function fetchMyListings({ page = 0, size = 10, status, q } = {}) {
+  const params = new URLSearchParams();
+  params.set('page', page);
+  params.set('size', size);
+  if (status && status !== 'DRAFT') params.set('status', status); // DRAFT là local only
+  if (q) params.set('q', q);
+
+  const res = await api.get(`/api/listing/mine?${params.toString()}`, {
+    validateStatus: () => true,
+    withCredentials: true,
+  });
+
+  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok) throw new Error(res?.data?.message || `Fetch failed (${res?.status})`);
+
+  const d = res.data?.data || {};
+  return {
+    page: d.page ?? 0,
+    size: d.size ?? size,
+    total: d.totalElements ?? 0,
+    totalPages: d.totalPages ?? 0,
+    hasNext: !!d.hasNext,
+    hasPrevious: !!d.hasPrevious,
+    items: Array.isArray(d.items) ? d.items : [],
+  };
+}
+
+export async function fetchMyListingCounts() {
+  const res = await api.get('/api/listing/mine/counts', {
+    validateStatus: () => true,
+    withCredentials: true,
+  });
+  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok) throw new Error(res?.data?.message || `Fetch counts failed (${res?.status})`);
+  return res.data?.data || {};
+}
+
+
 export const uploadListingMedia = (listingId, files = []) => {
   const form = new FormData();
   files.forEach((f) => form.append("files", f));
   // override header sang multipart/form-data
-  return post(`/listings/${listingId}/media`, form, {}, {
+  return api.post(`/listings/${listingId}/media`, form, {}, {
     "Content-Type": "multipart/form-data",
   });
 };
+
+export const getFeeListing = async () =>{
+  const res = await api.get("/api/config/listing/fee");
+  if(res.status == 200){
+    return res.data;
+  }
+}
+
+
