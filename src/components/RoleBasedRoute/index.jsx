@@ -17,7 +17,7 @@ const RoleBasedRoute = ({ allowedRoles = [] }) => {
           height: "100vh",
         }}
       >
-        <Spin size="large" />
+        <Spin size="large" tip="Đang tải thông tin..." />
       </div>
     );
   }

@@ -1,0 +1,21 @@
+.model-form-modal {
+  .ant-modal-content {
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+
+  .ant-modal-header {
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #fafafa;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .ant-modal-title {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .ant-form-item-label > label {
+    font-weight: 500;
+  }
+}
