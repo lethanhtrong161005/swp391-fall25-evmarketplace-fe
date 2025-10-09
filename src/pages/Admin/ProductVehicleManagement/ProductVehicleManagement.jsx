@@ -99,7 +99,7 @@ const ProductVehicleManagement = () => {
 
   return (
     <div className="product-vehicle-management">
-      <h2>Quản lý sản phẩm</h2>
+      <h2>Quản lý sản phương tiện</h2>
 
       <Card title="Lọc theo danh mục" style={{ marginBottom: 20 }}>
         <Row gutter={[16, 16]}>
@@ -124,7 +124,7 @@ const ProductVehicleManagement = () => {
       </Card>
 
       <Card
-        title="Danh sách sản phẩm"
+        title="Danh sách phương tiện"
         extra={
           <Button type="primary" onClick={() => handleOpenModal()}>
             Thêm phương tiện mới
