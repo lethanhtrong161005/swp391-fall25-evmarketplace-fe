@@ -4,6 +4,8 @@ import RoleBasedRoute from "@components/RoleBasedRoute";
 import LayoutDefault from "@layouts/LayoutDefault";
 import LayoutAdmin from "@layouts/LayoutAdmin";
 import LayoutStaff from "@layouts/LayoutStaff";
+import LayoutManager from "@layouts/LayoutManager";
+import LayoutInspector from "@layouts/LayoutInspector";
 
 // Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
@@ -18,6 +20,12 @@ import ProductBatteryManagement from "@pages/Admin/ProductBatteryManagement/Prod
 import StaffDashboard from "@pages/Staff/StaffDashboard";
 import ManageListingPage from "@pages/Staff/ManageListing";
 import ManageListingDetail from "@pages/Staff/ManageListingDetail";
+
+// Manager pages
+import ManagerDashboard from "@pages/Manager/ManagerDashboard";
+
+// Inspector pages
+import InspectorDashboard from "@pages/Inspector/InspectorDashboard";
 
 // Common (member)
 import HomeWrapper from "@pages/Member/HomeWrapper/HomeWrapper";
@@ -65,6 +73,30 @@ export const routes = () => [
           { path: "staff/listings", element: <ManageListingPage /> },
           { path: "staff/listings/:id", element: <ManageListingDetail /> },
         ],
+      },
+    ],
+  },
+
+  // MANAGER
+  {
+    path: "/",
+    element: <LayoutManager />,
+    children: [
+      {
+        element: <RoleBasedRoute allowedRoles={["manager"]} />,
+        children: [{ path: "manager", element: <ManagerDashboard /> }],
+      },
+    ],
+  },
+
+  // INSPECTOR
+  {
+    path: "/",
+    element: <LayoutInspector />,
+    children: [
+      {
+        element: <RoleBasedRoute allowedRoles={["inspector"]} />,
+        children: [{ path: "inspector", element: <InspectorDashboard /> }],
       },
     ],
   },

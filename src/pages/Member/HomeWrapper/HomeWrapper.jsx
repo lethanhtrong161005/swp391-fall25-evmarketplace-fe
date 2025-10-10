@@ -1,17 +1,10 @@
 import { useAuth } from "@hooks/useAuth";
-import { Navigate } from "react-router-dom";
 import Home from "@pages/Member/Home";
 
 export default function HomeWrapper() {
   const { user } = useAuth();
 
-  if (user?.role === "staff" || user?.role === "admin") {
-    return <Navigate to="/staff" replace />;
-  }
-
-  if (user?.role === "admin") {
-    return <Navigate to="/admin" replace />;
-  }
-
-  return <Home />; // member hoặc guest
+  // Hiển thị trang chủ cho tất cả người dùng (member, staff, admin, guest)
+  // Admin/Staff có thể truy cập dashboard qua menu Profile
+  return <Home />;
 }

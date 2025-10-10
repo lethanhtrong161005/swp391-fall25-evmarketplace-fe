@@ -191,81 +191,161 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: center;
   
   // On large screens, allow more space
   @media (min-width: 1200px) {
      gap: 10px;
-     justify-content: center;
   }
-    justify-content: center;
 }
 
+// Redesigned Action Buttons - Modern & Consistent
 .primaryButton {
-  height: 32px;
-  padding: 4px 12px;
-  border-radius: 6px;
+  height: 36px;
+  padding: 8px 16px;
+  border-radius: 8px;
   font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  border: 1px solid #d9d9d9;
-  min-width: auto;
-  max-width: none;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  min-width: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   text-align: center;
-  white-space: nowrap; // Prevent text wrapping
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
   
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  // Primary button (Chi tiết)
+  &.ant-btn-primary {
+    background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+    
+    &:hover {
+      background: linear-gradient(135deg, #40a9ff 0%, #69c0ff 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+    }
+  }
+  
+  // Secondary button (Sửa)
+  &:not(.ant-btn-primary) {
+    background: #ffffff;
+    border: 1px solid #d9d9d9;
+    color: #595959;
+    
+    &:hover {
+      background: #f8f9fa;
+      border-color: #1890ff;
+      color: #1890ff;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  
+  // Disabled state
+  &:disabled {
+    background: #f5f5f5;
+    border-color: #d9d9d9;
+    color: #bfbfbf;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    
+    &:hover {
+      background: #f5f5f5;
+      border-color: #d9d9d9;
+      color: #bfbfbf;
+      transform: none;
+      box-shadow: none;
+    }
   }
 }
 
-// Lock/Unlock Button - Single Grid Cell
+// Lock/Unlock Button - Redesigned
 .lockButton {
-  height: 32px;
-  padding: 4px 12px;
-  border-radius: 6px;
+  height: 36px;
+  padding: 8px 16px;
+  border-radius: 8px;
   font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  border: 1px solid #d9d9d9;
-  min-width: auto;
-  max-width: none;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  min-width: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  white-space: nowrap; // Prevent text wrapping
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
   
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
+  // Lock state (Khóa)
   &.lockDanger {
-    color: #ff4d4f;
-    border-color: #ffccc7;
-    background: #fff2f0;
+    background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 77, 79, 0.3);
     
     &:hover {
-      color: #fff;
-      background: #ff4d4f;
-      border-color: #ff4d4f;
+      background: linear-gradient(135deg, #ff7875 0%, #ff9c9c 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 77, 79, 0.4);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(255, 77, 79, 0.3);
     }
   }
   
+  // Unlock state (Mở khóa)
   &.lockSuccess {
-    color: #52c41a;
-    border-color: #b7eb8f;
-    background: #f6ffed;
+    background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
     
     &:hover {
-      color: #fff;
-      background: #52c41a;
-      border-color: #52c41a;
+      background: linear-gradient(135deg, #73d13d 0%, #95de64 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(82, 196, 26, 0.4);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
+    }
+  }
+  
+  // Disabled state
+  &:disabled {
+    background: #f5f5f5;
+    border-color: #d9d9d9;
+    color: #bfbfbf;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    
+    &:hover {
+      background: #f5f5f5;
+      border-color: #d9d9d9;
+      color: #bfbfbf;
+      transform: none;
+      box-shadow: none;
     }
   }
 }
@@ -297,17 +377,28 @@
   }
 }
 
-// Mobile Action Button
+// Mobile Action Button - Redesigned
 .mobileActionButton {
-  height: 36px;
-  padding: 6px 16px;
-  border-radius: 8px;
+  height: 40px;
+  padding: 8px 20px;
+  border-radius: 10px;
   font-size: 14px;
-  font-weight: 500;
-  min-width: 100px;
+  font-weight: 600;
+  min-width: 120px;
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+  border: none;
+  color: white;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   &:hover {
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #40a9ff 0%, #69c0ff 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
     box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
   }
 }
@@ -473,7 +564,68 @@
   }
 }
 
-// Hide button text on narrow screens, keep icons via tooltip
+// Admin account indicator
+.adminAccountIndicator {
+  position: relative;
+  
+  &::before {
+    content: "🔒";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 12px;
+    background: #ff4d4f;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+}
+
+// Disabled button styling for better UX
+.actionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  
+  &:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+// Responsive button adjustments
 @media (max-width: 991px) {
   .btnLabel { display: none; }
+  
+  .primaryButton {
+    min-width: 60px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .lockButton {
+    min-width: 60px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .primaryButton {
+    min-width: 50px;
+    padding: 4px 8px;
+    font-size: 11px;
+    height: 32px;
+  }
+  
+  .lockButton {
+    min-width: 50px;
+    padding: 4px 8px;
+    font-size: 11px;
+    height: 32px;
+  }
 }
