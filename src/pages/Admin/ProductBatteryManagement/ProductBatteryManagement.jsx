@@ -12,9 +12,9 @@ import {
   Row,
   Col,
 } from "antd";
-import { useProductBatteryManagementLogic } from "./ProductBatteryManagement.logic";
-import "./ProductBatteryManagement.scss"; // ✅ import SCSS
-import ProductBatteryModal from "../../../components/Modal/ProductBatteryModal/ProductBatteryModal";
+import { useProductBatteryManagementLogic } from "./useProductBatteryManagementLogic";
+import "./ProductBatteryManagement.scss";
+import ProductBatteryModal from "@components/Modal/ProductBatteryModal/ProductBatteryModal";
 
 const { Option } = Select;
 

@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { useProductVehicleManagementLogic } from "./ProductVehicleManagement.logic";
 import "./ProductVehicleManagement.scss";
-import ProductVehicleModal from "../../../components/Modal/ProductVehicleModal/ProductVehicleModal";
+import ProductVehicleModal from "@components/Modal/ProductVehicleModal/ProductVehicleModal";
 
 const { Option } = Select;
 
