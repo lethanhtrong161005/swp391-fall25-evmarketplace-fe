@@ -12,7 +12,7 @@ import {
   Row,
   Col,
 } from "antd";
-import { useProductVehicleManagementLogic } from "./ProductVehicleManagement.logic";
+import { useProductVehicleManagementLogic } from "./useProductVehicleManagementLogic";
 import "./ProductVehicleManagement.scss";
 import ProductVehicleModal from "@components/Modal/ProductVehicleModal/ProductVehicleModal";
 

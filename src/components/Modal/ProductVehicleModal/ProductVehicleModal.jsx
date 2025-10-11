@@ -66,7 +66,6 @@ export default function ProductVehicleModal({
         {/* ===== CATEGORY + BRAND + MODEL ===== */}
         {!editingVehicle && (
           <>
-            {/* Category */}
             <Form.Item
               label="Danh mục"
               name="category"
@@ -88,9 +87,8 @@ export default function ProductVehicleModal({
               </Select>
             </Form.Item>
 
-            {/* Brand + Model */}
             <Row gutter={16}>
-              {/* Brand */}
+
               <Col span={12}>
                 <Form.Item
                   label="Thương hiệu"
@@ -120,7 +118,6 @@ export default function ProductVehicleModal({
                 </Form.Item>
               </Col>
 
-              {/* Model */}
               <Col span={12}>
                 <Form.Item
                   label="Model"
