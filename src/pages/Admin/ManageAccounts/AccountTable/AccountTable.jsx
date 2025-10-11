@@ -42,9 +42,6 @@ const { Text } = Typography;
 
 // Role tag component with color coding - sử dụng RoleLabel component
 const RoleTag = ({ role }) => {
-  // Debug: Log role để kiểm tra
-  console.log("RoleTag received role:", role);
-
   // Fallback nếu RoleLabel không hoạt động
   const roleLabels = {
     ADMIN: "Quản trị viên",

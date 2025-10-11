@@ -371,9 +371,6 @@ export function useManageAccounts() {
         fullName: String(values.fullName).trim(),
       };
 
-      console.log("🚀 Tạo tài khoản với payload:", payload);
-      console.log("🔑 Token hiện tại:", cookieUtils.getToken());
-
       // Gọi API thông qua service (đã có validation)
       await createAccount(payload);
 

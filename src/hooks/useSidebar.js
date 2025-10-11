@@ -4,14 +4,7 @@ import { theme } from "antd";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@hooks/useUserProfile";
 
-/**
- * Custom hook để quản lý logic chung cho sidebar
- * @param {Object} config - Cấu hình cho sidebar
- * @param {Array} config.menuItems - Danh sách menu items
- * @param {Array} config.notifications - Danh sách thông báo
- * @param {string} config.profilePath - Đường dẫn tới trang profile
- * @param {string} config.homePath - Đường dẫn trang chủ sau khi logout
- */
+// Custom hook để quản lý logic chung cho sidebar
 export function useSidebar({
   menuItems = [],
   notifications = [],

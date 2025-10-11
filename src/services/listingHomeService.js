@@ -1,14 +1,6 @@
 import { get } from "@/utils/apiCaller";
 
-/**
- * Lấy danh sách tất cả listing với phân trang
- * @param {Object} params - Tham số phân trang và sắp xếp
- * @param {number} params.page - Trang hiện tại (bắt đầu từ 0)
- * @param {number} params.size - Số lượng item mỗi trang
- * @param {string} params.sort - Trường sắp xếp
- * @param {string} params.dir - Hướng sắp xếp (asc/desc)
- * @returns {Promise<Object>} Response từ API
- */
+// Lấy danh sách tất cả listing với phân trang
 export const getAllListings = async (params = {}) => {
   const defaultParams = {
     page: 0,
@@ -21,16 +13,7 @@ export const getAllListings = async (params = {}) => {
   return await get("/api/listing/all", defaultParams);
 };
 
-/**
- * Tìm kiếm listing theo từ khóa
- * @param {Object} params - Tham số tìm kiếm
- * @param {string} params.key - Từ khóa tìm kiếm
- * @param {number} params.page - Trang hiện tại (bắt đầu từ 0)
- * @param {number} params.size - Số lượng item mỗi trang
- * @param {string} params.sort - Trường sắp xếp
- * @param {string} params.dir - Hướng sắp xếp (asc/desc)
- * @returns {Promise<Object>} Response từ API
- */
+// Tìm kiếm listing theo từ khóa
 export const searchListings = async (params = {}) => {
   const defaultParams = {
     key: "",
@@ -51,11 +34,7 @@ export const searchListings = async (params = {}) => {
   });
 };
 
-/**
- * Lấy danh sách listing mới nhất cho trang chủ
- * @param {number} limit - Số lượng item muốn lấy
- * @returns {Promise<Array>} Danh sách listing mới nhất
- */
+// Lấy danh sách listing mới nhất cho trang chủ
 export const getLatestListings = async (limit = 8) => {
   try {
     const response = await getAllListings({
@@ -76,11 +55,7 @@ export const getLatestListings = async (limit = 8) => {
   }
 };
 
-/**
- * Lấy danh sách listing nổi bật cho trang chủ
- * @param {number} limit - Số lượng item muốn lấy
- * @returns {Promise<Array>} Danh sách listing nổi bật
- */
+// Lấy danh sách listing nổi bật cho trang chủ
 export const getFeaturedListings = async (limit = 8) => {
   try {
     const response = await getAllListings({
@@ -118,10 +93,7 @@ export const getFeaturedListings = async (limit = 8) => {
   }
 };
 
-/**
- * Lấy tổng số listing để hiển thị ở nút "Xem tất cả"
- * @returns {Promise<number>} Tổng số listing
- */
+// Lấy tổng số listing để hiển thị ở nút "Xem tất cả"
 export const getTotalListingsCount = async () => {
   try {
     const response = await getAllListings({
@@ -142,11 +114,7 @@ export const getTotalListingsCount = async () => {
   }
 };
 
-/**
- * Transform dữ liệu từ API về format phù hợp với component
- * @param {Object} apiItem - Item từ API response
- * @returns {Object} Item đã transform
- */
+// Transform dữ liệu từ API về format phù hợp với component
 const transformListingData = (apiItem) => {
   // Parse mediaListUrl từ string thành array
   const parseMediaUrls = (mediaListUrl) => {
@@ -196,12 +164,7 @@ const transformListingData = (apiItem) => {
   };
 };
 
-/**
- * Xác định category dựa trên brand và model
- * @param {string} brand - Thương hiệu
- * @param {string} model - Model
- * @returns {string} Category
- */
+// Xác định category dựa trên brand và model
 const determineCategory = (brand, model) => {
   const brandLower = (brand || "").toLowerCase();
   const modelLower = (model || "").toLowerCase();

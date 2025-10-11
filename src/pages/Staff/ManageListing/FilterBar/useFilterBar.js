@@ -66,7 +66,6 @@ export function useFilterBar({ onSearch, onReset, filters, onFiltersChange }) {
       }
     });
 
-    console.log("FilterBar handleFinish params:", params); // Debug log
     onSearch?.(params);
     onFiltersChange?.(params);
   };

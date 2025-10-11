@@ -63,7 +63,6 @@ export function useManageListing() {
   const onActivate = async (row) => {
     try {
       // TODO: implement activate functionality
-      console.log("Activate listing:", row);
       msg.success(`Đã kích hoạt listing ID: ${row.id}`);
       refresh();
     } catch (e) {
@@ -75,7 +74,6 @@ export function useManageListing() {
   const onDeactivate = async (row) => {
     try {
       // TODO: implement deactivate functionality
-      console.log("Deactivate listing:", row);
       msg.success(`Đã ẩn listing ID: ${row.id}`);
       refresh();
     } catch (e) {
@@ -87,7 +85,6 @@ export function useManageListing() {
   const onDelete = async (row) => {
     try {
       // TODO: implement delete functionality with confirmation
-      console.log("Delete listing:", row);
       msg.success(`Đã xóa listing ID: ${row.id}`);
       refresh();
     } catch (e) {
@@ -99,7 +96,6 @@ export function useManageListing() {
   const onRestore = async (row) => {
     try {
       // TODO: implement restore functionality
-      console.log("Restore listing:", row);
       msg.success(`Đã khôi phục listing ID: ${row.id}`);
       refresh();
     } catch (e) {
@@ -111,7 +107,6 @@ export function useManageListing() {
   const onRenew = async (row) => {
     try {
       // TODO: implement renew functionality
-      console.log("Renew listing:", row);
       msg.success(`Đã gia hạn listing ID: ${row.id}`);
       refresh();
     } catch (e) {
@@ -126,7 +121,6 @@ export function useManageListing() {
       // await editListing(row.id)
       msg.info(`Chỉnh sửa listing ID: ${row.id}`);
       // Tạm thời chỉ log, sau này sẽ điều hướng đến trang edit
-      console.log("Edit listing:", row);
     } catch (e) {
       console.error(e);
       msg.error("Chỉnh sửa thất bại");

@@ -12,10 +12,6 @@ import {
   getTotalListingsCount,
 } from "@/services/listingHomeService";
 
-// Import test function for debugging
-import { testListingAPI } from "@/utils/testListingAPI";
-import { testSearchAPI } from "@/utils/testSearchAPI";
-
 const Home = () => {
   const { token } = theme.useToken();
   const maxWidth = "var(--home-max-width, 1920px)";
@@ -29,29 +25,21 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Debug: Test API first
-        console.log("🚀 Starting homepage data fetch...");
-
         // Fetch latest listings
         setLoadingLatest(true);
         const latestData = await getLatestListings(8);
-        console.log("📦 Latest listings:", latestData);
         setLatestListings(latestData);
         setLoadingLatest(false);
 
         // Fetch featured listings
         setLoadingFeatured(true);
         const featuredData = await getFeaturedListings(8);
-        console.log("⭐ Featured listings:", featuredData);
         setFeaturedItems(featuredData);
         setLoadingFeatured(false);
 
         // Fetch total count
         const totalCount = await getTotalListingsCount();
-        console.log("📊 Total count:", totalCount);
         setTotalProducts(totalCount);
-
-        console.log("✅ Homepage data fetch completed successfully!");
       } catch (error) {
         console.error("❌ Error fetching homepage data:", error);
         message.error("Không thể tải dữ liệu trang chủ");
