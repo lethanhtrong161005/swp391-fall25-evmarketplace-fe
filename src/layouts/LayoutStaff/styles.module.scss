@@ -1,38 +1,17 @@
 .root { 
-  min-height: 100vh; 
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
 }
-
-.sider { 
-  position: fixed !important;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  z-index: 100;
-}
-
-
-.header { 
-  display: none; // Ẩn header hoàn toàn
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 240px;
-  height: 64px;
-  z-index: 99;
-  align-items: center; 
-  padding-inline: 16px; 
-  font-weight: 600; 
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
 
 .content {
-  margin-left: 240px; // Space for fixed sidebar width
-  height: 100vh;
+  flex: 1;
+  margin-left: 240px; // Space for fixed sidebar (width: 240px)
+  min-height: 100vh;
   padding: 16px;
   overflow-y: auto;
   background: #f5f5f5;
+  width: calc(100vw - 240px); // Ensure content takes remaining width
 }
 
 .inner { 

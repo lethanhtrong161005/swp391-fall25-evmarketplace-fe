@@ -63,3 +63,40 @@
   font-size: 13px;
   color: rgba(0, 0, 0, 0.65);
 }
+
+// Responsive tweaks for smaller laptops
+@media (max-width: 1366px) {
+  .wrap {
+    padding: 16px;
+  }
+
+  .pageHeader {
+    .ant-card-head {
+      padding: 0 16px;
+
+      .ant-card-head-title,
+      .ant-card-extra {
+        padding: 14px 0;
+      }
+    }
+
+    .ant-card-body {
+      padding: 0;
+    }
+  }
+
+  .createButton {
+    height: 36px;
+    padding: 0 14px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .wrap {
+    padding: 12px;
+  }
+
+  .pageHeader {
+    border-radius: 8px;
+  }
+}

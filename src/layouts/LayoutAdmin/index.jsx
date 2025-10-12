@@ -1,63 +1,36 @@
 import React from "react";
-import { Layout, theme } from "antd";
+import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import s from "./LayoutAdmin.module.scss";
-import { useLayoutAdmin } from "./logic";
+import { useLayoutAdmin } from "./logic.jsx";
+import Sidebar from "@components/Sidebar";
+import NotificationDrawer from "@components/Sidebar/NotificationDrawer";
 
-import SidebarBrand from "./SidebarBrand";
-import SidebarProfile from "./SidebarProfile";
-import SidebarMenu from "./SidebarMenu";
-import SidebarBottomActions from "./SidebarBottomActions";
-import NotificationDrawer from "./NotificationDrawer";
+const { Content } = Layout;
 
-const { Sider, Header, Content } = Layout;
-
-/**
- * Layout chính cho trang Admin - bao gồm sidebar và content area
- */
+// Admin layout with reusable sidebar + content
 export default function LayoutAdmin() {
-  const {
-    notiOpen,
-    setNotiOpen,
-    selected,
-    notifications,
-    user,
-    handleMenuClick,
-    handleProfileClick,
-    handleLogout,
-  } = useLayoutAdmin();
-
-  const { token } = theme.useToken();
+  const sidebarProps = useLayoutAdmin();
 
   return (
     <Layout className={s.layout}>
-      <Sider width={260} className={s.sider}>
-        <div className={s.sidebarContent}>
-          <SidebarBrand borderColor={token.colorBorderSecondary} />
-          <SidebarProfile user={user} onClick={handleProfileClick} />
-          <div className={s.menuContainer}>
-            <SidebarMenu
-              selected={selected}
-              onClick={handleMenuClick}
-              token={token}
-            />
-          </div>
-        </div>
-        <SidebarBottomActions
-          onOpenNoti={() => setNotiOpen(true)}
-          onLogout={handleLogout}
-        />
-      </Sider>
+      <Sidebar
+        width={260}
+        {...sidebarProps}
+        onMenuClick={sidebarProps.handleMenuClick}
+        onProfileClick={sidebarProps.handleProfileClick}
+        onLogout={sidebarProps.handleLogout}
+        onOpenNotification={sidebarProps.openNotification}
+      />
 
-      {/* Bỏ hẳn Header component */}
       <Content className={s.content}>
         <Outlet />
       </Content>
 
       <NotificationDrawer
-        open={notiOpen}
-        onClose={() => setNotiOpen(false)}
-        data={notifications}
+        open={sidebarProps.notiOpen}
+        onClose={sidebarProps.closeNotification}
+        data={sidebarProps.notifications}
       />
     </Layout>
   );

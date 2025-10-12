@@ -11,6 +11,7 @@ import RegisterModal from "@components/Modal/RegisterModal";
 import { requestOtp, verifyOtp } from "@services/otpService";
 import { createAccount, resetPassword } from "@services/accountService";
 import { useAuth } from "@hooks/useAuth";
+import { ROLES, hasDashboardAccess, getDashboardPath } from "@config/roles";
 
 const HeaderAction = () => {
   const { isLoggedIn, user, login, logout } = useAuth();
@@ -38,12 +39,36 @@ const HeaderAction = () => {
 
   const [tokenOtp, setTokenOtp] = useState("");
 
-  const menuItems = [
-    { key: "infouser", label: "Hồ sơ", path: "/infouser" },
-    { key: "logout", label: "Đăng xuất", path: "/logout" },
-  ];
+  // Tạo menu items dựa trên role của user
+  const getMenuItems = () => {
+    const items = [{ key: "infouser", label: "Hồ sơ", path: "/infouser" }];
+
+    // Thêm nút Dashboard cho các role có quyền truy cập
+    if (hasDashboardAccess(user?.role)) {
+      const dashboardPath = getDashboardPath(user?.role);
+      if (dashboardPath) {
+        items.unshift({
+          key: "dashboard",
+          label: "Dashboard",
+          path: dashboardPath,
+        });
+      }
+    }
+
+    items.push({ key: "logout", label: "Đăng xuất", path: "/logout" });
+
+    return items;
+  };
+
+  const menuItems = getMenuItems();
 
   const handleMenuClick = async ({ key }) => {
+    if (key === "dashboard") {
+      const dashboardPath = getDashboardPath(user?.role);
+      if (dashboardPath) {
+        navigate(dashboardPath);
+      }
+    }
     if (key === "infouser") navigate("/info-user");
     if (key === "logout") await logout();
   };
@@ -54,19 +79,14 @@ const HeaderAction = () => {
     const result = await login(dto);
     if (!result) return false;
 
-    const role = result.role;
+    // Không tự động redirect Admin/Staff về dashboard
+    // Tất cả user đều về trang chủ, có thể truy cập dashboard qua menu Profile
     setTimeout(() => {
-      if (role === "staff") {
-        navigate("/staff", { replace: true });
-      } else if (role === "admin") {
-        navigate("/admin", { replace: true });
+      if (redirectAfterLogin) {
+        navigate(redirectAfterLogin, { replace: true });
+        setRedirectAfterLogin(null);
       } else {
-        if (redirectAfterLogin) {
-          navigate(redirectAfterLogin, { replace: true });
-          setRedirectAfterLogin(null);
-        } else {
-          navigate("/", { replace: true });
-        }
+        navigate("/", { replace: true });
       }
     });
     return true;
