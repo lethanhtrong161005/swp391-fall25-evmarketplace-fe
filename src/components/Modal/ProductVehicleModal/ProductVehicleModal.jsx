@@ -28,7 +28,7 @@ export default function ProductVehicleModal({
 }) {
   const category = form.getFieldValue("category") || editingVehicle?.category;
   const selectedCatName = Form.useWatch("category", form);
-  // ✅ Lọc brand theo category
+  // Lọc brand theo category
   const filteredBrands = useMemo(() => {
     if (!selectedCatName) return [];
     const matchedCat = categories.find((c) => c.name === selectedCatName);
@@ -40,7 +40,7 @@ export default function ProductVehicleModal({
     );
   }, [brands, categories, selectedCatName]);
 
-  // ✅ Lọc model theo brand được chọn
+  // Lọc model theo brand được chọn
   const filteredModels = useMemo(() => {
     if (!selectedBrand) return [];
     return models.filter((m) => Number(m.brandId) === Number(selectedBrand));
@@ -72,7 +72,12 @@ export default function ProductVehicleModal({
               rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
             >
               <Select
-                placeholder="Chọn danh mục"
+                showSearch
+                placeholder="Chọn hoặc tìm danh mục"
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().includes(input.toLowerCase())
+                }
                 onChange={() => {
                   form.setFieldsValue({
                     brandId: undefined,
@@ -88,7 +93,6 @@ export default function ProductVehicleModal({
             </Form.Item>
 
             <Row gutter={16}>
-
               <Col span={12}>
                 <Form.Item
                   label="Thương hiệu"
@@ -98,12 +102,19 @@ export default function ProductVehicleModal({
                   ]}
                 >
                   <Select
+                    showSearch
                     placeholder={
                       form.getFieldValue("category")
-                        ? "Chọn thương hiệu"
+                        ? "Chọn hoặc tìm thương hiệu"
                         : "Chọn danh mục trước"
                     }
                     disabled={!form.getFieldValue("category")}
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
                     onChange={(val) => {
                       setSelectedBrand(Number(val));
                       form.setFieldsValue({ modelId: undefined });
@@ -125,10 +136,19 @@ export default function ProductVehicleModal({
                   rules={[{ required: true, message: "Vui lòng chọn model" }]}
                 >
                   <Select
+                    showSearch
                     placeholder={
-                      selectedBrand ? "Chọn model" : "Chọn thương hiệu trước"
+                      selectedBrand
+                        ? "Chọn hoặc tìm model"
+                        : "Chọn thương hiệu trước"
                     }
                     disabled={!selectedBrand}
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
                   >
                     {filteredModels.map((m) => (
                       <Option key={m.id} value={m.id}>

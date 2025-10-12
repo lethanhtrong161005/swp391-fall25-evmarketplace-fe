@@ -38,7 +38,7 @@ const ProductVehicleManagement = () => {
   } = useProductVehicleManagementLogic();
 
   const categoryLabels = {
-    EV_CAR: "Ô tô điện",
+    EV_CAR: "Xe ô tô điện",
     E_MOTORBIKE: "Xe máy điện",
     E_BIKE: "Xe đạp điện",
   };

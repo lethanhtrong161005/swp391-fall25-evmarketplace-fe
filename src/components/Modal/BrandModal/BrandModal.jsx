@@ -45,9 +45,19 @@ export default function BrandModal({
         <Form.Item
           label="Danh mục"
           name="categoryIds"
-          rules={[{ required: true, message: "Vui lòng chọn ít nhất một danh mục" }]}
+          rules={[
+            { required: true, message: "Vui lòng chọn ít nhất một danh mục" },
+          ]}
         >
-          <Select mode="multiple" placeholder="Chọn danh mục">
+          <Select
+            mode="multiple"
+            showSearch 
+            placeholder="Chọn hoặc tìm danh mục"
+            optionFilterProp="children" // So khớp với text hiển thị (ở đây là c.description)
+            filterOption={(input, option) =>
+              option.children.toLowerCase().includes(input.toLowerCase())
+            } 
+          >
             {categories.map((c) => (
               <Option key={c.id} value={c.id}>
                 {c.description}
