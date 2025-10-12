@@ -72,7 +72,7 @@ const HeaderAction = () => {
     return true;
   };
 
-  // ⬇️ click “Đăng tin”
+  // click “Đăng tin”
   const handleClickCreateListing = () => {
     if (isLoggedIn) {
       navigate("/listing/new"); // đã đăng nhập → vào trang đăng tin
@@ -210,6 +210,7 @@ const HeaderAction = () => {
       {contextHolder}
 
       <Button onClick={handleClickCreateListing}>Đăng tin</Button>
+      <Button>Ký gửi</Button>
 
       {isLoggedIn ? (
         <Dropdown

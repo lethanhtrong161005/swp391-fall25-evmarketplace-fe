@@ -12,11 +12,11 @@ import {
   Card,
   Tag,
 } from "antd";
-import { useModelManagementLogic } from "./ModelManagement.logic";
+import { useModelManagementLogic } from "./useModelManagementLogic";
 import "./ModelManagement.scss";
-import HiddenModal from "../../../components/Modal/HiddenModal/HiddenModal";
-import ModelModal from "../../../components/Modal/ModelModal/ModelModal";
-import CategoryFilter from "../../../components/CategoryFilter/CategoryFilter";
+import HiddenModal from "@components/Modal/HiddenModal/HiddenModal";
+import ModelModal from "@components/Modal/ModelModal/ModelModal";
+import CategoryFilter from "@components/CategoryFilter/CategoryFilter";
 
 const { Option } = Select;
 

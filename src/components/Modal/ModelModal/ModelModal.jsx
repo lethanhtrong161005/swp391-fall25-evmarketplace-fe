@@ -43,6 +43,12 @@ export default function ModelModal({
           rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
         >
           <Select
+            showSearch
+            placeholder="Chọn hoặc tìm danh mục"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().includes(input.toLowerCase())
+            }
             onChange={(val) => {
               setSelectedCategory(val);
               form.setFieldsValue({ brandId: undefined });
@@ -62,12 +68,17 @@ export default function ModelModal({
           rules={[{ required: true, message: "Vui lòng chọn thương hiệu" }]}
         >
           <Select
+            showSearch
             placeholder={
               selectedCategory
-                ? "Chọn thương hiệu"
+                ? "Chọn hoặc tìm thương hiệu"
                 : "Chọn danh mục trước để lọc thương hiệu"
             }
             disabled={!selectedCategory}
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              option.children.toLowerCase().includes(input.toLowerCase())
+            }
           >
             {filteredBrands.map((b) => (
               <Option key={b.id} value={b.id}>

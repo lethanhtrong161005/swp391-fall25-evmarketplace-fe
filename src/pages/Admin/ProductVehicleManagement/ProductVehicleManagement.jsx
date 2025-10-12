@@ -12,9 +12,9 @@ import {
   Row,
   Col,
 } from "antd";
-import { useProductVehicleManagementLogic } from "./ProductVehicleManagement.logic";
+import { useProductVehicleManagementLogic } from "./useProductVehicleManagementLogic";
 import "./ProductVehicleManagement.scss";
-import ProductVehicleModal from "../../../components/Modal/ProductVehicleModal/ProductVehicleModal";
+import ProductVehicleModal from "@components/Modal/ProductVehicleModal/ProductVehicleModal";
 
 const { Option } = Select;
 
@@ -38,7 +38,7 @@ const ProductVehicleManagement = () => {
   } = useProductVehicleManagementLogic();
 
   const categoryLabels = {
-    EV_CAR: "Ô tô điện",
+    EV_CAR: "Xe ô tô điện",
     E_MOTORBIKE: "Xe máy điện",
     E_BIKE: "Xe đạp điện",
   };

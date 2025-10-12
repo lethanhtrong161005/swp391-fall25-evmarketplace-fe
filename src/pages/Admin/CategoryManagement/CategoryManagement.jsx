@@ -1,9 +1,9 @@
 import React from "react";
 import { Table, Button, Modal, Form, Input, Select, Card, Tag } from "antd";
 import "./CategoryManagement.scss";
-import { useCategoryManagementLogic } from "./CategoryManagement.logic";
-import CategoryModal from "../../../components/Modal/CategoryModal/CategoryModal";
-import HiddenModal from "../../../components/Modal/HiddenModal/HiddenModal";
+import { useCategoryManagementLogic } from "./useCategoryManagementLogic";
+import CategoryModal from "@components/Modal/CategoryModal/CategoryModal";
+import HiddenModal from "@components/Modal/HiddenModal/HiddenModal";
 
 const { Option } = Select;
 
