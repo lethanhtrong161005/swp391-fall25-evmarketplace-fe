@@ -57,7 +57,7 @@ export default function ListingTable({
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} trong ${total} kết quả`,
         }}
-        scroll={screens.md ? undefined : { x: 980 }}
+        scroll={screens.md ? undefined : { x: 1100 }}
         className={s.listingTable}
       />
 

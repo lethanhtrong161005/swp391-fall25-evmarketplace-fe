@@ -52,10 +52,10 @@ export default function ManageListingPage() {
         <ListingTable
           loading={loading}
           dataSource={data.items}
-          total={data.total}
           page={query.page}
-          pageSize={query.size}
-          onPageChange={setPage}
+          pageSize={query.limit}
+          total={data?.pagination?.totalRecords || 0}
+          onPageChange={(page) => setPage(page - 1)} // Convert 1-based to 0-based for API
           onApprove={onApprove}
           onReject={onReject}
           onEdit={onEdit}

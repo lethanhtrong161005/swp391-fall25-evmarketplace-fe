@@ -7,7 +7,6 @@ import AccountTable from "./AccountTable/AccountTable";
 import CreateAccountForm from "./CreateAccountForm/CreateAccountForm";
 import AccountDetails from "./AccountDetails/AccountDetails";
 import EditAccountForm from "./EditAccountForm/EditAccountForm";
-import AccountStats from "@components/AccountStats";
 
 const { Title } = Typography;
 
@@ -16,7 +15,6 @@ export default function ManageAccounts() {
   const {
     loading,
     rows,
-    stats,
     refresh,
     query,
     data,
@@ -39,13 +37,6 @@ export default function ManageAccounts() {
     <div className={s.wrap}>
       {contextHolder}
 
-      {/* Thống kê tổng quan */}
-      <AccountStats
-        stats={stats}
-        loading={loading}
-        onFilter={handleSearch}
-        currentFilters={query}
-      />
 
       <Card
         className={s.pageHeader}

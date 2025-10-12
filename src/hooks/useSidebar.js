@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { theme } from "antd";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@hooks/useAuth";
 import { useUserProfile } from "@hooks/useUserProfile";
 
 // Custom hook để quản lý logic chung cho sidebar

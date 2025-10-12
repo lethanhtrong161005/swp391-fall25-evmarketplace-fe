@@ -79,14 +79,20 @@ const HeaderAction = () => {
     const result = await login(dto);
     if (!result) return false;
 
-    // Không tự động redirect Admin/Staff về dashboard
-    // Tất cả user đều về trang chủ, có thể truy cập dashboard qua menu Profile
+    // Redirect về dashboard tương ứng với role của user
     setTimeout(() => {
       if (redirectAfterLogin) {
         navigate(redirectAfterLogin, { replace: true });
         setRedirectAfterLogin(null);
       } else {
-        navigate("/", { replace: true });
+        // Kiểm tra role và redirect về dashboard tương ứng
+        const dashboardPath = getDashboardPath(result.role);
+        if (dashboardPath) {
+          navigate(dashboardPath, { replace: true });
+        } else {
+          // Nếu không có dashboard (member), về trang chủ
+          navigate("/", { replace: true });
+        }
       }
     });
     return true;
@@ -197,9 +203,20 @@ const HeaderAction = () => {
         fullName,
         password,
       });
-      await login({ accessToken, refreshToken });
+      const result = await login({ accessToken, refreshToken });
       messageApi.success("Đăng ký tài khoản thành công");
       setOpenRegisterForm(false);
+
+      // Redirect về dashboard tương ứng với role của user
+      setTimeout(() => {
+        const dashboardPath = getDashboardPath(result?.role);
+        if (dashboardPath) {
+          navigate(dashboardPath, { replace: true });
+        } else {
+          // Nếu không có dashboard (member), về trang chủ
+          navigate("/", { replace: true });
+        }
+      });
     } catch (e) {
       messageApi.error(e?.message || "Đăng ký tài khoản thất bại");
     }

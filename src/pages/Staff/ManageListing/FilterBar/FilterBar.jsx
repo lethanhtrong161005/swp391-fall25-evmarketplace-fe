@@ -31,7 +31,7 @@ export default function FilterBar({
       <Row gutter={16}>
         <Col span={6}>
           <Form.Item label="Từ khóa" name="q">
-            <Input placeholder="Tìm theo tiêu đề, ID..." />
+            <Input placeholder="Tìm theo tiêu đề, ID, brand, model..." />
           </Form.Item>
         </Col>
 
