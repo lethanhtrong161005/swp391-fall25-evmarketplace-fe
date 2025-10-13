@@ -12,7 +12,12 @@ const PAGE_SIZE = 10;
 export function useManageListing() {
   const [msg, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState({ page: 0, size: PAGE_SIZE });
+  const [query, setQuery] = useState({
+    page: 0,
+    size: PAGE_SIZE,
+    sort: "createdAt",
+    dir: "desc",
+  });
   const [data, setData] = useState({
     items: [],
     pagination: { totalRecords: 0, currentPage: 0, pageSize: PAGE_SIZE },
@@ -153,8 +158,30 @@ export function useManageListing() {
           }
         }
 
+        const mapCategoryIdToName = (id) => {
+          switch (id) {
+            case 1:
+              return "EV_CAR";
+            case 2:
+              return "E_MOTORBIKE";
+            case 3:
+              return "E_BIKE";
+            case 4:
+              return "BATTERY";
+            default:
+              return undefined;
+          }
+        };
+
+        const items = (res.data.items || []).map((it) => ({
+          ...it,
+          category: it.category || mapCategoryIdToName(it.categoryId),
+          category_id:
+            typeof it.categoryId === "number" ? it.categoryId : undefined,
+        }));
+
         const transformedData = {
-          items: res.data.items || [],
+          items,
           pagination: {
             totalRecords: total,
             currentPage: res.data.page || 0,

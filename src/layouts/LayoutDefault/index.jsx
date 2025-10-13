@@ -31,7 +31,6 @@ const LayoutDefault = () => {
           <Outlet />
         </Content>
 
-
         {!hideFooter && <SiteFooter />}
       </Layout>
     </>

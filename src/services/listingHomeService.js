@@ -35,11 +35,12 @@ export const searchListings = async (params = {}) => {
 };
 
 // Lấy danh sách listing mới nhất cho trang chủ
-export const getLatestListings = async (limit = 8) => {
+export const getLatestListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
       size: limit,
+      // Backend chấp nhận sort theo "createdAt"
       sort: "createdAt",
       dir: "desc",
     });
@@ -56,31 +57,23 @@ export const getLatestListings = async (limit = 8) => {
 };
 
 // Lấy danh sách listing nổi bật cho trang chủ
-export const getFeaturedListings = async (limit = 8) => {
+export const getFeaturedListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
-      size: limit * 2, // Lấy nhiều hơn để filter
+      // Lấy một trang lớn để tránh bị thiếu BOOSTED do filter phía client
+      size: 200,
       sort: "createdAt",
       dir: "desc",
     });
 
     if (response?.success && response?.data?.items) {
-      // Filter và sắp xếp theo tiêu chí nổi bật
+      // Chỉ lấy tin BOOSTED, sắp xếp mới nhất
       const featuredItems = response.data.items
         .filter(
-          (item) =>
-            item.status === "ACTIVE" &&
-            (item.visibility === "BOOSTED" || item.isConsigned === true)
+          (item) => item.status === "ACTIVE" && item.visibility === "BOOSTED"
         )
-        .sort((a, b) => {
-          // Ưu tiên BOOSTED trước, sau đó theo thời gian tạo
-          if (a.visibility === "BOOSTED" && b.visibility !== "BOOSTED")
-            return -1;
-          if (b.visibility === "BOOSTED" && a.visibility !== "BOOSTED")
-            return 1;
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        })
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, limit);
 
       return featuredItems.map(transformListingData);
@@ -142,7 +135,12 @@ const transformListingData = (apiItem) => {
   return {
     id: apiItem.id?.toString() || "",
     title: apiItem.title || "",
-    category: determineCategory(apiItem.brand, apiItem.model),
+    // category string ưu tiên theo categoryId backend trả
+    category:
+      mapCategoryIdToName(apiItem.categoryId) ||
+      determineCategory(apiItem.brand, apiItem.model),
+    category_id:
+      typeof apiItem.categoryId === "number" ? apiItem.categoryId : undefined,
     brand: apiItem.brand || "",
     model: apiItem.model || "",
     year: apiItem.year || null,
@@ -165,6 +163,21 @@ const transformListingData = (apiItem) => {
 };
 
 // Xác định category dựa trên brand và model
+const mapCategoryIdToName = (id) => {
+  switch (id) {
+    case 1:
+      return "EV_CAR";
+    case 2:
+      return "E_MOTORBIKE";
+    case 3:
+      return "E_BIKE";
+    case 4:
+      return "BATTERY";
+    default:
+      return undefined;
+  }
+};
+
 const determineCategory = (brand, model) => {
   const brandLower = (brand || "").toLowerCase();
   const modelLower = (model || "").toLowerCase();

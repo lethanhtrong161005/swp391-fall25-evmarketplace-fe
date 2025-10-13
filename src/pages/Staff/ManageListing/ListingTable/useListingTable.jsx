@@ -3,6 +3,7 @@ import { Tag, Space, Button, Tooltip, Dropdown } from "antd";
 import { HistoryOutlined, EyeOutlined, MoreOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import StatusTag from "../StatusTag/StatusTag";
+import s from "./ListingTable.module.scss";
 import YesNoTag from "./YesNoTag";
 
 // TODO: Implement real API for history
@@ -71,6 +72,7 @@ export function useListingTable({
         key: "info",
         width: 200,
         sorter: (a, b) => a.title.localeCompare(b.title),
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         render: (_, record) => (
           <div>
             <div style={{ fontWeight: 600, marginBottom: 4 }}>
@@ -90,6 +92,8 @@ export function useListingTable({
         dataIndex: "category",
         key: "category",
         width: 120,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         sorter: (a, b) => {
           const categoryA =
             a.category || (a.batteryCapacityKwh ? "BATTERY" : "VEHICLE");
@@ -111,15 +115,7 @@ export function useListingTable({
           }
 
           return (
-            <Tag
-              color={getCategoryColor(category)}
-              style={{
-                fontSize: 12,
-                fontWeight: 500,
-                margin: 0,
-                borderRadius: 6,
-              }}
-            >
+            <Tag color={getCategoryColor(category)} className={s.uniformTag}>
               {CATEGORY_LABEL[category] || category}
             </Tag>
           );
@@ -130,6 +126,8 @@ export function useListingTable({
         dataIndex: "price",
         key: "price",
         width: 120,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         sorter: (a, b) => Number(a.price) - Number(b.price),
         render: (price) => formatVND(price),
       },
@@ -138,6 +136,8 @@ export function useListingTable({
         dataIndex: "createdAt",
         key: "createdAt",
         width: 120,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
         render: (createdAt) => dayjs(createdAt).format("DD/MM/YYYY"),
       },
@@ -146,6 +146,8 @@ export function useListingTable({
         dataIndex: "status",
         key: "status",
         width: 120,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         sorter: (a, b) => a.status.localeCompare(b.status),
         render: (status) => <StatusTag status={status} />,
       },
@@ -154,6 +156,8 @@ export function useListingTable({
         dataIndex: "verified",
         key: "verified",
         width: 80,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         sorter: (a, b) => (a.verified ? 1 : 0) - (b.verified ? 1 : 0),
         render: (_, record) => {
           // For now, we'll assume all items are verified since API doesn't provide this field
@@ -168,6 +172,8 @@ export function useListingTable({
         dataIndex: "isConsigned",
         key: "isConsigned",
         width: 80,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         sorter: (a, b) => (a.isConsigned ? 1 : 0) - (b.isConsigned ? 1 : 0),
         render: (isConsigned) => <YesNoTag value={isConsigned} />,
       },

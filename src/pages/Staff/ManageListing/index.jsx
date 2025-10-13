@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Space } from "antd";
+import { Card, Space, Button } from "antd";
 import s from "./ManageListing.module.scss";
 import { useManageListing } from "./useManageListing";
 import FilterBar from "./FilterBar/FilterBar";
@@ -52,10 +52,6 @@ export default function ManageListingPage() {
         <ListingTable
           loading={loading}
           dataSource={data.items}
-          page={query.page}
-          pageSize={query.limit}
-          total={data?.pagination?.totalRecords || 0}
-          onPageChange={(page) => setPage(page - 1)} // Convert 1-based to 0-based for API
           onApprove={onApprove}
           onReject={onReject}
           onEdit={onEdit}
@@ -65,6 +61,28 @@ export default function ManageListingPage() {
           onRestore={onRestore}
           onRenew={onRenew}
         />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: 12,
+            marginTop: 12,
+          }}
+        >
+          <Button
+            onClick={() => setPage(Math.max(0, (query.page || 0) - 1))}
+            disabled={loading || (query.page || 0) <= 0}
+          >
+            Trang trước
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => setPage((query.page || 0) + 1)}
+            disabled={loading || !data?.hasNext}
+          >
+            Trang sau
+          </Button>
+        </div>
       </Card>
     </Space>
   );

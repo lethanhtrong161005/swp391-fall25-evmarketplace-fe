@@ -71,7 +71,12 @@ function toVND(n) {
   return Number.isNaN(v) ? `${n} đ` : `${v.toLocaleString("vi-VN")} đ`;
 }
 
-export default function ProductCard({ listing, onClick, size }) {
+export default function ProductCard({
+  listing,
+  onClick,
+  size,
+  showVerifiedTag = true,
+}) {
   const screens = useBreakpoint();
   const SZ =
     DENSITY[
@@ -164,6 +169,16 @@ export default function ProductCard({ listing, onClick, size }) {
       }}
     >
       {/* <Link to={`/detail/${listing.id}`} style={{ display: "block" }}> */}
+      {/* Tag góc trên trái: đã thẩm định */}
+      {showVerifiedTag && data.verified && (
+        <Tag
+          color="red"
+          style={{ position: "absolute", top: 10, left: 10, zIndex: 2 }}
+        >
+          Đã thẩm định
+        </Tag>
+      )}
+
       {/* Tag góc trên phải: loại sản phẩm */}
       <Tag
         color={productTypeTag.color}
@@ -260,14 +275,7 @@ export default function ProductCard({ listing, onClick, size }) {
                   </Tag>
                 </Col>
               )}
-              {/* Tag verified cho xe */}
-              {data.verified && (
-                <Col>
-                  <Tag color="green" style={{ fontSize: SZ.tag }}>
-                    Đã thẩm định
-                  </Tag>
-                </Col>
-              )}
+              {/* Verified tag moved to top-left */}
             </>
           )}
         </Row>
