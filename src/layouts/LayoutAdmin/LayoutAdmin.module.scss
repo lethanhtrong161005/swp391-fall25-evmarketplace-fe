@@ -1,0 +1,58 @@
+.layout {
+  min-height: 100vh;
+}
+
+.sider {
+  position: fixed !important;
+  left: 0;
+  top: 0;
+  background: #ffffff;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.sidebarContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.menuContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80px; // Space for bottom actions
+}
+
+.header {
+  display: none; // Ẩn header hoàn toàn
+  margin-left: 260px; // Space for fixed sidebar
+  padding: 0 24px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  justify-content: flex-start;
+  font-weight: 600;
+  font-size: 16px;
+  color: #262626;
+  border-bottom: 1px solid #f0f0f0;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 260px;
+  height: 64px;
+  z-index: 99;
+}
+
+.content {
+  margin-left: 260px; // Space for fixed sidebar
+  margin-top: 0; // Không cần margin-top vì không có header
+  padding: 0;
+  min-height: 100vh; // Full height vì không có header
+  background: #f5f5f5;
+  overflow-y: auto;
+}

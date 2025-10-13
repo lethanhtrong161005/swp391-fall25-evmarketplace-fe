@@ -58,24 +58,24 @@ const HeaderAction = () => {
     if (!result) return false;
 
     const role = result.role;
-
-    if (role === "staff") {
-      navigate("/staff", { replace: true });
-    } else if (role === "admin") {
-      navigate("/admin", { replace: true });
-    } else {
-      if (redirectAfterLogin) {
-        navigate(redirectAfterLogin, { replace: true });
-        setRedirectAfterLogin(null);
+    setTimeout(() => {
+      if (role === "staff") {
+        navigate("/staff", { replace: true });
+      } else if (role === "admin") {
+        navigate("/admin", { replace: true });
       } else {
-        navigate("/", { replace: true });
+        if (redirectAfterLogin) {
+          navigate(redirectAfterLogin, { replace: true });
+          setRedirectAfterLogin(null);
+        } else {
+          navigate("/", { replace: true });
+        }
       }
-    }
-
+    });
     return true;
-  }
+  };
 
-  // ⬇️ click “Đăng tin”
+  // click “Đăng tin”
   const handleClickCreateListing = () => {
     if (isLoggedIn) {
       navigate("/listing/new"); // đã đăng nhập → vào trang đăng tin
@@ -232,6 +232,7 @@ const HeaderAction = () => {
       
 
       <Button onClick={handleClickCreateListing}>Đăng tin</Button>
+      <Button>Ký gửi</Button>
 
       {isLoggedIn ? (
         <Dropdown

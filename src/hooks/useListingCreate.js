@@ -18,8 +18,8 @@ export function useListingCreate({ userId = null } = {}) {
 
     const [postTypeOpen, setPostTypeOpen] = useState(false);
     const [submitting, setSubmitting] = useState(false);
-    const [postType, setPostType] = useState("FREE");       
-    const [visibility, setVisibility] = useState("NORMAL"); 
+    const [postType, setPostType] = useState("FREE");
+    const [visibility, setVisibility] = useState("NORMAL");
 
 
     const [draftId, setDraftId] = useState(() => listingDrafts.getCurrentId(userId));
