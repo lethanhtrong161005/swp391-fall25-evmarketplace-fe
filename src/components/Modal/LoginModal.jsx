@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Modal, Form, Input, Button, message } from "antd";
-import GoogleIcon from "@/components/Icons/GoogleIcon";
+import GoogleIcon from "@components/Icons/GoogleIcon";
 import { mapFieldErrorsToAntd } from "@utils/mapFieldErrors";
-import { LoginDto } from "../../dtos/user/LoginDto";
+import { LoginDto } from "@dtos/user/LoginDto";
 
 import { getGoogleAuthUrl } from "@services/authService";
 

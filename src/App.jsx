@@ -3,12 +3,12 @@ import { routes } from "@routes";
 import ScrollToTop from "./components/ScrollTop/ScrollTop";
 
 const App = () => {
-  const element = useRoutes(routes()); // ✅ đặt bên ngoài JSX
+  const element = useRoutes(routes()); 
 
   return (
     <>
-      <ScrollToTop /> {/* ✅ chạy scroll mỗi khi đổi route */}
-      {element} {/* ✅ render routes */}
+      <ScrollToTop /> 
+      {element}
     </>
   );
 };

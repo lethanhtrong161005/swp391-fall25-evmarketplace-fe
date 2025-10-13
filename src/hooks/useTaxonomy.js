@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getAllCategoryDetail } from "@services/categoryService";
-import { normalizeTaxonomy } from "@pages/Member/ListingCreate/_shared/normalizeTaxonomy";
+import { normalizeTaxonomy } from "@utils/normalizeTaxonomy";
 
 export function useTaxonomy(msg, options) {
 

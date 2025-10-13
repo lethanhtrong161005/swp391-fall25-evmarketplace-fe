@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
-import { getAxiosErrorMessage } from "@/config/errorMessage";
-import { updateUserProfile, updateUserAvatar, requestPhoneOpt, verifyPhoneOtp } from "@/services/accountService";
+import { getAxiosErrorMessage } from "@config/errorMessage";
+import { updateUserProfile, updateUserAvatar, requestPhoneOpt, verifyPhoneOtp } from "@services/accountService";
 
 const getAvatarUrl = (filename) => {
     if (!filename) return null;

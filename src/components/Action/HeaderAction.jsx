@@ -11,10 +11,32 @@ import RegisterModal from "@components/Modal/RegisterModal";
 
 import { useHeaderAction } from "./useHeaderAction";
 
-const HeaderAction = () => {
-  const { auth, otp, register, reset, handleOtpSuccess, handleOtpStart } = useHeaderAction();
+const MANAGE_LISTINGS_PATH = "/my-ads"; // đổi path nếu bạn dùng route khác
 
-  const { isLoggedIn, user, contextHolder, getMenuItems, handleMenuClick, handleLoginRequire, handleLoginSubmit } = auth;
+const HeaderAction = () => {
+  const { auth, otp, register, reset, handleOtpSuccess, handleOtpStart } =
+    useHeaderAction();
+
+  const {
+    isLoggedIn,
+    user,
+    contextHolder,
+    getMenuItems,
+    handleMenuClick,
+    handleLoginRequire,
+    handleLoginSubmit,
+  } = auth;
+
+  // // ⬇️ click “Quản lý tin”
+  // const handleClickManageListing = () => {
+  //   if (isLoggedIn) {
+  //     navigate(MANAGE_LISTINGS_PATH);
+  //   } else {
+  //     auth.setRedirectAfterLogin(MANAGE_LISTINGS_PATH);
+  //     messageApi.info("Vui lòng đăng nhập để quản lý tin");
+  //     setOpenLogin(true);
+  //   }
+  // };
 
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
   const menuItems = getMenuItems();
@@ -23,12 +45,17 @@ const HeaderAction = () => {
     <div style={{ display: "flex", gap: 8 }}>
       {contextHolder}
 
-      <Button onClick={() => handleLoginRequire(
-      "/listing/new",
-      "Vui lòng đăng nhập để đăng tin"
-      )}>
+      <Button
+        onClick={() =>
+          handleLoginRequire("/listing/new", "Vui lòng đăng nhập để đăng tin")
+        }
+      >
         Đăng tin
       </Button>
+
+      <Button  onClick={() =>
+          handleLoginRequire("/my-ads", "Vui lòng đăng nhập để quản lý tin")}>Quản lý tin</Button>
+
       <Button>Ký gửi</Button>
 
       {isLoggedIn ? (
@@ -66,7 +93,9 @@ const HeaderAction = () => {
         ref={register.phoneRegisterRef}
         open={register.openRegister}
         onClose={() => register.setOpenRegister(false)}
-        onContinue={(phone) => register.handleRegisterContinue(phone, handleOtpStart)}
+        onContinue={(phone) =>
+          register.handleRegisterContinue(phone, handleOtpStart)
+        }
         submitting={register.registerSubmitting}
         onGoLogin={() => {
           register.setOpenRegister(false);
@@ -102,7 +131,9 @@ const HeaderAction = () => {
         open={register.openRegisterForm}
         phone={otp.regPhone}
         onClose={() => register.setOpenRegisterForm(false)}
-        onSubmit={(formData) => register.handleRegisterSubmit(formData, otp.tokenOtp)}
+        onSubmit={(formData) =>
+          register.handleRegisterSubmit(formData, otp.tokenOtp)
+        }
         onGoLogin={() => {
           register.setOpenRegisterForm(false);
           auth.setOpenLogin(true);
@@ -112,7 +143,13 @@ const HeaderAction = () => {
       <ResetPasswordModal
         open={reset.openResetForm}
         onClose={() => reset.setOpenResetForm(false)}
-        onSubmit={(formData) => reset.handleResetPasswordSubmit(formData, otp.tokenOtp, register.setOpenLogin)}
+        onSubmit={(formData) =>
+          reset.handleResetPasswordSubmit(
+            formData,
+            otp.tokenOtp,
+            register.setOpenLogin
+          )
+        }
         submitting={reset.resetPwdSubmitting}
         onGoLogin={() => {
           reset.setOpenResetForm(false);
