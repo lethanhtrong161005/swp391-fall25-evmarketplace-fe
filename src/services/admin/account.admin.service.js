@@ -2,12 +2,36 @@ import { get, post, patch } from "@utils/apiCaller";
 
 // Lấy danh sách tài khoản với phân trang và sắp xếp
 export const listAccounts = (params = {}) => {
-  const { page = 0, size = 10, sort = "", dir = "desc" } = params;
+  const {
+    page = 0,
+    size = 10,
+    sort = "",
+    dir = "desc",
+    role = "",
+    status = "",
+    verified = null,
+  } = params;
+
   const queryParams = { page, size };
+
   if (sort && sort.trim()) {
     queryParams.sort = sort;
     queryParams.dir = dir;
   }
+
+  // Thêm các tham số lọc
+  if (role && role.trim()) {
+    queryParams.role = role;
+  }
+
+  if (status && status.trim()) {
+    queryParams.status = status;
+  }
+
+  if (verified !== null) {
+    queryParams.verified = verified;
+  }
+
   return get("/api/admin/accounts/", queryParams);
 };
 
@@ -101,8 +125,7 @@ export const changeRole = (id, role) => {
 export const lockAccount = (id) => blockAccount(id);
 export const unlockAccount = (id) => unblockAccount(id);
 
-// Lấy lịch sử hoạt động tài khoản (chưa triển khai)
-// eslint-disable-next-line no-unused-vars
-export const getAccountLogs = (id) => {
-  return Promise.resolve({ data: [] });
+// Lấy thống kê tổng quan tài khoản
+export const getAccountStats = () => {
+  return get("/api/admin/accounts/stats");
 };

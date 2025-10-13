@@ -1,16 +1,20 @@
 // src/pages/Member/Home/index.jsx
 import React, { useState, useEffect } from "react";
-import { theme } from "antd";
+import { theme, message } from "antd";
 import LatestListingsSection from "./LatestListingsSection";
 import FeaturedProductSection from "./FeaturedProductSection";
 import CTABanner from "./CTABanner";
 
-// Fake data
+// Real API services
 import {
-  getLatestProducts,
-  getFeaturedProducts,
-  getAllProductsCount,
-} from "@data/HomeProduct.fake";
+  getLatestListings,
+  getFeaturedListings,
+  getTotalListingsCount,
+} from "@/services/listingHomeService";
+
+// Import test function for debugging
+import { testListingAPI } from "@/utils/testListingAPI";
+import { testSearchAPI } from "@/utils/testSearchAPI";
 
 const Home = () => {
   const { token } = theme.useToken();
@@ -20,21 +24,43 @@ const Home = () => {
   const [featuredItems, setFeaturedItems] = useState([]);
   const [loadingLatest, setLoadingLatest] = useState(true);
   const [loadingFeatured, setLoadingFeatured] = useState(true);
-
-  // Tổng số sản phẩm toàn nền tảng (để nút "Xem tất cả tin đăng")
-  const totalProducts = getAllProductsCount();
+  const [totalProducts, setTotalProducts] = useState(0);
 
   useEffect(() => {
-    // Latest (8 gần nhất)
-    setLoadingLatest(true);
-    setLatestListings(getLatestProducts(8));
-    setLoadingLatest(false);
+    const fetchData = async () => {
+      try {
+        // Debug: Test API first
+        console.log("🚀 Starting homepage data fetch...");
 
-    // Featured: lấy TẤT CẢ nổi bật để có total, rồi cắt 8 hiển thị
-    setLoadingFeatured(true);
-    const allFeatured = getFeaturedProducts(9999); // trả về toàn bộ
-    setFeaturedItems(allFeatured); // component tự cắt 8
-    setLoadingFeatured(false);
+        // Fetch latest listings
+        setLoadingLatest(true);
+        const latestData = await getLatestListings(8);
+        console.log("📦 Latest listings:", latestData);
+        setLatestListings(latestData);
+        setLoadingLatest(false);
+
+        // Fetch featured listings
+        setLoadingFeatured(true);
+        const featuredData = await getFeaturedListings(8);
+        console.log("⭐ Featured listings:", featuredData);
+        setFeaturedItems(featuredData);
+        setLoadingFeatured(false);
+
+        // Fetch total count
+        const totalCount = await getTotalListingsCount();
+        console.log("📊 Total count:", totalCount);
+        setTotalProducts(totalCount);
+
+        console.log("✅ Homepage data fetch completed successfully!");
+      } catch (error) {
+        console.error("❌ Error fetching homepage data:", error);
+        message.error("Không thể tải dữ liệu trang chủ");
+        setLoadingLatest(false);
+        setLoadingFeatured(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleViewMoreListings = () => {

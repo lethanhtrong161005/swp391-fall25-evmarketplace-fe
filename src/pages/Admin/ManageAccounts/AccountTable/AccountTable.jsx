@@ -11,6 +11,7 @@ import {
   Popconfirm,
   Input,
   Card,
+  Grid,
 } from "antd";
 import {
   UserOutlined,
@@ -29,22 +30,46 @@ import {
 import s from "./AccountTable.module.scss";
 import { useAccountTable } from "./useAccountTable";
 import { useAuth } from "@hooks/useAuth";
+import RoleLabel from "@components/RoleLabel/index.jsx";
+import ActionButton from "@components/ActionButton";
+import {
+  canEditAccount,
+  canLockAccount,
+  getActionTooltip,
+} from "@utils/accountPermissions";
 
 const { Text } = Typography;
 
-// Role tag component with color coding
+// Role tag component with color coding - sử dụng RoleLabel component
 const RoleTag = ({ role }) => {
-  const roleConfig = {
-    ADMIN: { color: "#f5222d", text: "Quản trị viên" },
-    STAFF: { color: "#1890ff", text: "Nhân viên" },
-    MEMBER: { color: "#52c41a", text: "Thành viên" },
+  // Debug: Log role để kiểm tra
+  console.log("RoleTag received role:", role);
+
+  // Fallback nếu RoleLabel không hoạt động
+  const roleLabels = {
+    ADMIN: "Quản trị viên",
+    MANAGER: "Quản lý",
+    INSPECTOR: "Kỹ thuật viên",
+    STAFF: "Nhân viên",
+    MEMBER: "Thành viên",
+    GUEST: "Khách",
   };
 
-  const config = roleConfig[role] || { color: "#d9d9d9", text: role };
+  const roleColors = {
+    ADMIN: "red",
+    MANAGER: "blue",
+    INSPECTOR: "orange",
+    STAFF: "green",
+    MEMBER: "cyan",
+    GUEST: "default",
+  };
+
+  const label = roleLabels[role] || role;
+  const color = roleColors[role] || "default";
 
   return (
-    <Tag color={config.color} className={s.roleTag}>
-      {config.text}
+    <Tag color={color} className={s.roleTag}>
+      {label}
     </Tag>
   );
 };
@@ -119,6 +144,7 @@ export default function AccountTable({
   onSearch,
 }) {
   const { user } = useAuth(); // Current logged in user
+  const screens = Grid.useBreakpoint();
   const {
     onChangeRole,
     onToggleLock,
@@ -172,12 +198,13 @@ export default function AccountTable({
     }
   };
 
+  // Table columns with responsive widths; hide less-important columns on smaller screens
   const columns = [
     {
       title: "Người dùng",
       dataIndex: "name",
       key: "name",
-      width: 280,
+      width: screens.xl ? 280 : 240,
       render: (_, record) => (
         <div className={s.userCell}>
           <Avatar
@@ -189,9 +216,15 @@ export default function AccountTable({
               backgroundColor:
                 record.role === "ADMIN"
                   ? "#f5222d"
-                  : record.role === "STAFF"
+                  : record.role === "MANAGER"
                   ? "#1890ff"
-                  : "#52c41a",
+                  : record.role === "INSPECTOR"
+                  ? "#fa8c16"
+                  : record.role === "STAFF"
+                  ? "#52c41a"
+                  : record.role === "MEMBER"
+                  ? "#13c2c2"
+                  : "#d9d9d9",
             }}
           />
           <div className={s.userInfo}>
@@ -215,21 +248,23 @@ export default function AccountTable({
     {
       title: "Vai trò",
       key: "role",
-      width: 140,
+      width: 120,
       align: "center",
       render: (_, record) => <RoleTag role={record.role} />,
+      responsive: ["sm"],
     },
     {
       title: "Trạng thái",
       key: "status",
-      width: 120,
+      width: 110,
       align: "center",
       render: (_, record) => <StatusTag status={record.status} />,
+      responsive: ["sm"],
     },
     {
       title: "Xác minh",
       key: "verification",
-      width: 120,
+      width: 110,
       align: "center",
       render: (_, record) => (
         <Space size={12} direction="vertical">
@@ -237,11 +272,12 @@ export default function AccountTable({
           <VerificationBadge verified={record.emailVerified} type="email" />
         </Space>
       ),
+      responsive: ["md"],
     },
     {
       title: "Ngày tạo",
       key: "createdAt",
-      width: 140,
+      width: 130,
       align: "center",
       render: (_, record) => (
         <div
@@ -274,47 +310,52 @@ export default function AccountTable({
           </Text>
         </div>
       ),
+      responsive: ["lg"],
     },
     {
       title: "Thao tác",
       key: "actions",
       fixed: "right",
-      width: 320,
+      width: screens.xl ? 300 : 260,
       align: "center",
       render: (_, record) => {
         const isActive = record.status === "ACTIVE";
         const isAdmin = record.role === "ADMIN";
 
-        // Admin accounts - only allow editing own profile for security
-        if (isAdmin) {
-          const isOwnProfile = user && user.phoneNumber === record.phoneNumber;
+        // 🔒 BẢO MẬT: Sử dụng utility functions để kiểm tra quyền hạn
+        const canEdit = canEditAccount(user, record);
+        const canLock = canLockAccount(user, record);
 
+        // Admin accounts - hiển thị actions đặc biệt
+        if (isAdmin) {
           return (
             <div className={s.actionsContainer}>
-              <Space size={8}>
-                <Button
-                  type="primary"
-                  icon={<EyeOutlined />}
-                  onClick={() => handleDetailClick(record)}
-                  className={s.primaryButton}
-                  size="small"
+              <Space size={8} className={s.primaryActions}>
+                <Tooltip title="Xem chi tiết tài khoản Admin" placement="top">
+                  <ActionButton
+                    variant="primary"
+                    size="medium"
+                    icon={<EyeOutlined />}
+                    onClick={() => handleDetailClick(record)}
+                  >
+                    <span className={s.btnLabel}>Chi tiết</span>
+                  </ActionButton>
+                </Tooltip>
+
+                <Tooltip
+                  title={getActionTooltip("edit", user, record)}
+                  placement="top"
                 >
-                  Chi tiết
-                </Button>
-                <Button
-                  icon={<EditOutlined />}
-                  onClick={() => handleEditClick(record)}
-                  className={s.primaryButton}
-                  size="small"
-                  disabled={!isOwnProfile}
-                  title={
-                    isOwnProfile
-                      ? "Sửa thông tin của tôi"
-                      : "Không thể chỉnh sửa tài khoản Admin khác"
-                  }
-                >
-                  Sửa
-                </Button>
+                  <ActionButton
+                    variant="secondary"
+                    size="medium"
+                    icon={<EditOutlined />}
+                    onClick={() => handleEditClick(record)}
+                    disabled={!canEdit}
+                  >
+                    <span className={s.btnLabel}>Sửa</span>
+                  </ActionButton>
+                </Tooltip>
               </Space>
             </div>
           );
@@ -323,28 +364,36 @@ export default function AccountTable({
         // Primary Actions - Visible on all screen sizes
         const primaryActions = (
           <Space size={8} className={s.primaryActions}>
-            <Button
-              type="primary"
-              icon={<EyeOutlined />}
-              onClick={() => handleDetailClick(record)}
-              className={s.primaryButton}
-              size="small"
+            <Tooltip title="Xem chi tiết" placement="top">
+              <ActionButton
+                variant="primary"
+                size="medium"
+                icon={<EyeOutlined />}
+                onClick={() => handleDetailClick(record)}
+              >
+                <span className={s.btnLabel}>Chi tiết</span>
+              </ActionButton>
+            </Tooltip>
+
+            <Tooltip
+              title={getActionTooltip("edit", user, record)}
+              placement="top"
             >
-              Chi tiết
-            </Button>
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => handleEditClick(record)}
-              className={s.primaryButton}
-              size="small"
-            >
-              Sửa
-            </Button>
+              <ActionButton
+                variant="secondary"
+                size="medium"
+                icon={<EditOutlined />}
+                onClick={() => handleEditClick(record)}
+                disabled={!canEdit}
+              >
+                <span className={s.btnLabel}>Sửa</span>
+              </ActionButton>
+            </Tooltip>
           </Space>
         );
 
-        // Lock/Unlock Action with Popconfirm
-        const lockAction = (
+        // Lock/Unlock Action with Popconfirm - chỉ hiển thị nếu có quyền
+        const lockAction = canLock ? (
           <Popconfirm
             title={isActive ? "Khóa tài khoản" : "Mở khóa tài khoản"}
             description={
@@ -357,17 +406,31 @@ export default function AccountTable({
             cancelText="Hủy"
             okType={isActive ? "danger" : "primary"}
           >
-            <Button
-              type="text"
-              icon={isActive ? <LockOutlined /> : <UnlockOutlined />}
-              className={`${s.lockButton} ${
-                isActive ? s.lockDanger : s.lockSuccess
-              }`}
-              size="small"
-            >
-              {isActive ? "Khóa" : "Mở khóa"}
-            </Button>
+            <Tooltip title={getActionTooltip("lock", user, record)}>
+              <ActionButton
+                variant={isActive ? "danger" : "success"}
+                size="medium"
+                icon={isActive ? <LockOutlined /> : <UnlockOutlined />}
+              >
+                <span className={s.btnLabel}>
+                  {isActive ? "Khóa" : "Mở khóa"}
+                </span>
+              </ActionButton>
+            </Tooltip>
           </Popconfirm>
+        ) : (
+          <Tooltip title={getActionTooltip("lock", user, record)}>
+            <ActionButton
+              variant={isActive ? "danger" : "success"}
+              size="medium"
+              icon={isActive ? <LockOutlined /> : <UnlockOutlined />}
+              disabled={true}
+            >
+              <span className={s.btnLabel}>
+                {isActive ? "Khóa" : "Mở khóa"}
+              </span>
+            </ActionButton>
+          </Tooltip>
         );
 
         // More Actions Dropdown - Removed since individual log viewing is moved to global action
@@ -404,6 +467,18 @@ export default function AccountTable({
                       disabled: true, // Disable until backend API is available
                       children: [
                         {
+                          key: "MANAGER",
+                          label: "Đổi thành Quản lý",
+                          onClick: () => handleChangeRole(record, "MANAGER"),
+                          disabled: true, // Backend API not available
+                        },
+                        {
+                          key: "INSPECTOR",
+                          label: "Đổi thành Kỹ thuật viên",
+                          onClick: () => handleChangeRole(record, "INSPECTOR"),
+                          disabled: true, // Backend API not available
+                        },
+                        {
                           key: "STAFF",
                           label: "Đổi thành Nhân viên",
                           onClick: () => handleChangeRole(record, "STAFF"),
@@ -432,13 +507,13 @@ export default function AccountTable({
                 trigger={["click"]}
                 placement="bottomRight"
               >
-                <Button
-                  type="primary"
+                <ActionButton
+                  variant="primary"
+                  size="large"
                   icon={<MoreOutlined />}
-                  className={s.mobileActionButton}
                 >
                   Thao tác
-                </Button>
+                </ActionButton>
               </Dropdown>
             </div>
           </div>
@@ -446,6 +521,18 @@ export default function AccountTable({
       },
     },
   ];
+
+  // On smaller screens hide less-important columns to avoid horizontal scroll
+  const visibleColumns = React.useMemo(() => {
+    let cols = [...columns];
+    if (!screens.xl) {
+      cols = cols.filter((c) => c.key !== "verification");
+    }
+    if (!screens.lg) {
+      cols = cols.filter((c) => c.key !== "createdAt");
+    }
+    return cols;
+  }, [columns, screens.xl, screens.lg]);
 
   return (
     <div className={s.tableContainer}>
@@ -467,7 +554,7 @@ export default function AccountTable({
       {/* Account Table */}
       <Table
         rowKey="id"
-        columns={columns}
+        columns={visibleColumns}
         dataSource={rows}
         loading={loading}
         pagination={{
@@ -482,7 +569,8 @@ export default function AccountTable({
           className: s.pagination,
         }}
         className={s.accountTable}
-        scroll={{ x: 1300 }}
+        // Remove forced horizontal scroll; AntD will wrap within container
+        scroll={screens.md ? undefined : { x: 900 }}
         rowClassName={(record) =>
           `${s.tableRow} ${
             record.status === "ACTIVE" ? s.activeRow : s.inactiveRow

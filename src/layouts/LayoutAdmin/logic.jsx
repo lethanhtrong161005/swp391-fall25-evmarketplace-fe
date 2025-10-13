@@ -1,21 +1,17 @@
-import React from "react";
 import {
   DashboardOutlined,
   TeamOutlined,
   AppstoreOutlined,
+  CarOutlined,
+  ThunderboltOutlined,
+  TagsOutlined,
+  CrownOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
+import { useSidebar } from "@hooks/useSidebar";
 
-export function useSidebarMenu(token) {
-  const menuConfig = {
-    itemHeight: 42,
-    itemMarginBlock: 6,
-    itemMarginInline: 8,
-    itemBorderRadius: 10, // pill
-    itemSelectedColor: token.colorPrimaryBg,
-    itemSelectedBg: token.colorPrimary,
-    itemHoverBg: token.colorFillTertiary,
-  };
-
+export function useLayoutAdmin() {
+  // Menu items configuration
   const menuItems = [
     {
       key: "dashboard",
@@ -36,37 +32,50 @@ export function useSidebarMenu(token) {
       children: [
         {
           key: "category",
-          label: "Quản lý danh mục",
+          icon: <TagsOutlined />,
+          label: "Danh mục",
           path: "/admin/product/category",
         },
-
         {
           key: "brand",
-          label: "Quản lý thương hiệu",
+          icon: <CrownOutlined />,
+          label: "Thương hiệu",
           path: "/admin/product/brand",
         },
-
         {
           key: "model",
-          label: "Quản lý mẫu mã",
+          icon: <SettingOutlined />,
+          label: "Mẫu xe",
           path: "/admin/product/model",
         },
         {
           key: "vehicle",
-          label: "Quản lý phương tiện",
+          icon: <CarOutlined />,
+          label: "Xe điện",
           path: "/admin/product/vehicle",
         },
         {
           key: "battery",
-          label: "Quản lý pin",
+          icon: <ThunderboltOutlined />,
+          label: "Pin xe điện",
           path: "/admin/product/battery",
         },
       ],
     },
   ];
 
-  return {
-    menuConfig,
+  // Mock notifications - replace with real data
+  const notifications = [
+    { id: 1, title: "Có tài khoản mới đăng ký", time: "10:35 hôm nay" },
+    { id: 2, title: "Cập nhật hệ thống", time: "Hôm qua" },
+  ];
+
+  const sidebarConfig = {
     menuItems,
+    notifications,
+    profilePath: "/info-user",
+    homePath: "/",
   };
+
+  return useSidebar(sidebarConfig);
 }

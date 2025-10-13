@@ -2,54 +2,31 @@ import React from "react";
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import s from "./styles.module.scss";
-import { useStaffLayout } from "./logic";
+import { useStaffLayout } from "./logic.jsx";
+import Sidebar from "@components/Sidebar";
+import NotificationDrawer from "@components/Sidebar/NotificationDrawer";
 
-import SidebarBrand from "@layouts/LayoutAdmin/SidebarBrand";
-import SidebarProfile from "@layouts/LayoutAdmin/SidebarProfile";
-import SidebarBottomActions from "@layouts/LayoutAdmin/SidebarBottomActions";
-import NotificationDrawer from "@layouts/LayoutAdmin/NotificationDrawer";
-import StaffMenu from "./StaffMenu";
+const { Content } = Layout;
 
-const { Sider, Header, Content } = Layout;
-
-/**
- * Layout chính cho trang Staff - bao gồm sidebar và content area cho nhân viên
- */
+// Staff layout shares the same sidebar pattern as Admin
 export default function LayoutStaff() {
-  const {
-    token,
-    user,
-    selectedKey,
-    notifications,
-    notiOpen,
-    openNoti,
-    closeNoti,
-    goProfile,
-    logout,
-  } = useStaffLayout();
+  const sidebarProps = useStaffLayout();
 
   return (
     <Layout className={s.root}>
-      <Sider
-        theme="light"
+      <Sidebar
         width={240}
-        trigger={null}
-        className={s.sider}
-        style={{
-          background: token.colorBgContainer,
-          borderRight: `1px solid ${token.colorBorderSecondary}`,
-        }}
-      >
-        <SidebarBrand borderColor={token.colorBorderSecondary} />
-        <SidebarProfile user={user} onClick={goProfile} />
-        <StaffMenu selected={selectedKey} />
-        <SidebarBottomActions onOpenNoti={openNoti} onLogout={logout} />
-      </Sider>
+        theme="light"
+        {...sidebarProps}
+        onMenuClick={sidebarProps.handleMenuClick}
+        onProfileClick={sidebarProps.handleProfileClick}
+        onLogout={sidebarProps.handleLogout}
+        onOpenNotification={sidebarProps.openNotification}
+      />
 
-      {/* Bỏ hẳn Header component */}
       <Content
         className={s.content}
-        style={{ background: token.colorBgLayout }}
+        style={{ background: sidebarProps.token?.colorBgLayout }}
       >
         <div className={s.inner}>
           <Outlet />
@@ -57,9 +34,9 @@ export default function LayoutStaff() {
       </Content>
 
       <NotificationDrawer
-        open={notiOpen}
-        onClose={closeNoti}
-        data={notifications}
+        open={sidebarProps.notiOpen}
+        onClose={sidebarProps.closeNotification}
+        data={sidebarProps.notifications}
       />
     </Layout>
   );
