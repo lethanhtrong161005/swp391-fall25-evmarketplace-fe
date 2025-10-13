@@ -1,6 +1,6 @@
 import { Row, Col, Form, Select, AutoComplete, InputNumber } from "antd";
-import { YEARS_EXTENDED } from "../_shared/constants";
-import { priceRule } from "@/validators/common.rules";
+import { YEARS_EXTENDED } from "@utils/constants";
+import { priceRule } from "@validators/common.rules";
 import styles from "./index.module.scss";
 
 export default function YearColorFields({ isBattery }) {

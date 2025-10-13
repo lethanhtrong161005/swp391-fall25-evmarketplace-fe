@@ -6,14 +6,6 @@ import styles from "./SearchActions.module.scss";
 const SearchActions = ({ query, onChangeQuery, onCreate }) => {
     return (
         <div className={styles.container}>
-            <div className={styles.shortcuts}>
-                <span className={styles.label}>Lối tắt</span>
-                <Space wrap>
-                    <Tooltip title="Gói PRO"><Button size="small" icon={<ThunderboltOutlined />}>Gói PRO</Button></Tooltip>
-                    <Tooltip title="Ưu đãi hiện có"><Button size="small" icon={<GiftOutlined />}>Ưu đãi</Button></Tooltip>
-                    <Tooltip title="Danh sách liên hệ"><Button size="small" icon={<TeamOutlined />}>Danh sách liên hệ</Button></Tooltip>
-                </Space>
-            </div>
 
             <Space>
                 <Input.Search

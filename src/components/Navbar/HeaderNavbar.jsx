@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MenuOutlined } from "@ant-design/icons";
 import { Menu, Button, Drawer, Grid } from "antd";
-import HeaderAction from "../Action/HeaderAction";
+import HeaderAction from "@components/Action/HeaderAction";
 
 const items = [
   { key: "home", label: "Trang chủ", path: "/" },

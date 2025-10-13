@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Card, Descriptions, Avatar, Button, Spin, Alert, Row, Col } from "antd";
 import { EditOutlined, ReloadOutlined, UserOutlined } from "@ant-design/icons";
 import UpdateProfileModal from "@components/Modal/UpdateProfileModal";
-import { getUserProfile } from "../../../services/accountService";
-import { getAxiosErrorMessage, getErrorMessage, isValidErrorCode } from "../../../config/errorMessage";
+import { getUserProfile } from "@services/accountService";
+import { getAxiosErrorMessage, getErrorMessage, isValidErrorCode } from "@config/errorMessage";
 
 const getAvatarUrl = (filename) => {
         if (!filename) return null;

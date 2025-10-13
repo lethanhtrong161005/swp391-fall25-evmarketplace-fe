@@ -11,6 +11,7 @@ const CreateListingFooter = ({
     onSubmit,
     submitting,
     maxWidth = 1024,
+    isEdit = false,
 }) => {
     // chấp nhận cả currentPostType hoặc currentMode (NORMAL/BOOSTED)
     const mode = currentPostType || currentMode || "NORMAL";
@@ -39,11 +40,13 @@ const CreateListingFooter = ({
 
                         <Col>
                             <Row gutter={8} wrap={false} className={styles.actionsRow}>
-                                <Col>
-                                    <Button size="large" className={styles.actionBtn} onClick={handleDraftClick} disabled={submitting}>
-                                        Lưu nháp
-                                    </Button>
-                                </Col>
+                                {!isEdit && (
+                                    <Col>
+                                        <Button size="large" className={styles.actionBtn} onClick={handleDraftClick} disabled={submitting}>
+                                            Lưu nháp
+                                        </Button>
+                                    </Col>
+                                )}
                                 <Col>
                                     <Button
                                         type="primary"
@@ -52,7 +55,7 @@ const CreateListingFooter = ({
                                         onClick={handleSubmitClick}
                                         loading={submitting}
                                     >
-                                        Đăng tin
+                                        {isEdit ? "Cập nhật tin" : "Đăng tin"}
                                     </Button>
                                 </Col>
                             </Row>

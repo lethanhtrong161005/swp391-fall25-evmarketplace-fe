@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Select, Upload, Avatar, Button, message, Row, Col, Space, Tooltip } from "antd";
 import { ExclamationCircleTwoTone, CheckCircleTwoTone, UploadOutlined, UserOutlined, MessageTwoTone } from "@ant-design/icons";
-import useUpdateProfileModal from "@/hooks/useUpdateProfileModal";
+import useUpdateProfileModal from "@hooks/useUpdateProfileModal";
 
 const { Option } = Select;
 

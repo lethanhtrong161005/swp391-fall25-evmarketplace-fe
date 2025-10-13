@@ -3,7 +3,7 @@ import {
     getProvinces,
     getDistrictsByProvinceCode,
     getWardsByDistrictCode,
-} from "@/services/address.service";
+} from "@services/address.service";
 
 export function useAddressModal({ open, initialAddress, onOk }) {
     const provinces = useMemo(() => getProvinces(), []);

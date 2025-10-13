@@ -1,6 +1,6 @@
 import { Input, Button, Select } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import "../SearchBar/SearchBar.scss"
+import "@components/SearchBar/SearchBar.scss"
 const { Option } = Select;
 
 const SearchBar = () => {

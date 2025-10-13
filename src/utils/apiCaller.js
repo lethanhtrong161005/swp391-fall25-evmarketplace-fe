@@ -1,7 +1,7 @@
 
 import axios from "axios"
 import cookieUtils from "./cookieUtils"
-import config from "../config"
+import config from "@config"
 
 
 const api = axios.create({

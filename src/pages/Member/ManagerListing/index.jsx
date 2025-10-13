@@ -9,15 +9,15 @@ import StatusTabs from "./StatusTabs";
 import ListingTable from "./ListingTable";
 import EmptyState from "./EmptyState";
 
-import useManagerListing from "@hooks/useManagerListing";
-import useListingPayment from "@/hooks/useListingPayment";
-
+import useManagerListing from "@pages/Member/ManagerListing/useManagerListing";
+import useListingPayment from "@hooks/useListingPayment";
 
 const ManagerListing = () => {
     const {
         loading, tabs, counts, activeTab, setActiveTab,
         query, setQuery, itemsForActiveTab, goCreateListing,
         onView, onEdit, onDelete, pagination, onChangeTable,
+        deletingId, onRestore, onHide,
     } = useManagerListing();
 
     const { payingId, payForListing } = useListingPayment();
@@ -45,6 +45,9 @@ const ManagerListing = () => {
                         onChange={onChangeTable}
                         onPay={payForListing}
                         payingId={payingId}
+                        deletingId={deletingId}
+                        onRestore={(row, action) => action === "hide" ? onHide(row) : onRestore(row)}
+                        isTrash={activeTab === "SOFT_DELETED"}
                     />
                 ) : (
                     <EmptyState onCreate={goCreateListing} />

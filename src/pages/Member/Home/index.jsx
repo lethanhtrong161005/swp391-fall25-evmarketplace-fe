@@ -10,7 +10,7 @@ import {
   getLatestProducts,
   getFeaturedProducts,
   getAllProductsCount,
-} from "@/data/HomeProduct.fake";
+} from "@data/HomeProduct.fake";
 
 const Home = () => {
   const { token } = theme.useToken();

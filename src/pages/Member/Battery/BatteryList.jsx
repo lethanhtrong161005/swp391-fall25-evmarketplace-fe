@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Row, Col, Pagination } from "antd";
 import { useNavigate } from "react-router-dom";
-import ProductCard from "../../../components/ProductCard/ProductCard";
+import ProductCard from "@components/ProductCard/ProductCard";
 
 const BatteryList = ({ listings, onClick }) => {
   const navigate = useNavigate();

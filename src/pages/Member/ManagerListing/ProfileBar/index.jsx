@@ -55,7 +55,7 @@ const ProfileBar = () => {
                 </Space>
             </div>
         </div>
-    );
+    );   
 };
 
 export default ProfileBar;

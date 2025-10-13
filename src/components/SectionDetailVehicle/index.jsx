@@ -1,31 +1,29 @@
-import { Form, Row, Col, InputNumber, Input } from "antd";
+import { Form, Row, Col, InputNumber } from "antd";
 import {
-    batteryCapacityRule,
-    batterySOHRule,
-    voltageRule,
-    chemistryOptionalRule,
-    weightOptionalRule,
-    dimensionOptionalRule,
-} from "@/validators/battery.rules";
+    vehicleBatteryCapacityRule,
+    vehicleSOHRule,
+    mileageRule,
+    vehiclePriceRule,
+} from "@validators/vehicle.rules";
 import styles from "./index.module.scss";
 
-const SectionDetailBattery = () => {
+const SectionDetailVehicle = () => {
     return (
         <>
             <Row gutter={16} className={styles.row}>
                 <Col xs={24} md={12}>
                     <Form.Item
                         className={styles.formItem}
-                        label="Dung lượng (kWh)"
+                        label="Dung lượng pin (kWh)"
                         name="battery_capacity_kwh"
-                        rules={batteryCapacityRule}
+                        rules={vehicleBatteryCapacityRule}
                     >
                         <InputNumber
                             controls={false}
                             min={0}
                             step={0.1}
                             className={styles.number}
-                            placeholder="VD: 52"
+                            placeholder="VD: 42"
                         />
                     </Form.Item>
                 </Col>
@@ -35,7 +33,7 @@ const SectionDetailBattery = () => {
                         className={styles.formItem}
                         label="Tình trạng pin (%SOH)"
                         name="soh_percent"
-                        rules={batterySOHRule}
+                        rules={vehicleSOHRule}
                     >
                         <InputNumber
                             controls={false}
@@ -43,7 +41,7 @@ const SectionDetailBattery = () => {
                             max={100}
                             step={0.1}
                             className={styles.number}
-                            placeholder="VD: 95"
+                            placeholder="VD: 95.5"
                         />
                     </Form.Item>
                 </Col>
@@ -53,16 +51,15 @@ const SectionDetailBattery = () => {
                 <Col xs={24} md={12}>
                     <Form.Item
                         className={styles.formItem}
-                        label="Điện áp (V)"
-                        name="voltage"
-                        rules={voltageRule}
+                        label="Số Km đã đi"
+                        name="mileage_km"
+                        rules={mileageRule}
                     >
                         <InputNumber
                             controls={false}
                             min={0}
-                            step={1}
                             className={styles.number}
-                            placeholder="VD: 355"
+                            placeholder="VD: 15000"
                         />
                     </Form.Item>
                 </Col>
@@ -70,41 +67,19 @@ const SectionDetailBattery = () => {
                 <Col xs={24} md={12}>
                     <Form.Item
                         className={styles.formItem}
-                        label="Hoá học pin (tùy chọn)"
-                        name="chemistry"
-                        rules={chemistryOptionalRule}
-                    >
-                        <Input className={styles.input} placeholder="VD: LFP, NMC…" />
-                    </Form.Item>
-                </Col>
-            </Row>
-
-            <Row gutter={16} className={styles.row}>
-                <Col xs={24} md={12}>
-                    <Form.Item
-                        className={styles.formItem}
-                        label="Khối lượng (kg) (tùy chọn)"
-                        name="weight_kg"
-                        rules={weightOptionalRule}
+                        label="Giá bán (VND)"
+                        name="price"
+                        rules={vehiclePriceRule}
                     >
                         <InputNumber
                             controls={false}
                             min={0}
-                            step={0.1}
+                            step={100000}
                             className={styles.number}
-                            placeholder="VD: 220"
+                            placeholder="VD: 460000000"
+                            formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                            parser={(v) => v.replace(/\$\s?|(,*)/g, "")}
                         />
-                    </Form.Item>
-                </Col>
-
-                <Col xs={24} md={12}>
-                    <Form.Item
-                        className={styles.formItem}
-                        label="Kích thước (mm) (tùy chọn)"
-                        name="dimension"
-                        rules={dimensionOptionalRule}
-                    >
-                        <Input className={styles.input} placeholder="VD: 1700x1200x180" />
                     </Form.Item>
                 </Col>
             </Row>
@@ -112,4 +87,4 @@ const SectionDetailBattery = () => {
     );
 }
 
-export default SectionDetailBattery;
+export default SectionDetailVehicle;

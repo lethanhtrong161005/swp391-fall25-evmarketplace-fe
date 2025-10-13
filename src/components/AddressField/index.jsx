@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input } from "antd";
 import { EditOutlined, CloseCircleFilled } from "@ant-design/icons";
-import AddressModal from "../AddressModal";
+import AddressModal from "@components/AddressModal";
 import styles from "./index.module.scss";
 
 const cn = (...xs) => xs.filter(Boolean).join(" ");

@@ -1,6 +1,6 @@
 import { Modal, Form, Select, Input } from "antd";
 import styles from "./index.module.scss";
-import { useAddressModal } from "@hooks/useAddressModal";
+import { useAddressModal } from "@components/AddressModal/useAddressModal.js";
 
 const AddressModal = ({ open, onCancel, onOk, initialAddress }) => {
     const {
