@@ -34,6 +34,7 @@ import VnpReturnPage from "@pages/Payment";
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
+import ManageFavoriteListing from "../pages/Member/ManagerFavoriteListing";
 
 export const routes = () => [
   {
@@ -53,7 +54,9 @@ export const routes = () => [
           { path: "listing/new", element: <ListingCreate /> },
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
-          { path: "payment/vnpay/call_back", element: <VnpReturnPage/>}
+          { path: "payment/vnpay/call_back", element: <VnpReturnPage/>},
+          { path: "my-ads", element: <ManagerListing /> },
+          { path: "my-favorite", element: <ManageFavoriteListing/> },
         ],
       },
     ],

@@ -1,0 +1,102 @@
+/* src/pages/Member/ManageFavoriteListing/FavoriteListItem.module.scss */
+.item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 16px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+    padding: 12px;
+}
+
+.thumbWrap {
+    position: relative;
+    width: 140px;
+    height: 100px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f2f3f5;
+}
+
+.thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mediaBadge {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    background: rgba(0, 0, 0, .6);
+    color: #fff;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: 12px;
+    line-height: 20px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 16px;
+    color: #111827;
+    text-decoration: none;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.heartBtn {
+    width: 36px;
+    height: 36px;
+}
+
+.heartIcon {
+    font-size: 18px;
+    color: #e02424;
+    /* đỏ tim */
+}
+
+.metaRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.price {
+    font-weight: 700;
+    color: #e11d48;
+    /* đỏ giá */
+}
+
+.subRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.dot {
+    width: 4px;
+    height: 4px;
+    background: #cbd5e1;
+    border-radius: 999px;
+    display: inline-block;
+}

@@ -12,7 +12,7 @@ import { requestOtp, verifyOtp } from "@services/otpService";
 import { createAccount, resetPassword } from "@services/accountService";
 import { useAuth } from "@hooks/useAuth";
 
-const MANAGE_LISTINGS_PATH = "/my-ads"; // đổi path nếu bạn dùng route khác
+const MANAGE_LISTINGS_PATH = "/my-ads";
 
 
 const HeaderAction = () => {
