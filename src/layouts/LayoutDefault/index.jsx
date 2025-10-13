@@ -1,16 +1,16 @@
 import React from "react";
 import { Layout } from "antd";
 
-import SiteFooter from "../../components/Footer";
+import SiteFooter from "@components/Footer";
 
 import { Outlet, Link, useLocation } from "react-router-dom";
-import DefaultHeader from "../../components/Header/DefaultHeader";
-import SearchBar from "../../components/SearchBar/SearchBar";
+import DefaultHeader from "@components/Header/DefaultHeader";
+import SearchBar from "@components/SearchBar/SearchBar";
 const { Content, Header, Footer } = Layout;
 
 const LayoutDefault = () => {
   const location = useLocation();
-  const hideFooter = location.pathname.startsWith("/listing/new");
+  const hideFooter = location.pathname.startsWith("/listing/new") || location.pathname.startsWith("/listing/edit");
   return (
     <>
       <Layout>

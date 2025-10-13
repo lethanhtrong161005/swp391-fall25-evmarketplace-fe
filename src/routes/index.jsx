@@ -27,6 +27,9 @@ import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
+import ListingEdit from "@pages/Member/ListingEdit";
+import ManagerListing from "@pages/Member/ManagerListing";
+import VnpReturnPage from "@pages/Payment";
 
 // Errors
 import Error403 from "@pages/Errors/Error403";
@@ -48,6 +51,9 @@ export const routes = () => [
         children: [
           { path: "info-user", element: <InfoUser /> },
           { path: "listing/new", element: <ListingCreate /> },
+          { path: "listing/edit/:id", element: <ListingEdit /> },
+          { path: "my-ads", element: <ManagerListing /> },
+          { path: "payment/vnpay/call_back", element: <VnpReturnPage/>}
         ],
       },
     ],

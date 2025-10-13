@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col } from "antd";
 import VehicleList from "./VehicleList";
-import vehiclesData from "../../../data/ProductsData";
+import vehiclesData from "@data/ProductsData";
 const Vehicle = () => {
   return (
     <div style={{ minHeight: "100vh"}}>

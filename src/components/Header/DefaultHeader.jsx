@@ -1,8 +1,8 @@
 import React from "react";
 import { Layout, Row, Col, Avatar, Typography, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import HeaderNavbar from "../Navbar/HeaderNavbar";
-import SearchBar from "../SearchBar/SearchBar";
+import HeaderNavbar from "@components/Navbar/HeaderNavbar";
+import SearchBar from "@components/SearchBar/SearchBar";
 import logo from "@assets/images/logo/Logo_Brand.png";
 
 const { Header } = Layout;

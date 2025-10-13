@@ -1,6 +1,6 @@
 
 import React from 'react'
-import batteriesData from "../../../data/ProductsData"
+import batteriesData from "@data/ProductsData"
 import BatteryList from './BatteryList';
 const Battery = () => {
   return (

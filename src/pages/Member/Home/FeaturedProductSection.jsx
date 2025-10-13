@@ -2,8 +2,8 @@
 import React, { useMemo } from "react";
 import { Typography, Row, Col, Empty, Space } from "antd";
 import { ArrowRightOutlined, TrophyOutlined } from "@ant-design/icons";
-import ProductCard from "@/components/ProductCard/ProductCard";
-import ViewAllLink from "@/components/ViewAllLinkButton/ViewAllLink";
+import ProductCard from "@components/ProductCard/ProductCard";
+import ViewAllLink from "@components/ViewAllLinkButton/ViewAllLink";
 
 const { Title } = Typography;
 
