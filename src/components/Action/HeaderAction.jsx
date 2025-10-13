@@ -40,123 +40,142 @@ const HeaderAction = () => {
 
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
   const menuItems = getMenuItems();
+  const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
 
   return (
-    <div style={{ display: "flex", gap: 8 }}>
-      {contextHolder}
+    <>
+      <div style={{ display: "flex", gap: 8 }}>
+        {contextHolder}
+        {isMember && (
+          <>
+            <Button
+              onClick={() =>
+                handleLoginRequire(
+                  "/listing/new",
+                  "Vui lòng đăng nhập để đăng tin"
+                )
+              }
+            >
+              Đăng tin
+            </Button>
 
-      <Button
-        onClick={() =>
-          handleLoginRequire("/listing/new", "Vui lòng đăng nhập để đăng tin")
-        }
-      >
-        Đăng tin
-      </Button>
+            <Button
+              onClick={() =>
+                handleLoginRequire(
+                  "/my-ads",
+                  "Vui lòng đăng nhập để quản lý tin"
+                )
+              }
+            >
+              Quản lý tin
+            </Button>
 
-      <Button  onClick={() =>
-          handleLoginRequire("/my-ads", "Vui lòng đăng nhập để quản lý tin")}>Quản lý tin</Button>
+            <Button>Ký gửi</Button>
+          </>
+        )}
 
-      <Button>Ký gửi</Button>
-
-      {isLoggedIn ? (
-        <Dropdown
-          menu={{ items: menuItems, onClick: handleMenuClick }}
-          placement="bottomRight"
-          trigger={["click"]}
-        >
-          <Button icon={<UserOutlined />} type="text">
-            {displayName}
+        {isLoggedIn ? (
+          <Dropdown
+            menu={{ items: menuItems, onClick: handleMenuClick }}
+            placement="bottomRight"
+            trigger={["click"]}
+          >
+            <Button icon={<UserOutlined />} type="text">
+              {displayName}
+            </Button>
+          </Dropdown>
+        ) : (
+          <Button type="primary" onClick={() => auth.setOpenLogin?.(true)}>
+            Đăng nhập
           </Button>
-        </Dropdown>
-      ) : (
-        <Button type="primary" onClick={() => auth.setOpenLogin?.(true)}>
-          Đăng nhập
-        </Button>
-      )}
+        )}
 
-      <LoginModal
-        open={auth.openLogin}
-        onClose={() => auth.setOpenLogin(false)}
-        onSubmit={handleLoginSubmit}
-        onGoRegister={() => {
-          auth.setOpenLogin(false);
-          register.setOpenRegister(true);
-        }}
-        onForgot={(prefillPhone) => {
-          if (prefillPhone) otp.setRegPhone(prefillPhone);
-          auth.setOpenLogin(false);
-          reset.setOpenResetPhone(true);
-        }}
-      />
+        <LoginModal
+          open={auth.openLogin}
+          onClose={() => auth.setOpenLogin(false)}
+          onSubmit={handleLoginSubmit}
+          onGoRegister={() => {
+            auth.setOpenLogin(false);
+            register.setOpenRegister(true);
+          }}
+          onForgot={(prefillPhone) => {
+            if (prefillPhone) otp.setRegPhone(prefillPhone);
+            auth.setOpenLogin(false);
+            reset.setOpenResetPhone(true);
+          }}
+        />
 
-      <PhoneRegisterModal
-        ref={register.phoneRegisterRef}
-        open={register.openRegister}
-        onClose={() => register.setOpenRegister(false)}
-        onContinue={(phone) =>
-          register.handleRegisterContinue(phone, handleOtpStart)
-        }
-        submitting={register.registerSubmitting}
-        onGoLogin={() => {
-          register.setOpenRegister(false);
-          auth.setOpenLogin(true);
-        }}
-      />
+        <PhoneRegisterModal
+          ref={register.phoneRegisterRef}
+          open={register.openRegister}
+          onClose={() => register.setOpenRegister(false)}
+          onContinue={(phone) =>
+            register.handleRegisterContinue(phone, handleOtpStart)
+          }
+          submitting={register.registerSubmitting}
+          onGoLogin={() => {
+            register.setOpenRegister(false);
+            auth.setOpenLogin(true);
+          }}
+        />
 
-      <PhoneResetPasswordModal
-        ref={reset.phoneResetRef}
-        open={reset.openResetPhone}
-        onClose={() => reset.setOpenResetPhone(false)}
-        onContinue={(phone) => reset.handleResetContinue(phone, handleOtpStart)}
-        submitting={reset.resetSubmitting}
-        onGoLogin={() => {
-          reset.setOpenResetPhone(false);
-          auth.setOpenLogin(true);
-        }}
-      />
+        <PhoneResetPasswordModal
+          ref={reset.phoneResetRef}
+          open={reset.openResetPhone}
+          onClose={() => reset.setOpenResetPhone(false)}
+          onContinue={(phone) =>
+            reset.handleResetContinue(phone, handleOtpStart)
+          }
+          submitting={reset.resetSubmitting}
+          onGoLogin={() => {
+            reset.setOpenResetPhone(false);
+            auth.setOpenLogin(true);
+          }}
+        />
 
-      <OtpVerifyModal
-        ref={otp.otpRef}
-        open={otp.openOtp}
-        phone={otp.regPhone}
-        onClose={() => otp.setOpenOtp(false)}
-        onVerify={(code) => otp.handleOtpVerify(code, handleOtpSuccess)}
-        onResend={otp.handleOtpResend}
-        cooldownSec={30}
-        submitting={otp.otpSubmitting}
-        resendSubmitting={otp.otpResendSubmitting}
-      />
+        <OtpVerifyModal
+          ref={otp.otpRef}
+          open={otp.openOtp}
+          phone={otp.regPhone}
+          onClose={() => otp.setOpenOtp(false)}
+          onVerify={(code) => otp.handleOtpVerify(code, handleOtpSuccess)}
+          onResend={otp.handleOtpResend}
+          cooldownSec={30}
+          submitting={otp.otpSubmitting}
+          resendSubmitting={otp.otpResendSubmitting}
+        />
 
-      <RegisterModal
-        open={register.openRegisterForm}
-        phone={otp.regPhone}
-        onClose={() => register.setOpenRegisterForm(false)}
-        onSubmit={(formData) =>
-          register.handleRegisterSubmit(formData, otp.tokenOtp)
-        }
-        onGoLogin={() => {
-          register.setOpenRegisterForm(false);
-          auth.setOpenLogin(true);
-        }}
-      />
+        <RegisterModal
+          open={register.openRegisterForm}
+          phone={otp.regPhone}
+          onClose={() => register.setOpenRegisterForm(false)}
+          onSubmit={(formData) =>
+            register.handleRegisterSubmit(formData, otp.tokenOtp)
+          }
+          onGoLogin={() => {
+            register.setOpenRegisterForm(false);
+            auth.setOpenLogin(true);
+          }}
+        />
 
-      <ResetPasswordModal
-        open={reset.openResetForm}
-        onClose={() => reset.setOpenResetForm(false)}
-        onSubmit={(formData) =>
-          reset.handleResetPasswordSubmit(
-            formData,
-            otp.tokenOtp,
-            register.setOpenLogin
-          )
-        }
-        submitting={reset.resetPwdSubmitting}
-        onGoLogin={() => {
-          reset.setOpenResetForm(false);
-          auth.setOpenLogin(true);
-        }}
-      />
-    </div>
+        <ResetPasswordModal
+          open={reset.openResetForm}
+          onClose={() => reset.setOpenResetForm(false)}
+          onSubmit={(formData) =>
+            reset.handleResetPasswordSubmit(
+              formData,
+              otp.tokenOtp,
+              register.setOpenLogin
+            )
+          }
+          submitting={reset.resetPwdSubmitting}
+          onGoLogin={() => {
+            reset.setOpenResetForm(false);
+            auth.setOpenLogin(true);
+          }}
+        />
+      </div>
+    </>
   );
 };
 
