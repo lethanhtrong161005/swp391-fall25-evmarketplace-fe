@@ -3,6 +3,7 @@ import { Avatar, Typography, Space } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import s from "./SidebarProfile.module.scss";
 import { useSidebarProfile } from "./logic";
+import RoleLabel from "@components/RoleLabel";
 
 const { Text } = Typography;
 
@@ -29,6 +30,8 @@ export default function SidebarProfile({ user, onClick }) {
           <Text type="secondary" className={s.email}>
             {displayEmail}
           </Text>
+          <br />
+          <RoleLabel role={user?.role} size="small" />
         </div>
       </Space>
     </div>

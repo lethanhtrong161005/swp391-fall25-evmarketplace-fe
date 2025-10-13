@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Space, Button, Drawer, List, Typography } from "antd";
+import { Table, Space, Button, Drawer, List, Typography, Grid } from "antd";
 import { HistoryOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import s from "./ListingTable.module.scss";
@@ -24,6 +24,7 @@ export default function ListingTable({
   onRestore,
   onRenew,
 }) {
+  const screens = Grid.useBreakpoint();
   const navigate = useNavigate();
   const { columns, historyOpen, setHistoryOpen, historyData } = useListingTable(
     {
@@ -56,7 +57,7 @@ export default function ListingTable({
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} trong ${total} kết quả`,
         }}
-        scroll={{ x: 1320 }}
+        scroll={screens.md ? undefined : { x: 980 }}
         className={s.listingTable}
       />
 

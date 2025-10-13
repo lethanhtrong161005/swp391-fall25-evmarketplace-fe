@@ -38,7 +38,7 @@ export default function ListingCreate() {
     return (
       <div style={{ padding: 40, textAlign: "center" }}>
         {contextHolder}
-        <Spin tip="Đang tải danh mục..." />
+        <Spin />
       </div>
     );
   }

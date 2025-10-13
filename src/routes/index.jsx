@@ -4,6 +4,8 @@ import RoleBasedRoute from "@components/RoleBasedRoute";
 import LayoutDefault from "@layouts/LayoutDefault";
 import LayoutAdmin from "@layouts/LayoutAdmin";
 import LayoutStaff from "@layouts/LayoutStaff";
+import LayoutManager from "@layouts/LayoutManager";
+import LayoutInspector from "@layouts/LayoutInspector";
 
 // Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
@@ -19,6 +21,12 @@ import StaffDashboard from "@pages/Staff/StaffDashboard";
 import ManageListingPage from "@pages/Staff/ManageListing";
 import ManageListingDetail from "@pages/Staff/ManageListingDetail";
 
+// Manager pages
+import ManagerDashboard from "@pages/Manager/ManagerDashboard";
+
+// Inspector pages
+import InspectorDashboard from "@pages/Inspector/InspectorDashboard";
+
 // Common (member)
 import HomeWrapper from "@pages/Member/HomeWrapper/HomeWrapper";
 import InfoUser from "@pages/Member/InfoUser";
@@ -27,6 +35,7 @@ import Vehicle from "@pages/Member/Vehicle";
 import GoogleCallback from "@pages/Auth/GoogleCallback";
 import ProductDetail from "@pages/Member/ProductDetail/ProductDetail";
 import ListingCreate from "@pages/Member/ListingCreate";
+import SearchResults from "@pages/Member/SearchResults";
 import ListingEdit from "@pages/Member/ListingEdit";
 import ManagerListing from "@pages/Member/ManagerListing";
 import VnpReturnPage from "@pages/Payment";
@@ -43,6 +52,7 @@ export const routes = () => [
       { index: true, element: <HomeWrapper /> },
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
+      { path: "search-results", element: <SearchResults /> },
       { path: "detail/:type/:id", element: <ProductDetail /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
 
@@ -71,6 +81,30 @@ export const routes = () => [
           { path: "staff/listings", element: <ManageListingPage /> },
           { path: "staff/listings/:id", element: <ManageListingDetail /> },
         ],
+      },
+    ],
+  },
+
+  // MANAGER
+  {
+    path: "/",
+    element: <LayoutManager />,
+    children: [
+      {
+        element: <RoleBasedRoute allowedRoles={["manager"]} />,
+        children: [{ path: "manager", element: <ManagerDashboard /> }],
+      },
+    ],
+  },
+
+  // INSPECTOR
+  {
+    path: "/",
+    element: <LayoutInspector />,
+    children: [
+      {
+        element: <RoleBasedRoute allowedRoles={["inspector"]} />,
+        children: [{ path: "inspector", element: <InspectorDashboard /> }],
       },
     ],
   },
