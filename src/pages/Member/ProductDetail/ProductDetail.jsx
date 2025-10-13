@@ -58,7 +58,6 @@ export default function ProductDetail() {
 
   return (
     <div className="product-detail">
-  
       {/* Nút quay lại + Phần ảnh + thông tin chính */}
       <Card className="product-detail__section">
         {/* Nút quay lại */}

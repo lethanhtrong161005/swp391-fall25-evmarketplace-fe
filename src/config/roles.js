@@ -1,6 +1,5 @@
 // Role constants và mapping tiếng Việt
 export const ROLES = {
-  GUEST: "guest",
   MEMBER: "member",
   STAFF: "staff",
   INSPECTOR: "inspector",
@@ -10,7 +9,6 @@ export const ROLES = {
 
 // Mapping role sang tên tiếng Việt
 export const ROLE_LABELS = {
-  [ROLES.GUEST]: "Khách",
   [ROLES.MEMBER]: "Thành viên",
   [ROLES.STAFF]: "Nhân viên",
   [ROLES.INSPECTOR]: "Kỹ thuật viên",
@@ -20,7 +18,6 @@ export const ROLE_LABELS = {
 
 // Role hierarchy (quyền hạn từ thấp đến cao)
 export const ROLE_HIERARCHY = [
-  ROLES.GUEST,
   ROLES.MEMBER,
   ROLES.STAFF,
   ROLES.INSPECTOR,

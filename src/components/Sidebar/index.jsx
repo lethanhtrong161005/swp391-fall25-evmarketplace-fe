@@ -8,23 +8,7 @@ import s from "./Sidebar.module.scss";
 
 const { Sider } = Layout;
 
-/**
- * Sidebar component có thể tái sử dụng cho tất cả các role
- * @param {Object} props
- * @param {number} props.width - Chiều rộng của sidebar
- * @param {string} props.theme - Theme của sidebar (light/dark)
- * @param {Object} props.token - Antd theme token
- * @param {Object} props.user - Thông tin user
- * @param {Array} props.menuItems - Danh sách menu items
- * @param {Array} props.selectedKeys - Keys được chọn
- * @param {Array} props.defaultOpenKeys - Keys mở mặc định
- * @param {Function} props.onMenuClick - Handler khi click menu
- * @param {Function} props.onProfileClick - Handler khi click profile
- * @param {Function} props.onLogout - Handler khi logout
- * @param {Function} props.onOpenNotification - Handler mở notification
- * @param {string} props.className - Custom className
- * @param {Object} props.style - Custom style
- */
+// Sidebar component có thể tái sử dụng cho tất cả các role
 export default function Sidebar({
   width = 260,
   theme = "light",

@@ -24,19 +24,44 @@ const DENSITY = {
   large: { pad: 16, title: 18, radius: 14, tag: 14 },
 };
 
-/** Nhận diện Pin hay Xe theo nhiều nguồn field */
-function isBattery(listing) {
-  const t = (
-    listing?.category ||
-    listing?.type ||
-    listing?.itemType ||
-    ""
-  ).toUpperCase();
-  return (
-    t === "BATTERY" ||
+/** Nhận diện loại sản phẩm theo category_id */
+function getProductType(listing) {
+  const categoryId = listing?.category_id;
+  const category = listing?.category?.toUpperCase();
+
+  // Ưu tiên category_id trước
+  if (categoryId === 4) return "BATTERY";
+  if (categoryId === 1) return "EV_CAR";
+  if (categoryId === 2) return "E_MOTORBIKE";
+  if (categoryId === 3) return "E_BIKE";
+
+  // Fallback theo category string
+  if (category === "BATTERY") return "BATTERY";
+  if (category === "EV_CAR") return "EV_CAR";
+  if (category === "E_MOTORBIKE") return "E_MOTORBIKE";
+  if (category === "E_BIKE") return "E_BIKE";
+
+  // Fallback theo product_battery_id
+  if (
     listing?.product_battery_id != null ||
     listing?.productBatteryId != null
-  );
+  ) {
+    return "BATTERY";
+  }
+
+  return "UNKNOWN";
+}
+
+/** Lấy tag hiển thị cho loại sản phẩm */
+function getProductTypeTag(productType) {
+  const tags = {
+    BATTERY: { text: "Pin", color: "purple" },
+    EV_CAR: { text: "Ô tô", color: "blue" },
+    E_MOTORBIKE: { text: "Xe máy", color: "green" },
+    E_BIKE: { text: "Xe đạp", color: "orange" },
+    UNKNOWN: { text: "Sản phẩm", color: "default" },
+  };
+  return tags[productType] || tags.UNKNOWN;
 }
 
 /** Định dạng VND */
@@ -46,7 +71,12 @@ function toVND(n) {
   return Number.isNaN(v) ? `${n} đ` : `${v.toLocaleString("vi-VN")} đ`;
 }
 
-export default function ProductCard({ listing, onClick, size }) {
+export default function ProductCard({
+  listing,
+  onClick,
+  size,
+  showVerifiedTag = true,
+}) {
   const screens = useBreakpoint();
   const SZ =
     DENSITY[
@@ -54,7 +84,9 @@ export default function ProductCard({ listing, onClick, size }) {
     ];
   const [imgError, setImgError] = useState(false);
 
-  const kindIsBattery = isBattery(listing);
+  const productType = getProductType(listing);
+  const productTypeTag = getProductTypeTag(productType);
+  const kindIsBattery = productType === "BATTERY";
 
   const data = useMemo(() => {
     const imageUrl =
@@ -102,6 +134,7 @@ export default function ProductCard({ listing, onClick, size }) {
         (typeof listing?.mileage === "number" ? listing?.mileage : undefined),
       powerKw:
         listing?.powerKw ??
+        listing?.batteryCapacityKwh ?? // Thử thêm field này cho xe
         (typeof listing?.motor_power === "number"
           ? listing?.motor_power / 1000
           : undefined),
@@ -136,23 +169,23 @@ export default function ProductCard({ listing, onClick, size }) {
       }}
     >
       {/* <Link to={`/detail/${listing.id}`} style={{ display: "block" }}> */}
-      {/* Tag góc trên: loại BATTERY + Verified cho xe */}
-      {kindIsBattery && (
+      {/* Tag góc trên trái: đã thẩm định */}
+      {showVerifiedTag && data.verified && (
         <Tag
-          color="purple"
+          color="red"
           style={{ position: "absolute", top: 10, left: 10, zIndex: 2 }}
-        >
-          Battery
-        </Tag>
-      )}
-      {!kindIsBattery && data.verified && (
-        <Tag
-          color="green"
-          style={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}
         >
           Đã thẩm định
         </Tag>
       )}
+
+      {/* Tag góc trên phải: loại sản phẩm */}
+      <Tag
+        color={productTypeTag.color}
+        style={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}
+      >
+        {productTypeTag.text}
+      </Tag>
 
       <div style={frameStyle}>
         {!data.imageUrl || imgError ? (
@@ -242,6 +275,7 @@ export default function ProductCard({ listing, onClick, size }) {
                   </Tag>
                 </Col>
               )}
+              {/* Verified tag moved to top-left */}
             </>
           )}
         </Row>

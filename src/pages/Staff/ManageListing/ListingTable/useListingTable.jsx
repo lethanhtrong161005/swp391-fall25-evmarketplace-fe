@@ -3,10 +3,10 @@ import { Tag, Space, Button, Tooltip, Dropdown } from "antd";
 import { HistoryOutlined, EyeOutlined, MoreOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import StatusTag from "../StatusTag/StatusTag";
+import s from "./ListingTable.module.scss";
 import YesNoTag from "./YesNoTag";
 
-// Fake data - TODO: Replace with real API
-import { fakeHistory } from "@/data/admin/manageListing.fake";
+// TODO: Implement real API for history
 
 // Category mapping for display
 const CATEGORY_LABEL = {
@@ -55,9 +55,9 @@ export function useListingTable({
   // Show history for specific listing
   const showHistory = React.useCallback(async (listingId) => {
     try {
-      // TODO: Replace with real API call
-      const data = await fakeHistory(listingId);
-      setHistoryData(data);
+      // TODO: Implement real API call for history
+      console.log("Loading history for listing:", listingId);
+      setHistoryData([]);
       setHistoryOpen(true);
     } catch (e) {
       console.error("Failed to load history:", e);
@@ -70,17 +70,20 @@ export function useListingTable({
         title: "Thông tin chính",
         dataIndex: "title",
         key: "info",
-        width: 240,
+        width: 200,
         sorter: (a, b) => a.title.localeCompare(b.title),
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         render: (_, record) => (
           <div>
             <div style={{ fontWeight: 600, marginBottom: 4 }}>
               {record.title}
             </div>
             <div style={{ fontSize: 12, color: "#888" }}>ID: {record.id}</div>
-            <div style={{ fontSize: 12, color: "#888" }}>
-              Đăng: {dayjs(record.createdAt).format("DD/MM/YYYY")}
-            </div>
+            {record.brand && record.model && (
+              <div style={{ fontSize: 12, color: "#666" }}>
+                {record.brand} {record.model}
+              </div>
+            )}
           </div>
         ),
       },
@@ -89,37 +92,62 @@ export function useListingTable({
         dataIndex: "category",
         key: "category",
         width: 120,
-        sorter: (a, b) =>
-          (CATEGORY_LABEL[a.category] || a.category).localeCompare(
-            CATEGORY_LABEL[b.category] || b.category
-          ),
-        render: (category) => (
-          <Tag
-            color={getCategoryColor(category)}
-            style={{
-              fontSize: 12,
-              fontWeight: 500,
-              margin: 0,
-              borderRadius: 6,
-            }}
-          >
-            {CATEGORY_LABEL[category] || category}
-          </Tag>
-        ),
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
+        sorter: (a, b) => {
+          const categoryA =
+            a.category || (a.batteryCapacityKwh ? "BATTERY" : "VEHICLE");
+          const categoryB =
+            b.category || (b.batteryCapacityKwh ? "BATTERY" : "VEHICLE");
+          return (CATEGORY_LABEL[categoryA] || categoryA).localeCompare(
+            CATEGORY_LABEL[categoryB] || categoryB
+          );
+        },
+        render: (_, record) => {
+          // Determine category based on battery capacity or other indicators
+          let category = record.category;
+          if (!category) {
+            if (record.batteryCapacityKwh) {
+              category = "BATTERY";
+            } else {
+              category = "VEHICLE"; // Default to vehicle if no category specified
+            }
+          }
+
+          return (
+            <Tag color={getCategoryColor(category)} className={s.uniformTag}>
+              {CATEGORY_LABEL[category] || category}
+            </Tag>
+          );
+        },
       },
       {
         title: "Giá",
         dataIndex: "price",
         key: "price",
         width: 120,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         sorter: (a, b) => Number(a.price) - Number(b.price),
         render: (price) => formatVND(price),
+      },
+      {
+        title: "Ngày đăng bài",
+        dataIndex: "createdAt",
+        key: "createdAt",
+        width: 120,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
+        sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        render: (createdAt) => dayjs(createdAt).format("DD/MM/YYYY"),
       },
       {
         title: "Trạng thái",
         dataIndex: "status",
         key: "status",
         width: 120,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
         sorter: (a, b) => a.status.localeCompare(b.status),
         render: (status) => <StatusTag status={status} />,
       },
@@ -128,21 +156,31 @@ export function useListingTable({
         dataIndex: "verified",
         key: "verified",
         width: 80,
-        sorter: (a, b) => a.verified - b.verified,
-        render: (verified) => <YesNoTag value={verified} />,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
+        sorter: (a, b) => (a.verified ? 1 : 0) - (b.verified ? 1 : 0),
+        render: (_, record) => {
+          // For now, we'll assume all items are verified since API doesn't provide this field
+          // You can update this logic based on actual API response
+          const verified =
+            record.verified !== undefined ? record.verified : true;
+          return <YesNoTag value={verified} />;
+        },
       },
       {
         title: "Ký gửi",
         dataIndex: "isConsigned",
         key: "isConsigned",
         width: 80,
-        sorter: (a, b) => a.isConsigned - b.isConsigned,
+        align: "center",
+        showSorterTooltip: { title: "Nhấn để sắp xếp" },
+        sorter: (a, b) => (a.isConsigned ? 1 : 0) - (b.isConsigned ? 1 : 0),
         render: (isConsigned) => <YesNoTag value={isConsigned} />,
       },
       {
         title: "Thao tác",
         key: "actions",
-        width: 200,
+        width: 120,
         fixed: "right",
         align: "left",
         render: (_, record) => {

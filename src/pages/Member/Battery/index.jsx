@@ -1,15 +1,30 @@
-
-import React from 'react'
-import batteriesData from "@data/ProductsData"
-import BatteryList from './BatteryList';
+import React, { useEffect, useState } from "react";
+import { getAllListings } from "@/services/listingHomeService";
+import BatteryList from "./BatteryList";
 const Battery = () => {
+  const [listings, setListings] = useState([]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await getAllListings({
+        page: 0,
+        size: 20,
+        sort: "createdAt",
+        dir: "desc",
+      });
+      setListings(res?.data?.items || []);
+    };
+    fetch();
+  }, []);
   return (
-   <div style={{ minHeight: "100vh"}}>
-      <main style={{ padding: "40px 40px", width:"maxWidth", margin: "0 auto" }}>
-        <BatteryList listings={batteriesData} />
+    <div style={{ minHeight: "100vh" }}>
+      <main
+        style={{ padding: "40px 40px", width: "maxWidth", margin: "0 auto" }}
+      >
+        <BatteryList listings={listings} />
       </main>
     </div>
-  )
-}
+  );
+};
 
 export default Battery;

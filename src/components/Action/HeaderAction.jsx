@@ -27,17 +27,6 @@ const HeaderAction = () => {
     handleLoginSubmit,
   } = auth;
 
-  // // ⬇️ click “Quản lý tin”
-  // const handleClickManageListing = () => {
-  //   if (isLoggedIn) {
-  //     navigate(MANAGE_LISTINGS_PATH);
-  //   } else {
-  //     auth.setRedirectAfterLogin(MANAGE_LISTINGS_PATH);
-  //     messageApi.info("Vui lòng đăng nhập để quản lý tin");
-  //     setOpenLogin(true);
-  //   }
-  // };
-
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
   const menuItems = getMenuItems();
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";

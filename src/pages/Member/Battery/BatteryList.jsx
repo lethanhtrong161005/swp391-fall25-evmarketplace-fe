@@ -1,13 +1,13 @@
 // src/pages/Member/Battery/BatteryList.jsx
-import React, { useState } from "react";
-import { Row, Col, Pagination, Empty } from "antd";
+import React from "react";
+import { Empty } from "antd";
 import { useNavigate } from "react-router-dom";
+import styles from "../Home/LatestListingsSection.module.scss";
 import ProductCard from "@components/ProductCard/ProductCard";
 
 const BatteryList = ({ listings, onClick }) => {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8; // mỗi trang 8 sản phẩm
+  const pageSize = 20; // hiển thị tối đa 20 sản phẩm
 
   const handleClick = (listing) => {
     if (onClick) {
@@ -39,9 +39,8 @@ const BatteryList = ({ listings, onClick }) => {
       listing.status?.toUpperCase() === "ACTIVE"
   );
 
-  // tính toán sản phẩm theo trang
-  const startIdx = (currentPage - 1) * pageSize;
-  const currentData = batteries.slice(startIdx, startIdx + pageSize);
+  // lấy tối đa 20 sản phẩm mới nhất (API đã sort)
+  const currentData = batteries.slice(0, pageSize);
 
   return (
     <>
@@ -50,35 +49,18 @@ const BatteryList = ({ listings, onClick }) => {
           <Empty description="Không có sản phẩm nào được tìm thấy" />
         </div>
       ) : (
-        <>
-          <Row gutter={[16, 16]} align="stretch">
-            {currentData.map((listing) => (
-              <Col key={listing.id} xs={24} sm={12} md={8} lg={6} xl={6}>
-                <ProductCard
-                  listing={listing}
-                  onClick={() => handleClick(listing)}
-                  style={{ height: "100%" }}
-                />
-              </Col>
-            ))}
-          </Row>
-
-          {/* Pagination chỉ hiện khi có dữ liệu */}
-          {batteries.length > pageSize && (
-            <div style={{ marginTop: 24, textAlign: "center" }}>
-              <Pagination
-                current={currentPage}
-                pageSize={pageSize}
-                total={batteries.length}
-                onChange={(page) => {
-                  setCurrentPage(page);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-                showSizeChanger={false}
+        <div className={styles.grid5x}>
+          {currentData.map((listing) => (
+            <div key={listing.id} className={styles.gridItem}>
+              <ProductCard
+                listing={listing}
+                onClick={() => handleClick(listing)}
+                style={{ height: "100%" }}
+                showVerifiedTag={false}
               />
             </div>
-          )}
-        </>
+          ))}
+        </div>
       )}
     </>
   );

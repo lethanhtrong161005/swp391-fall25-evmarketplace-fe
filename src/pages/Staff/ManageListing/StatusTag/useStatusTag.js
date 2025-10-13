@@ -8,6 +8,7 @@ const STATUS_MAP = {
   EXPIRED: { label: "Hết hạn", color: "default" },
   REJECTED: { label: "Từ chối", color: "red" },
   ARCHIVED: { label: "Lưu trữ", color: "default" },
+  HIDDEN: { label: "Đã ẩn", color: "default" },
 };
 
 export function useStatusTag(status) {

@@ -25,9 +25,9 @@ export const FAKE_HOME_PRODUCTS = [
     images: [
       "https://images.unsplash.com/photo-1606229365485-93a3b8a6c7c3?q=80&w=1400",
       "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?q=80&w=1400",
-      "https://images.unsplash.com/photo-1517940310602-4d701b32eacc?q=80&w=1400"
+      "https://images.unsplash.com/photo-1517940310602-4d701b32eacc?q=80&w=1400",
     ],
-    createdAt: "2025-09-20T08:30:00.000Z"
+    createdAt: "2025-09-20T08:30:00.000Z",
   },
   {
     id: "2",
@@ -51,9 +51,9 @@ export const FAKE_HOME_PRODUCTS = [
     images: [
       "https://images.unsplash.com/photo-1606667457200-8e7b9298e8c8?q=80&w=1400",
       "https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=1400",
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400"
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400",
     ],
-    createdAt: "2025-09-21T03:10:00.000Z"
+    createdAt: "2025-09-21T03:10:00.000Z",
   },
   {
     id: "3",
@@ -77,9 +77,9 @@ export const FAKE_HOME_PRODUCTS = [
     images: [
       "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?q=80&w=1400",
       "https://images.unsplash.com/photo-1541443131876-bcdf3b1f59cc?q=80&w=1400",
-      "https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=1400"
+      "https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=1400",
     ],
-    createdAt: "2025-09-21T05:50:00.000Z"
+    createdAt: "2025-09-21T05:50:00.000Z",
   },
   {
     id: "4",
@@ -103,9 +103,9 @@ export const FAKE_HOME_PRODUCTS = [
     images: [
       "https://images.unsplash.com/photo-1541625602330-2277a4c46182?q=80&w=1400",
       "https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1400",
-      "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b9a?q=80&w=1400"
+      "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b9a?q=80&w=1400",
     ],
-    createdAt: "2025-09-19T11:00:00.000Z"
+    createdAt: "2025-09-19T11:00:00.000Z",
   },
   {
     id: "5",
@@ -129,9 +129,9 @@ export const FAKE_HOME_PRODUCTS = [
     images: [
       "https://images.unsplash.com/photo-1581094685121-5bfa4b6df54b?q=80&w=1400",
       "https://images.unsplash.com/photo-1602293589930-45aad59ba3ac?q=80&w=1400",
-      "https://images.unsplash.com/photo-1602276507500-35f3be31f50d?q=80&w=1400"
+      "https://images.unsplash.com/photo-1602276507500-35f3be31f50d?q=80&w=1400",
     ],
-    createdAt: "2025-09-18T09:25:00.000Z"
+    createdAt: "2025-09-18T09:25:00.000Z",
   },
   {
     id: "6",
@@ -154,9 +154,9 @@ export const FAKE_HOME_PRODUCTS = [
     branchId: null,
     images: [
       "https://images.unsplash.com/photo-1603575449299-f3cc86d3d8b8?q=80&w=1400",
-      "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=1400"
+      "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=1400",
     ],
-    createdAt: "2025-09-17T07:40:00.000Z"
+    createdAt: "2025-09-17T07:40:00.000Z",
   },
   {
     id: "7",
@@ -180,9 +180,9 @@ export const FAKE_HOME_PRODUCTS = [
     images: [
       "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?q=80&w=1400",
       "https://images.unsplash.com/photo-1552519507-88aa0961cd5b?q=80&w=1400",
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400"
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400",
     ],
-    createdAt: "2025-09-22T01:15:00.000Z"
+    createdAt: "2025-09-22T01:15:00.000Z",
   },
   {
     id: "8",
@@ -206,9 +206,9 @@ export const FAKE_HOME_PRODUCTS = [
     images: [
       "https://images.unsplash.com/photo-1552519507-88aa0961cd5b?q=80&w=1400",
       "https://images.unsplash.com/photo-1552519507-e2560700b6ce?q=80&w=1400",
-      "https://images.unsplash.com/photo-1606667457200-8e7b9298e8c8?q=80&w=1400"
+      "https://images.unsplash.com/photo-1606667457200-8e7b9298e8c8?q=80&w=1400",
     ],
-    createdAt: "2025-09-22T04:00:00.000Z"
+    createdAt: "2025-09-22T04:00:00.000Z",
   },
 
   // === 9..20: thêm mới ===
@@ -233,9 +233,9 @@ export const FAKE_HOME_PRODUCTS = [
     branchId: 1,
     images: [
       "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?q=80&w=1400",
-      "https://images.unsplash.com/photo-1517940310602-4d701b32eacc?q=80&w=1400"
+      "https://images.unsplash.com/photo-1517940310602-4d701b32eacc?q=80&w=1400",
     ],
-    createdAt: "2025-09-22T06:10:00.000Z"
+    createdAt: "2025-09-22T06:10:00.000Z",
   },
   {
     id: "10",
@@ -257,9 +257,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: null,
     images: [
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400"
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1400",
     ],
-    createdAt: "2025-09-21T23:40:00.000Z"
+    createdAt: "2025-09-21T23:40:00.000Z",
   },
   {
     id: "11",
@@ -281,9 +281,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: null,
     images: [
-      "https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=1400"
+      "https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=1400",
     ],
-    createdAt: "2025-09-22T07:20:00.000Z"
+    createdAt: "2025-09-22T07:20:00.000Z",
   },
   {
     id: "12",
@@ -305,9 +305,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: null,
     images: [
-      "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b9a?q=80&w=1400"
+      "https://images.unsplash.com/photo-1516306580123-e6e52b1b7b9a?q=80&w=1400",
     ],
-    createdAt: "2025-09-20T14:00:00.000Z"
+    createdAt: "2025-09-20T14:00:00.000Z",
   },
   {
     id: "13",
@@ -329,9 +329,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: null,
     images: [
-      "https://images.unsplash.com/photo-1602276507500-35f3be31f50d?q=80&w=1400"
+      "https://images.unsplash.com/photo-1602276507500-35f3be31f50d?q=80&w=1400",
     ],
-    createdAt: "2025-09-19T09:30:00.000Z"
+    createdAt: "2025-09-19T09:30:00.000Z",
   },
   {
     id: "14",
@@ -353,9 +353,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: null,
     images: [
-      "https://images.unsplash.com/photo-1603575449299-f3cc86d3d8b8?q=80&w=1400"
+      "https://images.unsplash.com/photo-1603575449299-f3cc86d3d8b8?q=80&w=1400",
     ],
-    createdAt: "2025-09-18T08:15:00.000Z"
+    createdAt: "2025-09-18T08:15:00.000Z",
   },
   {
     id: "15",
@@ -377,9 +377,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: true,
     branchId: 1,
     images: [
-      "https://images.unsplash.com/photo-1517940310602-4d701b32eacc?q=80&w=1400"
+      "https://images.unsplash.com/photo-1517940310602-4d701b32eacc?q=80&w=1400",
     ],
-    createdAt: "2025-09-16T10:05:00.000Z"
+    createdAt: "2025-09-16T10:05:00.000Z",
   },
   {
     id: "16",
@@ -401,9 +401,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: 2,
     images: [
-      "https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=1400"
+      "https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=1400",
     ],
-    createdAt: "2025-09-22T08:05:00.000Z"
+    createdAt: "2025-09-22T08:05:00.000Z",
   },
   {
     id: "17",
@@ -425,9 +425,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: null,
     images: [
-      "https://images.unsplash.com/photo-1541443131876-bcdf3b1f59cc?q=80&w=1400"
+      "https://images.unsplash.com/photo-1541443131876-bcdf3b1f59cc?q=80&w=1400",
     ],
-    createdAt: "2025-09-15T07:45:00.000Z"
+    createdAt: "2025-09-15T07:45:00.000Z",
   },
   {
     id: "18",
@@ -449,9 +449,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: null,
     images: [
-      "https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1400"
+      "https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1400",
     ],
-    createdAt: "2025-09-14T12:00:00.000Z"
+    createdAt: "2025-09-14T12:00:00.000Z",
   },
   {
     id: "19",
@@ -473,9 +473,9 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: null,
     images: [
-      "https://images.unsplash.com/photo-1602293589930-45aad59ba3ac?q=80&w=1400"
+      "https://images.unsplash.com/photo-1602293589930-45aad59ba3ac?q=80&w=1400",
     ],
-    createdAt: "2025-09-13T09:10:00.000Z"
+    createdAt: "2025-09-13T09:10:00.000Z",
   },
   {
     id: "20",
@@ -497,10 +497,10 @@ export const FAKE_HOME_PRODUCTS = [
     isConsigned: false,
     branchId: null,
     images: [
-      "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=1400"
+      "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=1400",
     ],
-    createdAt: "2025-09-22T08:40:00.000Z"
-  }
+    createdAt: "2025-09-22T08:40:00.000Z",
+  },
 ];
 
 // Helpers cho Home (không đổi)
@@ -508,21 +508,23 @@ export const FAKE_HOME_PRODUCTS = [
 
 export const getLatestProducts = (limit = 8) =>
   [...FAKE_HOME_PRODUCTS]
-    .filter(p => p.status === "ACTIVE")
-    .sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0))
+    .filter((p) => p.status === "ACTIVE")
+    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
     .slice(0, limit);
 
 export const getFeaturedProducts = (limit = 8) =>
   [...FAKE_HOME_PRODUCTS]
-    .filter(p => p.status === "ACTIVE" && (p.verified === true || p.visibility === "BOOSTED"))
-    .sort((a,b) =>
-      (b.visibility === "BOOSTED") - (a.visibility === "BOOSTED") ||
-      new Date(b.createdAt||0) - new Date(a.createdAt||0)
+    .filter(
+      (p) =>
+        p.status === "ACTIVE" &&
+        (p.verified === true || p.visibility === "BOOSTED")
+    )
+    .sort(
+      (a, b) =>
+        (b.visibility === "BOOSTED") - (a.visibility === "BOOSTED") ||
+        new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
     )
     .slice(0, limit);
 
 // >>> THÊM MỚI: tổng số sản phẩm đang có trong "kho" (để hiển thị ở nút)
 export const getAllProductsCount = () => FAKE_HOME_PRODUCTS.length;
-
-
-    

@@ -47,17 +47,8 @@ export default function ListingTable({
         loading={loading}
         dataSource={dataSource}
         columns={columns}
-        pagination={{
-          current: page,
-          pageSize,
-          total,
-          onChange: onPageChange,
-          showSizeChanger: false,
-          showQuickJumper: true,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} trong ${total} kết quả`,
-        }}
-        scroll={screens.md ? undefined : { x: 980 }}
+        pagination={false}
+        scroll={screens.md ? undefined : { x: 1100 }}
         className={s.listingTable}
       />
 

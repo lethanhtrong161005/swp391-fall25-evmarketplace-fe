@@ -152,7 +152,6 @@ const SearchResults = () => {
 
   const handleProductClick = (product) => {
     // TODO: Navigate to product detail page
-    console.log("Product clicked:", product);
   };
 
   const handleBackToHome = () => {
