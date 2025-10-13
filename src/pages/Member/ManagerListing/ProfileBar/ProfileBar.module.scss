@@ -1,0 +1,29 @@
+.profileBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.name {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.sub {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Empty } from "antd";
 import styles from "../Home/LatestListingsSection.module.scss";
 import { useNavigate } from "react-router-dom";
-import ProductCard from "../../../components/ProductCard/ProductCard";
+import ProductCard from "@components/ProductCard/ProductCard";
 
 const VehicleList = ({ listings, onClick }) => {
   const navigate = useNavigate();

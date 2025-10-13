@@ -1,37 +1,38 @@
 import { Card, Form, Row, Col, Divider, Spin } from "antd";
-import SectionMedia from "./SectionMedia";
-import SectionDetailVehicle from "./SectionDetailVehicle";
-import SectionDetailBattery from "./SectionDetailBattery";
-import SectionTitleDesc from "./SectionTitleDesc";
-import AddressField from "./AddressField";
-import CategoryBrandModel from "./CategoryBrandModel";
-import YearColorFields from "./YearColorFields";
-import CreateListingFooter from "./CreateListingFooter";
-import PostTypeModal from "./PostTypeModal";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import SectionMedia from "@components/SectionMedia";
+import SectionDetailVehicle from "@components/SectionDetailVehicle";
+import SectionDetailBattery from "@components/SectionDetailBattery";
+import SectionTitleDesc from "@components/SectionTitleDesc";
+import AddressField from "@components/AddressField";
+import CategoryBrandModel from "@components/CategoryBrandModel";
+import YearColorFields from "@components/YearColorFields";
+import CreateListingFooter from "@components/CreateListingFooter";
+import PostTypeModal from "@components/PostTypeModal";
 
 import { useListingCreate } from "@hooks/useListingCreate";
+import { useAuth } from "@contexts/AuthContext";
 
 const PAGE_WIDTH = 1200;
 
 export default function ListingCreate() {
+  const { user } = useAuth();
+  const userId = user?.id ?? user?.accountId ?? user?.sub ?? null;
+
   const {
-    form,
-    msg,
-    contextHolder,
-    loading,
-    tax,
-    visibility,
-    handleChangeVisibility,
-    isBattery,
-    postType,
-    postTypeOpen,
-    submitting,
-    setPostType,
-    setPostTypeOpen,
-    handleSubmit,
-    handlePreview,
-    handleDraft,
-  } = useListingCreate();
+    form, msg, contextHolder, loading, tax,
+    visibility, handleChangeVisibility, isBattery,
+    postTypeOpen, submitting, setPostTypeOpen,
+    handleSubmit, handlePreview, handleDraft, onValuesChange,
+    loadLocalDraftById,
+  } = useListingCreate({ userId }); 
+
+  const [params] = useSearchParams();
+  useEffect(() => {
+    const draftId = params.get("draftId");
+    if (draftId) loadLocalDraftById?.(draftId);
+  }, [params, loadLocalDraftById]);
 
   if (loading) {
     return (
@@ -45,17 +46,12 @@ export default function ListingCreate() {
   return (
     <>
       {contextHolder}
-
-      <Card
-        style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }}
-        variant="bordered"
-      >
-        <Form form={form} layout="vertical">
+      <Card style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }} variant="bordered">
+        <Form form={form} layout="vertical" onValuesChange={onValuesChange}>
           <Row gutter={16}>
             <Col xs={24} md={8}>
               <SectionMedia messageApi={msg} />
             </Col>
-
             <Col xs={24} md={16}>
               <CategoryBrandModel form={form} tax={tax} />
               <YearColorFields isBattery={isBattery} />
@@ -75,7 +71,7 @@ export default function ListingCreate() {
       </Card>
 
       <CreateListingFooter
-        currentMode={visibility} // 👈 dùng visibility để hiển thị
+        currentMode={visibility}
         onChoosePostType={() => setPostTypeOpen(true)}
         onPreview={handlePreview}
         onDraft={handleDraft}
@@ -86,8 +82,8 @@ export default function ListingCreate() {
 
       <PostTypeModal
         open={postTypeOpen}
-        value={visibility} // 👈 bind vào visibility
-        onChange={handleChangeVisibility} // 👈 cập nhật visibility + postType
+        value={visibility}
+        onChange={handleChangeVisibility}
         onCancel={() => setPostTypeOpen(false)}
         onOk={() => setPostTypeOpen(false)}
       />

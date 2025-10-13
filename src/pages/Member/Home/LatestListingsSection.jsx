@@ -2,6 +2,7 @@
 import React, { useMemo, useState } from "react";
 import { Typography, Empty, Divider, Button } from "antd";
 import { ClockCircleOutlined } from "@ant-design/icons";
+
 import ProductCard from "@/components/ProductCard/ProductCard";
 import ViewAllLink from "@/components/ViewAllLinkButton/ViewAllLink";
 import styles from "./LatestListingsSection.module.scss";

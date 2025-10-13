@@ -11,11 +11,11 @@ import {
   Card,
   Tag,
 } from "antd";
-import { useBrandManagementLogic } from "./BrandManagement.logic";
+import { useBrandManagementLogic } from "./useBrandManagementLogic";
 import "./BrandManagement.scss";
-import CategoryFilter from "../../../components/CategoryFilter/CategoryFilter";
-import BrandModal from "../../../components/Modal/BrandModal/BrandModal";
-import HiddenModal from "../../../components/Modal/HiddenModal/HiddenModal";
+import CategoryFilter from "@components/CategoryFilter/CategoryFilter";
+import BrandModal from "@components/Modal/BrandModal/BrandModal";
+import HiddenModal from "@components/Modal/HiddenModal/HiddenModal";
 
 const { Option } = Select;
 

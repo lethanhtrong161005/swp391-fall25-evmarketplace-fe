@@ -23,7 +23,7 @@ import {
   ThunderboltOutlined,
   BranchesOutlined,
 } from "@ant-design/icons";
-import productsData from "../../../data/ProductsData";
+import productsData from "@data/ProductsData";
 
 const { Title, Text, Paragraph } = Typography;
 

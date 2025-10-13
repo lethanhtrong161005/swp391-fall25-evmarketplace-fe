@@ -1,9 +1,9 @@
 // src/pages/Member/Battery/BatteryList.jsx
-import React, { useState } from "react";
+import React from "react";
 import { Empty } from "antd";
 import { useNavigate } from "react-router-dom";
-import ProductCard from "../../../components/ProductCard/ProductCard";
 import styles from "../Home/LatestListingsSection.module.scss";
+import ProductCard from "@components/ProductCard/ProductCard";
 
 const BatteryList = ({ listings, onClick }) => {
   const navigate = useNavigate();

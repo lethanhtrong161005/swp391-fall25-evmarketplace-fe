@@ -3,7 +3,7 @@ import { Input, Button, Select, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { searchListings } from "@/services/listingHomeService";
-import "../SearchBar/SearchBar.scss";
+import "@components/SearchBar/SearchBar.scss"
 
 const { Option } = Select;
 

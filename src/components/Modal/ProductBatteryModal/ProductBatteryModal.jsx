@@ -10,7 +10,7 @@ export default function ProductBatteryModal({
   onCancel,
   onSubmit,
   editingBattery,
-  models, 
+  models,
 }) {
   return (
     <Modal
@@ -29,7 +29,6 @@ export default function ProductBatteryModal({
         onFinish={onSubmit}
         initialValues={{ status: "ACTIVE" }}
       >
-
         {!editingBattery && (
           <Row gutter={16}>
             <Col span={24}>
@@ -38,7 +37,18 @@ export default function ProductBatteryModal({
                 name="modelId"
                 rules={[{ required: true, message: "Vui lòng chọn model" }]}
               >
-                <Select placeholder="Chọn model có pin">
+                <Select
+                  showSearch
+                  placeholder="Chọn hoặc tìm model có pin"
+                  optionFilterProp="label" 
+                  filterOption={(input, option) =>
+                    option.label.toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={models.map((m) => ({
+                    label: `${m.name} (${m.year})`, 
+                    value: m.id,
+                  }))}
+                >
                   {models.map((m) => (
                     <Option key={m.id} value={m.id}>
                       {m.name} ({m.year})

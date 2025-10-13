@@ -2,14 +2,16 @@
 import React, { useMemo } from "react";
 import { Typography, Row, Col, Empty, Space, Button } from "antd";
 import { ArrowRightOutlined, TrophyOutlined } from "@ant-design/icons";
+
 import ProductCard from "@/components/ProductCard/ProductCard";
 import styles from "./LatestListingsSection.module.scss";
+import ViewAllLink from "@components/ViewAllLinkButton/ViewAllLink";
 
 const { Title } = Typography;
 
 export default function FeaturedProductSection({
   items = [],
-  totalCount, // tổng số sản phẩm nổi bật (không chỉ 8)
+  // totalCount,
   onViewMore,
   onItemClick,
   loading = false,
@@ -26,7 +28,8 @@ export default function FeaturedProductSection({
     [items, maxItems]
   );
 
-  const total = typeof totalCount === "number" ? totalCount : boostedTop.length;
+  // Tính tổng số listing
+  // const total = typeof totalCount === "number" ? totalCount : boostedTop.length;
 
   return (
     <section style={{ margin: "48px 0" }}>

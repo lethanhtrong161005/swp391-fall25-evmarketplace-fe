@@ -23,6 +23,9 @@ export default defineConfig({
       "@contexts": path.resolve(__dirname, "./src/contexts"),
       "@hooks": path.resolve(__dirname, "./src/hooks"),
       "@validators": path.resolve(__dirname, "./src/validators"),
+      "@data": path.resolve(__dirname, "./src/data"),
+      "@dtos": path.resolve(__dirname, "./src/dtos"),
+      "@mappers":path.resolve(__dirname, "./src/mappers"),
     },
   },
 })
