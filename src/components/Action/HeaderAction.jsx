@@ -1,235 +1,34 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Dropdown, message } from "antd";
+import React from "react";
+import { Button, Dropdown } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+
 import LoginModal from "@components/Modal/LoginModal";
 import PhoneRegisterModal from "@components/Modal/PhoneRegisterModal";
 import PhoneResetPasswordModal from "@components/Modal/PhoneResetPasswordModal";
 import ResetPasswordModal from "@components/Modal/ResetPasswordModal";
 import OtpVerifyModal from "@components/Modal/OtpVerifyModal";
 import RegisterModal from "@components/Modal/RegisterModal";
-import { requestOtp, verifyOtp } from "@services/otpService";
-import { createAccount, resetPassword } from "@services/accountService";
-import { useAuth } from "@hooks/useAuth";
-import { ROLES, hasDashboardAccess, getDashboardPath } from "@config/roles";
+
+import { useHeaderAction } from "./useHeaderAction";
 
 const HeaderAction = () => {
-  const { isLoggedIn, user, login, logout } = useAuth();
-  const [messageApi, contextHolder] = message.useMessage();
-  const navigate = useNavigate();
+  const { auth, otp, register, reset, handleOtpSuccess, handleOtpStart } = useHeaderAction();
 
-  const [openLogin, setOpenLogin] = useState(false);
-  const [openRegister, setOpenRegister] = useState(false);
-  const [openOtp, setOpenOtp] = useState(false);
-  const [openRegisterForm, setOpenRegisterForm] = useState(false);
-  const [openResetPhone, setOpenResetPhone] = useState(false);
-  const [openResetForm, setOpenResetForm] = useState(false);
-
-  const [registerSubmitting, setRegisterSubmitting] = useState(false);
-  const [resetSubmitting, setResetSubmitting] = useState(false);
-  const [resetPwdSubmitting, setResetPwdSubmitting] = useState(false);
-  const [regPhone, setRegPhone] = useState("");
-
-  const phoneRegisterRef = useRef(null);
-  const phoneResetRef = useRef(null);
-  const otpRef = useRef(null);
-  const [otpSubmitting, setOtpSubmitting] = useState(false);
-  const [otpResendSubmitting, setOtpResendSubmitting] = useState(false);
-  const [otpPurpose, setOtpPurpose] = useState(null); // 'register' | 'reset'
-
-  const [tokenOtp, setTokenOtp] = useState("");
-
-  // Tạo menu items dựa trên role của user
-  const getMenuItems = () => {
-    const items = [{ key: "infouser", label: "Hồ sơ", path: "/infouser" }];
-
-    // Thêm nút Dashboard cho các role có quyền truy cập
-    if (hasDashboardAccess(user?.role)) {
-      const dashboardPath = getDashboardPath(user?.role);
-      if (dashboardPath) {
-        items.unshift({
-          key: "dashboard",
-          label: "Dashboard",
-          path: dashboardPath,
-        });
-      }
-    }
-
-    items.push({ key: "logout", label: "Đăng xuất", path: "/logout" });
-
-    return items;
-  };
-
-  const menuItems = getMenuItems();
-
-  const handleMenuClick = async ({ key }) => {
-    if (key === "dashboard") {
-      const dashboardPath = getDashboardPath(user?.role);
-      if (dashboardPath) {
-        navigate(dashboardPath);
-      }
-    }
-    if (key === "infouser") navigate("/info-user");
-    if (key === "logout") await logout();
-  };
-
-  const [redirectAfterLogin, setRedirectAfterLogin] = useState(null);
-
-  const handleLoginSubmit = async (dto) => {
-    const result = await login(dto);
-    if (!result) return false;
-
-    // Không tự động redirect Admin/Staff về dashboard
-    // Tất cả user đều về trang chủ, có thể truy cập dashboard qua menu Profile
-    setTimeout(() => {
-      if (redirectAfterLogin) {
-        navigate(redirectAfterLogin, { replace: true });
-        setRedirectAfterLogin(null);
-      } else {
-        navigate("/", { replace: true });
-      }
-    });
-    return true;
-  };
-
-  // click “Đăng tin”
-  const handleClickCreateListing = () => {
-    if (isLoggedIn) {
-      navigate("/listing/new"); // đã đăng nhập → vào trang đăng tin
-    } else {
-      setRedirectAfterLogin("/listing/new"); // chưa login → mở login, xong thì vào
-      messageApi.info("Vui lòng đăng nhập để đăng tin");
-      setOpenLogin(true);
-    }
-  };
-
-  // ===== Nhập SĐT → gửi OTP → nếu OK thì mở OTP modal =====
-  // Nhập SĐT → gửi OTP → thành công mở OTP
-  const handleRegisterContinue = async (phone) => {
-    if (!phone) return;
-    try {
-      setRegisterSubmitting(true);
-      phoneRegisterRef.current?.clearErrors?.();
-
-      await requestOtp({ phoneNumber: phone, type: "REGISTER" });
-      setRegPhone(phone); // show trong OTP modal
-      setOpenRegister(false); // đóng modal nhập SĐT
-      setOtpPurpose("REGISTER");
-      setOpenOtp(true); // mở modal OTP
-      messageApi.success("Đã gửi mã OTP");
-    } catch (e) {
-      phoneRegisterRef.current?.setFieldErrors?.(e?.fieldErrors || {});
-      messageApi.error(e?.message || "Không thể gửi OTP", 1.4);
-    } finally {
-      setRegisterSubmitting(false);
-    }
-  };
-
-  const handleResetContinue = async (phone) => {
-    if (!phone) return;
-    try {
-      setResetSubmitting(true);
-      phoneResetRef.current?.clearErrors?.();
-      await requestOtp({
-        phoneNumber: phone,
-        type: "RESET",
-      });
-      setRegPhone(phone);
-      setOtpPurpose("RESET");
-      setOpenResetPhone(false);
-      setOpenOtp(true);
-      messageApi.success("Đã gửi mã OTP");
-    } catch (e) {
-      phoneResetRef.current?.setFieldErrors?.(e?.fieldErrors || {});
-      messageApi.error(e?.message || "Không thể gửi OTP", 1.4);
-    } finally {
-      setResetSubmitting(false);
-    }
-  };
-
-  // ===== Xác thực OTP (tuỳ bạn gắn API thật) =====
-  const handleOtpVerify = async (code) => {
-    try {
-      setOtpSubmitting(true);
-      otpRef.current?.clearErrors?.();
-
-      const data = await verifyOtp({ phoneNumber: regPhone, otp: code });
-      if (data) {
-        setTokenOtp(data);
-      }
-
-      messageApi.success("Xác thực OTP thành công");
-      setOpenOtp(false);
-      if (otpPurpose === "REGISTER") {
-        setOpenRegisterForm(true);
-      } else if (otpPurpose === "RESET") {
-        setOpenResetForm(true);
-      }
-    } catch (e) {
-      otpRef.current?.setFieldErrors?.({
-        otp: [e?.message || "Mã OTP không hợp lệ"],
-      });
-      messageApi.error(e?.message || "Mã OTP không hợp lệ");
-    } finally {
-      setOtpSubmitting(false);
-    }
-  };
-
-  const handleOtpResend = async () => {
-    try {
-      setOtpResendSubmitting(true);
-      await requestOtp({
-        phoneNumber: regPhone,
-        type: otpPurpose,
-      });
-      messageApi.success("Đã gửi lại mã OTP");
-    } catch (e) {
-      messageApi.error(e?.message || "Không thể gửi lại mã");
-    } finally {
-      setOtpResendSubmitting(false);
-    }
-  };
-
-  const handleRegisterSubmit = async ({ fullName, password }) => {
-    try {
-      const { accessToken, refreshToken } = await createAccount({
-        tempToken: tokenOtp,
-        fullName,
-        password,
-      });
-      await login({ accessToken, refreshToken });
-      messageApi.success("Đăng ký tài khoản thành công");
-      setOpenRegisterForm(false);
-    } catch (e) {
-      messageApi.error(e?.message || "Đăng ký tài khoản thất bại");
-    }
-  };
-
-  // ===== Reset password submit (nhận { newPassword })
-  const handleResetPasswordSubmit = async ({ newPassword }) => {
-    try {
-      setResetPwdSubmitting(true);
-      await resetPassword({
-        token: tokenOtp,
-        newPassword: newPassword,
-      });
-      messageApi.success("Đặt lại mật khẩu thành công");
-      setOpenResetForm(false);
-      setOpenLogin(true);
-    } catch (e) {
-      messageApi.error(e?.message || "Đặt lại mật khẩu thất bại");
-    } finally {
-      setResetPwdSubmitting(false);
-    }
-  };
+  const { isLoggedIn, user, contextHolder, getMenuItems, handleMenuClick, handleLoginRequire, handleLoginSubmit } = auth;
 
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
+  const menuItems = getMenuItems();
 
   return (
     <div style={{ display: "flex", gap: 8 }}>
       {contextHolder}
 
-      <Button onClick={handleClickCreateListing}>Đăng tin</Button>
+      <Button onClick={() => handleLoginRequire(
+      "/listing/new",
+      "Vui lòng đăng nhập để đăng tin"
+      )}>
+        Đăng tin
+      </Button>
       <Button>Ký gửi</Button>
 
       {isLoggedIn ? (
@@ -243,81 +42,81 @@ const HeaderAction = () => {
           </Button>
         </Dropdown>
       ) : (
-        <Button type="primary" onClick={() => setOpenLogin(true)}>
+        <Button type="primary" onClick={() => auth.setOpenLogin?.(true)}>
           Đăng nhập
         </Button>
       )}
 
       <LoginModal
-        open={openLogin}
-        onClose={() => setOpenLogin(false)}
+        open={auth.openLogin}
+        onClose={() => auth.setOpenLogin(false)}
         onSubmit={handleLoginSubmit}
         onGoRegister={() => {
-          setOpenLogin(false);
-          setOpenRegister(true);
+          auth.setOpenLogin(false);
+          register.setOpenRegister(true);
         }}
         onForgot={(prefillPhone) => {
-          if (prefillPhone) setRegPhone(prefillPhone);
-          setOpenLogin(false);
-          setOpenResetPhone(true);
+          if (prefillPhone) otp.setRegPhone(prefillPhone);
+          auth.setOpenLogin(false);
+          reset.setOpenResetPhone(true);
         }}
       />
 
       <PhoneRegisterModal
-        ref={phoneRegisterRef}
-        open={openRegister}
-        onClose={() => setOpenRegister(false)}
-        onContinue={handleRegisterContinue}
-        submitting={registerSubmitting}
+        ref={register.phoneRegisterRef}
+        open={register.openRegister}
+        onClose={() => register.setOpenRegister(false)}
+        onContinue={(phone) => register.handleRegisterContinue(phone, handleOtpStart)}
+        submitting={register.registerSubmitting}
         onGoLogin={() => {
-          setOpenRegister(false);
-          setOpenLogin(true);
+          register.setOpenRegister(false);
+          auth.setOpenLogin(true);
         }}
       />
 
       <PhoneResetPasswordModal
-        ref={phoneResetRef}
-        open={openResetPhone}
-        onClose={() => setOpenResetPhone(false)}
-        onContinue={handleResetContinue}
-        submitting={resetSubmitting}
+        ref={reset.phoneResetRef}
+        open={reset.openResetPhone}
+        onClose={() => reset.setOpenResetPhone(false)}
+        onContinue={(phone) => reset.handleResetContinue(phone, handleOtpStart)}
+        submitting={reset.resetSubmitting}
         onGoLogin={() => {
-          setOpenResetPhone(false);
-          setOpenLogin(true);
+          reset.setOpenResetPhone(false);
+          auth.setOpenLogin(true);
         }}
       />
 
       <OtpVerifyModal
-        ref={otpRef}
-        open={openOtp}
-        phone={regPhone}
-        onClose={() => setOpenOtp(false)}
-        onVerify={handleOtpVerify}
-        onResend={handleOtpResend}
+        ref={otp.otpRef}
+        open={otp.openOtp}
+        phone={otp.regPhone}
+        onClose={() => otp.setOpenOtp(false)}
+        onVerify={(code) => otp.handleOtpVerify(code, handleOtpSuccess)}
+        onResend={otp.handleOtpResend}
         cooldownSec={30}
-        submitting={otpSubmitting}
-        resendSubmitting={otpResendSubmitting}
+        submitting={otp.otpSubmitting}
+        resendSubmitting={otp.otpResendSubmitting}
       />
 
       <RegisterModal
-        open={openRegisterForm}
-        phone={regPhone}
-        onClose={() => setOpenRegisterForm(false)}
-        onSubmit={handleRegisterSubmit}
+        open={register.openRegisterForm}
+        phone={otp.regPhone}
+        onClose={() => register.setOpenRegisterForm(false)}
+        onSubmit={(formData) => register.handleRegisterSubmit(formData, otp.tokenOtp)}
         onGoLogin={() => {
-          setOpenRegisterForm(false);
-          setOpenLogin(true);
+          register.setOpenRegisterForm(false);
+          auth.setOpenLogin(true);
         }}
       />
 
       <ResetPasswordModal
-        open={openResetForm}
-        onClose={() => setOpenResetForm(false)}
-        onSubmit={handleResetPasswordSubmit}
-        submitting={resetPwdSubmitting}
+        open={reset.openResetForm}
+        onClose={() => reset.setOpenResetForm(false)}
+        onSubmit={(formData) => reset.handleResetPasswordSubmit(formData, otp.tokenOtp, register.setOpenLogin)}
+        submitting={reset.resetPwdSubmitting}
         onGoLogin={() => {
-          setOpenResetForm(false);
-          setOpenLogin(true);
+          reset.setOpenResetForm(false);
+          auth.setOpenLogin(true);
         }}
       />
     </div>
