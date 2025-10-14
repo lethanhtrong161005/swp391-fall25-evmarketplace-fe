@@ -1,12 +1,13 @@
 import React from "react";
 import { Tag } from "antd";
+import s from "./ListingTable.module.scss";
 
 export default function YesNoTag({ value }) {
   return value ? (
-    <Tag color="green" style={{ borderRadius: 999, paddingInline: 10 }}>
+    <Tag color="green" className={s.uniformYesNo}>
       Có
     </Tag>
   ) : (
-    <Tag style={{ borderRadius: 999, paddingInline: 10 }}>Không</Tag>
+    <Tag className={s.uniformYesNo}>Không</Tag>
   );
 }

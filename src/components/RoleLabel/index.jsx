@@ -19,8 +19,6 @@ const RoleLabel = ({ role, color, size = "default", className }) => {
         return "green";
       case ROLES.MEMBER:
         return "cyan";
-      case ROLES.GUEST:
-        return "default";
       default:
         return "default";
     }

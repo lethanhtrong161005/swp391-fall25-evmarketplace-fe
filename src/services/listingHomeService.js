@@ -1,14 +1,6 @@
 import { get } from "@/utils/apiCaller";
 
-/**
- * Lấy danh sách tất cả listing với phân trang
- * @param {Object} params - Tham số phân trang và sắp xếp
- * @param {number} params.page - Trang hiện tại (bắt đầu từ 0)
- * @param {number} params.size - Số lượng item mỗi trang
- * @param {string} params.sort - Trường sắp xếp
- * @param {string} params.dir - Hướng sắp xếp (asc/desc)
- * @returns {Promise<Object>} Response từ API
- */
+// Lấy danh sách tất cả listing với phân trang
 export const getAllListings = async (params = {}) => {
   const defaultParams = {
     page: 0,
@@ -21,16 +13,7 @@ export const getAllListings = async (params = {}) => {
   return await get("/api/listing/all", defaultParams);
 };
 
-/**
- * Tìm kiếm listing theo từ khóa
- * @param {Object} params - Tham số tìm kiếm
- * @param {string} params.key - Từ khóa tìm kiếm
- * @param {number} params.page - Trang hiện tại (bắt đầu từ 0)
- * @param {number} params.size - Số lượng item mỗi trang
- * @param {string} params.sort - Trường sắp xếp
- * @param {string} params.dir - Hướng sắp xếp (asc/desc)
- * @returns {Promise<Object>} Response từ API
- */
+// Tìm kiếm listing theo từ khóa
 export const searchListings = async (params = {}) => {
   const defaultParams = {
     key: "",
@@ -51,16 +34,13 @@ export const searchListings = async (params = {}) => {
   });
 };
 
-/**
- * Lấy danh sách listing mới nhất cho trang chủ
- * @param {number} limit - Số lượng item muốn lấy
- * @returns {Promise<Array>} Danh sách listing mới nhất
- */
-export const getLatestListings = async (limit = 8) => {
+// Lấy danh sách listing mới nhất cho trang chủ
+export const getLatestListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
       size: limit,
+      // Backend chấp nhận sort theo "createdAt"
       sort: "createdAt",
       dir: "desc",
     });
@@ -76,36 +56,24 @@ export const getLatestListings = async (limit = 8) => {
   }
 };
 
-/**
- * Lấy danh sách listing nổi bật cho trang chủ
- * @param {number} limit - Số lượng item muốn lấy
- * @returns {Promise<Array>} Danh sách listing nổi bật
- */
-export const getFeaturedListings = async (limit = 8) => {
+// Lấy danh sách listing nổi bật cho trang chủ
+export const getFeaturedListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
-      size: limit * 2, // Lấy nhiều hơn để filter
+      // Lấy một trang lớn để tránh bị thiếu BOOSTED do filter phía client
+      size: 200,
       sort: "createdAt",
       dir: "desc",
     });
 
     if (response?.success && response?.data?.items) {
-      // Filter và sắp xếp theo tiêu chí nổi bật
+      // Chỉ lấy tin BOOSTED, sắp xếp mới nhất
       const featuredItems = response.data.items
         .filter(
-          (item) =>
-            item.status === "ACTIVE" &&
-            (item.visibility === "BOOSTED" || item.isConsigned === true)
+          (item) => item.status === "ACTIVE" && item.visibility === "BOOSTED"
         )
-        .sort((a, b) => {
-          // Ưu tiên BOOSTED trước, sau đó theo thời gian tạo
-          if (a.visibility === "BOOSTED" && b.visibility !== "BOOSTED")
-            return -1;
-          if (b.visibility === "BOOSTED" && a.visibility !== "BOOSTED")
-            return 1;
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        })
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, limit);
 
       return featuredItems.map(transformListingData);
@@ -118,10 +86,7 @@ export const getFeaturedListings = async (limit = 8) => {
   }
 };
 
-/**
- * Lấy tổng số listing để hiển thị ở nút "Xem tất cả"
- * @returns {Promise<number>} Tổng số listing
- */
+// Lấy tổng số listing để hiển thị ở nút "Xem tất cả"
 export const getTotalListingsCount = async () => {
   try {
     const response = await getAllListings({
@@ -142,11 +107,7 @@ export const getTotalListingsCount = async () => {
   }
 };
 
-/**
- * Transform dữ liệu từ API về format phù hợp với component
- * @param {Object} apiItem - Item từ API response
- * @returns {Object} Item đã transform
- */
+// Transform dữ liệu từ API về format phù hợp với component
 const transformListingData = (apiItem) => {
   // Parse mediaListUrl từ string thành array
   const parseMediaUrls = (mediaListUrl) => {
@@ -174,7 +135,12 @@ const transformListingData = (apiItem) => {
   return {
     id: apiItem.id?.toString() || "",
     title: apiItem.title || "",
-    category: determineCategory(apiItem.brand, apiItem.model),
+    // category string ưu tiên theo categoryId backend trả
+    category:
+      mapCategoryIdToName(apiItem.categoryId) ||
+      determineCategory(apiItem.brand, apiItem.model),
+    category_id:
+      typeof apiItem.categoryId === "number" ? apiItem.categoryId : undefined,
     brand: apiItem.brand || "",
     model: apiItem.model || "",
     year: apiItem.year || null,
@@ -196,12 +162,22 @@ const transformListingData = (apiItem) => {
   };
 };
 
-/**
- * Xác định category dựa trên brand và model
- * @param {string} brand - Thương hiệu
- * @param {string} model - Model
- * @returns {string} Category
- */
+// Xác định category dựa trên brand và model
+const mapCategoryIdToName = (id) => {
+  switch (id) {
+    case 1:
+      return "EV_CAR";
+    case 2:
+      return "E_MOTORBIKE";
+    case 3:
+      return "E_BIKE";
+    case 4:
+      return "BATTERY";
+    default:
+      return undefined;
+  }
+};
+
 const determineCategory = (brand, model) => {
   const brandLower = (brand || "").toLowerCase();
   const modelLower = (model || "").toLowerCase();

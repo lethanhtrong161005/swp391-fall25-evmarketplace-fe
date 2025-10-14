@@ -12,4 +12,41 @@
     margin-top: 16px;
     text-align: right;
   }
+
+  /* Uniform tag/badge sizing inside the table */
+  .uniformTag {
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 22px; /* consistent height */
+    padding: 0 10px;
+    min-width: 88px; /* width of the longest label e.g., "Xe máy điện" */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .uniformPill {
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 22px;
+    padding: 0 12px;
+    min-width: 104px; /* fits "Đang hoạt động" */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .uniformYesNo {
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 22px;
+    padding: 0 12px;
+    min-width: 60px; /* fits "Không" */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

@@ -22,8 +22,6 @@ const SearchBar = () => {
 
     setLoading(true);
     try {
-      console.log("🔍 Searching with:", { searchTerm, category, area });
-
       // Gọi API search
       const response = await searchListings({
         key: searchTerm.trim(),
@@ -32,8 +30,6 @@ const SearchBar = () => {
         sort: "createdAt",
         dir: "desc",
       });
-
-      console.log("📦 Search results:", response);
 
       if (response?.success && response?.data?.items) {
         // Chuyển đến trang kết quả tìm kiếm với dữ liệu

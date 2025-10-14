@@ -27,7 +27,6 @@ const HeaderAction = () => {
     handleLoginSubmit,
   } = auth;
 
-
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
   const menuItems = getMenuItems();
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";

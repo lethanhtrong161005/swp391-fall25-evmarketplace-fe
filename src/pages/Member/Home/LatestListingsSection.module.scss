@@ -1,0 +1,84 @@
+.sliderWrap {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.navBtn {
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  cursor: pointer;
+}
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Grid 5 columns on desktop and up */
+.grid5x {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+/* Tablet */
+@media (max-width: 1199.98px) {
+  .grid5x {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Small tablet */
+@media (max-width: 991.98px) {
+  .grid5x {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile landscape */
+@media (max-width: 767.98px) {
+  .grid5x {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile portrait */
+@media (max-width: 575.98px) {
+  .grid5x {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gridItem {
+  height: 100%;
+}
+
+/* Smooth fade/slide animation on page switch */
+.grid5x {
+  transition: transform 300ms ease, opacity 300ms ease;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fadeIn {
+  animation: fadeSlideIn 300ms ease;
+}
+
+

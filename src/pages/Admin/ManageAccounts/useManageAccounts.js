@@ -6,7 +6,6 @@ import {
   updateAccount,
   searchAccounts,
   getAccountDetail,
-  // getAccountStats, // Temporarily disabled - API not available
 } from "@services/admin/account.admin.service";
 import cookieUtils from "@utils/cookieUtils";
 
@@ -14,20 +13,6 @@ export function useManageAccounts() {
   const [msg, contextHolder] = message.useMessage();
   const [loading, setLoading] = React.useState(false);
   const [rows, setRows] = React.useState([]);
-  const [stats, setStats] = React.useState({
-    total: 0,
-    active: 0,
-    locked: 0,
-    verified: 0,
-    roleStats: {
-      ADMIN: 0,
-      MANAGER: 0,
-      INSPECTOR: 0,
-      STAFF: 0,
-      MEMBER: 0,
-      GUEST: 0,
-    },
-  });
 
   // Simplified pagination like ManageListing
   const [query, setQuery] = React.useState({
@@ -65,165 +50,6 @@ export function useManageAccounts() {
   const [detailRow, setDetailRow] = React.useState(null);
   const [detailLogs, setDetailLogs] = React.useState([]);
   const [editRow, setEditRow] = React.useState(null);
-
-  // Tính toán stats từ dữ liệu thực tế
-  const calculateStatsFromData = React.useCallback((allAccounts) => {
-    if (!allAccounts || allAccounts.length === 0) {
-      return {
-        total: 0,
-        active: 0,
-        locked: 0,
-        verified: 0,
-        roleStats: {
-          ADMIN: 0,
-          MANAGER: 0,
-          INSPECTOR: 0,
-          STAFF: 0,
-          MEMBER: 0,
-          GUEST: 0,
-        },
-      };
-    }
-
-    const total = allAccounts.length;
-    const active = allAccounts.filter((acc) => acc.status === "ACTIVE").length;
-    const locked = allAccounts.filter((acc) => acc.status === "LOCKED").length;
-    const verified = allAccounts.filter(
-      (acc) => acc.phoneVerified && acc.emailVerified
-    ).length;
-
-    const roleStats = {
-      ADMIN: allAccounts.filter((acc) => acc.role === "ADMIN").length,
-      MANAGER: allAccounts.filter((acc) => acc.role === "MANAGER").length,
-      INSPECTOR: allAccounts.filter((acc) => acc.role === "INSPECTOR").length,
-      STAFF: allAccounts.filter((acc) => acc.role === "STAFF").length,
-      MEMBER: allAccounts.filter((acc) => acc.role === "MEMBER").length,
-      GUEST: allAccounts.filter((acc) => acc.role === "GUEST").length,
-    };
-
-    return { total, active, locked, verified, roleStats };
-  }, []);
-
-  // Fetch tất cả accounts để tính toán stats (không phân trang)
-  const fetchAllAccountsForStats = React.useCallback(async () => {
-    try {
-      // Sử dụng endpoint có sẵn với size lớn để lấy tất cả accounts
-      const params = {
-        page: 0,
-        size: 1000, // Lấy tối đa 1000 records để tính stats
-        sort: "",
-        dir: "desc",
-        role: "", // Không filter theo role
-        status: "", // Không filter theo status
-        verified: null, // Không filter theo verified
-      };
-
-      const response = await listAccounts(params);
-      const apiData = response?.data || {};
-
-      // Try different possible data structures
-      let allAccounts = [];
-
-      if (apiData?.items && Array.isArray(apiData.items)) {
-        allAccounts = apiData.items;
-      } else if (apiData?.content && Array.isArray(apiData.content)) {
-        allAccounts = apiData.content;
-      } else if (Array.isArray(apiData)) {
-        allAccounts = apiData;
-      } else if (apiData?.data && Array.isArray(apiData.data)) {
-        allAccounts = apiData.data;
-      }
-
-      // Tính toán stats từ dữ liệu thực tế
-      const calculatedStats = calculateStatsFromData(allAccounts);
-
-      // If no real data, use mock data for testing
-      if (allAccounts.length === 0) {
-        const mockStats = {
-          total: 46,
-          active: 42,
-          locked: 4,
-          verified: 38,
-          roleStats: {
-            ADMIN: 1,
-            MANAGER: 2,
-            INSPECTOR: 3, // 3 kỹ thuật viên như user yêu cầu
-            STAFF: 5,
-            MEMBER: 35,
-            GUEST: 0,
-          },
-        };
-        setStats(mockStats);
-      } else {
-        setStats(calculatedStats);
-      }
-    } catch (error) {
-      // Handle authentication errors
-      if (error.status === 401) {
-        msg.error(
-          "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để xem thống kê."
-        );
-
-        // Set empty stats instead of fallback
-        setStats({
-          total: 0,
-          active: 0,
-          locked: 0,
-          verified: 0,
-          roleStats: {
-            ADMIN: 0,
-            MANAGER: 0,
-            INSPECTOR: 0,
-            STAFF: 0,
-            MEMBER: 0,
-            GUEST: 0,
-          },
-        });
-        return;
-      }
-
-      // Fallback: Mock data dựa trên pagination info (chỉ khi không phải auth error)
-      const totalFromPagination = data?.pagination?.totalRecords || 0;
-      if (totalFromPagination > 0) {
-        setStats({
-          total: totalFromPagination,
-          active: totalFromPagination, // Giả định tất cả đều active
-          locked: 0,
-          verified: 0,
-          roleStats: {
-            ADMIN: 1,
-            MANAGER: 0,
-            INSPECTOR: 3, // Giả định có 3 kỹ thuật viên
-            STAFF: 0,
-            MEMBER: totalFromPagination - 4, // Trừ đi admin và inspector
-            GUEST: 0,
-          },
-        });
-      } else {
-        // No pagination data either - set empty stats
-        setStats({
-          total: 0,
-          active: 0,
-          locked: 0,
-          verified: 0,
-          roleStats: {
-            ADMIN: 0,
-            MANAGER: 0,
-            INSPECTOR: 0,
-            STAFF: 0,
-            MEMBER: 0,
-            GUEST: 0,
-          },
-        });
-      }
-    }
-  }, [calculateStatsFromData, data?.pagination?.totalRecords, msg]);
-
-  // Fetch thống kê tổng quan
-  const fetchStats = React.useCallback(async () => {
-    // Fallback: Tính toán từ dữ liệu thực tế
-    await fetchAllAccountsForStats();
-  }, [fetchAllAccountsForStats]);
 
   const fetchAccounts = React.useCallback(async () => {
     setLoading(true);
@@ -266,7 +92,6 @@ export function useManageAccounts() {
           INSPECTOR: 2,
           STAFF: 3,
           MEMBER: 4,
-          GUEST: 5,
         };
         const roleA = roleOrder[a.role] ?? 6;
         const roleB = roleOrder[b.role] ?? 6;
@@ -334,19 +159,11 @@ export function useManageAccounts() {
 
   const refresh = React.useCallback(() => {
     fetchAccounts();
-    fetchStats();
-  }, [fetchAccounts, fetchStats]);
+  }, [fetchAccounts]);
 
   React.useEffect(() => {
     fetchAccounts();
   }, [fetchAccounts]);
-
-  // Fetch stats sau khi đã có pagination data
-  React.useEffect(() => {
-    if (data?.pagination?.totalRecords > 0) {
-      fetchStats();
-    }
-  }, [data?.pagination?.totalRecords, fetchStats]);
 
   // Xử lý tạo tài khoản mới
   const onCreateFinish = async (values) => {
@@ -370,9 +187,6 @@ export function useManageAccounts() {
         password: String(values.password).trim(),
         fullName: String(values.fullName).trim(),
       };
-
-      console.log("🚀 Tạo tài khoản với payload:", payload);
-      console.log("🔑 Token hiện tại:", cookieUtils.getToken());
 
       // Gọi API thông qua service (đã có validation)
       await createAccount(payload);
@@ -501,7 +315,6 @@ export function useManageAccounts() {
   return {
     loading,
     rows,
-    stats,
     refresh,
     query,
     data,
