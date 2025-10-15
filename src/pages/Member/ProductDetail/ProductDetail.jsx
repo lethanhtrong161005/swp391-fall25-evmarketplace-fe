@@ -1,5 +1,5 @@
 // src/pages/Member/ProductDetail.jsx
-import React, { useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./ProductDetail.scss";
 import {
@@ -22,8 +22,10 @@ import {
   CheckCircleOutlined,
   ThunderboltOutlined,
   BranchesOutlined,
+  LeftOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
-import productsData from "@data/ProductsData";
+import { getListingDetail } from "@/services/listingHomeService";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -38,9 +40,36 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const carouselRef = useRef();
 
-  const product = productsData.find((p) => String(p.id) === id);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const mediaItems = useMemo(() => {
+    const imgs = (product?.images || []).map((u) => ({
+      type: "image",
+      url: u,
+    }));
+    const vids = (product?.videos || []).map((u) => ({
+      type: "video",
+      url: u,
+    }));
+    return [...imgs, ...vids];
+  }, [product]);
 
-  if (!product) {
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      setLoading(true);
+      const data = await getListingDetail(id);
+      if (alive) {
+        setProduct(data);
+        setLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [id]);
+
+  if (!loading && !product) {
     return (
       <Card className="product-detail__section">
         <Title level={4}>Không tìm thấy sản phẩm</Title>
@@ -51,10 +80,15 @@ export default function ProductDetail() {
     );
   }
 
+  if (loading || !product) {
+    return (
+      <Card className="product-detail__section">
+        <Title level={4}>Đang tải...</Title>
+      </Card>
+    );
+  }
+
   const isBattery = product.category === "BATTERY";
-  const isCar = product.category === "EV_CAR";
-  const isBike = product.category === "E_MOTORBIKE";
-  const isEbike = product.category === "E_BIKE";
 
   return (
     <div className="product-detail">
@@ -72,10 +106,28 @@ export default function ProductDetail() {
         <Row gutter={24}>
           <Col xs={24} md={14} className="product-detail__carousel-container">
             <Carousel ref={carouselRef} className="product-detail__carousel">
-              {product.images?.length ? (
-                product.images.map((img, idx) => (
-                  <div key={idx} className="product-detail__img-wrapper">
-                    <Image preview src={img} alt={`slide-${idx}`} />
+              {mediaItems.length ? (
+                mediaItems.map((m, idx) => (
+                  <div
+                    key={`${m.type}-${idx}`}
+                    className="product-detail__img-wrapper"
+                  >
+                    {m.type === "image" ? (
+                      <Image preview src={m.url} alt={`image-${idx}`} />
+                    ) : (
+                      <video
+                        src={m.url}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          background: "#000",
+                        }}
+                        preload="metadata"
+                        playsInline
+                        controls
+                      />
+                    )}
                   </div>
                 ))
               ) : (
@@ -87,18 +139,18 @@ export default function ProductDetail() {
 
             <Button
               size="large"
+              shape="circle"
+              icon={<LeftOutlined />}
               className="product-detail__nav-btn product-detail__nav-btn--left"
               onClick={() => carouselRef.current?.prev()}
-            >
-              ⬅
-            </Button>
+            />
             <Button
               size="large"
+              shape="circle"
+              icon={<RightOutlined />}
               className="product-detail__nav-btn product-detail__nav-btn--right"
               onClick={() => carouselRef.current?.next()}
-            >
-              ➡
-            </Button>
+            />
           </Col>
 
           {/* Thông tin chính */}
@@ -171,7 +223,8 @@ export default function ProductDetail() {
       <Card className="product-detail__section">
         <Title level={4}>Mô tả sản phẩm</Title>
         <Paragraph>
-          {product.productVehicle?.description ||
+          {product.description ||
+            product.productVehicle?.description ||
             product.productBattery?.description ||
             "Chưa có mô tả chi tiết."}
         </Paragraph>
@@ -188,92 +241,85 @@ export default function ProductDetail() {
 
           {isBattery ? (
             <>
-              <Descriptions.Item label="Dung lượng">
-                {product.productBattery?.capacityKwh} kWh
-              </Descriptions.Item>
-              <Descriptions.Item label="Điện áp">
-                {product.productBattery?.voltage} V
-              </Descriptions.Item>
-              <Descriptions.Item label="Khối lượng">
-                {product.productBattery?.weightKg} kg
-              </Descriptions.Item>
-              <Descriptions.Item label="Kích thước">
-                {product.productBattery?.dimension}
-              </Descriptions.Item>
-              <Descriptions.Item label="SOH">
-                {product.sohPercent}%
-              </Descriptions.Item>
+              {product.productBattery?.capacityKwh != null && (
+                <Descriptions.Item label="Dung lượng">
+                  {product.productBattery?.capacityKwh} kWh
+                </Descriptions.Item>
+              )}
+              {product.productBattery?.voltage != null && (
+                <Descriptions.Item label="Điện áp">
+                  {product.productBattery?.voltage} V
+                </Descriptions.Item>
+              )}
+              {product.productBattery?.weightKg != null && (
+                <Descriptions.Item label="Khối lượng">
+                  {product.productBattery?.weightKg} kg
+                </Descriptions.Item>
+              )}
+              {product.productBattery?.dimension && (
+                <Descriptions.Item label="Kích thước">
+                  {product.productBattery?.dimension}
+                </Descriptions.Item>
+              )}
+              {product.sohPercent != null && (
+                <Descriptions.Item label="SOH">
+                  {product.sohPercent}%
+                </Descriptions.Item>
+              )}
             </>
           ) : (
             <>
-              <Descriptions.Item label="Năm sản xuất">
-                {product.year}
-              </Descriptions.Item>
-              <Descriptions.Item label="Quãng đường">
-                {product.mileageKm?.toLocaleString("vi-VN")} km
-              </Descriptions.Item>
-              <Descriptions.Item label="Công suất">
-                {product.powerKw} kW
-              </Descriptions.Item>
-              <Descriptions.Item label="Dung lượng pin">
-                {product.batteryCapacityKwh} kWh
-              </Descriptions.Item>
-              <Descriptions.Item label="SOH">
-                {product.sohPercent}%
-              </Descriptions.Item>
-
-              {isCar && (
-                <>
-                  <Descriptions.Item label="Số chỗ">
-                    {product.productCarDetail?.seatingCapacity}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Khoang hành lý">
-                    {product.productCarDetail?.trunkCapacity} L
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Túi khí">
-                    {product.productCarDetail?.airbags}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="ABS">
-                    {product.productCarDetail?.hasAbs ? "Có" : "Không"}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Autopilot">
-                    {product.productCarDetail?.hasAutopilot ? "Có" : "Không"}
-                  </Descriptions.Item>
-                </>
+              {product.year != null && (
+                <Descriptions.Item label="Năm sản xuất">
+                  {product.year}
+                </Descriptions.Item>
+              )}
+              {product.mileageKm != null && (
+                <Descriptions.Item label="Quãng đường">
+                  {product.mileageKm?.toLocaleString("vi-VN")} km
+                </Descriptions.Item>
+              )}
+              {product.powerKw != null && (
+                <Descriptions.Item label="Công suất">
+                  {product.powerKw} kW
+                </Descriptions.Item>
+              )}
+              {product.batteryCapacityKwh != null && (
+                <Descriptions.Item label="Dung lượng pin">
+                  {product.batteryCapacityKwh} kWh
+                </Descriptions.Item>
+              )}
+              {product.sohPercent != null && (
+                <Descriptions.Item label="SOH">
+                  {product.sohPercent}%
+                </Descriptions.Item>
               )}
 
-              {isBike && (
-                <>
-                  <Descriptions.Item label="Loại phanh">
-                    {product.productBikeDetail?.brakeType}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Kích thước bánh">
-                    {product.productBikeDetail?.wheelSize}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Khối lượng">
-                    {product.productBikeDetail?.weightKg} kg
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Sạc nhanh">
-                    {product.productBikeDetail?.fastCharging ? "Có" : "Không"}
-                  </Descriptions.Item>
-                </>
+              {/* Các field từ productVehicle (nếu có) */}
+              {product.productVehicle?.rangeKm != null && (
+                <Descriptions.Item label="Tầm hoạt động">
+                  {product.productVehicle.rangeKm} km
+                </Descriptions.Item>
               )}
-
-              {isEbike && (
-                <>
-                  <Descriptions.Item label="Khung xe">
-                    {product.productEbikeDetail?.frameMaterial}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Tải trọng tối đa">
-                    {product.productEbikeDetail?.maxLoad} kg
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Số líp">
-                    {product.productEbikeDetail?.gears}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Hỗ trợ bàn đạp">
-                    {product.productEbikeDetail?.pedalAssist ? "Có" : "Không"}
-                  </Descriptions.Item>
-                </>
+              {product.productVehicle?.acChargingKw != null && (
+                <Descriptions.Item label="Sạc AC">
+                  {product.productVehicle.acChargingKw} kW
+                </Descriptions.Item>
+              )}
+              {product.productVehicle?.dcChargingKw != null && (
+                <Descriptions.Item label="Sạc DC">
+                  {product.productVehicle.dcChargingKw} kW
+                </Descriptions.Item>
+              )}
+              {product.productVehicle?.acConnector && (
+                <Descriptions.Item label="Cổng AC">
+                  {product.productVehicle.acConnector}
+                </Descriptions.Item>
+              )}
+              {product.productVehicle?.dcConnector && (
+                <Descriptions.Item label="Cổng DC">
+                  {product.productVehicle.dcConnector}
+                </Descriptions.Item>
               )}
             </>
           )}

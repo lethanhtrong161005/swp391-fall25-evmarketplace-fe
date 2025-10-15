@@ -1,12 +1,15 @@
 // src/pages/Member/Home/LatestListingsSection.jsx
 import React, { useMemo, useState } from "react";
 import { Typography, Empty, Divider, Button } from "antd";
-import { ClockCircleOutlined } from "@ant-design/icons";
+import {
+  ClockCircleOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
 import ProductCard from "@/components/ProductCard/ProductCard";
 import ViewAllLink from "@/components/ViewAllLinkButton/ViewAllLink";
 import styles from "./LatestListingsSection.module.scss";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -58,14 +61,15 @@ export default function LatestListingsSection({
 
         {newest.length > 0 ? (
           <div className={styles.sliderWrap}>
-            <button
+            <Button
+              shape="circle"
+              size="large"
+              icon={<LeftOutlined />}
               className={styles.navBtn}
               aria-label="Previous"
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={boundedPage === 0}
-            >
-              <LeftOutlined />
-            </button>
+            />
 
             <div className={`${styles.grid5x} ${styles.fadeIn}`}>
               {pagedItems.map((item) => (
@@ -79,14 +83,15 @@ export default function LatestListingsSection({
               ))}
             </div>
 
-            <button
+            <Button
+              shape="circle"
+              size="large"
+              icon={<RightOutlined />}
               className={styles.navBtn}
               aria-label="Next"
               onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={boundedPage >= totalPages - 1}
-            >
-              <RightOutlined />
-            </button>
+            />
           </div>
         ) : (
           <Empty

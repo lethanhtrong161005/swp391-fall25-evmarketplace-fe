@@ -90,6 +90,7 @@ export default function ProductCard({
 
   const data = useMemo(() => {
     const imageUrl =
+      listing?.thumbnailUrl ||
       (Array.isArray(listing?.images) && listing.images[0]) ||
       listing?.imageUrl ||
       "";

@@ -20,6 +20,7 @@ import ProductBatteryManagement from "@pages/Admin/ProductBatteryManagement/Prod
 import StaffDashboard from "@pages/Staff/StaffDashboard";
 import ManageListingPage from "@pages/Staff/ManageListing";
 import ManageListingDetail from "@pages/Staff/ManageListingDetail";
+import ApprovalListings from "@pages/Staff/ApprovalListings";
 
 // Manager pages
 import ManagerDashboard from "@pages/Manager/ManagerDashboard";
@@ -63,7 +64,7 @@ export const routes = () => [
           { path: "listing/new", element: <ListingCreate /> },
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
-          { path: "payment/vnpay/call_back", element: <VnpReturnPage/>}
+          { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
         ],
       },
     ],
@@ -80,6 +81,7 @@ export const routes = () => [
           { path: "staff", element: <StaffDashboard /> },
           { path: "staff/listings", element: <ManageListingPage /> },
           { path: "staff/listings/:id", element: <ManageListingDetail /> },
+          { path: "staff/approval", element: <ApprovalListings /> },
         ],
       },
     ],

@@ -15,7 +15,18 @@ export function useStaffLayout() {
       key: "listings",
       icon: <FileTextOutlined />,
       label: "Quản lý tin đăng",
-      path: "/staff/listings",
+      children: [
+        {
+          key: "all-listings",
+          label: "Quản lý tất cả tin đăng",
+          path: "/staff/listings",
+        },
+        {
+          key: "approval-listings",
+          label: "Quản lý duyệt bài",
+          path: "/staff/approval",
+        },
+      ],
     },
   ];
 
