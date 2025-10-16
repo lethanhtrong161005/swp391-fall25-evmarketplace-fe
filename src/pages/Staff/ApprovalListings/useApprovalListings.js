@@ -1,28 +1,27 @@
 import { useState, useEffect } from "react";
 import { message } from "antd";
-import { get, post } from "@/utils/apiCaller";
+import {
+  getStaffListings,
+  approveStaffListing,
+  rejectStaffListing,
+} from "@services/staff/listing.staff.service";
 
 export function useApprovalListings() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedListing, setSelectedListing] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState(null);
-  const [pendingRejectId, setPendingRejectId] = useState(null);
 
   // Fetch danh sách tin đăng có trạng thái PENDING
-  const fetchListings = async () => {
+  const refresh = async () => {
     try {
       setLoading(true);
-      const response = await get("/api/staff/listing", {
+      const response = await getStaffListings({
         page: 0,
         size: 100,
         sort: "createdAt",
         dir: "desc",
       });
 
-      if (response?.success && response?.data?.items) {
-        // Lọc chỉ lấy tin có trạng thái PENDING
+      if (response?.data?.items) {
         const pendingListings = response.data.items
           .filter((item) => item.status === "PENDING")
           .map(transformListingData);
@@ -59,33 +58,12 @@ export function useApprovalListings() {
     };
   };
 
-  // Xem chi tiết tin đăng
-  const handleViewDetail = (listing) => {
-    setSelectedListing(listing);
-    setModalVisible(true);
-  };
-
-  // Đóng modal chi tiết
-  const handleModalCancel = () => {
-    setModalVisible(false);
-    setSelectedListing(null);
-  };
-
   // Duyệt tin đăng
-  const handleApprove = async (listingId) => {
+  const onApprove = async (rowId) => {
     try {
-      // Gọi API duyệt tin đăng
-      const response = await post(
-        `/api/staff/listing/${listingId}/approve`,
-        {}
-      );
-
-      if (response?.success) {
-        message.success("Đã duyệt tin đăng thành công");
-        fetchListings(); // Reload danh sách
-      } else {
-        throw new Error("Failed to approve listing");
-      }
+      await approveStaffListing(rowId);
+      message.success("Đã duyệt tin đăng thành công");
+      refresh();
     } catch (error) {
       console.error("Error approving listing:", error);
       message.error("Không thể duyệt tin đăng");
@@ -93,32 +71,11 @@ export function useApprovalListings() {
   };
 
   // Từ chối tin đăng
-  const handleReject = (listingId) => {
-    setPendingRejectId(listingId);
-    setRejectionReason("");
-  };
-
-  // Xác nhận từ chối với lý do
-  const handleConfirmReject = async () => {
-    if (!rejectionReason || !rejectionReason.trim()) {
-      message.error("Vui lòng nhập lý do từ chối");
-      return;
-    }
-
+  const onReject = async (rowId) => {
     try {
-      // Gọi API từ chối tin đăng với lý do
-      const response = await post(`/api/listing/${pendingRejectId}/reject`, {
-        reason: rejectionReason.trim(),
-      });
-
-      if (response?.success) {
-        message.success("Đã từ chối tin đăng thành công");
-        setRejectionReason(null);
-        setPendingRejectId(null);
-        fetchListings(); // Reload danh sách
-      } else {
-        throw new Error("Failed to reject listing");
-      }
+      await rejectStaffListing(rowId, "Từ chối bởi staff");
+      message.success("Đã từ chối tin đăng thành công");
+      refresh();
     } catch (error) {
       console.error("Error rejecting listing:", error);
       message.error("Không thể từ chối tin đăng");
@@ -127,21 +84,14 @@ export function useApprovalListings() {
 
   // Load danh sách khi component mount
   useEffect(() => {
-    fetchListings();
+    refresh();
   }, []);
 
   return {
     listings,
     loading,
-    selectedListing,
-    modalVisible,
-    rejectionReason,
-    setRejectionReason,
-    handleViewDetail,
-    handleApprove,
-    handleReject,
-    handleModalCancel,
-    handleConfirmReject,
-    fetchListings,
+    refresh,
+    onApprove,
+    onReject,
   };
 }

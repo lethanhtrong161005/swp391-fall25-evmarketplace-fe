@@ -1,7 +1,6 @@
 import React from "react";
 import { Table, Space, Button, Drawer, List, Typography, Grid } from "antd";
 import { HistoryOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import s from "./ListingTable.module.scss";
 import { useListingTable } from "./useListingTable.jsx";
 import StatusTag from "../StatusTag/StatusTag";
@@ -23,9 +22,9 @@ export default function ListingTable({
   onDelete,
   onRestore,
   onRenew,
+  onOpenDetail,
 }) {
   const screens = Grid.useBreakpoint();
-  const navigate = useNavigate();
   const { columns, historyOpen, setHistoryOpen, historyData } = useListingTable(
     {
       onApprove,
@@ -36,7 +35,7 @@ export default function ListingTable({
       onDelete,
       onRestore,
       onRenew,
-      navigate,
+      onOpenDetail,
     }
   );
 
@@ -50,6 +49,9 @@ export default function ListingTable({
         pagination={false}
         scroll={screens.md ? undefined : { x: 1100 }}
         className={s.listingTable}
+        onRow={(record) => ({
+          onClick: () => onOpenDetail && onOpenDetail(record),
+        })}
       />
 
       {/* History Drawer */}

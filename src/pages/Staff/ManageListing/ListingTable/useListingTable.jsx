@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Tag, Space, Button, Tooltip, Dropdown } from "antd";
-import { HistoryOutlined, EyeOutlined, MoreOutlined } from "@ant-design/icons";
+import { HistoryOutlined, MoreOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import StatusTag from "../StatusTag/StatusTag";
 import s from "./ListingTable.module.scss";
@@ -47,7 +47,7 @@ export function useListingTable({
   onDelete,
   onRestore,
   onRenew,
-  navigate,
+  onOpenDetail,
 }) {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [historyData, setHistoryData] = useState([]);
@@ -180,30 +180,23 @@ export function useListingTable({
       {
         title: "Thao tác",
         key: "actions",
-        width: 120,
+        width: 160,
         fixed: "right",
         align: "left",
         render: (_, record) => {
           // Build action menu items based on listing status
           const actions = [];
-          actions.push({
-            key: "detail",
-            label: "Xem chi tiết",
-            icon: <EyeOutlined />,
-            onClick: () => navigate(`/staff/listings/${record.id}`),
-          });
-          if (record.status === "PENDING") {
+          const isPending = record.status === "PENDING";
+          if (isPending) {
             actions.push(
               {
                 key: "approve",
                 label: "Phê duyệt",
-                icon: <HistoryOutlined style={{ color: "#52c41a" }} />,
                 onClick: () => onApprove(record),
               },
               {
                 key: "reject",
                 label: "Từ chối",
-                icon: <HistoryOutlined style={{ color: "#ff4d4f" }} />,
                 onClick: () => onReject(record),
               }
             );
@@ -273,40 +266,58 @@ export function useListingTable({
             });
           }
 
-          // Create dropdown menu items from actions
-          const menuItems = actions.map((action) => ({
-            key: action.key,
-            label: (
-              <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                {action.icon}
-                {action.label}
-              </span>
-            ),
-            onClick: action.onClick,
-          }));
+          // Create dropdown menu items from actions (excluding inline approve/reject when pending)
+          const menuItems = actions
+            .filter(
+              (a) => !(isPending && (a.key === "approve" || a.key === "reject"))
+            )
+            .map((action) => ({
+              key: action.key,
+              label: (
+                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {action.icon}
+                  {action.label}
+                </span>
+              ),
+              onClick: action.onClick,
+            }));
 
-          // Render dropdown with actions
+          // Render inline buttons for pending + dropdown for the rest. Stop propagation so row click doesn't fire
           return (
-            <Space>
-              <Dropdown
-                menu={{
-                  items: menuItems,
-                  onClick: (info) =>
-                    menuItems.find((i) => i.key === info.key)?.onClick(),
-                }}
-                placement="bottomLeft"
-                trigger={["click"]}
-                disabled={menuItems.length === 0}
-              >
-                <Button icon={<MoreOutlined />} type="text" size="small" />
-              </Dropdown>
+            <Space onClick={(e) => e.stopPropagation()}>
+              {isPending && (
+                <>
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => onApprove(record)}
+                  >
+                    Duyệt
+                  </Button>
+                  <Button danger size="small" onClick={() => onReject(record)}>
+                    Từ chối
+                  </Button>
+                </>
+              )}
+              {menuItems.length > 0 && (
+                <Dropdown
+                  menu={{
+                    items: menuItems,
+                    onClick: (info) =>
+                      menuItems.find((i) => i.key === info.key)?.onClick(),
+                  }}
+                  placement="bottomLeft"
+                  trigger={["click"]}
+                >
+                  <Button icon={<MoreOutlined />} type="text" size="small" />
+                </Dropdown>
+              )}
             </Space>
           );
         },
       },
     ],
     [
-      navigate,
       onApprove,
       onReject,
       onEdit,

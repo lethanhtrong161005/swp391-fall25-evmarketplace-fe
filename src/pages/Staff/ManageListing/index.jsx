@@ -1,10 +1,11 @@
 import React from "react";
-import { Card, Space, Button } from "antd";
+import { Card, Space, Button, Modal } from "antd";
 import s from "./ManageListing.module.scss";
 import { useManageListing } from "./useManageListing";
 import FilterBar from "./FilterBar/FilterBar";
 import SummaryCards from "./SummaryCards/SummaryCards";
 import ListingTable from "./ListingTable/ListingTable";
+import ManageListingDetail from "@pages/Staff/ManageListingDetail";
 
 /**
  * Staff Listing Management Page
@@ -29,6 +30,18 @@ export default function ManageListingPage() {
     setPage,
     contextHolder,
   } = useManageListing();
+
+  const [detailOpen, setDetailOpen] = React.useState(false);
+  const [selectedRow, setSelectedRow] = React.useState(null);
+
+  const handleOpenDetail = (row) => {
+    setSelectedRow(row);
+    setDetailOpen(true);
+  };
+  const handleCloseDetail = () => {
+    setDetailOpen(false);
+    setSelectedRow(null);
+  };
 
   return (
     <Space direction="vertical" size={16} className={s.wrap}>
@@ -60,6 +73,7 @@ export default function ManageListingPage() {
           onDelete={onDelete}
           onRestore={onRestore}
           onRenew={onRenew}
+          onOpenDetail={handleOpenDetail}
         />
         <div
           style={{
@@ -84,6 +98,23 @@ export default function ManageListingPage() {
           </Button>
         </div>
       </Card>
+
+      <Modal
+        title={null}
+        open={detailOpen}
+        onCancel={handleCloseDetail}
+        width={1100}
+        style={{ top: 24 }}
+        footer={null}
+        destroyOnClose
+      >
+        {detailOpen && (
+          <ManageListingDetail
+            modalId={selectedRow?.id}
+            onClose={handleCloseDetail}
+          />
+        )}
+      </Modal>
     </Space>
   );
 }

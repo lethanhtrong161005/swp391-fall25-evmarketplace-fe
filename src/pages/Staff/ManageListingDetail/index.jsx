@@ -18,20 +18,22 @@ import StatusTag from "../ManageListing/StatusTag/StatusTag";
 
 const { Title, Text } = Typography;
 
-export default function ManageListingDetail() {
+export default function ManageListingDetail({ modalId, onClose }) {
   const { loading, listing, metaItems, screens, fmtVND, fmtDate, handleBack } =
-    useManageListingDetail();
+    useManageListingDetail({ modalId });
 
   return (
     <Space direction="vertical" size={16} className={s.wrapper}>
-      <Card>
-        <Space align="center" size={12}>
-          <Button icon={<ArrowLeftOutlined />} onClick={handleBack} />
-          <Title level={4} style={{ margin: 0 }}>
-            Chi tiết bài đăng
-          </Title>
-        </Space>
-      </Card>
+      {!modalId && (
+        <Card>
+          <Space align="center" size={12}>
+            <Button icon={<ArrowLeftOutlined />} onClick={handleBack} />
+            <Title level={4} style={{ margin: 0 }}>
+              Chi tiết bài đăng
+            </Title>
+          </Space>
+        </Card>
+      )}
 
       <Card loading={loading}>
         {!listing ? (

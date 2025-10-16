@@ -17,7 +17,7 @@ const fmtVND = (n) =>
 
 const fmtDate = (d) => (d ? new Date(d).toLocaleString("vi-VN") : "—");
 
-export function useManageListingDetail() {
+export function useManageListingDetail({ modalId } = {}) {
   const nav = useNavigate();
   const { id } = useParams();
   const screens = useBreakpoint();
@@ -29,7 +29,9 @@ export function useManageListingDetail() {
       setLoading(true);
       try {
         // Get listing detail only
-        const listingData = await getStaffListingDetail(id);
+        const targetId = modalId || id;
+        const res = await getStaffListingDetail(targetId);
+        const listingData = res?.data?.listing || res?.data || res;
         setListing(listingData);
       } catch (e) {
         console.error("Failed to load listing detail:", e);
@@ -39,10 +41,10 @@ export function useManageListingDetail() {
       }
     };
 
-    if (id) {
+    if (modalId || id) {
       load();
     }
-  }, [id]);
+  }, [id, modalId]);
   const metaItems = useMemo(() => {
     if (!listing) return [];
     return [
