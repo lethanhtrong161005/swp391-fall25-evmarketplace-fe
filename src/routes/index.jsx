@@ -6,6 +6,9 @@ import LayoutAdmin from "@layouts/LayoutAdmin";
 import LayoutStaff from "@layouts/LayoutStaff";
 import LayoutManager from "@layouts/LayoutManager";
 import LayoutInspector from "@layouts/LayoutInspector";
+import ManagerConsignment from "@pages/Member/ManagerConsignment/ManagerConsignment";
+import ConsignmentCreate from "@pages/Member/ConsignmentCreate/ConsignmentCreate";
+
 
 // Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
@@ -44,6 +47,7 @@ import VnpReturnPage from "@pages/Payment";
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
 
+
 export const routes = () => [
   {
     path: "/",
@@ -63,7 +67,9 @@ export const routes = () => [
           { path: "listing/new", element: <ListingCreate /> },
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
-          { path: "payment/vnpay/call_back", element: <VnpReturnPage/>}
+          { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
+          { path: "consignment", element: <ManagerConsignment /> },
+          { path: "consignment/new", element: <ConsignmentCreate /> },
         ],
       },
     ],

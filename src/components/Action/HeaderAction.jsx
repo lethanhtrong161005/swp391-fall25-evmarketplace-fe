@@ -11,7 +11,9 @@ import RegisterModal from "@components/Modal/RegisterModal";
 
 import { useHeaderAction } from "./useHeaderAction";
 
-const MANAGE_LISTINGS_PATH = "/my-ads"; // đổi path nếu bạn dùng route khác
+const MANAGE_LISTINGS_PATH = "/my-ads";
+const MANAGE_CONSIGNMENTS_PATH = "/consignment";
+const CREATE_LISTING_PATH = "/listing/new";
 
 const HeaderAction = () => {
   const { auth, otp, register, reset, handleOtpSuccess, handleOtpStart } =
@@ -27,17 +29,6 @@ const HeaderAction = () => {
     handleLoginSubmit,
   } = auth;
 
-  // // ⬇️ click “Quản lý tin”
-  // const handleClickManageListing = () => {
-  //   if (isLoggedIn) {
-  //     navigate(MANAGE_LISTINGS_PATH);
-  //   } else {
-  //     auth.setRedirectAfterLogin(MANAGE_LISTINGS_PATH);
-  //     messageApi.info("Vui lòng đăng nhập để quản lý tin");
-  //     setOpenLogin(true);
-  //   }
-  // };
-
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
   const menuItems = getMenuItems();
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
@@ -51,7 +42,7 @@ const HeaderAction = () => {
             <Button
               onClick={() =>
                 handleLoginRequire(
-                  "/listing/new",
+                  CREATE_LISTING_PATH,
                   "Vui lòng đăng nhập để đăng tin"
                 )
               }
@@ -62,7 +53,7 @@ const HeaderAction = () => {
             <Button
               onClick={() =>
                 handleLoginRequire(
-                  "/my-ads",
+                  MANAGE_LISTINGS_PATH,
                   "Vui lòng đăng nhập để quản lý tin"
                 )
               }
@@ -70,7 +61,16 @@ const HeaderAction = () => {
               Quản lý tin
             </Button>
 
-            <Button>Ký gửi</Button>
+            <Button
+              onClick={() =>
+                handleLoginRequire(
+                  MANAGE_CONSIGNMENTS_PATH,
+                  "Vui lòng đăng nhập để ký gửi"
+                )
+              }
+            >
+              Ký gửi
+            </Button>
           </>
         )}
 
