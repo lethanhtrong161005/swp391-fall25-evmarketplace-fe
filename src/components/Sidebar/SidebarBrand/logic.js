@@ -5,12 +5,19 @@ export function useSidebarBrand() {
   const { user } = useAuth();
   const { token } = theme.useToken();
 
-  // Since this page is only for Admin and Staff roles (access already controlled)
+  // Since this page is for Admin, Staff, and Moderator roles (access already controlled)
   const role = user?.role ? String(user.role).toUpperCase() : null;
 
-  // Simple brand text - only Admin or Staff
+  // Simple brand text - Admin, Staff, or Moderator
   const getBrandText = () => {
-    return role === "ADMIN" ? "ReEV Admin" : "ReEV Staff";
+    switch (role) {
+      case "ADMIN":
+        return "ReEV Admin";
+      case "MODERATOR":
+        return "ReEV Moderator";
+      default:
+        return "ReEV Staff";
+    }
   };
 
   // Simple color scheme - Red for Admin, Primary Blue for Staff

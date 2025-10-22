@@ -17,6 +17,8 @@ export default function SidebarBrand({ borderColor }) {
       navigate("/admin");
     } else if (userRole === "STAFF") {
       navigate("/staff");
+    } else if (userRole === "MODERATOR") {
+      navigate("/moderator");
     } else {
       navigate("/");
     }
@@ -28,6 +30,8 @@ export default function SidebarBrand({ borderColor }) {
       case "ADMIN":
         return <CrownOutlined className={s.icon} />;
       case "STAFF":
+        return <TeamOutlined className={s.icon} />;
+      case "MODERATOR":
         return <TeamOutlined className={s.icon} />;
       default:
         return null;

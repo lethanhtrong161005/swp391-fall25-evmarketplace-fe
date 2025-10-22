@@ -1,0 +1,253 @@
+// src/pages/Member/ProductDetail/components/ProductMedia/ProductMedia.styles.scss
+
+// =============================================================================
+// VARIABLES & MIXINS
+// =============================================================================
+
+// Colors
+$primary-color: #1890ff;
+$white: #fff;
+$black: #000;
+$gray-light: #f8f9fa;
+$gray-medium: #f5f5f5;
+$gray-dark: #8c8c8c;
+$gray-darker: #d9d9d9;
+$gray-border: rgba(0, 0, 0, 0.1);
+$shadow-light: rgba(0, 0, 0, 0.1);
+$shadow-medium: rgba(0, 0, 0, 0.15);
+$shadow-dark: rgba(0, 0, 0, 0.2);
+$overlay-dark: rgba(0, 0, 0, 0.8);
+
+// Spacing
+$spacing-xs: 6px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 24px;
+
+// Sizes
+$nav-btn-size: 48px;
+$nav-btn-size-mobile: 40px;
+$dot-size: 8px;
+$icon-size-large: 64px;
+$icon-size-medium: 24px;
+$icon-size-small: 18px;
+$icon-size-mobile: 16px;
+
+// Border radius
+$border-radius-sm: 6px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+
+// Transitions
+$transition-fast: 0.3s ease;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@mixin button-hover-effect {
+  &:hover {
+    background: rgba($white, 1);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 12px $shadow-dark;
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+}
+
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
+
+.product-media {
+  width: 100%;
+
+  // Container
+  &__container {
+    position: relative;
+    width: 100%;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    box-shadow: 0 4px 12px $shadow-light;
+    background: $white;
+    aspect-ratio: 4/3;
+  }
+
+  // Carousel
+  &__carousel {
+    width: 100%;
+    height: 100%;
+
+    .ant-carousel-content {
+      height: 100%;
+    }
+
+    .ant-carousel-dots {
+      bottom: $spacing-lg;
+
+      .ant-carousel-dot {
+        width: $dot-size;
+        height: $dot-size;
+        border-radius: 50%;
+        background: rgba($white, 0.5);
+        border: none;
+        margin: 0 4px;
+        &.ant-carousel-dot-active {
+          background: $primary-color;
+        }
+      }
+    }
+  }
+
+  // Carousel Content
+  .ant-carousel-content {
+    height: 100%;
+  }
+
+  // Image Component
+  &__image {
+    width: 100%;
+    height: 100%;
+    @include flex-center;
+    background: $gray-light;
+
+    .ant-image {
+      width: 100%;
+      height: 100%;
+      @include flex-center;
+
+      img {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 0;
+      }
+    }
+
+    .ant-image-mask {
+      border-radius: 0;
+    }
+
+    .ant-image-preview-mask {
+      background-color: $overlay-dark;
+    }
+  }
+
+  // Placeholder
+  &__placeholder {
+    @include flex-center;
+    width: 100%;
+    height: 100%;
+    background: $gray-medium;
+    color: $gray-darker;
+    font-size: $icon-size-medium;
+  }
+
+  // Preview Mask
+  &__preview-mask {
+    background-color: $overlay-dark;
+  }
+
+  // Video Component
+  &__video {
+    width: 100%;
+    height: 100%;
+    @include flex-center;
+    background: $black;
+
+    video {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 0;
+    }
+  }
+
+  // Empty State
+  &__no-image {
+    height: 100%;
+    @include flex-center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
+    .ant-empty {
+      .ant-empty-description {
+        color: $gray-dark;
+      }
+    }
+  }
+
+  // Navigation Buttons
+  &__nav-btn {
+    @include absolute-center;
+    z-index: 20;
+    width: $nav-btn-size;
+    height: $nav-btn-size;
+    background: rgba($white, 0.9);
+    border: 1px solid $gray-border;
+    box-shadow: 0 2px 8px $shadow-medium;
+    color: #333;
+    font-size: $icon-size-small;
+    opacity: 0.8;
+    transition: all $transition-fast;
+
+    @include button-hover-effect;
+
+    // Left Button
+    &--left {
+      left: $spacing-lg;
+
+      @media (max-width: 768px) {
+        left: $spacing-sm;
+        width: $nav-btn-size-mobile;
+        height: $nav-btn-size-mobile;
+        font-size: $icon-size-mobile;
+      }
+    }
+
+    // Right Button
+    &--right {
+      right: $spacing-lg;
+
+      @media (max-width: 768px) {
+        right: $spacing-sm;
+        width: $nav-btn-size-mobile;
+        height: $nav-btn-size-mobile;
+        font-size: $icon-size-mobile;
+      }
+    }
+  }
+
+  // =============================================================================
+  // RESPONSIVE DESIGN
+  // =============================================================================
+
+  @media (max-width: 768px) {
+    &__container {
+      border-radius: $border-radius-md;
+      aspect-ratio: 16/9;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__container {
+      border-radius: $border-radius-sm;
+    }
+  }
+}

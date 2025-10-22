@@ -1,15 +1,16 @@
 import { useRoutes } from "react-router-dom";
+import { App as AntApp } from "antd";
 import { routes } from "@routes";
 import ScrollToTop from "./components/ScrollTop/ScrollTop";
 
 const App = () => {
-  const element = useRoutes(routes()); 
+  const element = useRoutes(routes());
 
   return (
-    <>
-      <ScrollToTop /> 
+    <AntApp>
+      <ScrollToTop />
       {element}
-    </>
+    </AntApp>
   );
 };
 

@@ -29,9 +29,7 @@ const Home = () => {
   };
   const handleItemClick = (item) => {
     if (!item) return;
-    const type =
-      item?.category || (item?.category_id === 4 ? "BATTERY" : "VEHICLE");
-    navigate(`/detail/${type}/${item.id}`);
+    navigate(`/detail/${item.id}`);
   };
   const handleStartBuying = () => {};
   const handleConsignVehicle = () => {};

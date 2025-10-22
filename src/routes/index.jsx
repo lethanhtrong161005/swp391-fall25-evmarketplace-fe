@@ -3,7 +3,7 @@ import RoleBasedRoute from "@components/RoleBasedRoute";
 // Layouts
 import LayoutDefault from "@layouts/LayoutDefault";
 import LayoutAdmin from "@layouts/LayoutAdmin";
-import LayoutStaff from "@layouts/LayoutStaff";
+import LayoutModerator from "@layouts/LayoutModerator";
 import LayoutManager from "@layouts/LayoutManager";
 import LayoutInspector from "@layouts/LayoutInspector";
 
@@ -18,9 +18,11 @@ import ProductBatteryManagement from "@pages/Admin/ProductBatteryManagement/Prod
 
 // Staff pages
 import StaffDashboard from "@pages/Staff/StaffDashboard";
-import ManageListingPage from "@pages/Staff/ManageListing";
-import ManageListingDetail from "@pages/Staff/ManageListingDetail";
-import ApprovalListings from "@pages/Staff/ApprovalListings";
+
+// Moderator pages
+import ModeratorDashboard from "@pages/Moderator/ModeratorDashboard";
+import ModeratorApprovalListings from "@pages/Moderator/ApprovalListings";
+import ModeratorHistoryPage from "@pages/Moderator/ModeratorHistory";
 
 // Manager pages
 import ManagerDashboard from "@pages/Manager/ManagerDashboard";
@@ -54,7 +56,7 @@ export const routes = () => [
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
       { path: "search-results", element: <SearchResults /> },
-      { path: "detail/:type/:id", element: <ProductDetail /> },
+      { path: "detail/:id", element: <ProductDetail /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
 
       {
@@ -65,23 +67,29 @@ export const routes = () => [
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
           { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
+          { path: "staff", element: <StaffDashboard /> },
         ],
       },
     ],
   },
 
-  // STAFF
+  // MODERATOR
   {
     path: "/",
-    element: <LayoutStaff />,
+    element: <LayoutModerator />,
     children: [
       {
-        element: <RoleBasedRoute allowedRoles={["staff"]} />,
+        element: <RoleBasedRoute allowedRoles={["moderator"]} />,
         children: [
-          { path: "staff", element: <StaffDashboard /> },
-          { path: "staff/listings", element: <ManageListingPage /> },
-          { path: "staff/listings/:id", element: <ManageListingDetail /> },
-          { path: "staff/approval", element: <ApprovalListings /> },
+          { path: "moderator", element: <ModeratorDashboard /> },
+          {
+            path: "moderator/approval",
+            element: <ModeratorApprovalListings />,
+          },
+          {
+            path: "moderator/history",
+            element: <ModeratorHistoryPage />,
+          },
         ],
       },
     ],

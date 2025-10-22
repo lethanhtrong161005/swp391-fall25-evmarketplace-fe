@@ -1,0 +1,46 @@
+// src/pages/Member/ProductDetail/components/CompatibleModels/CompatibleModels.styles.scss
+.compatible-models {
+  &__title {
+    margin-bottom: 20px !important;
+    font-size: 20px;
+    font-weight: 600;
+    color: #262626;
+  }
+
+  &__list {
+    .ant-list-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background-color: #fafafa;
+        border-radius: 6px;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__icon {
+    margin-right: 12px;
+    color: #1890ff;
+    font-size: 16px;
+  }
+
+  &__text {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}

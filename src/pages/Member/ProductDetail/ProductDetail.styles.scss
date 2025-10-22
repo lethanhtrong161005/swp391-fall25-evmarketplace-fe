@@ -1,0 +1,110 @@
+// src/pages/Member/ProductDetail/ProductDetail.styles.scss
+.product-detail {
+  padding: 0;
+  background: #f0f2f5;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  /* ----------- Section wrapper ----------- */
+  &__section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
+    // Main content section with media and info
+    &:first-of-type {
+      padding: 0;
+      overflow: hidden;
+      
+      .ant-row {
+        margin: 0 !important;
+        
+        .ant-col {
+          padding: 0;
+          
+          &:first-child {
+            padding-right: 12px;
+            
+            @media (max-width: 768px) {
+              padding-right: 0;
+              padding-bottom: 16px;
+            }
+          }
+          
+          &:last-child {
+            padding-left: 24px;
+            
+            @media (max-width: 768px) {
+              padding-left: 24px;
+              padding-right: 24px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* ----------- Bottom sections layout ----------- */
+  .ant-row {
+    &:not(:first-child) {
+      .ant-col {
+        &:first-child {
+          padding-right: 12px;
+          
+          @media (max-width: 768px) {
+            padding-right: 0;
+            padding-bottom: 16px;
+          }
+        }
+        
+        &:last-child {
+          padding-left: 12px;
+          
+          @media (max-width: 768px) {
+            padding-left: 0;
+            padding-top: 16px;
+          }
+        }
+      }
+    }
+  }
+
+  /* ----------- Responsive ----------- */
+  @media (max-width: 1200px) {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 12px;
+
+    &__section {
+      padding: 16px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      
+      &:first-of-type {
+        padding: 0;
+        border-radius: 8px;
+      }
+    }
+  }
+  
+  @media (max-width: 480px) {
+    padding: 4px 8px;
+
+    &__section {
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      
+      &:first-of-type {
+        padding: 0;
+        border-radius: 6px;
+      }
+    }
+  }
+}
