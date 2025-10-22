@@ -276,7 +276,7 @@ const transformListingDetail = (apiData) => {
     isConsigned: !!listing?.isConsigned,
     images,
     videos,
-    createdAt: listing?.createdAt || new Date().toISOString(),
+    createdAt: listing?.updatedAt || new Date().toISOString(),
     seller: {
       id: seller?.id,
       fullName: profile?.fullName || "",

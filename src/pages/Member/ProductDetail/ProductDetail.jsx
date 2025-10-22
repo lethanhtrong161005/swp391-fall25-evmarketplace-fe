@@ -6,7 +6,7 @@ import { useProductDetail } from "./hooks/useProductDetail";
 import ProductHeader from "./components/ProductHeader/ProductHeader";
 import ProductMedia from "./components/ProductMedia/ProductMedia";
 import ProductInfo from "./components/ProductInfo/ProductInfo";
-import ProductActions from "./components/ProductActions/ProductActions";
+
 import ProductDescription from "./components/ProductDescription/ProductDescription";
 import ProductSpecifications from "./components/ProductSpecifications/ProductSpecifications";
 import CompatibleModels from "./components/CompatibleModels/CompatibleModels";
@@ -64,7 +64,6 @@ export default function ProductDetail() {
           </Col>
           <Col xs={24} md={10}>
             <ProductInfo product={product} />
-            <ProductActions product={product} />
           </Col>
         </Row>
       </Card>
