@@ -20,7 +20,6 @@ import {
   MailOutlined,
   EyeOutlined,
   CopyOutlined,
-  HeartOutlined,
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import { toVND, formatMileage } from "../../utils/productFormatters";
@@ -28,19 +27,17 @@ import {
   CATEGORY_LABELS,
   CATEGORY_TAG_COLORS,
 } from "../../utils/productConstants";
-import { useProductActions } from "../../hooks/useProductActions";
+import FavoriteButton from "@components/FavoriteButton/FavoriteButton";
 import "./ProductInfo.styles.scss";
 
 const { Title, Text, Paragraph } = Typography;
 
-export default function ProductInfo({ product }) {
+export default function ProductInfo({ product, onShowLoginModal }) {
   const [showContactModal, setShowContactModal] = useState(false);
   const [isPhoneRevealed, setIsPhoneRevealed] = useState(false);
   const [isEmailRevealed, setIsEmailRevealed] = useState(false);
 
-  // Sử dụng hook cho chức năng yêu thích
-  const { isFavorite, isLoading, handleToggleFavorite } =
-    useProductActions(product);
+  // Không cần hook nữa vì đã sử dụng FavoriteButton component
 
   if (!product) return null;
 
@@ -97,15 +94,11 @@ export default function ProductInfo({ product }) {
         <Title level={2} className="product-info__title">
           {product.title}
         </Title>
-        <Button
+        <FavoriteButton
+          listingId={product.id}
+          onShowLoginModal={onShowLoginModal}
           className="product-info__save-btn"
-          icon={<HeartOutlined />}
-          onClick={handleToggleFavorite}
-          loading={isLoading}
-          type={isFavorite ? "primary" : "default"}
-        >
-          {isFavorite ? "Đã lưu" : "Lưu"}
-        </Button>
+        />
       </div>
 
       {/* Thông tin chi tiết sản phẩm */}

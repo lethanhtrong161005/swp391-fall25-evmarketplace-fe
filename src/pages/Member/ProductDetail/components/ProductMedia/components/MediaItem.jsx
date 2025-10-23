@@ -11,6 +11,7 @@ const FALLBACK_IMAGE =
 const MediaItem = memo(({ media, index, onError }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const isImage = media.type === MEDIA_TYPES.IMAGE;
   const isVideo = media.type === MEDIA_TYPES.VIDEO;
@@ -24,6 +25,14 @@ const MediaItem = memo(({ media, index, onError }) => {
     setIsLoading(false);
     setHasError(true);
     onError?.(media, index);
+  };
+
+  const handlePlay = () => {
+    setIsPlaying(true);
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
   };
 
   const renderImage = () => (
@@ -63,6 +72,8 @@ const MediaItem = memo(({ media, index, onError }) => {
         poster=""
         onLoadedData={handleLoad}
         onError={handleError}
+        onPlay={handlePlay}
+        onPause={handlePause}
         aria-label={`Product video ${index + 1}`}
       />
       {isLoading && (
@@ -70,9 +81,11 @@ const MediaItem = memo(({ media, index, onError }) => {
           <div className="media-item__spinner" />
         </div>
       )}
-      <div className="media-item__video-overlay">
-        <PlayCircleOutlined className="media-item__play-icon" />
-      </div>
+      {!isPlaying && (
+        <div className="media-item__video-overlay">
+          <PlayCircleOutlined className="media-item__play-icon" />
+        </div>
+      )}
     </div>
   );
 

@@ -41,6 +41,7 @@ import ListingCreate from "@pages/Member/ListingCreate";
 import SearchResults from "@pages/Member/SearchResults";
 import ListingEdit from "@pages/Member/ListingEdit";
 import ManagerListing from "@pages/Member/ManagerListing";
+import MyFavoritesPage from "@pages/Member/MyFavoritesPage/MyFavoritesPage";
 import VnpReturnPage from "@pages/Payment";
 
 // Errors
@@ -66,6 +67,7 @@ export const routes = () => [
           { path: "listing/new", element: <ListingCreate /> },
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
+          { path: "my-favorites", element: <MyFavoritesPage /> },
           { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
           { path: "staff", element: <StaffDashboard /> },
         ],

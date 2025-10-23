@@ -1,11 +1,13 @@
 // src/pages/Member/ProductDetail/ProductDetail.jsx
-import React from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, Typography, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useProductDetail } from "./hooks/useProductDetail";
 import ProductHeader from "./components/ProductHeader/ProductHeader";
 import ProductMedia from "./components/ProductMedia/ProductMedia";
 import ProductInfo from "./components/ProductInfo/ProductInfo";
+import LoginModal from "@components/Modal/LoginModal";
+import { useAuth } from "@hooks/useAuth";
 
 import ProductDescription from "./components/ProductDescription/ProductDescription";
 import ProductSpecifications from "./components/ProductSpecifications/ProductSpecifications";
@@ -17,6 +19,31 @@ const { Title } = Typography;
 export default function ProductDetail() {
   const navigate = useNavigate();
   const { product, loading, error, isBattery, isNotFound } = useProductDetail();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { login } = useAuth();
+
+  // Xử lý đăng nhập
+  const handleLogin = async (loginDto) => {
+    await login(loginDto);
+  };
+
+  const handleShowLoginModal = () => {
+    setShowLoginModal(true);
+  };
+
+  const handleCloseLoginModal = () => {
+    setShowLoginModal(false);
+  };
+
+  const handleGoToRegister = () => {
+    setShowLoginModal(false);
+    navigate("/register");
+  };
+
+  const handleForgotPassword = (phoneNumber) => {
+    setShowLoginModal(false);
+    navigate("/forgot-password", { state: { phoneNumber } });
+  };
 
   // Trạng thái đang tải
   if (loading) {
@@ -63,7 +90,10 @@ export default function ProductDetail() {
             <ProductMedia product={product} />
           </Col>
           <Col xs={24} md={10}>
-            <ProductInfo product={product} />
+            <ProductInfo
+              product={product}
+              onShowLoginModal={handleShowLoginModal}
+            />
           </Col>
         </Row>
       </Card>
@@ -82,6 +112,15 @@ export default function ProductDetail() {
           <CompatibleModels product={product} isBattery={isBattery} />
         </Col>
       </Row>
+
+      {/* Modal đăng nhập */}
+      <LoginModal
+        open={showLoginModal}
+        onClose={handleCloseLoginModal}
+        onSubmit={handleLogin}
+        onForgot={handleForgotPassword}
+        onGoRegister={handleGoToRegister}
+      />
     </div>
   );
 }
