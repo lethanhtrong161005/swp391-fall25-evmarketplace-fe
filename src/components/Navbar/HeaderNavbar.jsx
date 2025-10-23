@@ -8,6 +8,7 @@ const items = [
   { key: "home", label: "Trang chủ", path: "/" },
   { key: "vehicle", label: "Phương tiện", path: "/vehicle" },
   { key: "battery", label: "Pin", path: "/battery" },
+  { key: "favorites", label: "Tin đã lưu", path: "/my-favorites" },
 ];
 
 const { useBreakpoint } = Grid;

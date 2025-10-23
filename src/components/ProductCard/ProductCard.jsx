@@ -13,6 +13,8 @@ import {
   Grid,
   Badge,
 } from "antd";
+import FavoriteButton from "@components/FavoriteButton/FavoriteButton";
+import "./ProductCard.styles.scss";
 
 const { Title, Text } = Typography;
 const { useBreakpoint } = Grid;
@@ -90,6 +92,7 @@ export default function ProductCard({
 
   const data = useMemo(() => {
     const imageUrl =
+      listing?.thumbnailUrl ||
       (Array.isArray(listing?.images) && listing.images[0]) ||
       listing?.imageUrl ||
       "";
@@ -179,13 +182,28 @@ export default function ProductCard({
         </Tag>
       )}
 
-      {/* Tag góc trên phải: loại sản phẩm */}
+      {/* Tag góc trên trái: loại sản phẩm (dưới tag đã thẩm định) */}
       <Tag
         color={productTypeTag.color}
-        style={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}
+        style={{
+          position: "absolute",
+          top: showVerifiedTag && data.verified ? 40 : 10,
+          left: 10,
+          zIndex: 2,
+        }}
       >
         {productTypeTag.text}
       </Tag>
+
+      {/* Nút lưu ở góc phải trên */}
+      <div style={{ position: "absolute", top: 10, right: 10, zIndex: 3 }}>
+        <FavoriteButton
+          listingId={listing?.id}
+          size="small"
+          showText={false}
+          className="product-card__favorite-btn"
+        />
+      </div>
 
       <div style={frameStyle}>
         {!data.imageUrl || imgError ? (

@@ -1,0 +1,68 @@
+.product-card {
+  &__favorite-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    .anticon {
+      font-size: 20px !important;
+      color: white;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    }
+
+    // Override Ant Design button styles
+    &.ant-btn-sm .anticon {
+      font-size: 20px !important;
+    }
+
+    &.ant-btn .anticon {
+      font-size: 20px !important;
+    }
+
+    // Khi đã lưu
+    &.ant-btn-primary {
+      background: none;
+      border: none;
+
+      .anticon {
+        color: #ff4d4f;
+        text-shadow: 0 0 8px rgba(255, 77, 79, 0.8);
+      }
+    }
+
+    // Khi chưa lưu
+    &:not(.ant-btn-primary) {
+      .anticon {
+        color: white;
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .product-card {
+    &__favorite-btn {
+      .anticon {
+        font-size: 20px !important;
+      }
+
+      &.ant-btn-sm .anticon {
+        font-size: 20px !important;
+      }
+
+      &.ant-btn .anticon {
+        font-size: 20px !important;
+      }
+    }
+  }
+}

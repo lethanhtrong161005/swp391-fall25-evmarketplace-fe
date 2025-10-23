@@ -34,3 +34,16 @@ body {
     overflow-x: hidden;
     line-height: 1.5;
 }
+
+/* Uniform category tag styling */
+.uniform-category-tag {
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 22px;
+    padding: 0 10px;
+    min-width: 100px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

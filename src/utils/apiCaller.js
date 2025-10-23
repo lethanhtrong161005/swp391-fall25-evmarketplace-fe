@@ -1,7 +1,6 @@
-import axios from "axios"
-import cookieUtils from "./cookieUtils"
-import config from "@config"
-
+import axios from "axios";
+import cookieUtils from "./cookieUtils";
+import config from "@config";
 
 const api = axios.create({
   baseURL: config.publicRuntime.API_URL,
@@ -14,7 +13,9 @@ const api = axios.create({
 // Gắn token
 api.interceptors.request.use((req) => {
   const token = cookieUtils.getToken();
-  if (token) req.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
 
   // Nếu là FormData → gỡ Content-Type để browser tự set boundary
   if (req.data instanceof FormData) {
@@ -26,6 +27,16 @@ api.interceptors.request.use((req) => {
   }
   return req;
 });
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Hàm gọi API chung
 const request = async (
