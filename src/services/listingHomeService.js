@@ -1,14 +1,6 @@
 import { get } from "@/utils/apiCaller";
 
-/**
- * Lấy danh sách tất cả listing với phân trang
- * @param {Object} params - Tham số phân trang và sắp xếp
- * @param {number} params.page - Trang hiện tại (bắt đầu từ 0)
- * @param {number} params.size - Số lượng item mỗi trang
- * @param {string} params.sort - Trường sắp xếp
- * @param {string} params.dir - Hướng sắp xếp (asc/desc)
- * @returns {Promise<Object>} Response từ API
- */
+// Lấy danh sách tất cả listing với phân trang
 export const getAllListings = async (params = {}) => {
   const defaultParams = {
     page: 0,
@@ -21,16 +13,7 @@ export const getAllListings = async (params = {}) => {
   return await get("/api/listing/all", defaultParams);
 };
 
-/**
- * Tìm kiếm listing theo từ khóa
- * @param {Object} params - Tham số tìm kiếm
- * @param {string} params.key - Từ khóa tìm kiếm
- * @param {number} params.page - Trang hiện tại (bắt đầu từ 0)
- * @param {number} params.size - Số lượng item mỗi trang
- * @param {string} params.sort - Trường sắp xếp
- * @param {string} params.dir - Hướng sắp xếp (asc/desc)
- * @returns {Promise<Object>} Response từ API
- */
+// Tìm kiếm listing theo từ khóa
 export const searchListings = async (params = {}) => {
   const defaultParams = {
     key: "",
@@ -51,16 +34,13 @@ export const searchListings = async (params = {}) => {
   });
 };
 
-/**
- * Lấy danh sách listing mới nhất cho trang chủ
- * @param {number} limit - Số lượng item muốn lấy
- * @returns {Promise<Array>} Danh sách listing mới nhất
- */
-export const getLatestListings = async (limit = 8) => {
+// Lấy danh sách listing mới nhất cho trang chủ
+export const getLatestListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
       size: limit,
+      // Backend chấp nhận sort theo "createdAt"
       sort: "createdAt",
       dir: "desc",
     });
@@ -76,36 +56,24 @@ export const getLatestListings = async (limit = 8) => {
   }
 };
 
-/**
- * Lấy danh sách listing nổi bật cho trang chủ
- * @param {number} limit - Số lượng item muốn lấy
- * @returns {Promise<Array>} Danh sách listing nổi bật
- */
-export const getFeaturedListings = async (limit = 8) => {
+// Lấy danh sách listing nổi bật cho trang chủ
+export const getFeaturedListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
-      size: limit * 2, // Lấy nhiều hơn để filter
+      // Lấy một trang lớn để tránh bị thiếu BOOSTED do filter phía client
+      size: 200,
       sort: "createdAt",
       dir: "desc",
     });
 
     if (response?.success && response?.data?.items) {
-      // Filter và sắp xếp theo tiêu chí nổi bật
+      // Chỉ lấy tin BOOSTED, sắp xếp mới nhất
       const featuredItems = response.data.items
         .filter(
-          (item) =>
-            item.status === "ACTIVE" &&
-            (item.visibility === "BOOSTED" || item.isConsigned === true)
+          (item) => item.status === "ACTIVE" && item.visibility === "BOOSTED"
         )
-        .sort((a, b) => {
-          // Ưu tiên BOOSTED trước, sau đó theo thời gian tạo
-          if (a.visibility === "BOOSTED" && b.visibility !== "BOOSTED")
-            return -1;
-          if (b.visibility === "BOOSTED" && a.visibility !== "BOOSTED")
-            return 1;
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        })
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, limit);
 
       return featuredItems.map(transformListingData);
@@ -118,10 +86,7 @@ export const getFeaturedListings = async (limit = 8) => {
   }
 };
 
-/**
- * Lấy tổng số listing để hiển thị ở nút "Xem tất cả"
- * @returns {Promise<number>} Tổng số listing
- */
+// Lấy tổng số listing để hiển thị ở nút "Xem tất cả"
 export const getTotalListingsCount = async () => {
   try {
     const response = await getAllListings({
@@ -142,39 +107,44 @@ export const getTotalListingsCount = async () => {
   }
 };
 
-/**
- * Transform dữ liệu từ API về format phù hợp với component
- * @param {Object} apiItem - Item từ API response
- * @returns {Object} Item đã transform
- */
+// Lấy chi tiết listing công khai ở trang Home/Detail
+export const getListingDetail = async (id) => {
+  if (id == null) return null;
+  try {
+    const res = await get(`/api/listing/${id}`);
+    if (res?.success && res?.data) {
+      return transformListingDetail(res.data);
+    }
+    return null;
+  } catch (e) {
+    console.error("Error fetching listing detail:", e);
+    return null;
+  }
+};
+
+// Transform dữ liệu từ API về format phù hợp với component
 const transformListingData = (apiItem) => {
-  // Parse mediaListUrl từ string thành array
-  const parseMediaUrls = (mediaListUrl) => {
-    if (!mediaListUrl) return [];
+  // Xử lý thumbnailUrl từ API response mới
+  const getThumbnailUrl = (thumbnailUrl) => {
+    if (!thumbnailUrl) return "";
 
-    // Nếu là array, flatten và split từng string
-    if (Array.isArray(mediaListUrl)) {
-      return mediaListUrl
-        .flatMap((urlString) => urlString.split(","))
-        .map((url) => url.trim())
-        .filter((url) => url && url.startsWith("http"));
+    // Đảm bảo URL hợp lệ
+    if (typeof thumbnailUrl === "string" && thumbnailUrl.startsWith("http")) {
+      return thumbnailUrl.trim();
     }
 
-    // Nếu là string, split trực tiếp
-    if (typeof mediaListUrl === "string") {
-      return mediaListUrl
-        .split(",")
-        .map((url) => url.trim())
-        .filter((url) => url && url.startsWith("http"));
-    }
-
-    return [];
+    return "";
   };
 
   return {
     id: apiItem.id?.toString() || "",
     title: apiItem.title || "",
-    category: determineCategory(apiItem.brand, apiItem.model),
+    // category string ưu tiên theo categoryId backend trả
+    category:
+      mapCategoryIdToName(apiItem.categoryId) ||
+      determineCategory(apiItem.brand, apiItem.model),
+    category_id:
+      typeof apiItem.categoryId === "number" ? apiItem.categoryId : undefined,
     brand: apiItem.brand || "",
     model: apiItem.model || "",
     year: apiItem.year || null,
@@ -190,18 +160,29 @@ const transformListingData = (apiItem) => {
     verified: apiItem.isConsigned || false, // Sử dụng isConsigned làm verified
     isConsigned: apiItem.isConsigned || false,
     branchId: null, // API không có field này
-    images: parseMediaUrls(apiItem.mediaListUrl),
+    thumbnailUrl: getThumbnailUrl(apiItem.thumbnailUrl),
+    images: [], // Không còn sử dụng images array cho listing list
     createdAt: apiItem.createdAt || new Date().toISOString(),
     sellerName: apiItem.sellerName || "",
   };
 };
 
-/**
- * Xác định category dựa trên brand và model
- * @param {string} brand - Thương hiệu
- * @param {string} model - Model
- * @returns {string} Category
- */
+// Xác định category dựa trên brand và model
+const mapCategoryIdToName = (id) => {
+  switch (id) {
+    case 1:
+      return "EV_CAR";
+    case 2:
+      return "E_MOTORBIKE";
+    case 3:
+      return "E_BIKE";
+    case 4:
+      return "BATTERY";
+    default:
+      return undefined;
+  }
+};
+
 const determineCategory = (brand, model) => {
   const brandLower = (brand || "").toLowerCase();
   const modelLower = (model || "").toLowerCase();
@@ -237,4 +218,118 @@ const determineCategory = (brand, model) => {
   }
 
   return "EV_CAR"; // Default
+};
+
+// Chuẩn hoá dữ liệu chi tiết cho trang ProductDetail
+const transformListingDetail = (apiData) => {
+  const listing = apiData?.listing || {};
+  const seller = apiData?.sellerId || {};
+  const profile = seller?.profile || {};
+  const productVehicle = apiData?.productVehicle || null;
+  const productBattery = apiData?.productBattery || null;
+  const media = Array.isArray(apiData?.media) ? apiData.media : [];
+
+  const normalizeUrl = (u) => {
+    if (typeof u !== "string") return "";
+    try {
+      const raw = decodeURI(u);
+      return raw.replace(/ /g, "%20");
+    } catch {
+      return String(u).replace(/ /g, "%20");
+    }
+  };
+
+  const images = media
+    .filter((m) => m?.mediaType === "IMAGE" && typeof m?.mediaUrl === "string")
+    .map((m) => normalizeUrl(m.mediaUrl));
+
+  const videos = media
+    .filter((m) => m?.mediaType === "VIDEO" && typeof m?.mediaUrl === "string")
+    .map((m) => normalizeUrl(m.mediaUrl));
+
+  const base = {
+    id: String(listing?.id ?? ""),
+    title:
+      listing?.title ||
+      `${listing?.brand ?? ""} ${listing?.model ?? ""}`.trim(),
+    category:
+      mapCategoryIdToName(listing?.categoryId) ||
+      listing?.categoryName ||
+      "EV_CAR",
+    category_id:
+      typeof listing?.categoryId === "number" ? listing?.categoryId : undefined,
+    brand: listing?.brand || "",
+    model: listing?.model || "",
+    year: listing?.year ?? null,
+    batteryCapacityKwh: listing?.batteryCapacityKwh ?? null,
+    sohPercent: listing?.sohPercent ?? null,
+    mileageKm: listing?.mileageKm ?? null,
+    powerKw: null,
+    price: listing?.price ?? 0,
+    description:
+      typeof listing?.description === "string" ? listing.description : "",
+    province: listing?.province || "",
+    city: listing?.district || "",
+    status: listing?.status || "ACTIVE",
+    visibility: listing?.visibility || "NORMAL",
+    verified: !!listing?.verified,
+    isConsigned: !!listing?.isConsigned,
+    images,
+    videos,
+    createdAt: listing?.updatedAt || new Date().toISOString(),
+    seller: {
+      id: seller?.id,
+      fullName: profile?.fullName || "",
+      avatarUrl: profile?.avatarUrl || "",
+      province: profile?.province || "",
+      addressLine: profile?.addressLine || "",
+      phoneNumber: seller?.phoneNumber,
+      email: seller?.email,
+    },
+    listingExtra: {
+      aiSuggestedPrice: listing?.aiSuggestedPrice,
+      visibility: listing?.visibility,
+    },
+  };
+
+  if (productBattery) {
+    return {
+      ...base,
+      category: "BATTERY",
+      productBattery: {
+        capacityKwh: productBattery?.batteryCapacityKwh,
+        voltage: productBattery?.voltage,
+        weightKg: productBattery?.massKg,
+        dimension: productBattery?.dimensions,
+        chemistry: productBattery?.batteryChemistry,
+      },
+    };
+  }
+
+  return {
+    ...base,
+    category: base.category === "BATTERY" ? "BATTERY" : "EV_CAR",
+    productVehicle: productVehicle
+      ? {
+          brand: productVehicle?.brand,
+          model: productVehicle?.model,
+          releaseYear: productVehicle?.releaseYear,
+          batteryCapacityKwh: productVehicle?.batteryCapacityKwh,
+          motorPowerKw: productVehicle?.motorPowerKw,
+          acChargingKw: productVehicle?.acChargingKw,
+          dcChargingKw: productVehicle?.dcChargingKw,
+          acConnector: productVehicle?.acConnector,
+          dcConnector: productVehicle?.dcConnector,
+        }
+      : null,
+    // Gán các thông số kỹ thuật tổng hợp từ productVehicle nếu có
+    powerKw:
+      productVehicle && productVehicle.motorPowerKw != null
+        ? productVehicle.motorPowerKw
+        : base.powerKw,
+    batteryCapacityKwh:
+      productVehicle && productVehicle.batteryCapacityKwh != null
+        ? productVehicle.batteryCapacityKwh
+        : base.batteryCapacityKwh,
+  };
 };

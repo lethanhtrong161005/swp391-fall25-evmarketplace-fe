@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { getUserProfile } from "@services/accountService";
-import { useAuth } from "@contexts/AuthContext";
+import { useAuth } from "@hooks/useAuth";
 import { normalizeUserData } from "@utils/userDataUtils";
 
 /**

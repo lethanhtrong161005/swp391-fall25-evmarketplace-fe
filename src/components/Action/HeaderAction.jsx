@@ -8,6 +8,7 @@ import PhoneResetPasswordModal from "@components/Modal/PhoneResetPasswordModal";
 import ResetPasswordModal from "@components/Modal/ResetPasswordModal";
 import OtpVerifyModal from "@components/Modal/OtpVerifyModal";
 import RegisterModal from "@components/Modal/RegisterModal";
+import FavoritesDropdown from "@components/FavoritesDropdown/FavoritesDropdown";
 
 import { useHeaderAction } from "./useHeaderAction";
 
@@ -75,15 +76,18 @@ const HeaderAction = () => {
         )}
 
         {isLoggedIn ? (
-          <Dropdown
-            menu={{ items: menuItems, onClick: handleMenuClick }}
-            placement="bottomRight"
-            trigger={["click"]}
-          >
-            <Button icon={<UserOutlined />} type="text">
-              {displayName}
-            </Button>
-          </Dropdown>
+          <>
+            <FavoritesDropdown />
+            <Dropdown
+              menu={{ items: menuItems, onClick: handleMenuClick }}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
+              <Button icon={<UserOutlined />} type="text">
+                {displayName}
+              </Button>
+            </Dropdown>
+          </>
         ) : (
           <Button type="primary" onClick={() => auth.setOpenLogin?.(true)}>
             Đăng nhập

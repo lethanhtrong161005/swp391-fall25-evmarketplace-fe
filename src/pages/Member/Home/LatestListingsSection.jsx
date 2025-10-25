@@ -1,9 +1,15 @@
 // src/pages/Member/Home/LatestListingsSection.jsx
-import React, { useMemo } from "react";
-import { Typography, Empty, Divider, Row, Col } from "antd";
-import { ClockCircleOutlined } from "@ant-design/icons";
-import ProductCard from "@components/ProductCard/ProductCard";
-import ViewAllLink from "@components/ViewAllLinkButton/ViewAllLink";
+import React, { useMemo, useState } from "react";
+import { Typography, Empty, Divider, Button } from "antd";
+import {
+  ClockCircleOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
+
+import ProductCard from "@/components/ProductCard/ProductCard";
+import ViewAllLink from "@/components/ViewAllLinkButton/ViewAllLink";
+import styles from "./LatestListingsSection.module.scss";
 
 const { Title } = Typography;
 
@@ -13,8 +19,9 @@ export default function LatestListingsSection({
   onViewMore,
   onListingClick,
   loading = false,
-  maxItems = 8, // render 8 tin mới nhất
+  maxItems = 10, // hiển thị tối đa 10 tin, chia 2 trang mỗi trang 5
 }) {
+  const [page, setPage] = useState(0); // 0-based
   const active = useMemo(
     () => (listings || []).filter((x) => x?.status === "ACTIVE"),
     [listings]
@@ -29,6 +36,15 @@ export default function LatestListingsSection({
   );
 
   const total = typeof totalCount === "number" ? totalCount : active.length;
+  const totalPages = Math.max(
+    1,
+    Math.ceil(Math.min(maxItems, newest.length) / 5)
+  );
+  const boundedPage = Math.min(page, totalPages - 1);
+  const pagedItems = useMemo(() => {
+    const start = boundedPage * 5;
+    return newest.slice(0, maxItems).slice(start, start + 5);
+  }, [newest, maxItems, boundedPage]);
   const handleClick = (item) => onListingClick?.(item);
 
   return (
@@ -41,27 +57,42 @@ export default function LatestListingsSection({
             <ClockCircleOutlined style={{ marginRight: 8, color: "#1890ff" }} />
             Tin đăng mới nhất
           </Title>
-
-          <ViewAllLink
-            count={total}
-            label="Xem tất cả tin đăng"
-            style={{ marginLeft: "auto" }}
-            onClick={() => onViewMore?.()}
-          />
         </div>
 
         {newest.length > 0 ? (
-          <Row gutter={[16, 16]}>
-            {newest.map((item) => (
-              <Col key={item.id} xs={24} sm={12} md={8} lg={6}>
-                <ProductCard
-                  listing={item}
-                  onClick={handleClick}
-                  size="default"
-                />
-              </Col>
-            ))}
-          </Row>
+          <div className={styles.sliderWrap}>
+            <Button
+              shape="circle"
+              size="large"
+              icon={<LeftOutlined />}
+              className={styles.navBtn}
+              aria-label="Previous"
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={boundedPage === 0}
+            />
+
+            <div className={`${styles.grid5x} ${styles.fadeIn}`}>
+              {pagedItems.map((item) => (
+                <div key={item.id} className={styles.gridItem}>
+                  <ProductCard
+                    listing={item}
+                    onClick={handleClick}
+                    size="default"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <Button
+              shape="circle"
+              size="large"
+              icon={<RightOutlined />}
+              className={styles.navBtn}
+              aria-label="Next"
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={boundedPage >= totalPages - 1}
+            />
+          </div>
         ) : (
           <Empty
             description={
@@ -71,6 +102,19 @@ export default function LatestListingsSection({
             }
           />
         )}
+
+        <div
+          style={{ display: "flex", justifyContent: "center", marginTop: 16 }}
+        >
+          <Button
+            onClick={() => onViewMore?.()}
+            shape="round"
+            size="large"
+            style={{ borderRadius: 999, padding: "8px 20px", fontWeight: 600 }}
+          >
+            {`Xem thêm ${total.toLocaleString("vi-VN")} tin đăng`}
+          </Button>
+        </div>
       </section>
 
       <Divider />

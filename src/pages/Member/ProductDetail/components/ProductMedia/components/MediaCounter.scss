@@ -1,0 +1,51 @@
+// src/pages/Member/ProductDetail/components/ProductMedia/components/MediaCounter.scss
+
+.media-counter {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 15;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  padding: 6px 12px;
+  transition: all 0.3s ease;
+
+  &__text {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.05);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .media-counter {
+    bottom: 12px;
+    right: 12px;
+    padding: 4px 8px;
+
+    &__text {
+      font-size: 12px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .media-counter {
+    bottom: 8px;
+    right: 8px;
+    padding: 3px 6px;
+
+    &__text {
+      font-size: 11px;
+    }
+  }
+}

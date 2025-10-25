@@ -4,7 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import { ConfigProvider, App as AntApp, message } from "antd";
 import "@styles/styles.scss";
 import App from "./App.jsx";
-import { AuthProvider } from "@contexts/AuthContext";
+import { AuthProvider } from "@contexts/AuthContext.jsx";
+import { FavoritesProvider } from "@contexts/FavoritesContext.jsx";
 
 message.config({
   duration: 3, // hiển thị 3 giây (sweet spot)
@@ -27,7 +28,9 @@ createRoot(document.getElementById("root")).render(
       <AntApp>
         <BrowserRouter>
           <AuthProvider>
-            <App />
+            <FavoritesProvider>
+              <App />
+            </FavoritesProvider>
           </AuthProvider>
         </BrowserRouter>
       </AntApp>

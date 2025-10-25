@@ -17,12 +17,25 @@ const RoleBasedRoute = ({ allowedRoles = [] }) => {
           height: "100vh",
         }}
       >
-        <Spin size="large" tip="Đang tải thông tin..." />
+        <Spin size="large" />
+        <div style={{ marginLeft: 16, fontSize: 16 }}>
+          Đang tải thông tin...
+        </div>
       </div>
     );
   }
 
   if (!isLoggedIn || !user) {
+    // Nếu cố truy cập trang quản lý mà chưa đăng nhập -> 403
+    if (
+      location.pathname.startsWith("/admin") ||
+      location.pathname.startsWith("/staff") ||
+      location.pathname.startsWith("/manager") ||
+      location.pathname.startsWith("/inspector")
+    ) {
+      return <Navigate to="/403" replace />;
+    }
+    // Các trang khác -> về trang chủ
     return <Navigate to="/" replace state={{ from: location }} />;
   }
 

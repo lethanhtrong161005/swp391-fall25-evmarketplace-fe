@@ -50,7 +50,11 @@ const ProductVehicleManagement = () => {
     {
       title: "Danh mục",
       dataIndex: "category",
-      render: (cat) => <Tag color="blue">{categoryLabels[cat] || cat}</Tag>,
+      render: (cat) => (
+        <Tag color="blue" className="uniform-category-tag">
+          {categoryLabels[cat] || cat}
+        </Tag>
+      ),
     },
     { title: "Năm SX", dataIndex: "releaseYear", align: "center" },
     {

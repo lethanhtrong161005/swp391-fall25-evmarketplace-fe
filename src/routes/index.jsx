@@ -3,10 +3,11 @@ import RoleBasedRoute from "@components/RoleBasedRoute";
 // Layouts
 import LayoutDefault from "@layouts/LayoutDefault";
 import LayoutAdmin from "@layouts/LayoutAdmin";
-import LayoutStaff from "@layouts/LayoutStaff";
+import LayoutModerator from "@layouts/LayoutModerator";
 import LayoutManager from "@layouts/LayoutManager";
 import LayoutInspector from "@layouts/LayoutInspector";
-import ConsignmentCreate from "@pages/Member/ConsignmentCreate/ConsignmentCreate";
+import LayoutStaff from "../layouts/LayoutStaff";
+// import ConsignmentCreate from "@pages/Member/ConsignmentCreate/ConsignmentCreate";
 
 // Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
@@ -24,6 +25,11 @@ import ManageListingDetail from "@pages/Staff/ManageListingDetail";
 import StaffConsignmentsManagement from "@/pages/Staff/StaffConsignmentsManagement/StaffConsignmentsManagement";
 import StaffConsignmentsConsider from "@/pages/Staff/StaffConsignmentsConsider/StaffConsignmentsConsider";
 import StaffInspectionSchedule from "@/pages/Staff/StaffInspectionSchedule/StaffInspectionSchedule";
+
+// Moderator pages
+import ModeratorDashboard from "@pages/Moderator/ModeratorDashboard";
+import ModeratorApprovalListings from "@pages/Moderator/ApprovalListings";
+import ModeratorHistoryPage from "@pages/Moderator/ModeratorHistory";
 
 // Manager pages
 import ManagerDashboard from "@pages/Manager/ManagerDashboard";
@@ -44,6 +50,7 @@ import ListingCreate from "@pages/Member/ListingCreate";
 import SearchResults from "@pages/Member/SearchResults";
 import ListingEdit from "@pages/Member/ListingEdit";
 import ManagerListing from "@pages/Member/ManagerListing";
+import MyFavoritesPage from "@pages/Member/MyFavoritesPage/MyFavoritesPage";
 import VnpReturnPage from "@pages/Payment";
 import MemberConsignment from "@/pages/Member/MemberConsignment/MemberConsignment";
 import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate";
@@ -51,6 +58,7 @@ import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate"
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
+
 
 
 
@@ -66,7 +74,7 @@ export const routes = () => [
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
       { path: "search-results", element: <SearchResults /> },
-      { path: "detail/:type/:id", element: <ProductDetail /> },
+      { path: "detail/:id", element: <ProductDetail /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
 
       {
@@ -97,15 +105,40 @@ export const routes = () => [
               },
             ],
           },
+          { path: "my-favorites", element: <MyFavoritesPage /> },
+          { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
+          { path: "staff", element: <StaffDashboard /> },
         ],
       },
     ],
   },
 
-  // STAFF
+  // MODERATOR
   {
     path: "/",
-    element: <LayoutStaff />,
+    element: <LayoutModerator />,
+    children: [
+      {
+        element: <RoleBasedRoute allowedRoles={["moderator"]} />,
+        children: [
+          { path: "moderator", element: <ModeratorDashboard /> },
+          {
+            path: "moderator/approval",
+            element: <ModeratorApprovalListings />,
+          },
+          {
+            path: "moderator/history",
+            element: <ModeratorHistoryPage />,
+          },
+        ],
+      },
+    ],
+  },
+
+  //Staff
+   {
+    path: "/",
+    element: <LayoutStaff/>,
     children: [
       {
         element: <RoleBasedRoute allowedRoles={["staff"]} />,
@@ -124,7 +157,8 @@ export const routes = () => [
           {
             path: "staff/consignment/inspection-schedule",
             element: <StaffInspectionSchedule />,
-          },
+        }
+          
         ],
       },
     ],

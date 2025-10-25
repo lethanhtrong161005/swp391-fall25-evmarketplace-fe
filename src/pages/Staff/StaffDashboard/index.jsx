@@ -1,7 +1,17 @@
+import { Result } from "antd";
+
 /**
  * Trang Dashboard chính của Staff
- * Hiển thị các thông tin và công việc cần xử lý cho nhân viên
+ * Placeholder cho các tính năng mới sẽ được phát triển
  */
-export default function StaffDashboard() {
-  return <div>Staff Dashboard (để trống tạm thời)</div>;
-}
+const StaffDashboard = () => {
+  return (
+    <Result
+      status="info"
+      title="Trang Dành Cho Staff Đang Được Phát Triển"
+      subTitle="Các tính năng mới sẽ sớm được cập nhật tại đây. Vui lòng quay lại sau."
+    />
+  );
+};
+
+export default StaffDashboard;

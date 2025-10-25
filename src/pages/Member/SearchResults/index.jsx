@@ -10,27 +10,16 @@ const { Title, Text } = Typography;
 
 // Transform function để convert API data về format phù hợp với ProductCard
 const transformListingData = (apiItem) => {
-  // Parse mediaListUrl từ string thành array
-  const parseMediaUrls = (mediaListUrl) => {
-    if (!mediaListUrl) return [];
+  // Xử lý thumbnailUrl từ API response mới
+  const getThumbnailUrl = (thumbnailUrl) => {
+    if (!thumbnailUrl) return "";
 
-    // Nếu là array, flatten và split từng string
-    if (Array.isArray(mediaListUrl)) {
-      return mediaListUrl
-        .flatMap((urlString) => urlString.split(","))
-        .map((url) => url.trim())
-        .filter((url) => url && url.startsWith("http"));
+    // Đảm bảo URL hợp lệ
+    if (typeof thumbnailUrl === "string" && thumbnailUrl.startsWith("http")) {
+      return thumbnailUrl.trim();
     }
 
-    // Nếu là string, split trực tiếp
-    if (typeof mediaListUrl === "string") {
-      return mediaListUrl
-        .split(",")
-        .map((url) => url.trim())
-        .filter((url) => url && url.startsWith("http"));
-    }
-
-    return [];
+    return "";
   };
 
   return {
@@ -52,7 +41,8 @@ const transformListingData = (apiItem) => {
     verified: apiItem.isConsigned || false, // Sử dụng isConsigned làm verified
     isConsigned: apiItem.isConsigned || false,
     branchId: null, // API không có field này
-    images: parseMediaUrls(apiItem.mediaListUrl),
+    thumbnailUrl: getThumbnailUrl(apiItem.thumbnailUrl),
+    images: [], // Không còn sử dụng images array cho search results
     createdAt: apiItem.createdAt || new Date().toISOString(),
     sellerName: apiItem.sellerName || "",
   };
@@ -152,7 +142,6 @@ const SearchResults = () => {
 
   const handleProductClick = (product) => {
     // TODO: Navigate to product detail page
-    console.log("Product clicked:", product);
   };
 
   const handleBackToHome = () => {

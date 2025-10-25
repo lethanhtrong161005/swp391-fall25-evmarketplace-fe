@@ -1,86 +1,93 @@
 // src/pages/Member/Home/FeaturedProductSection.jsx
 import React, { useMemo } from "react";
-import { Typography, Row, Col, Empty, Space } from "antd";
-import { ArrowRightOutlined, TrophyOutlined } from "@ant-design/icons";
-import ProductCard from "@components/ProductCard/ProductCard";
+import { Typography, Row, Col, Empty, Space, Button } from "antd";
+import {
+  ArrowRightOutlined,
+  TrophyOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
+
+import ProductCard from "@/components/ProductCard/ProductCard";
+import styles from "./LatestListingsSection.module.scss";
 import ViewAllLink from "@components/ViewAllLinkButton/ViewAllLink";
 
 const { Title } = Typography;
 
 export default function FeaturedProductSection({
   items = [],
-  totalCount, // tổng số sản phẩm nổi bật (không chỉ 8)
+  // totalCount,
   onViewMore,
   onItemClick,
   loading = false,
-  maxItems = 8,
+  maxItems = 10,
   title = "Sản phẩm nổi bật",
 }) {
-  // Lọc & chọn 8 item nổi bật để hiển thị
-  const featured8 = useMemo(
+  // Chỉ lấy BOOSTED và giới hạn 10 item đầu
+  const boostedTop = useMemo(
     () =>
       [...(items || [])]
-        .filter(
-          (x) =>
-            x?.status === "ACTIVE" &&
-            (x?.verified === true || x?.visibility === "BOOSTED")
-        )
-        .sort(
-          (a, b) =>
-            (b.visibility === "BOOSTED") - (a.visibility === "BOOSTED") ||
-            new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-        )
+        .filter((x) => x?.status === "ACTIVE" && x?.visibility === "BOOSTED")
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
         .slice(0, maxItems),
     [items, maxItems]
   );
 
-  // Tổng để hiển thị trên nút xem tất cả
-  const total = typeof totalCount === "number" ? totalCount : items.length;
+  // Tính tổng số listing
+  // const total = typeof totalCount === "number" ? totalCount : boostedTop.length;
 
   return (
     <section style={{ margin: "48px 0" }}>
-      <Space
-        align="center"
-        style={{ width: "100%", justifyContent: "space-between" }}
-      >
-        <Title level={2} style={{ margin: 0 }}>
-          <TrophyOutlined style={{ marginRight: 8, color: "#faad14" }} />
-          {title}
-        </Title>
+      <Title level={2} style={{ margin: 0, marginBottom: 12 }}>
+        <TrophyOutlined style={{ marginRight: 8, color: "#faad14" }} />
+        {title}
+      </Title>
 
-        <ViewAllLink
-          count={total}
-          label="Xem tất cả"
-          icon={<ArrowRightOutlined />}
-          onClick={onViewMore}
+      {boostedTop.length > 0 ? (
+        <div className={styles.sliderWrap}>
+          <Button
+            shape="circle"
+            size="large"
+            icon={<LeftOutlined />}
+            className={styles.navBtn}
+            style={{ visibility: "hidden" }}
+          />
+          <div className={styles.grid5x}>
+            {boostedTop.map((item) => (
+              <div key={item.id} className={styles.gridItem}>
+                <ProductCard
+                  listing={item}
+                  onClick={onItemClick}
+                  size="default"
+                />
+              </div>
+            ))}
+          </div>
+          <Button
+            shape="circle"
+            size="large"
+            icon={<RightOutlined />}
+            className={styles.navBtn}
+            style={{ visibility: "hidden" }}
+          />
+        </div>
+      ) : (
+        <Empty
+          description={
+            <span>
+              {loading
+                ? "Đang tải dữ liệu sản phẩm nổi bật..."
+                : "Chưa có sản phẩm nổi bật."}
+            </span>
+          }
         />
-      </Space>
+      )}
 
-      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-        {featured8.length > 0 ? (
-          featured8.map((item) => (
-            <Col key={item.id} xs={24} sm={12} md={8} lg={6}>
-              <ProductCard
-                listing={item}
-                onClick={onItemClick}
-                size="default"
-              />
-            </Col>
-          ))
-        ) : (
-          <Col span={24}>
-            <Empty
-              description={
-                <span>
-                  {loading
-                    ? "Đang tải dữ liệu sản phẩm nổi bật..."
-                    : "Chưa có sản phẩm nổi bật (đã thẩm định hoặc được BOOST)."}
-                </span>
-              }
-            />
-          </Col>
-        )}
-      </Row>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
+        <Button type="link" onClick={onViewMore} icon={<ArrowRightOutlined />}>
+          Xem thêm
+        </Button>
+      </div>
     </section>
   );
 }

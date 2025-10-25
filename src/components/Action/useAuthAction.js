@@ -8,13 +8,13 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [redirectAfterLogin, setRedirectAfterLogin] = useState(null);
   const [openLogin, setOpenLogin] = useState(false);
-  
+
   const handleLoginSubmit = async (dto) => {
     const result = await login(dto);
     if (!result) return false;
 
     setTimeout(() => {
-      if(redirectAfterLogin) {
+      if (redirectAfterLogin) {
         navigate(redirectAfterLogin, { replace: true });
         setRedirectAfterLogin(null);
       } else {
@@ -32,14 +32,18 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
       messageApi.info(messageText);
       setOpenLogin(true);
     }
-  }
+  };
 
- const getMenuItems = () => {
+  const getMenuItems = () => {
     const items = [{ key: "infouser", label: "Hồ sơ", path: "/infouser" }];
     if (hasDashboardAccess(user?.role)) {
       const dashboardPath = getDashboardPath(user?.role);
       if (dashboardPath)
-        items.unshift({ key: "dashboard", label: "Dashboard", path: dashboardPath });
+        items.unshift({
+          key: "dashboard",
+          label: "Dashboard",
+          path: dashboardPath,
+        });
     }
     items.push({ key: "logout", label: "Đăng xuất" });
     return items;
@@ -56,7 +60,7 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
     }
   };
 
-   return {
+  return {
     isLoggedIn,
     user,
     contextHolder,
@@ -70,10 +74,6 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
     getMenuItems,
     handleMenuClick,
     login,
-    logout
+    logout,
   };
 };
-
-
-
-

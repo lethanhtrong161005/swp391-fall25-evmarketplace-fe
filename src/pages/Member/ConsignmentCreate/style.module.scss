@@ -1,17 +1,13 @@
 .wrapper {
-  padding: 16px 24px 48px;
-    background: #f5f7fa;
-    min-height: 100%;
+  padding: 24px;
+  background: #f5f7fa;
+  min-height: 100vh;
 
   .card {
-    max-width: 1200px;
+    max-width: 1024px;
     margin: 0 auto;
+    background: #fff;
     border-radius: 12px;
-  }
-
-  .breadcrumb {
-    max-width: 1200px;
-    margin: 0 auto 8px;
   }
 
   .selectType {

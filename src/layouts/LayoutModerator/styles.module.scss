@@ -1,0 +1,19 @@
+.root { 
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.content {
+  flex: 1;
+  margin-left: 240px; 
+  min-height: 100vh;
+  padding: 16px;
+  overflow-y: auto;
+  width: calc(100vw - 240px); 
+}
+
+.inner { 
+  padding: 16px; 
+  border-radius: 8px; 
+}
