@@ -6,9 +6,7 @@ import LayoutAdmin from "@layouts/LayoutAdmin";
 import LayoutStaff from "@layouts/LayoutStaff";
 import LayoutManager from "@layouts/LayoutManager";
 import LayoutInspector from "@layouts/LayoutInspector";
-import ManagerConsignment from "@pages/Member/ManagerConsignment/ManagerConsignment";
 import ConsignmentCreate from "@pages/Member/ConsignmentCreate/ConsignmentCreate";
-
 
 // Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
@@ -23,9 +21,14 @@ import ProductBatteryManagement from "@pages/Admin/ProductBatteryManagement/Prod
 import StaffDashboard from "@pages/Staff/StaffDashboard";
 import ManageListingPage from "@pages/Staff/ManageListing";
 import ManageListingDetail from "@pages/Staff/ManageListingDetail";
+import StaffConsignmentsManagement from "@/pages/Staff/StaffConsignmentsManagement/StaffConsignmentsManagement";
+import StaffConsignmentsConsider from "@/pages/Staff/StaffConsignmentsConsider/StaffConsignmentsConsider";
+import StaffInspectionSchedule from "@/pages/Staff/StaffInspectionSchedule/StaffInspectionSchedule";
 
 // Manager pages
 import ManagerDashboard from "@pages/Manager/ManagerDashboard";
+import ManagerConsigmentsAssign from "@/pages/Manager/ManagerConsignmentsAssign/ManagerConsignmentsAssign";
+import ManagerConsigmentsManagement from "@/pages/Manager/ManagerConsignmentsManagement/ManagerConsignmentsManagement";
 
 // Inspector pages
 import InspectorDashboard from "@pages/Inspector/InspectorDashboard";
@@ -42,16 +45,22 @@ import SearchResults from "@pages/Member/SearchResults";
 import ListingEdit from "@pages/Member/ListingEdit";
 import ManagerListing from "@pages/Member/ManagerListing";
 import VnpReturnPage from "@pages/Payment";
+import MemberConsignment from "@/pages/Member/MemberConsignment/MemberConsignment";
+import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate";
 
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
 
 
+
+
+
 export const routes = () => [
   {
     path: "/",
     element: <LayoutDefault />,
+    breadcrumb: "Trang chủ",
     children: [
       { index: true, element: <HomeWrapper /> },
       { path: "vehicle", element: <Vehicle /> },
@@ -68,8 +77,26 @@ export const routes = () => [
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
           { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
-          { path: "consignment", element: <ManagerConsignment /> },
-          { path: "consignment/new", element: <ConsignmentCreate /> },
+          {
+            path: "consignment",
+            breadcrumb: "Ký gửi",
+            children: [
+              {
+                index: true,
+                element: <MemberConsignment />,
+              },
+              {
+                path: "new",
+                element: <ConsignmentForm mode="create" />,
+                breadcrumb: "Tạo yêu cầu ký gửi",
+              },
+              {
+                path: "edit/:id",
+                element: <ConsignmentForm mode="update" />,
+                breadcrumb: "Chỉnh sửa yêu cầu ký gửi",
+              },
+            ],
+          },
         ],
       },
     ],
@@ -86,6 +113,18 @@ export const routes = () => [
           { path: "staff", element: <StaffDashboard /> },
           { path: "staff/listings", element: <ManageListingPage /> },
           { path: "staff/listings/:id", element: <ManageListingDetail /> },
+          {
+            path: "staff/consignment/management",
+            element: <StaffConsignmentsManagement />,
+          },
+          {
+            path: "staff/consignment/consider",
+            element: <StaffConsignmentsConsider />,
+          },
+          {
+            path: "staff/consignment/inspection-schedule",
+            element: <StaffInspectionSchedule />,
+          },
         ],
       },
     ],
@@ -98,7 +137,17 @@ export const routes = () => [
     children: [
       {
         element: <RoleBasedRoute allowedRoles={["manager"]} />,
-        children: [{ path: "manager", element: <ManagerDashboard /> }],
+        children: [
+          { path: "manager", element: <ManagerDashboard /> },
+          {
+            path: "/manager/consignment/assign",
+            element: <ManagerConsigmentsAssign />,
+          },
+          {
+            path: "/manager/consignment/management",
+            element: <ManagerConsigmentsManagement />,
+          },
+        ],
       },
     ],
   },

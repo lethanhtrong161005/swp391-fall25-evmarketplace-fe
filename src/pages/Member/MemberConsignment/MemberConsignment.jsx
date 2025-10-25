@@ -1,25 +1,38 @@
-import React from "react";
-import { Breadcrumb, Card, Skeleton } from "antd";
+import React, { useState } from "react";
+import { Card, Skeleton } from "antd";
 import ProfileBar from "../ManagerListing/ProfileBar";
 import SearchActions from "../ManagerListing/SearchActions";
 import EmptyState from "../ManagerListing/EmptyState";
 import StatusTabs from "../ManagerListing/StatusTabs";
 import ConsignmentTable from "./ConsignmentTable/ConsingmentTable";
 import ConsignmentDetailModal from "./ConsigmentDetailModal/ConsignmentDetailModal";
-import useManagerConsignment from "./useManagerConsignment";
+import useManagerConsignment from "./useMemberConsignment.js";
 import styles from "../ManagerListing/styles.module.scss";
+import DynamicBreadcrumb from "../../../components/Breadcrumb/Breadcrumb";
+import CancelConsignmentModal from "./ConsignmentCancelModal/ConsignmentCancelModal.jsx";
+import InspectionScheduleModal from "./InspectionScheduleModal/InspectionScheduleModal.jsx";
 
 const tabs = [
-  { key: "SUBMITTED", label: "Đã gửi yêu cầu", statuses: ["SUBMITTED"] },
-  { key: "SCHEDULE_GROUP", label: "Lên lịch", statuses: ["SCHEDULING", "SCHEDULED"] },
+  { key: "SUBMITTED", label: "Đã gửi", statuses: ["SUBMITTED"] },
+  { key: "SCHEDULING", label: "Đã duyệt", statuses: ["SCHEDULING"] },
+  { key: "SCHEDULED", label: "Đã lên lịch", statuses: ["SCHEDULED"] },
   { key: "RESCHEDULED", label: "Hẹn lại", statuses: ["RESCHEDULED"] },
-  { key: "INSPECTION_GROUP", label: "Kiểm định", statuses: ["INSPECTING", "INSPECTED_PASS", "INSPECTED_FAIL"] },
-  { key: "REQUEST_REJECTED", label: "Bị từ chối", statuses: ["REQUEST_REJECTED"] },
+  {
+    key: "INSPECTION_GROUP",
+    label: "Kiểm định",
+    statuses: ["INSPECTING", "INSPECTED_PASS", "INSPECTED_FAIL"],
+  },
+  {
+    key: "REQUEST_REJECTED",
+    label: "Bị từ chối",
+    statuses: ["REQUEST_REJECTED"],
+  },
   { key: "FINISHED", label: "Hoàn thành", statuses: ["FINISHED"] },
   { key: "EXPIRED", label: "Hết hạn", statuses: ["EXPIRED"] },
+  { key: "CANCELLED", label: "Đã hủy", statuses: ["CANCELLED"] },
 ];
 
-const ConsignmentManager = () => {
+const MemberConsignment = () => {
   const {
     loading,
     consignments,
@@ -32,16 +45,31 @@ const ConsignmentManager = () => {
     setActiveTab,
     counts,
     goCreateConsignment,
+    setCancelId,
+    handleCancel,
+    handleViewSchedule,
+    scheduleData,
+    openScheduleModal,
+    loadingSchedule,
+    closeScheduleModal,
   } = useManagerConsignment(tabs);
 
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
+  const handleOpenCancelModal = (id) => {
+    setCancelId(id);
+    setShowCancelModal(true);
+  };
+
+  const handleConfirmCancel = async (reason) => {
+    await handleCancel(reason);
+    setShowCancelModal(false);
+  };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.breadcrumb}>
-        <Breadcrumb
-          items={[{ title: "ReEV", href: "/" }, { title: "Quản lý ký gửi" }]}
-        />
+        <DynamicBreadcrumb />
       </div>
 
       <Card className={styles.card} bordered={false}>
@@ -69,6 +97,8 @@ const ConsignmentManager = () => {
             onChange={onChangeTable}
             loading={loading}
             onView={onViewDetail}
+            setCancelId={handleOpenCancelModal}
+            onViewSchedule={handleViewSchedule} 
           />
         ) : (
           <EmptyState
@@ -79,9 +109,26 @@ const ConsignmentManager = () => {
         )}
       </Card>
 
+      <CancelConsignmentModal
+        open={showCancelModal}
+        onCancel={() => {
+          setShowCancelModal(false);
+          setCancelId(null);
+        }}
+        onConfirm={handleConfirmCancel}
+        loading={loading}
+      />
+
       <ConsignmentDetailModal item={selectedItem} onClose={onCloseDetail} />
+
+      <InspectionScheduleModal
+        open={openScheduleModal}
+        onClose={closeScheduleModal}
+        data={scheduleData}
+        loading={loadingSchedule}
+      />
     </div>
   );
 };
 
-export default ConsignmentManager;
+export default MemberConsignment;

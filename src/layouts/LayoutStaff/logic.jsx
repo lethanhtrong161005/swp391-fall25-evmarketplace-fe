@@ -17,6 +17,28 @@ export function useStaffLayout() {
       label: "Quản lý tin đăng",
       path: "/staff/listings",
     },
+    {
+      key: "consignment",
+      icon: <FileTextOutlined />,
+      label: "Quản lý ký gửi",
+      children: [
+        {
+          key: "consignment/management",
+          label: "Danh sách ký gửi",
+          path: "/staff/consignment/management",
+        },
+        {
+          key: "consignment/consider",
+          label: "Phê duyệt ký gửi",
+          path: "/staff/consignment/consider",
+        },
+         {
+          key: "consignment/inspection-schedule",
+          label: "Lịch hẹn kiểm định",
+          path: "/staff/consignment/inspection-schedule",
+        },
+      ],
+    },
   ];
 
   // Mock notifications for staff

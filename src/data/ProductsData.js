@@ -277,7 +277,13 @@ const productsData = [
     city: "Cầu Giấy",
     status: "ACTIVE", // ✅ sửa lại
     verified: true,
-    images: ["https://picsum.photos/seed/vf-e34/600/400"],
+    images: [
+      "https://picsum.photos/seed/vf-e34/600/400",
+      "https://picsum.photos/seed/vf-e34/600/400",
+      "https://picsum.photos/seed/vf-e34/600/400",
+      "https://picsum.photos/seed/vf-e34/600/400",
+      "https://picsum.photos/seed/vf-e34/600/400",
+    ],
     createdAt: "2025-09-10T12:00:00.000Z",
     seller: { id: "u1", fullName: "Nguyễn Văn A", phone: "0987654321" },
     listingExtra: {

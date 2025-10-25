@@ -1,0 +1,29 @@
+.breadcrumbWrapper {
+  margin: 12px 0;
+  font-size: 14px;
+
+  :global(.ant-breadcrumb-link) {
+    transition: color 0.2s ease-in-out;
+  }
+
+  .link {
+    color: #595959; 
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+      color: #1677ff; 
+    }
+  }
+
+  .active {
+    color: #1677ff;
+    font-weight: 600;
+    cursor: default;
+  }
+
+  :global(.ant-breadcrumb-separator) {
+    color: #bfbfbf;
+    margin: 0 8px;
+  }
+}

@@ -29,10 +29,22 @@ export function useLayoutManager() {
       path: "/manager/listings",
     },
     {
-      key: "approval",
+      key: "consgignment",
       icon: <CheckCircleOutlined />,
-      label: "Duyệt tin đăng",
-      path: "/manager/approval",
+      label: "Quản lí ký gửi ",
+      path: "/manager/consignment",
+      children: [
+        {
+          key: "consignment/management",
+          label: "Danh sách ký gửi",
+          path: "/manager/consignment/management",
+        },
+        {
+          key: "consignment/assign",
+          label: "Phân công yêu cầu",
+          path: "/manager/consignment/assign",
+        },
+      ],
     },
     {
       key: "reports",

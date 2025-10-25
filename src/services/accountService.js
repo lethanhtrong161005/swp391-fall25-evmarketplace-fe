@@ -265,3 +265,9 @@ export const getAccountActivityLogs = async (accountId, params = {}) => {
 
   throw new Error(res.data?.message || "Lỗi khi tải nhật ký hoạt động");
 };
+
+// Manager get account staff
+export const getStaffOfBranch = async (branchId) => {
+  const res = await api.get(`/api/manager/branches/${branchId}/accounts/staff`);
+  return res.data;
+};

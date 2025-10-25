@@ -1,20 +1,33 @@
 import React from "react";
-import { Table, Button, Tag } from "antd";
+import { Table, Button, Tag, Space } from "antd";
 
-const ConsignmentTable = ({ items, loading, pagination, onChange, onView }) => {
+const StaffConsManageTable = ({
+  items,
+  loading,
+  pagination,
+  onChange,
+  onView,
+  // setCancelId,
+}) => {
   const columns = [
-    { title: "Loại", dataIndex: "itemType", key: "itemType" },
-    { title: "Model", dataIndex: "model", key: "model" },
+    {
+      title: "Loại",
+      dataIndex: "itemType",
+      key: "itemType",
+    },
+    { title: "Model", dataIndex: "model", key: "model", align: "left" },
     { title: "Năm SX", dataIndex: "year", key: "year", align: "center" },
     {
       title: "Chi nhánh ưu tiên",
       dataIndex: "preferredBranchName",
       key: "preferredBranchName",
+      align: "left",
     },
     {
       title: "Trạng thái",
       dataIndex: "statusLabel",
       key: "status",
+      align: "center",
       render: (_, record) => (
         <Tag color={record.statusColor}>{record.statusLabel}</Tag>
       ),
@@ -23,22 +36,20 @@ const ConsignmentTable = ({ items, loading, pagination, onChange, onView }) => {
       title: "Ngày tạo",
       dataIndex: "createdAt",
       key: "createdAt",
+      align: "right",
       render: (v) => new Date(v).toLocaleDateString("vi-VN"),
-    },
-    {
-      title: "Thao tác",
-      key: "actions",
-      render: (_, record) => (
-        <Button type="link" onClick={() => onView(record)}>
-          Xem chi tiết
-        </Button>
-      ),
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     },
   ];
 
   return (
     <Table
+      className="customTable"
       rowKey="id"
+      onRow={(record) => ({
+        onClick: () => onView(record),
+        style: { cursor: "pointer" },
+      })}
       columns={columns}
       dataSource={items}
       loading={loading}
@@ -48,4 +59,4 @@ const ConsignmentTable = ({ items, loading, pagination, onChange, onView }) => {
   );
 };
 
-export default ConsignmentTable;
+export default StaffConsManageTable;

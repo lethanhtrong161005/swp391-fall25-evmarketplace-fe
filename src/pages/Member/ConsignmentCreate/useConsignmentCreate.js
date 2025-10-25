@@ -1,12 +1,21 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Form, message } from "antd";
-import { addConsignment } from "../../../services/consigmentService";
+import {
+  addConsignment,
+  updateConsignmentRequest,
+} from "../../../services/consigmentService";
 import { getAllCategoryDetail } from "../../../services/categoryService";
 
-export default function useConsignmentCreate() {
+export default function useConsignmentCreate(
+  mode = "create",
+  initialData = null
+) {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [msg, contextHolder] = message.useMessage();
 
+  // ====== FETCH TAXONOMY (category, brand, model) ======
   const [taxLoading, setTaxLoading] = useState(false);
   const [tax, setTax] = useState({
     categoryOptions: [],
@@ -77,19 +86,48 @@ export default function useConsignmentCreate() {
       mountedRef.current = false;
     };
   }, []);
-  const safeSetSubmitting = (v) => {
-    if (mountedRef.current) setSubmitting(v);
-  };
+  const safeSetSubmitting = (v) => mountedRef.current && setSubmitting(v);
 
   const itemType = Form.useWatch("itemType", form);
   const categoryId = Form.useWatch("categoryId", form);
-
   const isBattery = itemType === "BATTERY";
 
   const selectedCategory = useMemo(
     () => (tax?.categoryOptions || []).find((c) => c.value === categoryId),
     [tax, categoryId]
   );
+
+  useEffect(() => {
+    if (!initialData) return;
+    const imageFiles =
+      initialData.mediaUrls?.map((url, index) => ({
+        uid: String(index),
+        name: url.split("/").pop(),
+        status: "done",
+        url,
+      })) || [];
+
+    form.setFieldsValue({
+      itemType: initialData.itemType,
+
+      category: initialData.category, 
+      brand_id: initialData.brand, 
+      model_id: initialData.model, 
+
+      year: initialData.year,
+      ownerExpectedPrice: initialData.ownerExpectedPrice,
+
+      mileage_km: initialData.mileageKm,
+      battery_capacity_kwh: initialData.batteryCapacityKwh,
+      soh_percent: initialData.sohPercent,
+
+      images: imageFiles,
+      videos: [],
+
+      note: initialData.note || "",
+      preferredBranchId: null, 
+    });
+  }, [initialData, form]);
 
   const handleSubmit = useCallback(async () => {
     if (submitting) return;
@@ -99,9 +137,9 @@ export default function useConsignmentCreate() {
 
       const payload = {
         itemType: values.itemType,
-        categoryId: values.category,        
-        brandId: values.brand_id || null,   
-        modelId: values.model_id || null,   
+        categoryId: values.category,
+        brandId: values.brand_id || null,
+        modelId: values.model_id || null,
         brand: values.brand || "",
         model: values.model || "",
         year: values.year,
@@ -118,22 +156,44 @@ export default function useConsignmentCreate() {
         videos: values.videos?.map((f) => f.originFileObj),
       };
 
-      const res = await addConsignment(payload, files);
-
-      if (res?.success) {
-        msg.success("Gửi yêu cầu ký gửi thành công!");
-        form.resetFields();
+      let res;
+      if (mode === "create") {
+        res = await addConsignment(payload, files);
       } else {
-        msg.error(res?.message || "Không thể gửi ký gửi!");
+        const requestId = initialData?.id || values?.id;
+        if (!requestId) throw new Error("Thiếu ID ký gửi cần cập nhật!");
+        res = await updateConsignmentRequest(
+          requestId,
+          payload,
+          files.images,
+          files.videos
+        );
+      }
+
+      if (res?.success === true || res?.status === 200) {
+        msg.success(
+          mode === "create"
+            ? "Gửi yêu cầu ký gửi thành công!"
+            : "Cập nhật ký gửi thành công!"
+        );
+        if (mode === "create") {
+          msg.success("Tạo yêu cầu ký gửi thành công!");
+          setTimeout(() => navigate("/consignment"), 800);
+        } else {
+          msg.success("Cập nhật yêu cầu ký gửi thành công!");
+          setTimeout(() => navigate("/consignment"), 800);
+        }
+      } else {
+        msg.error(res?.message || "Không thể xử lý yêu cầu!");
       }
     } catch (e) {
       if (e?.errorFields)
         msg.error("Vui lòng điền đầy đủ các trường bắt buộc.");
-      else msg.error(e?.message || "Lỗi khi gửi ký gửi.");
+      else msg.error(e?.message || "Lỗi khi gửi dữ liệu.");
     } finally {
       safeSetSubmitting(false);
     }
-  }, [form, msg, submitting]);
+  }, [form, msg, submitting, mode, initialData]);
 
   return {
     form,
@@ -144,6 +204,6 @@ export default function useConsignmentCreate() {
     isBattery,
     submitting,
     handleSubmit,
-    selectedCategory
+    selectedCategory,
   };
 }

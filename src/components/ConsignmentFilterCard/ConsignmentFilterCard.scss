@@ -1,0 +1,41 @@
+.consignment-filter-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.filter-card-item {
+  flex: 1 1 180px;
+  min-width: 150px;
+  background: #fff;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  padding: 14px 20px;
+  transition: all 0.25s ease;
+  font-weight: 500;
+  color: #333;
+  user-select: none;
+
+  &:hover {
+    border-color: #69b1ff;
+    box-shadow: 0 0 6px rgba(22, 119, 255, 0.15);
+  }
+
+  &.active {
+    border-color: #1677ff;
+    color: #1677ff;
+    box-shadow: none;
+  }
+
+  .filter-icon {
+    margin-bottom: 6px;
+    font-size: 20px;
+  }
+
+  .filter-label {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+}
