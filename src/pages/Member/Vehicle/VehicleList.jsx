@@ -12,22 +12,7 @@ const VehicleList = ({ listings, onClick }) => {
     if (onClick) {
       onClick(listing);
     } else if (listing?.id) {
-      let type = "vehicle"; // mặc định
-
-      const cat = listing.category?.toUpperCase();
-      if (cat === "BATTERY") {
-        type = "battery";
-      } else if (
-        cat === "EV_CAR" ||
-        cat === "E_MOTORBIKE" ||
-        cat === "E_BIKE"
-      ) {
-        type = "vehicle";
-      } else {
-        console.warn("Category không xác định:", cat);
-      }
-
-      navigate(`/detail/${type}/${listing.id}`);
+      navigate(`/detail/${listing.id}`);
     }
   };
 

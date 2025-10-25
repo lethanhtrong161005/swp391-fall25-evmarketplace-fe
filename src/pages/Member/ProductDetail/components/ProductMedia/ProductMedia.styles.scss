@@ -1,0 +1,225 @@
+// src/pages/Member/ProductDetail/components/ProductMedia/ProductMedia.styles.scss
+
+// =============================================================================
+// VARIABLES & MIXINS
+// =============================================================================
+
+// Colors
+$primary-color: #1890ff;
+$white: #fff;
+$black: #000;
+$gray-light: #f8f9fa;
+$gray-medium: #f5f5f5;
+$gray-dark: #8c8c8c;
+$gray-darker: #d9d9d9;
+$gray-border: rgba(0, 0, 0, 0.1);
+$shadow-light: rgba(0, 0, 0, 0.1);
+$shadow-medium: rgba(0, 0, 0, 0.15);
+$shadow-dark: rgba(0, 0, 0, 0.2);
+$overlay-dark: rgba(0, 0, 0, 0.8);
+$loading-overlay: rgba(255, 255, 255, 0.9);
+
+// Spacing
+$spacing-xs: 6px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 24px;
+
+// Sizes
+$nav-btn-size: 48px;
+$nav-btn-size-mobile: 40px;
+$dot-size: 8px;
+$icon-size-large: 64px;
+$icon-size-medium: 24px;
+$icon-size-small: 18px;
+$icon-size-mobile: 16px;
+
+// Border radius
+$border-radius-sm: 6px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+
+// Transitions
+$transition-fast: 0.3s ease;
+$transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@mixin button-hover-effect {
+  &:hover {
+    background: rgba($white, 1);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 12px $shadow-dark;
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+}
+
+// =============================================================================
+// MAIN COMPONENT
+// =============================================================================
+
+.product-media {
+  width: 100%;
+  position: relative;
+
+  // Container
+  &__container {
+    position: relative;
+    width: 100%;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    box-shadow: 0 2px 8px $shadow-light;
+    background: $white;
+    border: 1px solid #e8e8e8; // Border nhẹ như Chợ Tốt
+    aspect-ratio: 4/3;
+    transition: box-shadow $transition-smooth;
+
+    &:hover {
+      box-shadow: 0 4px 16px $shadow-medium;
+    }
+  }
+
+  // Loading overlay
+  &__loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    @include flex-center;
+    background: $loading-overlay;
+    z-index: 10;
+    backdrop-filter: blur(2px);
+  }
+
+  // Carousel
+  &__carousel {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .ant-carousel-content {
+      height: 100%;
+    }
+
+    // Ẩn dots vì dùng custom counter
+    .ant-carousel-dots {
+      display: none !important;
+    }
+  }
+
+  // Carousel Content
+  .ant-carousel-content {
+    height: 100%;
+  }
+
+  // Focus styles for accessibility
+  &:focus-within {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+
+  // Override Ant Design styles để tránh xung đột
+  .ant-carousel {
+    .ant-carousel-dots {
+      // Đảm bảo dots không bị ẩn bởi CSS khác
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+  }
+
+  // Đảm bảo Image component không gây xung đột
+  .ant-image {
+    .ant-image-mask {
+      display: none !important;
+    }
+    
+    .ant-image-placeholder {
+      display: none !important;
+    }
+  }
+
+  // =============================================================================
+  // RESPONSIVE DESIGN
+  // =============================================================================
+
+  @media (max-width: 768px) {
+    &__container {
+      border-radius: $border-radius-md;
+      aspect-ratio: 16/9;
+    }
+
+    &__loading-overlay {
+      .ant-spin {
+        .ant-spin-dot {
+          font-size: 24px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__container {
+      border-radius: $border-radius-sm;
+    }
+
+    &__loading-overlay {
+      .ant-spin {
+        .ant-spin-dot {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// ANIMATIONS
+// =============================================================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Apply animations
+.product-media {
+  animation: fadeIn 0.5s ease-out;
+
+  &__container {
+    animation: slideInUp 0.6s ease-out;
+  }
+}

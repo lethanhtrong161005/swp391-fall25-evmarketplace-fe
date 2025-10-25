@@ -1,0 +1,356 @@
+// src/pages/Member/ProductDetail/components/ProductInfo/ProductInfo.styles.scss
+.product-info {
+  padding: 24px;
+
+  // Header với title và nút Lưu
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    margin: 0 !important;
+    font-size: 28px;
+    font-weight: 800;
+    color: #262626;
+    line-height: 1.3;
+    flex: 1;
+    margin-right: 16px !important;
+  }
+
+  &__save-btn {
+    background: white;
+    border: 1px solid #d9d9d9;
+    color: #333;
+    border-radius: 6px;
+    height: 36px;
+    padding: 0 12px;
+    font-size: 14px;
+    font-weight: 500;
+    flex-shrink: 0;
+
+    &:hover {
+      background: #f5f5f5;
+      border-color: #bfbfbf;
+      color: #333;
+    }
+
+    &.ant-btn-primary {
+      background: #ff4d4f;
+      border-color: #ff4d4f;
+      color: white;
+
+      &:hover {
+        background: #d9363e;
+        border-color: #d9363e;
+        color: white;
+      }
+    }
+  }
+
+  // Thông tin chi tiết sản phẩm
+  &__details {
+    margin-bottom: 16px;
+  }
+
+  &__detail-text {
+    font-size: 14px;
+    color: #8c8c8c;
+    line-height: 1.4;
+  }
+
+  // Giá tiền
+  &__price-section {
+    margin-bottom: 20px;
+  }
+
+  &__price {
+    margin: 0 0 8px 0 !important;
+    font-size: 34px;
+    font-weight: 800;
+    color: #ff4d4f;
+    line-height: 1.2;
+  }
+
+  &__installment {
+    font-size: 13px;
+    color: #8c8c8c;
+  }
+
+  // Nút liên hệ
+  &__contact-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  &__contact-btn {
+    flex: 1;
+    height: 48px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    &--chat {
+      background: #f0f0f0;
+      border-color: #d9d9d9;
+      color: #333;
+
+      &:hover {
+        background: #e6e6e6;
+        border-color: #bfbfbf;
+        color: #333;
+      }
+    }
+
+    &--phone {
+      background: #faad14;
+      border-color: #faad14;
+      color: #fff;
+
+      &:hover {
+        background: #d48806;
+        border-color: #d48806;
+        color: #fff;
+      }
+    }
+  }
+
+  &__revealed-contact {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__contact-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+    border-radius: 8px;
+  }
+
+  &__contact-icon {
+    color: #52c41a;
+    font-size: 16px;
+  }
+
+  &__contact-text {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+    color: #262626;
+  }
+
+  &__copy-btn {
+    color: #52c41a;
+    padding: 4px;
+    height: auto;
+
+    &:hover {
+      color: #389e0d;
+      background: #f6ffed;
+    }
+  }
+
+  // Thông tin địa điểm và thời gian
+  &__meta {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__location {
+    color: #8c8c8c;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__time {
+    color: #8c8c8c;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  // Thông tin người bán
+  &__seller-card {
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    background: #fafafa;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #f5f5f5;
+      border-color: #d9d9d9;
+    }
+  }
+
+  &__seller-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__seller-avatar {
+    flex-shrink: 0;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &__seller-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__seller-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  &__seller-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #262626;
+    line-height: 1.3;
+  }
+
+  &__verified-icon {
+    color: #52c41a;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  &__seller-location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  &__seller-location-icon {
+    color: #8c8c8c;
+    font-size: 14px;
+  }
+
+  &__seller-location-text {
+    font-size: 14px;
+    color: #8c8c8c;
+    line-height: 1.4;
+  }
+
+  &__seller-stats {
+    margin-bottom: 0;
+  }
+
+  &__seller-rating {
+    font-size: 13px;
+    color: #8c8c8c;
+    line-height: 1.4;
+  }
+
+  // Chat nhanh
+  &__quick-chat {
+    margin-bottom: 0;
+  }
+
+  &__quick-chat-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #8c8c8c;
+  }
+
+  &__quick-chat-buttons {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  &__quick-chat-btn {
+    background: #f0f0f0;
+    border: 1px solid #d9d9d9;
+    color: #333;
+    border-radius: 16px;
+    height: 32px;
+    padding: 0 12px;
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    &:hover {
+      background: #e6e6e6;
+      border-color: #bfbfbf;
+      color: #333;
+    }
+  }
+
+  &__contact-details {
+    text-align: center;
+    padding: 20px;
+  }
+
+  // Responsive
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    &__title {
+      font-size: 24px;
+    }
+
+    &__price {
+      font-size: 28px;
+    }
+
+    &__contact-btn {
+      height: 44px;
+      font-size: 15px;
+    }
+
+    &__header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+
+    &__save-btn {
+      align-self: flex-end;
+      width: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+
+    &__title {
+      font-size: 20px;
+    }
+
+    &__price {
+      font-size: 24px;
+    }
+
+    &__contact-btn {
+      height: 40px;
+      font-size: 14px;
+    }
+  }
+}

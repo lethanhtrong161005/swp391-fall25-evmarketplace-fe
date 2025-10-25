@@ -18,65 +18,13 @@ export default function SidebarStaff() {
   const location = useLocation();
   const { user, logout } = useAuth();
 
-  // 🟦 Cấu hình menu
+  // 🟦 Cấu hình menu - simplified for future development
   const menuItems = [
     {
       key: "dashboard",
       icon: <DashboardOutlined />,
       label: "Dashboard",
       path: "/staff",
-    },
-    {
-      key: "posts",
-      icon: <FileTextOutlined />,
-      label: "Quản lý đăng tin",
-      path: "/staff/listingmanagement",
-    },
-    {
-      key: "product-management",
-      icon: <AppstoreOutlined />,
-      label: "Quản lý sản phẩm",
-      children: [
-        {
-          key: "category",
-          label: "Quản lý danh mục",
-          path: "/admin/product/category",
-        },
-
-        {
-          key: "brand",
-          label: "Quản lý thương hiệu",
-          path: "/admin/product/brand",
-        },
-
-        {
-          key: "model",
-          label: "Quản lý mẫu mã",
-          path: "/admin/product/model",
-        },
-        {
-          key: "vehicle",
-          label: "Quản lý phương tiện",
-          path: "/admin/product/vehicle",
-        },
-        {
-          key: "battery",
-          label: "Quản lý pin",
-          path: "/admin/product/battery",
-        },
-      ],
-    },
-    {
-      key: "account",
-      icon: <UserOutlined />,
-      label: "Tài khoản",
-      path: "/staff/account",
-    },
-    {
-      key: "settings",
-      icon: <SettingOutlined />,
-      label: "Cài đặt",
-      path: "/staff/settings",
     },
   ];
 

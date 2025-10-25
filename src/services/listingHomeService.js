@@ -107,29 +107,33 @@ export const getTotalListingsCount = async () => {
   }
 };
 
+// Lấy chi tiết listing công khai ở trang Home/Detail
+export const getListingDetail = async (id) => {
+  if (id == null) return null;
+  try {
+    const res = await get(`/api/listing/${id}`);
+    if (res?.success && res?.data) {
+      return transformListingDetail(res.data);
+    }
+    return null;
+  } catch (e) {
+    console.error("Error fetching listing detail:", e);
+    return null;
+  }
+};
+
 // Transform dữ liệu từ API về format phù hợp với component
 const transformListingData = (apiItem) => {
-  // Parse mediaListUrl từ string thành array
-  const parseMediaUrls = (mediaListUrl) => {
-    if (!mediaListUrl) return [];
+  // Xử lý thumbnailUrl từ API response mới
+  const getThumbnailUrl = (thumbnailUrl) => {
+    if (!thumbnailUrl) return "";
 
-    // Nếu là array, flatten và split từng string
-    if (Array.isArray(mediaListUrl)) {
-      return mediaListUrl
-        .flatMap((urlString) => urlString.split(","))
-        .map((url) => url.trim())
-        .filter((url) => url && url.startsWith("http"));
+    // Đảm bảo URL hợp lệ
+    if (typeof thumbnailUrl === "string" && thumbnailUrl.startsWith("http")) {
+      return thumbnailUrl.trim();
     }
 
-    // Nếu là string, split trực tiếp
-    if (typeof mediaListUrl === "string") {
-      return mediaListUrl
-        .split(",")
-        .map((url) => url.trim())
-        .filter((url) => url && url.startsWith("http"));
-    }
-
-    return [];
+    return "";
   };
 
   return {
@@ -156,7 +160,8 @@ const transformListingData = (apiItem) => {
     verified: apiItem.isConsigned || false, // Sử dụng isConsigned làm verified
     isConsigned: apiItem.isConsigned || false,
     branchId: null, // API không có field này
-    images: parseMediaUrls(apiItem.mediaListUrl),
+    thumbnailUrl: getThumbnailUrl(apiItem.thumbnailUrl),
+    images: [], // Không còn sử dụng images array cho listing list
     createdAt: apiItem.createdAt || new Date().toISOString(),
     sellerName: apiItem.sellerName || "",
   };
@@ -213,4 +218,118 @@ const determineCategory = (brand, model) => {
   }
 
   return "EV_CAR"; // Default
+};
+
+// Chuẩn hoá dữ liệu chi tiết cho trang ProductDetail
+const transformListingDetail = (apiData) => {
+  const listing = apiData?.listing || {};
+  const seller = apiData?.sellerId || {};
+  const profile = seller?.profile || {};
+  const productVehicle = apiData?.productVehicle || null;
+  const productBattery = apiData?.productBattery || null;
+  const media = Array.isArray(apiData?.media) ? apiData.media : [];
+
+  const normalizeUrl = (u) => {
+    if (typeof u !== "string") return "";
+    try {
+      const raw = decodeURI(u);
+      return raw.replace(/ /g, "%20");
+    } catch {
+      return String(u).replace(/ /g, "%20");
+    }
+  };
+
+  const images = media
+    .filter((m) => m?.mediaType === "IMAGE" && typeof m?.mediaUrl === "string")
+    .map((m) => normalizeUrl(m.mediaUrl));
+
+  const videos = media
+    .filter((m) => m?.mediaType === "VIDEO" && typeof m?.mediaUrl === "string")
+    .map((m) => normalizeUrl(m.mediaUrl));
+
+  const base = {
+    id: String(listing?.id ?? ""),
+    title:
+      listing?.title ||
+      `${listing?.brand ?? ""} ${listing?.model ?? ""}`.trim(),
+    category:
+      mapCategoryIdToName(listing?.categoryId) ||
+      listing?.categoryName ||
+      "EV_CAR",
+    category_id:
+      typeof listing?.categoryId === "number" ? listing?.categoryId : undefined,
+    brand: listing?.brand || "",
+    model: listing?.model || "",
+    year: listing?.year ?? null,
+    batteryCapacityKwh: listing?.batteryCapacityKwh ?? null,
+    sohPercent: listing?.sohPercent ?? null,
+    mileageKm: listing?.mileageKm ?? null,
+    powerKw: null,
+    price: listing?.price ?? 0,
+    description:
+      typeof listing?.description === "string" ? listing.description : "",
+    province: listing?.province || "",
+    city: listing?.district || "",
+    status: listing?.status || "ACTIVE",
+    visibility: listing?.visibility || "NORMAL",
+    verified: !!listing?.verified,
+    isConsigned: !!listing?.isConsigned,
+    images,
+    videos,
+    createdAt: listing?.updatedAt || new Date().toISOString(),
+    seller: {
+      id: seller?.id,
+      fullName: profile?.fullName || "",
+      avatarUrl: profile?.avatarUrl || "",
+      province: profile?.province || "",
+      addressLine: profile?.addressLine || "",
+      phoneNumber: seller?.phoneNumber,
+      email: seller?.email,
+    },
+    listingExtra: {
+      aiSuggestedPrice: listing?.aiSuggestedPrice,
+      visibility: listing?.visibility,
+    },
+  };
+
+  if (productBattery) {
+    return {
+      ...base,
+      category: "BATTERY",
+      productBattery: {
+        capacityKwh: productBattery?.batteryCapacityKwh,
+        voltage: productBattery?.voltage,
+        weightKg: productBattery?.massKg,
+        dimension: productBattery?.dimensions,
+        chemistry: productBattery?.batteryChemistry,
+      },
+    };
+  }
+
+  return {
+    ...base,
+    category: base.category === "BATTERY" ? "BATTERY" : "EV_CAR",
+    productVehicle: productVehicle
+      ? {
+          brand: productVehicle?.brand,
+          model: productVehicle?.model,
+          releaseYear: productVehicle?.releaseYear,
+          batteryCapacityKwh: productVehicle?.batteryCapacityKwh,
+          motorPowerKw: productVehicle?.motorPowerKw,
+          acChargingKw: productVehicle?.acChargingKw,
+          dcChargingKw: productVehicle?.dcChargingKw,
+          acConnector: productVehicle?.acConnector,
+          dcConnector: productVehicle?.dcConnector,
+        }
+      : null,
+    // Gán các thông số kỹ thuật tổng hợp từ productVehicle nếu có
+    powerKw:
+      productVehicle && productVehicle.motorPowerKw != null
+        ? productVehicle.motorPowerKw
+        : base.powerKw,
+    batteryCapacityKwh:
+      productVehicle && productVehicle.batteryCapacityKwh != null
+        ? productVehicle.batteryCapacityKwh
+        : base.batteryCapacityKwh,
+  };
 };

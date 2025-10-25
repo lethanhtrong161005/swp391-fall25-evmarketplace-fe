@@ -2,6 +2,7 @@
 export const ROLES = {
   MEMBER: "member",
   STAFF: "staff",
+  MODERATOR: "moderator",
   INSPECTOR: "inspector",
   MANAGER: "manager",
   ADMIN: "admin",
@@ -11,6 +12,7 @@ export const ROLES = {
 export const ROLE_LABELS = {
   [ROLES.MEMBER]: "Thành viên",
   [ROLES.STAFF]: "Nhân viên",
+  [ROLES.MODERATOR]: "Kiểm duyệt viên",
   [ROLES.INSPECTOR]: "Kỹ thuật viên",
   [ROLES.MANAGER]: "Quản lý",
   [ROLES.ADMIN]: "Quản trị viên",
@@ -20,6 +22,7 @@ export const ROLE_LABELS = {
 export const ROLE_HIERARCHY = [
   ROLES.MEMBER,
   ROLES.STAFF,
+  ROLES.MODERATOR,
   ROLES.INSPECTOR,
   ROLES.MANAGER,
   ROLES.ADMIN,
@@ -27,9 +30,13 @@ export const ROLE_HIERARCHY = [
 
 // Kiểm tra role có quyền truy cập dashboard không
 export const hasDashboardAccess = (role) => {
-  return [ROLES.STAFF, ROLES.INSPECTOR, ROLES.MANAGER, ROLES.ADMIN].includes(
-    role
-  );
+  return [
+    ROLES.STAFF,
+    ROLES.MODERATOR,
+    ROLES.INSPECTOR,
+    ROLES.MANAGER,
+    ROLES.ADMIN,
+  ].includes(role);
 };
 
 // Lấy dashboard path theo role
@@ -38,9 +45,11 @@ export const getDashboardPath = (role) => {
     case ROLES.ADMIN:
       return "/admin";
     case ROLES.MANAGER:
-      return "/manager"; // Có thể cần tạo layout Manager
+      return "/manager";
     case ROLES.INSPECTOR:
-      return "/inspector"; // Có thể cần tạo layout Inspector
+      return "/inspector";
+    case ROLES.MODERATOR:
+      return "/moderator";
     case ROLES.STAFF:
       return "/staff";
     default:

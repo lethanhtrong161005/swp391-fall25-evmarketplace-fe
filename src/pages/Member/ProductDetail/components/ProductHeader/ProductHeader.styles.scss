@@ -1,0 +1,14 @@
+// src/pages/Member/ProductDetail/components/ProductHeader/ProductHeader.styles.scss
+.product-header {
+  &__back-btn {
+    margin-bottom: 16px;
+    padding: 0;
+    height: auto;
+    font-size: 16px;
+    color: #1890ff;
+    
+    &:hover {
+      color: #40a9ff;
+    }
+  }
+}

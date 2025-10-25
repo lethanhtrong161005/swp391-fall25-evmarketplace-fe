@@ -1,7 +1,12 @@
 // src/pages/Member/Home/FeaturedProductSection.jsx
 import React, { useMemo } from "react";
 import { Typography, Row, Col, Empty, Space, Button } from "antd";
-import { ArrowRightOutlined, TrophyOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  TrophyOutlined,
+  LeftOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
 import ProductCard from "@/components/ProductCard/ProductCard";
 import styles from "./LatestListingsSection.module.scss";
@@ -40,7 +45,13 @@ export default function FeaturedProductSection({
 
       {boostedTop.length > 0 ? (
         <div className={styles.sliderWrap}>
-          <button className={styles.navBtn} style={{ visibility: "hidden" }} />
+          <Button
+            shape="circle"
+            size="large"
+            icon={<LeftOutlined />}
+            className={styles.navBtn}
+            style={{ visibility: "hidden" }}
+          />
           <div className={styles.grid5x}>
             {boostedTop.map((item) => (
               <div key={item.id} className={styles.gridItem}>
@@ -52,7 +63,13 @@ export default function FeaturedProductSection({
               </div>
             ))}
           </div>
-          <button className={styles.navBtn} style={{ visibility: "hidden" }} />
+          <Button
+            shape="circle"
+            size="large"
+            icon={<RightOutlined />}
+            className={styles.navBtn}
+            style={{ visibility: "hidden" }}
+          />
         </div>
       ) : (
         <Empty

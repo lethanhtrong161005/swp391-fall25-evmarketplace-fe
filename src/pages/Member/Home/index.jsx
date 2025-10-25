@@ -6,9 +6,11 @@ import FeaturedProductSection from "./FeaturedProductSection";
 import CTABanner from "./CTABanner";
 import { useHomeData } from "./logic";
 import HeroHeader from "./HeroHeader";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { token } = theme.useToken();
+  const navigate = useNavigate();
   const maxWidth = "var(--home-max-width, 1920px)";
 
   const {
@@ -25,7 +27,10 @@ const Home = () => {
   const handleViewMoreFeatured = () => {
     // TODO: điều hướng tới trang danh sách sản phẩm nổi bật (nếu có)
   };
-  const handleItemClick = () => {};
+  const handleItemClick = (item) => {
+    if (!item) return;
+    navigate(`/detail/${item.id}`);
+  };
   const handleStartBuying = () => {};
   const handleConsignVehicle = () => {};
 
