@@ -20,8 +20,8 @@ import ProductBatteryManagement from "@pages/Admin/ProductBatteryManagement/Prod
 
 // Staff pages
 import StaffDashboard from "@pages/Staff/StaffDashboard";
-import ManageListingPage from "@pages/Staff/ManageListing";
-import ManageListingDetail from "@pages/Staff/ManageListingDetail";
+// import ManageListingPage from "@pages/Staff/ManageListing";
+// import ManageListingDetail from "@pages/Staff/ManageListingDetail";
 import StaffConsignmentsManagement from "@/pages/Staff/StaffConsignmentsManagement/StaffConsignmentsManagement";
 import StaffConsignmentsConsider from "@/pages/Staff/StaffConsignmentsConsider/StaffConsignmentsConsider";
 import StaffInspectionSchedule from "@/pages/Staff/StaffInspectionSchedule/StaffInspectionSchedule";
@@ -58,11 +58,6 @@ import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate"
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
-
-
-
-
-
 
 export const routes = () => [
   {
@@ -136,29 +131,26 @@ export const routes = () => [
   },
 
   //Staff
-   {
-    path: "/",
-    element: <LayoutStaff/>,
+  {
+    path: "/staff/*", // ✅ tách scope riêng
+    element: <LayoutStaff />,
     children: [
       {
         element: <RoleBasedRoute allowedRoles={["staff"]} />,
         children: [
-          { path: "staff", element: <StaffDashboard /> },
-          { path: "staff/listings", element: <ManageListingPage /> },
-          { path: "staff/listings/:id", element: <ManageListingDetail /> },
+          { index: true, element: <StaffDashboard /> }, // /staff
           {
-            path: "staff/consignment/management",
+            path: "consignment/management",
             element: <StaffConsignmentsManagement />,
           },
           {
-            path: "staff/consignment/consider",
+            path: "consignment/consider",
             element: <StaffConsignmentsConsider />,
           },
           {
-            path: "staff/consignment/inspection-schedule",
+            path: "consignment/inspection-schedule",
             element: <StaffInspectionSchedule />,
-        }
-          
+          },
         ],
       },
     ],
@@ -174,11 +166,11 @@ export const routes = () => [
         children: [
           { path: "manager", element: <ManagerDashboard /> },
           {
-            path: "/manager/consignment/assign",
+            path: "manager/consignment/assign",
             element: <ManagerConsigmentsAssign />,
           },
           {
-            path: "/manager/consignment/management",
+            path: "manager/consignment/management",
             element: <ManagerConsigmentsManagement />,
           },
         ],

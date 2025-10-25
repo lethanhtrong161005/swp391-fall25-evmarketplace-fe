@@ -29,7 +29,7 @@ export function useLayoutManager() {
       path: "/manager/listings",
     },
     {
-      key: "consgignment",
+      key: "consignment",
       icon: <CheckCircleOutlined />,
       label: "Quản lí ký gửi ",
       path: "/manager/consignment",

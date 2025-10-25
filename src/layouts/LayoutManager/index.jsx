@@ -14,7 +14,7 @@ const LayoutManager = () => {
     menuItems,
     selectedKeys,
     defaultOpenKeys,
-    notifications,
+    // notifications,
     handleMenuClick,
     handleProfileClick,
     handleLogout,

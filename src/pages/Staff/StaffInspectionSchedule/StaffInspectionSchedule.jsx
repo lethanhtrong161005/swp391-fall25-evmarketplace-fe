@@ -7,13 +7,6 @@ import {INSPECTION_STATUS_COLOR, INSPECTION_STATUS_LABELS} from "../../../utils/
 
 const { Title } = Typography;
 
-const statusColors = {
-  SCHEDULED: "blue",
-  CHECKED_IN: "green",
-  NO_SHOW: "volcano",
-  CANCELLED: "red",
-};
-
 export default function StaffInspectionSchedule() {
   const { schedules, loading, today } = useInspectionSchedule();
 
