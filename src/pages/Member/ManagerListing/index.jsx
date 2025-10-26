@@ -30,7 +30,7 @@ const ManagerListing = () => {
 
             <Card className={styles.card} bordered={false}>
                 <ProfileBar />
-                <SearchActions query={query} onChangeQuery={setQuery} onCreate={goCreateListing} />
+                <SearchActions query={query} onChangeQuery={setQuery} onCreate={goCreateListing} queryHolder="Tìm tin đăng của bạn" queryButtonText="Đăng tin"/>
                 <StatusTabs tabs={tabs} counts={counts} activeKey={activeTab} onChange={(k) => { setActiveTab(k); }} />
 
                 {loading ? (
@@ -50,7 +50,7 @@ const ManagerListing = () => {
                         isTrash={activeTab === "SOFT_DELETED"}
                     />
                 ) : (
-                    <EmptyState onCreate={goCreateListing} />
+                    <EmptyState onCreate={goCreateListing} queryText="tin đăng" queryButtonText="Đăng tin"/>
                 )}
             </Card>
         </div>

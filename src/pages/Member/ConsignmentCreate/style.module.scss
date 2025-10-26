@@ -1,0 +1,48 @@
+.wrapper {
+  padding: 24px;
+  background: #f5f7fa;
+  min-height: 100vh;
+
+  .card {
+    max-width: 1024px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+  }
+
+  .selectType {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #d9d9d9;
+    font-size: 15px;
+  }
+  .ant-form-item-optional {
+    display: none !important;
+  }
+}
+
+.textareaCustom {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  padding: 8px 12px;
+  font-size: 14px;
+
+  &:hover {
+    border-color: #bfbfbf;
+  }
+
+  &:focus {
+    border-color: #1677ff;
+    box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.2);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #bfbfbf;
+  }
+}

@@ -11,6 +11,14 @@ export default function SidebarMenu({
 }) {
   const { menuConfig } = useSidebarMenu(token);
 
+  const buildMenuItems = (items) =>
+    items.map((item) => ({
+      key: item.key,
+      icon: item.icon,
+      label: item.label,
+      children: item.children ? buildMenuItems(item.children) : undefined,
+    }));
+
   return (
     <ConfigProvider theme={{ components: { Menu: menuConfig } }}>
       <Menu
@@ -19,7 +27,7 @@ export default function SidebarMenu({
         defaultOpenKeys={defaultOpenKeys}
         onClick={onClick}
         style={{ background: "transparent", borderInlineEnd: 0, padding: 8 }}
-        items={menuItems}
+        items={buildMenuItems(menuItems)}
       />
     </ConfigProvider>
   );

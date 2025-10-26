@@ -5,8 +5,7 @@ import Sidebar from "@components/Sidebar";
 import { useAuth } from "@hooks/useAuth";
 import { ROLES } from "@config/roles";
 import { useLayoutManager } from "./logic";
-
-const { Content } = Layout;
+import "./LayoutManager.scss";
 
 const LayoutManager = () => {
   const { user } = useAuth();
@@ -15,41 +14,39 @@ const LayoutManager = () => {
     menuItems,
     selectedKeys,
     defaultOpenKeys,
-    notifications,
+    // notifications,
     handleMenuClick,
     handleProfileClick,
     handleLogout,
     handleOpenNotification,
   } = useLayoutManager();
 
-  // Kiểm tra quyền truy cập
   if (user?.role !== ROLES.MANAGER) {
     return <div>Không có quyền truy cập</div>;
   }
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sidebar
-        width={260}
-        theme="light"
-        token={token}
-        user={user}
-        menuItems={menuItems}
-        selectedKeys={selectedKeys}
-        defaultOpenKeys={defaultOpenKeys}
-        onMenuClick={handleMenuClick}
-        onProfileClick={handleProfileClick}
-        onLogout={handleLogout}
-        onOpenNotification={handleOpenNotification}
-      />
-      <Layout>
-        <Content
-          style={{ margin: 0, padding: 0, background: token.colorBgLayout }}
-        >
-          <Outlet />
-        </Content>
-      </Layout>
-    </Layout>
+    <div className="manager-layout">
+      <aside className="sidebar">
+        <Sidebar
+          width={260}
+          theme="light"
+          token={token}
+          user={user}
+          menuItems={menuItems}
+          selectedKeys={selectedKeys}
+          defaultOpenKeys={defaultOpenKeys}
+          onMenuClick={handleMenuClick}
+          onProfileClick={handleProfileClick}
+          onLogout={handleLogout}
+          onOpenNotification={handleOpenNotification}
+        />
+      </aside>
+
+      <main className="content">
+        <Outlet />
+      </main>
+    </div>
   );
 };
 

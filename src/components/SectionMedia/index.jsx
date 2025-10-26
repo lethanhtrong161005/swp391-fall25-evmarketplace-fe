@@ -24,7 +24,7 @@ export default function SectionMedia({ messageApi }) {
                 <Typography.Paragraph className={styles.subtle}>
                     Xem thêm về{" "}
                     <a href="#" onClick={(e) => e.preventDefault()}>
-                        Quy định đăng tin
+                        Quy định ảnh và video
                     </a>
                 </Typography.Paragraph>
             </div>
