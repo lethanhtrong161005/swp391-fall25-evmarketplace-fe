@@ -1,6 +1,8 @@
 import React from "react";
-import { Button, Dropdown } from "antd";
+import { Button, Dropdown, Avatar, Grid } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+
+const { useBreakpoint } = Grid;
 
 import LoginModal from "@components/Modal/LoginModal";
 import PhoneRegisterModal from "@components/Modal/PhoneRegisterModal";
@@ -9,6 +11,7 @@ import ResetPasswordModal from "@components/Modal/ResetPasswordModal";
 import OtpVerifyModal from "@components/Modal/OtpVerifyModal";
 import RegisterModal from "@components/Modal/RegisterModal";
 import FavoritesDropdown from "@components/FavoritesDropdown/FavoritesDropdown";
+import NotificationCenter from "@components/Notification/NotificationCenter";
 
 import { useHeaderAction } from "./useHeaderAction";
 
@@ -17,6 +20,9 @@ const MANAGE_LISTINGS_PATH = "/my-ads"; // đổi path nếu bạn dùng route k
 const HeaderAction = () => {
   const { auth, otp, register, reset, handleOtpSuccess, handleOtpStart } =
     useHeaderAction();
+
+  const screens = useBreakpoint();
+  const isDesktop = screens.lg;
 
   const {
     isLoggedIn,
@@ -32,12 +38,30 @@ const HeaderAction = () => {
   const menuItems = getMenuItems();
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
 
+  // Avatar logic
+  const avatarSrc = user?.avatar || user?.avatarUrl;
+  const avatarName = displayName;
+
   return (
     <>
-      <div style={{ display: "flex", gap: 8 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "24px", // Khoảng cách lớn giữa các nhóm chức năng
+        }}
+      >
         {contextHolder}
-        {isMember && (
-          <>
+
+        {/* Nhóm Button - Desktop only */}
+        {isDesktop && isMember && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px", // Khoảng cách nhỏ giữa các button
+            }}
+          >
             <Button
               onClick={() =>
                 handleLoginRequire(
@@ -61,26 +85,70 @@ const HeaderAction = () => {
             </Button>
 
             <Button>Ký gửi</Button>
-          </>
+          </div>
         )}
 
-        {isLoggedIn ? (
-          <>
+        {/* Nhóm Icon */}
+        {isLoggedIn && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px", // Khoảng cách nhỏ giữa các icon
+            }}
+          >
+            <NotificationCenter />
             <FavoritesDropdown />
+          </div>
+        )}
+
+        {/* Khối Người dùng */}
+        {isLoggedIn ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <Dropdown
               menu={{ items: menuItems, onClick: handleMenuClick }}
               placement="bottomRight"
               trigger={["click"]}
             >
-              <Button icon={<UserOutlined />} type="text">
-                {displayName}
-              </Button>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  cursor: "pointer",
+                  padding: "4px 8px",
+                  borderRadius: "6px",
+                  transition: "background-color 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "#f5f5f5")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.backgroundColor = "transparent")
+                }
+              >
+                <Avatar src={avatarSrc} icon={<UserOutlined />} size="small">
+                  {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
+                </Avatar>
+                {isDesktop && (
+                  <span style={{ fontSize: "14px", color: "#262626" }}>
+                    {displayName}
+                  </span>
+                )}
+              </div>
             </Dropdown>
-          </>
+          </div>
         ) : (
-          <Button type="primary" onClick={() => auth.setOpenLogin?.(true)}>
-            Đăng nhập
-          </Button>
+          isDesktop && (
+            <Button type="primary" onClick={() => auth.setOpenLogin?.(true)}>
+              Đăng nhập
+            </Button>
+          )
         )}
 
         <LoginModal

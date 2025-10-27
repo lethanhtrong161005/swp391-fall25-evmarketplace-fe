@@ -202,9 +202,8 @@ const FavoritesDropdown = () => {
         type="text"
         icon={<HeartOutlined />}
         className="favorites-dropdown__trigger"
-      >
-        Tin đã lưu
-      </Button>
+        title="Tin đã lưu"
+      />
     </Popover>
   );
 };

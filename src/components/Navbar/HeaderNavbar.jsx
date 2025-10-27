@@ -8,7 +8,6 @@ const items = [
   { key: "home", label: "Trang chủ", path: "/" },
   { key: "vehicle", label: "Phương tiện", path: "/vehicle" },
   { key: "battery", label: "Pin", path: "/battery" },
-  { key: "favorites", label: "Tin đã lưu", path: "/my-favorites" },
 ];
 
 const { useBreakpoint } = Grid;
@@ -20,20 +19,18 @@ const HeaderNavbar = () => {
   const [open, setOpen] = useState(false);
   const screens = useBreakpoint();
 
+  useEffect(() => {
+    // Tìm trong mảng items phần tử có path trùng với URL hiện tại
+    const matchedItem = items.find((item) => item.path === location.pathname);
 
-useEffect(() => {
-  // Tìm trong mảng items phần tử có path trùng với URL hiện tại
-  const matchedItem = items.find((item) => item.path === location.pathname);
+    // Nếu tìm thấy item khớp
+    if (matchedItem) {
+      // Cập nhật state current = key của item đó (để Menu highlight đúng)
+      setCurrent(matchedItem.key);
+    }
 
-  // Nếu tìm thấy item khớp
-  if (matchedItem) {
-    // Cập nhật state current = key của item đó (để Menu highlight đúng)
-    setCurrent(matchedItem.key);
-  }
-
-// useEffect sẽ chạy lại mỗi khi URL (location.pathname) thay đổi
-}, [location.pathname]);
-
+    // useEffect sẽ chạy lại mỗi khi URL (location.pathname) thay đổi
+  }, [location.pathname]);
 
   const onClick = (e) => {
     setCurrent(e.key); // Đánh dấu menu đang chọn
@@ -85,16 +82,37 @@ useEffect(() => {
 
       {/* desktop */}
       {screens.lg && (
-        <>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            gap: "24px",
+          }}
+        >
           <Menu
             mode="horizontal"
             selectedKeys={[current]}
             items={items}
             onClick={onClick}
-            style={{ flex: 1, borderBottom: "none" }}
+            style={{
+              flex: 1,
+              borderBottom: "none",
+              display: "flex",
+              alignItems: "center",
+            }}
           />
-          <HeaderAction />
-        </>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
+            <HeaderAction />
+          </div>
+        </div>
       )}
     </>
   );

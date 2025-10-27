@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <title>WS Notifications – Test Page</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <!-- CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <style>
+        :root {
+            --bg: #0b1020;
+            --panel: #111834;
+            --muted: #6b7280;
+            --ok: #10b981;
+            --bad: #ef4444
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            background: radial-gradient(1200px 600px at 20% -20%, #1b214d, transparent), var(--bg);
+            color: #e5e7eb
+        }
+
+        h1 {
+            margin: 0 0 16px;
+            font-size: 20px
+        }
+
+        .card {
+            background: linear-gradient(180deg, #121a3a, #0f1633);
+            border: 1px solid #1f2a5a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 12px 26px rgba(0, 0, 0, .35)
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1 1 260px;
+            min-width: 240px
+        }
+
+        label {
+            color: #9ca3af;
+            font-size: 12px
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #2a356f;
+            background: #0b1230;
+            color: #e5e7eb;
+            outline: none
+        }
+
+        .btns {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        button {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #263165;
+            background: #17204a;
+            color: #e5e7eb;
+            cursor: pointer
+        }
+
+        .status {
+            font-size: 12px;
+            color: #9ca3af
+        }
+
+        .status.ok {
+            color: var(--ok)
+        }
+
+        .status.bad {
+            color: var(--bad)
+        }
+
+        .log {
+            max-height: 45vh;
+            overflow: auto;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px
+        }
+
+        .item {
+            border: 1px solid #22306a;
+            background: #0c1433;
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 10px;
+            align-items: start
+        }
+
+        .ts {
+            color: #9ca3af;
+            font-size: 12px
+        }
+
+        .type {
+            font-weight: 600
+        }
+
+        .msg {
+            white-space: pre-wrap
+        }
+
+        .raw {
+            margin-top: 6px;
+            color: #9ca3af;
+            font-size: 12px;
+            word-break: break-word
+        }
+
+        .flex {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .pill {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid #2c3c74;
+            background: #0e1537;
+            color: #cbd5e1
+        }
+
+        .hr {
+            height: 1px;
+            background: #1f2a5a;
+            margin: 16px 0
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>WS Notifications – Test</h1>
+        <div class="row">
+            <div class="field">
+                <label>BASE_URL (backend)</label>
+                <input id="baseUrl" placeholder="http://localhost:8089" />
+            </div>
+            <div class="field">
+                <label>STOMP Endpoint path</label>
+                <input id="wsPath" placeholder="/ws" value="/ws" />
+            </div>
+            <div class="field" style="flex:2 1 420px">
+                <label>JWT (Authorization: Bearer …)</label>
+                <input id="token" placeholder="Paste your JWT here" />
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+            <div class="field">
+                <label>Subscribe destination</label>
+                <input id="subDest" value="/user/queue/notifications" />
+            </div>
+            <div class="field">
+                <label>Heartbeat (ms)</label>
+                <div class="row">
+                    <input id="hbIn" type="number" value="20000" title="incoming" />
+                    <input id="hbOut" type="number" value="20000" title="outgoing" />
+                </div>
+            </div>
+        </div>
+        <div class="btns" style="margin-top:12px">
+            <button class="ok" id="btnConnect">Connect</button>
+            <button class="danger" id="btnDisconnect" disabled>Disconnect</button>
+            <button id="btnClear">Clear log</button>
+            <span id="status" class="status">Disconnected</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="flex">
+            <span class="pill">Logs</span>
+            <span class="status">Tự động parse JSON & hiển thị đẹp. Dòng “raw” bên dưới để debug.</span>
+        </div>
+        <div class="hr"></div>
+        <ul id="log" class="log"></ul>
+    </div>
+
+    <script>
+        /**************  CHỈ CẦN SỬA 2 BIẾN NÀY  **************/
+        const PRESET_BASE_URL = "http://localhost:8089"; // ← điền BASE_URL
+        const PRESET_TOKEN =
+            "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxIiwic3ViIjoicGhvbmVfMDkwMDAwMDAwMSIsImZ1bGxOYW1lIjoiTmd1eWVuIFZhbiBBIiwiYXZhdGFyIjoiU2NyZWVuc2hvdF8yMDI1LTA4LTE5XzIxMzEwOV85NDllZWVmMC5wbmciLCJwaG9uZVZlcmlmaWVkIjp0cnVlLCJlbWFpbFZlcmlmaWVkIjpmYWxzZSwicm9sZSI6Ik1FTUJFUiIsImlhdCI6MTc2MDg2MzUzOSwiZXhwIjoxNzYxNDY4MzM5fQ.rmhn2x5pvay3LPousMWsOVh_JQeC8j7xC7jjWTsL80s"; // ← dán JWT ở đây
+        /******************************************************/
+
+        const $ = (id) => document.getElementById(id);
+        const fmtTs = () => new Date().toLocaleString();
+
+        function addLog(payload) {
+            const ul = $("log");
+            const li = document.createElement("li");
+            li.className = "item";
+
+            const left = document.createElement("div");
+            left.innerHTML = `<div class="ts">${fmtTs()}</div>`;
+            li.appendChild(left);
+
+            const right = document.createElement("div");
+            if (typeof payload === "string") {
+                right.innerHTML = `<div class="msg">${payload}</div>`;
+            } else {
+                const type = document.createElement("div");
+                type.className = "type";
+                type.textContent = (payload && payload.type) ? payload.type : "(no type)";
+                right.appendChild(type);
+
+                const msg = document.createElement("div");
+                msg.className = "msg";
+                msg.textContent = (payload && payload.message != null) ? payload.message : ""; // ✅ FIX
+                right.appendChild(msg);
+
+                const meta = [];
+                if (payload && payload.referenceId != null) meta.push(`refId=${payload.referenceId}`);
+                if (payload && payload.createdAt) meta.push(`at=${payload.createdAt}`);
+                if (payload && Object.prototype.hasOwnProperty.call(payload, "isRead"))
+                    meta.push(`isRead=${payload.isRead}`);
+                if (meta.length) {
+                    const m = document.createElement("div");
+                    m.className = "status";
+                    m.textContent = meta.join(" · ");
+                    right.appendChild(m);
+                }
+
+                const raw = document.createElement("div");
+                raw.className = "raw";
+                raw.textContent = "raw: " + JSON.stringify(payload);
+                right.appendChild(raw);
+            }
+            li.appendChild(right);
+
+            ul.appendChild(li);
+            ul.scrollTop = ul.scrollHeight;
+        }
+
+        function setStatus(text, cls = "") {
+            const s = $("status");
+            s.textContent = text;
+            s.className = `status ${cls}`;
+        }
+
+        let sock = null,
+            client = null,
+            subscription = null;
+
+        function connect() {
+            const baseUrl = $("baseUrl").value.trim();
+            const wsPath = $("wsPath").value.trim() || "/ws";
+            const token = $("token").value.trim();
+            const dest = $("subDest").value.trim() || "/user/queue/notifications";
+            const hbIn = parseInt($("hbIn").value || "20000", 10);
+            const hbOut = parseInt($("hbOut").value || "20000", 10);
+
+            if (!baseUrl) return addLog("⚠️ BASE_URL is required");
+            if (!token) addLog("ℹ️ Empty TOKEN – nếu server yêu cầu JWT khi CONNECT, hãy dán token vào.");
+
+            // Gắn token vào query để backend đọc trong handshake
+            const qs = token ? `?token=${encodeURIComponent(token)}` : "";
+            sock = new SockJS(baseUrl + wsPath + qs);
+
+            client = Stomp.over(sock);
+            client.debug = null;
+            client.heartbeat.incoming = hbIn;
+            client.heartbeat.outgoing = hbOut;
+
+            // (tuỳ backend) vẫn gửi Authorization ở frame CONNECT
+            const headers = {};
+            if (token) headers.Authorization = "Bearer " + token;
+
+            setStatus("Connecting...");
+            client.connect(headers, frame => {
+                setStatus("Connected", "ok");
+                $("btnConnect").disabled = true;
+                $("btnDisconnect").disabled = false;
+                addLog("✅ CONNECTED: " + (frame && frame.headers ? JSON.stringify(frame.headers) : ""));
+
+                subscription = client.subscribe(dest, msg => {
+                    try {
+                        addLog(JSON.parse(msg.body));
+                    } catch {
+                        addLog("RECV (raw): " + msg.body);
+                    }
+                });
+                addLog("📨 Subscribed " + dest);
+            }, err => {
+                setStatus("Error: " + err, "bad");
+                $("btnConnect").disabled = false;
+                $("btnDisconnect").disabled = true;
+                addLog("❌ ERROR: " + err);
+            });
+        }
+
+        function disconnect() {
+            try {
+                if (subscription) {
+                    subscription.unsubscribe();
+                    subscription = null;
+                }
+                if (client && client.connected) client.disconnect(() => addLog("🔌 Disconnected"));
+            } catch (_) {} finally {
+                client = null;
+                sock = null;
+                setStatus("Disconnected");
+                $("btnConnect").disabled = false;
+                $("btnDisconnect").disabled = true;
+            }
+        }
+
+        $("btnConnect").addEventListener("click", connect);
+        $("btnDisconnect").addEventListener("click", disconnect);
+        $("btnClear").addEventListener("click", () => {
+            $("log").innerHTML = "";
+        });
+
+        // Tự điền & tự connect
+        $("baseUrl").value = PRESET_BASE_URL || "";
+        $("token").value = PRESET_TOKEN || "";
+        window.addEventListener("load", () => {
+            if (PRESET_BASE_URL && PRESET_TOKEN) {
+                addLog("⏳ Auto-connecting...");
+                setTimeout(connect, 150);
+            }
+        });
+    </script>
+</body>
+
+</html>

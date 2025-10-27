@@ -35,7 +35,10 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
   };
 
   const getMenuItems = () => {
-    const items = [{ key: "infouser", label: "Hồ sơ", path: "/infouser" }];
+    const items = [
+      { key: "infouser", label: "Hồ sơ", path: "/info-user" },
+      { key: "favorites", label: "Tin đã lưu", path: "/my-favorites" },
+    ];
     if (hasDashboardAccess(user?.role)) {
       const dashboardPath = getDashboardPath(user?.role);
       if (dashboardPath)
@@ -55,6 +58,8 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
       if (path) navigate(path);
     } else if (key === "infouser") {
       navigate("/info-user");
+    } else if (key === "favorites") {
+      navigate("/my-favorites");
     } else if (key === "logout") {
       await logout();
     }

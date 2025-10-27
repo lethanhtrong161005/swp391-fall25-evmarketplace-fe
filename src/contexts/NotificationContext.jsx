@@ -1,0 +1,217 @@
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
+import notificationService from "@services/notificationServiceRest";
+import { useAuth } from "./AuthContext";
+import cookieUtils from "@utils/cookieUtils";
+import FEATURE_FLAGS from "@config/featureFlags";
+
+const NotificationContext = createContext();
+
+export function NotificationProvider({ children }) {
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState("disconnected");
+  const { user, isLoggedIn } = useAuth();
+
+  const addNotification = useCallback((notification) => {
+    setNotifications((prev) => {
+      const exists = prev.some((n) => n.id === notification.id);
+      if (exists) return prev;
+      return [notification, ...prev];
+    });
+
+    if (!notification.isRead) {
+      setUnreadCount((prev) => prev + 1);
+    }
+  }, []);
+
+  const markAsRead = useCallback(async (notificationId) => {
+    const token = cookieUtils.getToken();
+    if (!token) return;
+
+    const success = await notificationService.markAsRead(notificationId, token);
+    if (success) {
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? { ...n, isRead: true } : n))
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    }
+  }, []);
+
+  const markAllAsRead = useCallback(async () => {
+    const token = cookieUtils.getToken();
+    if (!token) return;
+
+    const unreadNotifications = notifications.filter((n) => !n.isRead);
+    for (const notification of unreadNotifications) {
+      await notificationService.markAsRead(notification.id, token);
+    }
+
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setUnreadCount(0);
+  }, [notifications]);
+
+  const removeNotification = useCallback((notificationId) => {
+    setNotifications((prev) => {
+      const notification = prev.find((n) => n.id === notificationId);
+      if (notification && !notification.isRead) {
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+      }
+      return prev.filter((n) => n.id !== notificationId);
+    });
+  }, []);
+
+  const clearAllNotifications = useCallback(() => {
+    setNotifications([]);
+    setUnreadCount(0);
+  }, []);
+
+  const connect = useCallback(async () => {
+    if (!isLoggedIn || !user) return;
+
+    try {
+      setConnectionStatus("connecting");
+      const token = cookieUtils.getToken();
+
+      if (!token) {
+        setConnectionStatus("no_token");
+        setIsConnected(false);
+        return;
+      }
+
+      await notificationService.connect(token);
+      setIsConnected(true);
+      setConnectionStatus("connected");
+    } catch (error) {
+      setConnectionStatus("error");
+      setIsConnected(false);
+    }
+  }, [isLoggedIn, user]);
+
+  const disconnect = useCallback(() => {
+    notificationService.disconnect();
+    setIsConnected(false);
+    setConnectionStatus("disconnected");
+  }, []);
+
+  const fetchNotifications = useCallback(async () => {
+    if (!isLoggedIn) return;
+
+    const token = cookieUtils.getToken();
+    if (!token) return;
+
+    try {
+      const data = await notificationService.getNotifications(token);
+      if (data && data.data && data.data.items) {
+        setNotifications(data.data.items);
+        setUnreadCount(data.data.items.filter((n) => !n.isRead).length);
+      }
+    } catch (error) {
+      // Silent error handling
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (!FEATURE_FLAGS.ENABLE_NOTIFICATIONS) return;
+    if (isLoggedIn && user) {
+      const timer = setTimeout(() => {
+        connect().catch(() => {
+          // Silent error handling
+        });
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    } else {
+      disconnect();
+      clearAllNotifications();
+    }
+  }, [isLoggedIn, user, connect, disconnect, clearAllNotifications]);
+
+  useEffect(() => {
+    const handleNotification = (event, data) => {
+      if (event === "notification") {
+        const newNotification = {
+          ...data,
+          id: data.id || `ws_${Date.now()}_${Math.random()}`,
+          createdAt: data.createdAt || new Date().toISOString(),
+          isRead: data.isRead || false,
+        };
+        addNotification(newNotification);
+      }
+    };
+
+    const handleConnectionStatus = (event, data) => {
+      if (
+        event === "connected" ||
+        event === "error" ||
+        event === "disconnected"
+      ) {
+        if (event === "connected") {
+          setConnectionStatus("connected");
+          setIsConnected(true);
+        } else if (event === "error") {
+          setConnectionStatus("error");
+          setIsConnected(false);
+        } else if (event === "disconnected") {
+          setConnectionStatus("disconnected");
+          setIsConnected(false);
+        }
+      }
+    };
+
+    notificationService.addListener(handleNotification);
+    notificationService.addListener(handleConnectionStatus);
+
+    return () => {
+      notificationService.removeListener(handleNotification);
+      notificationService.removeListener(handleConnectionStatus);
+    };
+  }, []);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+  useEffect(() => {
+    return () => {
+      notificationService.disconnect();
+    };
+  }, []);
+
+  const value = {
+    notifications,
+    unreadCount,
+    isConnected,
+    connectionStatus,
+    addNotification,
+    markAsRead,
+    markAllAsRead,
+    removeNotification,
+    clearAllNotifications,
+    connect,
+    disconnect,
+    fetchNotifications,
+  };
+
+  return (
+    <NotificationContext.Provider value={value}>
+      {children}
+    </NotificationContext.Provider>
+  );
+}
+
+export function useNotifications() {
+  const context = useContext(NotificationContext);
+  if (!context) {
+    throw new Error(
+      "useNotifications must be used within a NotificationProvider"
+    );
+  }
+  return context;
+}
