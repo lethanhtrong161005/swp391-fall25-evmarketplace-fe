@@ -58,6 +58,7 @@ import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate"
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
+import StaffOrder from "@/pages/Staff/StaffOrder";
 
 export const routes = () => [
   {
@@ -150,6 +151,10 @@ export const routes = () => [
           {
             path: "consignment/inspection-schedule",
             element: <StaffInspectionSchedule />,
+          },
+          {
+            path: "order",
+            element: <StaffOrder/>
           },
         ],
       },

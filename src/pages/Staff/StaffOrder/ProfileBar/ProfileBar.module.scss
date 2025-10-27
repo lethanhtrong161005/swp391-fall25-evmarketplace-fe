@@ -1,0 +1,147 @@
+/* ProfileBar.module.scss */
+
+.root {
+    margin-bottom: 12px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffffff 0%, #f6f9ff 100%);
+    box-shadow: 0 2px 10px rgba(20, 20, 60, 0.05);
+
+    :global(.ant-card-body) {
+        padding: 14px 16px;
+    }
+}
+
+/* iPhone safe-area (tai thỏ) */
+@supports (padding: max(0px)) {
+    .root :global(.ant-card-body) {
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+    }
+}
+
+.header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+
+    /* iPhone: xếp dọc, sát trái */
+    @media (max-width: 428px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
+
+.title {
+    font-size: clamp(13px, 1.8vw, 14px);
+    font-weight: 600;
+    color: #1f2633;
+}
+
+.subtle {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.kpi {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #eef2ff;
+    border-radius: 12px;
+    background: #fff;
+    min-height: 64px;
+    transition: box-shadow 0.15s ease;
+
+    &:hover {
+        box-shadow: 0 4px 14px rgba(16, 24, 40, 0.06);
+    }
+
+    :global(.ant-statistic) {
+        width: 100%;
+    }
+
+    :global(.ant-statistic-title) {
+        font-weight: 500;
+        color: #4b5563;
+        margin-bottom: 4px;
+        font-size: clamp(11px, 1.6vw, 12px);
+    }
+
+    :global(.ant-statistic-content) {
+        line-height: 1.1;
+    }
+
+    :global(.ant-statistic-content-value) {
+        font-weight: 700;
+        font-size: clamp(16px, 2.6vw, 20px);
+    }
+}
+
+.kpiIcon {
+    width: clamp(32px, 6vw, 44px);
+    height: clamp(32px, 6vw, 44px);
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: clamp(16px, 3.2vw, 20px);
+    color: #fff;
+    flex: 0 0 auto;
+
+    &.blue {
+        background: #3b82f6;
+    }
+
+    &.green {
+        background: #22c55e;
+    }
+
+    &.purple {
+        background: #8b5cf6;
+    }
+
+    &.orange {
+        background: #f59e0b;
+    }
+}
+
+/* ---------- iPhone (<= 428px) ---------- */
+@media (max-width: 428px) {
+    .root :global(.ant-card-body) {
+        padding: 12px;
+    }
+
+    .kpi {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .kpiIcon {
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+    }
+
+    :global(.ant-statistic-content-value) {
+        font-size: 18px !important;
+    }
+}
+
+/* ---------- iPad (768px – 1199px) ---------- */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .kpi {
+        padding: 12px 14px;
+    }
+
+    .kpiIcon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    :global(.ant-statistic-content-value) {
+        font-size: 20px !important;
+    }
+}

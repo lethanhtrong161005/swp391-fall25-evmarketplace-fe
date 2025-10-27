@@ -1,5 +1,5 @@
 import React from "react";
-import { DashboardOutlined, FileTextOutlined } from "@ant-design/icons";
+import { DashboardOutlined, FileTextOutlined, ReconciliationOutlined } from "@ant-design/icons";
 import { useSidebar } from "@hooks/useSidebar";
 
 export function useStaffLayout() {
@@ -32,13 +32,19 @@ export function useStaffLayout() {
           label: "Phê duyệt ký gửi",
           path: "/staff/consignment/consider",
         },
-         {
+        {
           key: "consignment/inspection-schedule",
           label: "Lịch hẹn kiểm định",
           path: "/staff/consignment/inspection-schedule",
         },
       ],
     },
+    {
+      key: "order",
+      icon: <ReconciliationOutlined />,
+      label: "Quản lý đơn hàng",
+      path: "/staff/order"
+    }
   ];
 
   // Mock notifications for staff

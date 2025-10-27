@@ -1,0 +1,50 @@
+.root {
+    overflow: hidden;
+}
+
+.table {
+    :global(.ant-table-thead > tr > th) {
+        white-space: nowrap;
+    }
+}
+
+.subtle {
+    color: var(--ant-color-text-tertiary);
+    font-size: 12px;
+}
+
+.strong {
+    font-weight: 600;
+}
+
+.mono {
+    font-variant-numeric: tabular-nums;
+}
+
+.orderNoCell {
+    max-width: 240px;
+}
+
+.orderNo {
+    display: inline-block;
+    max-width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.walletBtn {
+    white-space: nowrap;
+    /* tránh xuống dòng “Thu tiền mặt” */
+}
+
+/* Mobile tweak */
+@media (max-width: 575px) {
+    .orderNoCell {
+        max-width: 180px;
+    }
+}
