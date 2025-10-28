@@ -6,7 +6,7 @@ export function useStaffId() {
     return useMemo(() => {
         const p = cookieUtils.decodeJwt();
         return (
-            p?.staffId ??
+            p?.uid ??
             p?.accountId ??
             p?.userId ??
             p?.id ??

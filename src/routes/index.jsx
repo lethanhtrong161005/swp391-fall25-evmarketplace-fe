@@ -58,7 +58,8 @@ import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate"
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
-import StaffOrder from "@/pages/Staff/StaffOrder";
+import StaffOrder from "@pages/Staff/StaffOrder";
+import MyOrder from "@pages/Member/MyOrder";
 
 export const routes = () => [
   {
@@ -81,6 +82,7 @@ export const routes = () => [
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
           { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
+          { path: "my-order", element: <MyOrder/>},
           {
             path: "consignment",
             breadcrumb: "Ký gửi",

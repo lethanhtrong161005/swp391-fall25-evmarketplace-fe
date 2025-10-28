@@ -43,13 +43,19 @@ export default function CashCollectModal({ open, onCancel, order, onSubmit }) {
                     <Form
                         form={form}
                         layout="vertical"
-                        onFinish={(v) => onSubmit?.({ ...v, amount: Number(v.amount) })}
+                        validateTrigger="onChange"
+                        onFinish={(v) => onSubmit?.({
+                            amountVnd: Number(v.amount),                 // ✅ chỉ gửi amountVnd
+                            referenceNo: v.referenceNo?.trim() || undefined,
+                            note: v.note?.trim() || undefined,
+                        })}
                         initialValues={{ amount: remain, referenceNo: "", note: "" }}
                         className={s.form}
                     >
                         <Form.Item
                             label="Số tiền thu"
                             name="amount"
+                            validateTrigger="onChange"
                             rules={[
                                 { required: true, message: "Nhập số tiền" },
                                 {
@@ -58,7 +64,7 @@ export default function CashCollectModal({ open, onCancel, order, onSubmit }) {
                                         if (Number.isNaN(n) || n <= 0)
                                             return Promise.reject("Số tiền không hợp lệ");
                                         if (n > remain)
-                                            return Promise.reject("Không được vượt số tiền còn lại");
+                                            return Promise.reject(`Không được vượt quá ${remain.toLocaleString("vi-VN")} VND còn lại`);
                                         return Promise.resolve();
                                     },
                                 },
@@ -69,6 +75,8 @@ export default function CashCollectModal({ open, onCancel, order, onSubmit }) {
                                 min={1}
                                 max={remain}
                                 step={1000}
+                                precision={0}
+                                stringMode
                                 formatter={(v) => Number(v || 0).toLocaleString("vi-VN")}
                                 parser={(v) => (v || "").replace(/[^\d]/g, "")}
                                 addonAfter="VND"

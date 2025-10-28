@@ -1,0 +1,35 @@
+.root {
+    padding: 8px 0;
+}
+
+.stack {
+    width: 100%;
+}
+
+.info {
+    margin-bottom: 16px;
+}
+
+.form {
+    margin-top: 16px;
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.disabledNote {
+    font-size: 12px;
+    display: block;
+    margin-top: 16px;
+    padding: 8px;
+    background: var(--ant-color-fill-alter);
+    border-radius: 4px;
+}

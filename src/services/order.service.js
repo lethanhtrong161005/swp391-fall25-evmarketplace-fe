@@ -2,7 +2,7 @@ import api from "@utils/apiCaller";
 
 const BASE = "/api/order";
 
-export const getAllOrderByStaff = async ({ params } = {}) => {
+export const getAllOrderByUserId = async ({ params } = {}) => {
     const { data: res } = await api.get(`${BASE}`, { params }); 
 
     if (res?.data && Array.isArray(res.data.items)) {
@@ -39,4 +39,15 @@ export async function payOrderCash({ orderId, method = "CASH", amountVnd, refere
   );
   return res;
 }
+
+export const cancelOrder = async (id) => {
+    console.log("cancelOrder", id);
+    const { data: res } = await api.put(`/api/order/cancel/${id}`);
+    return res;
+};
+
+export const getOrderDetail = async (id) => {
+    const { data: res } = await api.get(`${BASE}/${id}`);
+    return res;
+};
 

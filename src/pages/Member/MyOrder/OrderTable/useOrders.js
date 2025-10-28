@@ -3,21 +3,19 @@ import { message } from "antd";
 import { getAllOrderByUserId } from "@services/order.service.js";
 import { useGetId } from "@utils/getInfoFromToken";
 
-
-
 export default function useOrders(queryParams) {
     const [loading, setLoading] = useState(false);
     const [rows, setRows] = useState([]);
     const [total, setTotal] = useState(0);
     const lastReq = useRef(0);
-    const staffId = useGetId();
+    const currentUserId = useGetId();
 
     const load = async () => {
         const reqId = Date.now();
         lastReq.current = reqId;
         setLoading(true);
         queryParams = {
-            userId: staffId,
+            userId: currentUserId,
             ...queryParams
         }
         try {
@@ -40,3 +38,4 @@ export default function useOrders(queryParams) {
 
     return { loading, rows, total, load };
 }
+

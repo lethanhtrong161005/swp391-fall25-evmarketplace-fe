@@ -1,11 +1,11 @@
 import React from "react";
 import s from "./OrderTable.module.scss";
-import { Card, Table, Tag, Space, Tooltip, Progress, Button, Grid, Typography, Dropdown } from "antd";
+import { Card, Table, Tag, Space, Tooltip, Progress, Button, Grid, Typography, Dropdown, message } from "antd";
 import dayjs from "dayjs";
 import {
     FileTextOutlined, ClockCircleOutlined, FileDoneOutlined,
     DollarCircleOutlined, CheckCircleOutlined, CloseCircleOutlined,
-    WalletOutlined, FileAddOutlined, MoreOutlined, DeleteOutlined
+    DownloadOutlined, MoreOutlined
 } from "@ant-design/icons";
 import { STATUS_META } from "../constants";
 
@@ -15,7 +15,6 @@ const toVnd = (n) =>
 const StatusTag = ({ st }) => {
     const meta = STATUS_META[st] || { color: "default", label: st };
     const iconMap = {
-        INITIATED: <FileTextOutlined />,
         PENDING_PAYMENT: <ClockCircleOutlined />,
         PAID: <DollarCircleOutlined />,
         CONTRACT_SIGNED: <FileDoneOutlined />,
@@ -30,6 +29,31 @@ const StatusTag = ({ st }) => {
     );
 };
 
+function getMemberActions(order) {
+    const remain = Math.max(0, Number(order.amount || 0) - Number(order.paidAmount || 0));
+    const actions = [{ key: 'detail', label: 'Xem chi tiết', icon: <FileTextOutlined /> }];
+
+    // PENDING_PAYMENT: Show both "Thanh toán ngay" and "Huỷ đơn"
+    if (order.status === 'PENDING_PAYMENT' && remain > 0) {
+        actions.push(
+            { key: 'pay', label: 'Thanh toán ngay', icon: <DollarCircleOutlined /> },
+            { key: 'cancel', label: 'Huỷ đơn', icon: <CloseCircleOutlined /> }
+        );
+    }
+
+    // PAYMENT_FAILED: Allow retry payment
+    if (order.status === 'PAYMENT_FAILED' && remain > 0) {
+        actions.push({ key: 'pay', label: 'Thanh toán lại', icon: <DollarCircleOutlined /> });
+    }
+
+    // CONTRACT_SIGNED and COMPLETED: Show download contract
+    if (['CONTRACT_SIGNED', 'COMPLETED'].includes(order.status) || order.contractAvailable) {
+        actions.push({ key: 'contract', label: 'Tải hợp đồng', icon: <DownloadOutlined /> });
+    }
+
+    return actions;
+}
+
 export default function OrderTable({
     loading,
     rows,
@@ -38,8 +62,8 @@ export default function OrderTable({
     size,
     onTableChange,
     onViewDetail,
-    onCollectCash,
-    onCreateContract,
+    onPay,
+    onDownloadContract,
     onCancel,
 }) {
     const screens = Grid.useBreakpoint();
@@ -80,43 +104,6 @@ export default function OrderTable({
                 <Space size={4} direction="vertical">
                     <span className={s.strong} title={title}>{title}</span>
                     <span className={s.subtle}>#{r.listingId}</span>
-                </Space>
-            ),
-        },
-        {
-            title: "Người mua",
-            key: "buyer",
-            width: 180,
-            responsive: ["md"],
-            render: (_, r) => (
-                <Space direction="vertical" size={2}>
-                    <span title={r.buyerName}>{r.buyerName || "-"}</span>
-                    <span className={s.subtle}>{r.buyerPhone || "-"}</span>
-                </Space>
-            ),
-        },
-        {
-            title: "Người bán",
-            key: "seller",
-            width: 180,
-            responsive: ["lg"],
-            render: (_, r) => (
-                <Space direction="vertical" size={2}>
-                    <span title={r.sellerName}>{r.sellerName || "-"}</span>
-                    <span className={s.subtle}>{r.sellerPhone || "-"}</span>
-                </Space>
-            ),
-        },
-        {
-            title: "Chi nhánh",
-            dataIndex: "branchName",
-            key: "branchName",
-            width: 180,
-            responsive: ["lg"],
-            render: (v, r) => (
-                <Space direction="vertical" size={2}>
-                    <span title={v}>{v}</span>
-                    <span className={s.subtle}>#{r.branchId}</span>
                 </Space>
             ),
         },
@@ -194,61 +181,19 @@ export default function OrderTable({
             fixed: "right",
             width: 120,
             render: (_, r) => {
-                const remain = Math.max(0, Number(r.amount || 0) - Number(r.paidAmount || 0));
+                const actions = getMemberActions(r);
+                const items = actions.map(action => ({
+                    key: action.key,
+                    label: action.label,
+                    icon: action.icon,
+                }));
 
-                const cashDisabled =
-                    remain <= 0 || ["CANCELED", "COMPLETED", "PAYMENT_FAILED"].includes(r.status);
-                const cashDisabledReason = cashDisabled ? (remain <= 0 ? "Đã đủ tiền" : "Trạng thái không cho thu") : "";
-
-                // ✅ Chỉ cho tạo hợp đồng khi PAID và đã thanh toán đủ (không cho khi CONTRACT_SIGNED)
-                const canCreateContract = (r?.status === "PAID") && remain === 0;
-                const createDisabledReason = !canCreateContract
-                    ? (remain > 0 ? "Chưa thanh toán đủ" : "Chỉ khi PAID")
-                    : "";
-
-                // ✅ Có thể hủy đơn
-                const canCancel = ["INITIATED", "PENDING_PAYMENT", "PAYMENT_FAILED"].includes(r?.status);
-                const cancelDisabled = r?.status === "CANCELED" || ["COMPLETED", "CONTRACT_SIGNED"].includes(r?.status);
-                const cancelDisabledReason = cancelDisabled ? (r?.status === "CANCELED" ? "Đã hủy" : "Đơn đã hoàn tất") : "";
-
-                const renderLabel = (text, hint) => (
-                    <span className={s.menuLabel}>
-                        <span className={s.menuPrimary}>{text}</span>
-                        {hint ? <span className={s.menuHint}>— {hint}</span> : null}
-                    </span>
-                );
-
-                const items = [
-                    { key: "detail", label: renderLabel("Chi tiết"), icon: <FileTextOutlined /> },
-                    { type: "divider" },
-                    {
-                        key: "collect",
-                        label: renderLabel("Thu tiền mặt", cashDisabled ? cashDisabledReason : ""),
-                        icon: <WalletOutlined />,
-                        disabled: cashDisabled,
-                    },
-                    {
-                        key: "create",
-                        label: renderLabel("Tạo hợp đồng", !canCreateContract ? createDisabledReason : ""),
-                        icon: <FileAddOutlined />,
-                        disabled: !canCreateContract,
-                    },
-                    { type: "divider" },
-                    {
-                        key: "cancel",
-                        label: renderLabel("Hủy đơn", cancelDisabled ? cancelDisabledReason : ""),
-                        icon: <DeleteOutlined />,
-                        disabled: cancelDisabled,
-                    },
-                ];
-
-                // ✅ handler mở modal
                 const onMenuClick = ({ key, domEvent }) => {
                     domEvent?.stopPropagation?.();
                     if (key === "detail") return onViewDetail?.(r);
-                    if (key === "collect" && !cashDisabled) return onCollectCash?.(r);
-                    if (key === "create" && canCreateContract) return onCreateContract?.(r);
-                    if (key === "cancel" && canCancel && !cancelDisabled) return onCancel?.(r);
+                    if (key === "pay") return onPay?.(r);
+                    if (key === "contract") return onDownloadContract?.(r);
+                    if (key === "cancel") return onCancel?.(r);
                 };
 
                 return (
@@ -256,24 +201,23 @@ export default function OrderTable({
                         menu={{ items, onClick: onMenuClick }}
                         overlayClassName={s.actionMenu}
                         trigger={["click"]}
-                        getPopupContainer={() => document.body}   // ✅ tránh bị ẩn dưới table
+                        getPopupContainer={() => document.body}
                     >
                         <Button
                             size="small"
                             type="text"
                             className={s.moreBtn}
                             icon={<MoreOutlined />}
-                            onClick={(e) => e.stopPropagation()}    // ✅ tránh row onClick
+                            onClick={(e) => e.stopPropagation()}
                         />
                     </Dropdown>
                 );
             },
         }
-
     ];
 
     const tableSize = isMobile ? "small" : (isTablet ? "middle" : "large");
-    const scrollX = isMobile ? 900 : 1300;
+    const scrollX = isMobile ? 900 : 1200;
 
     return (
         <Card className={s.root} bordered={false}>
@@ -329,3 +273,4 @@ export function usePagination(defaultSize = 10) {
 }
 
 export { default as useOrders } from "./useOrders";
+

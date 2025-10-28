@@ -31,17 +31,9 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-.actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+.payCol {
+    width: 100%;
 }
-
-.walletBtn {
-    white-space: nowrap;
-    /* tránh xuống dòng “Thu tiền mặt” */
-}
-
 
 /* ----- Dropdown actions ----- */
 .actionMenu {
