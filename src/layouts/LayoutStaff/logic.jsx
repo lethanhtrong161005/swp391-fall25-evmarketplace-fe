@@ -32,10 +32,20 @@ export function useStaffLayout() {
           label: "Phê duyệt ký gửi",
           path: "/staff/consignment/consider",
         },
-         {
+        {
           key: "consignment/inspection-schedule",
           label: "Lịch hẹn kiểm định",
           path: "/staff/consignment/inspection-schedule",
+        },
+        {
+          key: "consignment/inspecting",
+          label: "Danh sách kiểm định",
+          path: "/staff/consignment/inspecting",
+        },
+         {
+          key: "consignment/agreement",
+          label: "Hợp đồng ký gửi",
+          path: "/staff/consignment/agreement",
         },
       ],
     },

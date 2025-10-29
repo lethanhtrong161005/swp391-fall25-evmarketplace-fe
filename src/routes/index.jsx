@@ -58,6 +58,9 @@ import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate"
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
+import InspectionAvailabilityPage from "../pages/Member/MemberConsignment/InpectionAvailabilityPage/InspectionAvailabilityPage";
+import StaffInspectingManagement from "../pages/Staff/StaffInspectingsManagement/StaffInspectingManagement";
+import StaffAgreementManagement from "../pages/Staff/StaffAgreementManagement/StaffAgreementManagement";
 
 export const routes = () => [
   {
@@ -98,6 +101,11 @@ export const routes = () => [
                 element: <ConsignmentForm mode="update" />,
                 breadcrumb: "Chỉnh sửa yêu cầu ký gửi",
               },
+              {
+                path: "availability",
+                element: <InspectionAvailabilityPage />
+              },
+              
             ],
           },
           { path: "my-favorites", element: <MyFavoritesPage /> },
@@ -150,6 +158,13 @@ export const routes = () => [
           {
             path: "consignment/inspection-schedule",
             element: <StaffInspectionSchedule />,
+          },
+          {
+            path: "consignment/inspecting",
+            element: <StaffInspectingManagement/>
+          },{
+            path: "consignment/agreement",
+            element: <StaffAgreementManagement/>
           },
         ],
       },

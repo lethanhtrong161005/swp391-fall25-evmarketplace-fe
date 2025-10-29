@@ -61,3 +61,74 @@ export const getStaffInspectionSchedule = async (date, statuses = []) => {
   });
   return res.data;
 };
+
+export const checkInInspectionSchedule = async (id) => {
+  const endpoint = `/api/inspection_schedule/${id}/check_in`;
+  const res = await api.patch(endpoint);
+  return res.data;
+};
+
+export const addInspection = async (requestId, inspectionSummary, suggestedPrice, result) => {
+  const endpoint = `/api/inspections/add`;
+  const body = {
+    requestId,
+    inspectionSummary,
+    suggestedPrice,
+    result,
+  };
+
+  const res = await api.post(endpoint, body);
+  return res.data;
+};
+
+export const getInspectionByRequestId = async (requestId) => {
+  const endpoint = `/api/inspections/request/${requestId}`;
+  const res = await api.get(endpoint);
+  return res.data;
+};
+
+export const inactivateInspection = async (inspectionId) => {
+  const endpoint = `/api/inspections/${inspectionId}/inactive`;
+  const res = await api.put(endpoint);
+  return res.data;
+};
+
+export const getInspections = async (status = [], isActive = undefined) => {
+  const endpoint = "/api/inspections";
+  const params = {};
+
+  if (Array.isArray(status) && status.length > 0) {
+    params.status = status;
+  }
+  if (typeof isActive === "boolean") {
+    params.isActive = isActive;
+  }
+
+  const res = await api.get(endpoint, { params });
+  return res.data;
+};
+
+//Agreement
+
+export const addAgreement = async (
+  requestId,
+  commissionPercent,
+  acceptablePrice,
+  startAt,
+  duration,
+  depositPercent
+) => {
+  const endpoint = "/api/agreements/add";
+
+  const body = {
+    requestId,
+    commissionPercent,
+    acceptablePrice,
+    startAt,
+    duration,
+    depositPercent,
+  };
+
+  const res = await api.post(endpoint, body);
+  return res.data;
+};

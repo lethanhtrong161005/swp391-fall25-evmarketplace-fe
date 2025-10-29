@@ -24,6 +24,7 @@ export default function DynamicBreadcrumb() {
     listing: "Tin đăng",
     edit: "Chỉnh sửa",
     member: "Thành viên",
+    availability: "Lên lịch"
   };
 
   // ⚙️ Loại bỏ các đoạn là số (id)

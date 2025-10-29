@@ -6,12 +6,15 @@ import {
   getAllConsignments,
   updateConsignmentRequest,
   getMemberInspectionSchedule,
+  getConsignmentById,
+  markCancelInspectionSchedule,
 } from "../../../services/consigmentService";
 import {
   CONSIGNMENT_STATUS_LABELS,
   CONSIGNMENT_STATUS_COLOR,
   ITEM_TYPE,
   CATEGORIES,
+  ERROR_MESSAGES,
 } from "../../../utils/constants";
 
 const useManagerConsignment = (tabs) => {
@@ -33,37 +36,34 @@ const useManagerConsignment = (tabs) => {
 
   const fetchData = useCallback(
     async (page = 1, size = 10, sort = "createdAt", dir = "desc") => {
+        // debugger;
+
       setLoading(true);
       try {
         const res = await getAllConsignments(page - 1, size, sort, dir);
-
         if (!res?.success) {
           message.error(res?.message || "Không tải được danh sách ký gửi");
           return;
         }
-
         const data = res.data;
         let items = data?.items || [];
-
         const newCounts = items.reduce((acc, cur) => {
           acc[cur.status] = (acc[cur.status] || 0) + 1;
           return acc;
         }, {});
         newCounts.ALL = items.length;
         setCounts(newCounts);
-
         const tabDef = tabs.find((t) => t.key === activeTab);
         const validStatuses = tabDef?.statuses || [activeTab];
         items = items.filter((x) => validStatuses.includes(x.status));
-
         items = items.map((item) => ({
           ...item,
+           scheduleId: item.schedule?.id,
           category: CATEGORIES[item.category] || item.category,
           itemType: ITEM_TYPE[item.itemType] || item.itemType,
           statusLabel: CONSIGNMENT_STATUS_LABELS[item.status] || item.status,
           statusColor: CONSIGNMENT_STATUS_COLOR[item.status] || "default",
         }));
-
         setConsignments([...items.map((i) => ({ ...i }))]);
         setPagination({
           current: page,
@@ -85,25 +85,29 @@ const useManagerConsignment = (tabs) => {
   }, [activeTab, pagination.current, pagination.pageSize]);
 
   const handleCancel = async (cancelReason) => {
-    if (!cancelId) return;
+  if (!cancelId) return;
+  try {
+    const res = await cancelConsignment(cancelId, cancelReason);
 
-    try {
-      const res = await cancelConsignment(cancelId, cancelReason);
-      if (res.success) {
-        message.success("Hủy ký gửi thành công!");
-        await fetchData(pagination.current, pagination.pageSize);
-        setActiveTab("CANCELLED");
-        navigate("/consignment/manager");
-      } else {
-        message.error(res.message || "Lỗi khi hủy ký gửi");
-      }
-    } catch (err) {
-      console.error(err);
-      message.error("Có lỗi khi hủy ký gửi!");
-    } finally {
-      setCancelId(null);
+    if (res?.data?.success) {
+      message.success("Hủy ký gửi thành công!");
+      await fetchData(pagination.current, pagination.pageSize);
+      setActiveTab("CANCELLED");
+      navigate("/consignment");
+    } else {
+      const rawMsg = res?.data?.message || "Lỗi khi hủy ký gửi";
+      const viMsg = ERROR_MESSAGES[rawMsg] || "Đã xảy ra lỗi khi hủy ký gửi";
+      message.error(viMsg);
     }
-  };
+  } catch (err) {
+    console.error("Cancel error:", err);
+    const rawMsg = err?.response?.data?.message || "Có lỗi khi hủy ký gửi!";
+    const viMsg = ERROR_MESSAGES[rawMsg] || "Đã xảy ra lỗi khi hủy ký gửi!";
+    message.error(viMsg);
+  } finally {
+    setCancelId(null);
+  }
+};
 
   const handleUpdate = async (requestId, payload, images = [], videos = []) => {
     try {
@@ -114,7 +118,6 @@ const useManagerConsignment = (tabs) => {
         images,
         videos
       );
-
       if (res.success) {
         message.success("Cập nhật ký gửi thành công!");
         await fetchData(pagination.current, pagination.pageSize);
@@ -157,6 +160,43 @@ const useManagerConsignment = (tabs) => {
     setScheduleData(null);
   };
 
+  const handleOpenSchedule = async (requestId) => {
+    try {
+      setLoadingSchedule(true);
+      const res = await getConsignmentById(requestId);
+
+      if (res?.success && res?.data) {
+        navigate("/consignment/availability", {
+          state: { requestId: res.data.id },
+        });
+      } else {
+        message.error(res?.message || "Không thể tải thông tin ký gửi");
+      }
+    } catch (err) {
+      console.error("Get consignment by ID error:", err);
+      message.error("Lỗi khi tải thông tin ký gửi!");
+    } finally {
+      setLoadingSchedule(false);
+    }
+  };
+
+  const handleCancelSchedule = async (scheduleId, reason) => {
+    if (!scheduleId) return;
+    try {
+      const res = await markCancelInspectionSchedule(scheduleId, reason);
+      if (res?.success) {
+        message.success("Hủy lịch kiểm định thành công!");
+        await fetchData(pagination.current, pagination.pageSize);
+        setActiveTab("SCHEDULED"); 
+      } else {
+        message.error(res?.message || "Không thể hủy lịch kiểm định.");
+      }
+    } catch (err) {
+      console.error("Cancel inspection schedule error:", err);
+      message.error("Có lỗi khi hủy lịch kiểm định!");
+    }
+  };
+
   const onChangeTable = (pag) => {
     setPagination((prev) => ({
       ...prev,
@@ -196,6 +236,8 @@ const useManagerConsignment = (tabs) => {
     loadingSchedule,
     handleViewSchedule,
     closeScheduleModal,
+    handleOpenSchedule,
+    handleCancelSchedule,
   };
 };
 
