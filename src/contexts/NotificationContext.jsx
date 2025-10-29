@@ -1,18 +1,11 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
-import notificationService from "@services/notificationServiceRest";
+import React, { useEffect, useState, useCallback } from "react";
+import notificationService from "@services/notificationService";
 import { useAuth } from "./AuthContext";
 import cookieUtils from "@utils/cookieUtils";
 import FEATURE_FLAGS from "@config/featureFlags";
+import { NotificationContext } from "./NotificationContext";
 
-const NotificationContext = createContext();
-
-export function NotificationProvider({ children }) {
+function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
@@ -88,7 +81,7 @@ export function NotificationProvider({ children }) {
       await notificationService.connect(token);
       setIsConnected(true);
       setConnectionStatus("connected");
-    } catch (error) {
+    } catch {
       setConnectionStatus("error");
       setIsConnected(false);
     }
@@ -108,11 +101,11 @@ export function NotificationProvider({ children }) {
 
     try {
       const data = await notificationService.getNotifications(token);
-      if (data && data.data && data.data.items) {
+      if (data?.data?.items) {
         setNotifications(data.data.items);
         setUnreadCount(data.data.items.filter((n) => !n.isRead).length);
       }
-    } catch (error) {
+    } catch {
       // Silent error handling
     }
   }, [isLoggedIn]);
@@ -146,22 +139,16 @@ export function NotificationProvider({ children }) {
       }
     };
 
-    const handleConnectionStatus = (event, data) => {
-      if (
-        event === "connected" ||
-        event === "error" ||
-        event === "disconnected"
-      ) {
-        if (event === "connected") {
-          setConnectionStatus("connected");
-          setIsConnected(true);
-        } else if (event === "error") {
-          setConnectionStatus("error");
-          setIsConnected(false);
-        } else if (event === "disconnected") {
-          setConnectionStatus("disconnected");
-          setIsConnected(false);
-        }
+    const handleConnectionStatus = (event) => {
+      if (event === "connected") {
+        setConnectionStatus("connected");
+        setIsConnected(true);
+      } else if (event === "error") {
+        setConnectionStatus("error");
+        setIsConnected(false);
+      } else if (event === "disconnected") {
+        setConnectionStatus("disconnected");
+        setIsConnected(false);
       }
     };
 
@@ -172,7 +159,7 @@ export function NotificationProvider({ children }) {
       notificationService.removeListener(handleNotification);
       notificationService.removeListener(handleConnectionStatus);
     };
-  }, []);
+  }, [addNotification]);
 
   useEffect(() => {
     fetchNotifications();
@@ -206,12 +193,4 @@ export function NotificationProvider({ children }) {
   );
 }
 
-export function useNotifications() {
-  const context = useContext(NotificationContext);
-  if (!context) {
-    throw new Error(
-      "useNotifications must be used within a NotificationProvider"
-    );
-  }
-  return context;
-}
+export { NotificationProvider };

@@ -3,7 +3,7 @@ import Stomp from "stompjs";
 import cookieUtils from "@utils/cookieUtils";
 
 // Polyfill for global in browser environment
-if (typeof global === 'undefined') {
+if (typeof global === "undefined") {
   window.global = window;
 }
 
@@ -14,7 +14,7 @@ class NotificationService {
     this.isConnected = false;
     this.subscription = null;
     this.listeners = new Set();
-    this.baseUrl = "http://localhost:8089";
+    this.baseUrl = ""; // Sử dụng proxy từ Vite
     this.wsPath = "/ws";
     this.destination = "/user/queue/notifications";
   }
@@ -34,7 +34,7 @@ class NotificationService {
           callback(event, data);
         }
       } catch (error) {
-        console.error("Error in notification listener:", error);
+        // Silent error handling
       }
     });
   }
@@ -48,41 +48,61 @@ class NotificationService {
     }
 
     try {
+      // Gắn token vào query để backend đọc trong handshake (giống ws-test.html)
       const queryString = `?token=${encodeURIComponent(token)}`;
       const wsUrl = `${this.baseUrl}${this.wsPath}${queryString}`;
+
       this.socket = new SockJS(wsUrl);
       this.client = Stomp.over(this.socket);
       this.client.debug = null;
 
+      // Cấu hình heartbeat (giống ws-test.html)
+      this.client.heartbeat.incoming = 20000;
+      this.client.heartbeat.outgoing = 20000;
+
+      // Gửi Authorization ở frame CONNECT (giống ws-test.html)
       const headers = {
         Authorization: `Bearer ${token}`,
       };
 
       this.client.connect(
         headers,
-        () => {
+        (frame) => {
           this.isConnected = true;
-          this.notifyListeners("connected", { message: "WebSocket connected" });
+          this.notifyListeners("connected", {
+            message: "WebSocket connected",
+            headers: frame?.headers ? JSON.stringify(frame.headers) : "",
+          });
 
+          // Subscribe to notifications (giống ws-test.html)
           this.subscription = this.client.subscribe(
             this.destination,
             (message) => {
               try {
                 const notification = JSON.parse(message.body);
                 this.notifyListeners("notification", notification);
-              } catch {
+              } catch (error) {
+                // Nếu không parse được JSON, gửi raw message
                 this.notifyListeners("rawMessage", message.body);
               }
             }
           );
+
+          this.notifyListeners("subscribed", { destination: this.destination });
         },
-        () => {
+        (error) => {
           this.isConnected = false;
-          this.notifyListeners("error", { message: "Connection failed" });
+          this.notifyListeners("error", {
+            message: "Connection failed",
+            error: error.toString(),
+          });
         }
       );
-    } catch {
-      this.notifyListeners("error", { message: "Setup failed" });
+    } catch (error) {
+      this.notifyListeners("error", {
+        message: "Setup failed",
+        error: error.toString(),
+      });
     }
   }
 
@@ -100,7 +120,7 @@ class NotificationService {
           });
         });
       }
-    } catch {
+    } catch (error) {
       // Silent error handling
     } finally {
       this.client = null;
@@ -120,7 +140,7 @@ class NotificationService {
   async markAsRead(notificationId, token) {
     try {
       const response = await fetch(
-        `${this.baseUrl}/api/notification/${notificationId}`,
+        `/api/notification/${notificationId}`, // Sử dụng proxy
         {
           method: "PUT",
           headers: {
@@ -130,7 +150,7 @@ class NotificationService {
         }
       );
       return response.ok;
-    } catch {
+    } catch (error) {
       return false;
     }
   }
@@ -138,7 +158,7 @@ class NotificationService {
   async getNotifications(token, page = 0, size = 20) {
     try {
       const response = await fetch(
-        `${this.baseUrl}/api/notification?page=${page}&size=${size}`,
+        `/api/notification?page=${page}&size=${size}`, // Sử dụng proxy
         {
           method: "GET",
           headers: {
@@ -153,7 +173,7 @@ class NotificationService {
         return data;
       }
       return null;
-    } catch {
+    } catch (error) {
       return null;
     }
   }

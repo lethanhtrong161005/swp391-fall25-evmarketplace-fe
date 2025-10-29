@@ -1,0 +1,388 @@
+// Ensure body and html have light background with high specificity
+body, html, #root, .app {
+  background: #f5f7fa !important;
+  color: #262626 !important;
+}
+
+.notification-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  padding: 24px;
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &__card {
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: none;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 16px 32px 0;
+    gap: 16px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 12px 20px 0;
+      gap: 12px;
+    }
+  }
+
+  &__title-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+
+  &__icon {
+    font-size: 24px;
+    color: #1890ff;
+    background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+  }
+
+  &__title {
+    margin: 0 !important;
+    color: #262626;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.3;
+
+    @media (max-width: 768px) {
+      font-size: 20px;
+    }
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    color: #8c8c8c;
+    margin-top: 2px;
+    display: block;
+  }
+
+  &__mark-all-btn {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(24, 144, 255, 0.2);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(24, 144, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      height: 40px;
+    }
+  }
+
+  &__divider {
+    margin: 16px 32px 0;
+    border-color: #f0f0f0;
+
+    @media (max-width: 768px) {
+      margin: 12px 20px 0;
+    }
+  }
+
+  &__content {
+    padding: 24px 32px 32px;
+    height: 1050px;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 768px) {
+      padding: 20px;
+      height: 1000px;
+    }
+
+    .notification-list {
+      height: 950px;
+      overflow-y: auto;
+      padding-right: 8px;
+      margin-bottom: 24px;
+
+      // Custom scrollbar
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f5f5f5;
+        border-radius: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #d9d9d9;
+        border-radius: 4px;
+        transition: background 0.3s ease;
+
+        &:hover {
+          background: #bfbfbf;
+        }
+      }
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0 8px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 16px;
+
+    .notification-pagination {
+      .ant-pagination-item {
+        border-radius: 8px;
+        border: 1px solid #d9d9d9;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: #1890ff;
+          transform: translateY(-1px);
+        }
+
+        &.ant-pagination-item-active {
+          background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+          border-color: #1890ff;
+          color: #1890ff;
+          box-shadow: 0 1px 4px rgba(24, 144, 255, 0.15);
+        }
+      }
+
+      .ant-pagination-prev,
+      .ant-pagination-next {
+        border-radius: 8px;
+        border: 1px solid #d9d9d9;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: #1890ff;
+          color: #1890ff;
+          transform: translateY(-1px);
+        }
+      }
+
+      .ant-pagination-total-text {
+        color: #8c8c8c;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .ant-pagination-jump-prev,
+      .ant-pagination-jump-next {
+        &:hover {
+          .ant-pagination-item-container {
+            .ant-pagination-item-link-icon {
+              color: #1890ff;
+            }
+          }
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      padding: 12px 0 4px;
+      margin-top: 12px;
+
+      .notification-pagination {
+        .ant-pagination-item,
+        .ant-pagination-prev,
+        .ant-pagination-next {
+          min-width: 32px;
+          height: 32px;
+          line-height: 30px;
+        }
+
+        .ant-pagination-total-text {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+  .notification-page {
+    padding: 16px;
+
+    &__header {
+      padding: 12px 16px 0;
+    }
+
+    &__icon {
+      font-size: 20px;
+      padding: 6px;
+    }
+
+    &__title {
+      font-size: 18px;
+    }
+
+    &__subtitle {
+      font-size: 12px;
+    }
+
+    &__content {
+      padding: 16px;
+      height: 950px;
+      display: flex;
+      flex-direction: column;
+
+      .notification-list {
+        height: 900px;
+      }
+    }
+  }
+}
+
+// Force light theme with maximum specificity
+body .notification-page,
+html .notification-page,
+#root .notification-page,
+.app .notification-page {
+  // Ensure light background is always applied
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  
+  &__card {
+    background: #ffffff !important;
+    border: none !important;
+  }
+
+  &__title {
+    color: #262626 !important;
+  }
+
+  &__subtitle {
+    color: #8c8c8c !important;
+  }
+
+  &__divider {
+    border-color: #f0f0f0 !important;
+  }
+
+  &__content {
+    height: 1050px !important;
+    display: flex !important;
+    flex-direction: column !important;
+
+    @media (max-width: 768px) {
+      height: 1000px !important;
+    }
+
+    @media (max-width: 576px) {
+      height: 950px !important;
+    }
+  }
+
+  // Ensure notification list has light background and fixed height
+  .notification-list {
+    background: transparent !important;
+    height: 950px !important;
+
+    @media (max-width: 576px) {
+      height: 900px !important;
+    }
+  }
+
+  .notification-item {
+    background: transparent !important;
+    color: #262626 !important;
+
+    &:hover {
+      background: linear-gradient(90deg, #f8f9fa 0%, #f0f2f5 100%) !important;
+    }
+
+    .notification-title {
+      color: #262626 !important;
+    }
+
+    .notification-message {
+      color: #595959 !important;
+    }
+
+    .notification-time {
+      color: #8c8c8c !important;
+    }
+  }
+
+  // Ensure pagination has light theme
+  &__pagination {
+    border-top-color: #f0f0f0 !important;
+
+    .ant-pagination-item {
+      background: #ffffff !important;
+      border-color: #d9d9d9 !important;
+      color: #262626 !important;
+
+      &:hover {
+        border-color: #1890ff !important;
+        color: #1890ff !important;
+      }
+
+      &.ant-pagination-item-active {
+        background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%) !important;
+        border-color: #1890ff !important;
+        color: #1890ff !important;
+        box-shadow: 0 1px 4px rgba(24, 144, 255, 0.15) !important;
+      }
+    }
+
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      background: #ffffff !important;
+      border-color: #d9d9d9 !important;
+      color: #262626 !important;
+
+      &:hover {
+        border-color: #1890ff !important;
+        color: #1890ff !important;
+      }
+    }
+
+    .ant-pagination-total-text {
+      color: #8c8c8c !important;
+    }
+  }
+}
+
+// Override any dark theme classes
+[data-theme="dark"] .notification-page,
+.dark .notification-page,
+.theme-dark .notification-page {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  
+  &__card {
+    background: #ffffff !important;
+    border: none !important;
+  }
+
+  &__title {
+    color: #262626 !important;
+  }
+
+  &__subtitle {
+    color: #8c8c8c !important;
+  }
+
+  &__divider {
+    border-color: #f0f0f0 !important;
+  }
+}

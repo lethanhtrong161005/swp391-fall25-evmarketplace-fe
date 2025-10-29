@@ -8,7 +8,7 @@ import App from "./App.jsx";
 import { AuthProvider } from "@contexts/AuthContext.jsx";
 import { FavoritesProvider } from "@contexts/FavoritesContext.jsx";
 import { NotificationProvider } from "@contexts/NotificationContext.jsx";
-import NotificationToast from "@components/Notification/NotificationToast.jsx";
+import NotificationToast from "@components/Notification/Toast/NotificationToast";
 
 message.config({
   duration: 3, // hiển thị 3 giây (sweet spot)

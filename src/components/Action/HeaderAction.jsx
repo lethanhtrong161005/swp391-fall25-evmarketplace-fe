@@ -11,7 +11,7 @@ import ResetPasswordModal from "@components/Modal/ResetPasswordModal";
 import OtpVerifyModal from "@components/Modal/OtpVerifyModal";
 import RegisterModal from "@components/Modal/RegisterModal";
 import FavoritesDropdown from "@components/FavoritesDropdown/FavoritesDropdown";
-import NotificationCenter from "@components/Notification/NotificationCenter";
+import NotificationCenter from "@components/Notification/Center/NotificationCenter";
 
 import { useHeaderAction } from "./useHeaderAction";
 

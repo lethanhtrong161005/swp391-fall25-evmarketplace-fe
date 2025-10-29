@@ -51,7 +51,7 @@ export default function CreateAccountForm({ open, onClose, onFinish }) {
       open={open}
       onClose={handleClose}
       width={500}
-      destroyOnClose
+      destroyOnHidden
       footer={
         <Space style={{ float: "right" }}>
           <Button onClick={handleClose}>Hủy</Button>

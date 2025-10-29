@@ -46,7 +46,6 @@ export default function MyFavoritesPage() {
   const handleChatClick = (e, listingId) => {
     e.stopPropagation();
     // TODO: Implement chat functionality
-    console.log("Chat with listing:", listingId);
   };
 
   const handleRemoveClick = (e, listingId) => {
