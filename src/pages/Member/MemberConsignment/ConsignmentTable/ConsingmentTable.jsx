@@ -10,6 +10,7 @@ const ConsignmentTable = ({
   onView,
   setCancelId,
   onViewSchedule,
+  onOpenSchedule,
 }) => {
   const navigate = useNavigate();
 
@@ -72,6 +73,7 @@ const ConsignmentTable = ({
                   type="default"
                   onClick={(e) => {
                     e.stopPropagation();
+                    onOpenSchedule(record.id);
                   }}
                 >
                   Lên lịch
@@ -79,7 +81,7 @@ const ConsignmentTable = ({
               </Space>
             );
 
-          case "SCHEDULED": 
+          case "SCHEDULED":
             return (
               <Space>
                 {cancelButton}

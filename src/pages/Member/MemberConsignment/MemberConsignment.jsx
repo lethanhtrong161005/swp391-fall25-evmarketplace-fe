@@ -22,11 +22,7 @@ const tabs = [
     label: "Kiểm định",
     statuses: ["INSPECTING", "INSPECTED_PASS", "INSPECTED_FAIL"],
   },
-  {
-    key: "REQUEST_REJECTED",
-    label: "Bị từ chối",
-    statuses: ["REQUEST_REJECTED"],
-  },
+  { key: "REQUEST_REJECTED", label: "Bị từ chối", statuses: ["REQUEST_REJECTED"] },
   { key: "FINISHED", label: "Hoàn thành", statuses: ["FINISHED"] },
   { key: "EXPIRED", label: "Hết hạn", statuses: ["EXPIRED"] },
   { key: "CANCELLED", label: "Đã hủy", statuses: ["CANCELLED"] },
@@ -44,6 +40,7 @@ const MemberConsignment = () => {
     activeTab,
     setActiveTab,
     counts,
+    // fetchData,
     goCreateConsignment,
     setCancelId,
     handleCancel,
@@ -52,6 +49,8 @@ const MemberConsignment = () => {
     openScheduleModal,
     loadingSchedule,
     closeScheduleModal,
+    handleOpenSchedule,
+    handleCancelSchedule,
   } = useManagerConsignment(tabs);
 
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -81,6 +80,7 @@ const MemberConsignment = () => {
           queryHolder="Tìm sản phẩm ký gửi của bạn..."
           queryButtonText="Tạo ký gửi"
         />
+
         <StatusTabs
           tabs={tabs}
           counts={counts}
@@ -98,7 +98,8 @@ const MemberConsignment = () => {
             loading={loading}
             onView={onViewDetail}
             setCancelId={handleOpenCancelModal}
-            onViewSchedule={handleViewSchedule} 
+            onViewSchedule={handleViewSchedule}
+            onOpenSchedule={handleOpenSchedule}
           />
         ) : (
           <EmptyState
@@ -119,14 +120,15 @@ const MemberConsignment = () => {
         loading={loading}
       />
 
-      <ConsignmentDetailModal item={selectedItem} onClose={onCloseDetail} />
-
       <InspectionScheduleModal
         open={openScheduleModal}
         onClose={closeScheduleModal}
         data={scheduleData}
         loading={loadingSchedule}
+        onCancelSchedule={handleCancelSchedule} 
       />
+
+      <ConsignmentDetailModal item={selectedItem} onClose={onCloseDetail} />
     </div>
   );
 };

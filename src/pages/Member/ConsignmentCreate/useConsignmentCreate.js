@@ -110,9 +110,12 @@ export default function useConsignmentCreate(
     form.setFieldsValue({
       itemType: initialData.itemType,
 
-      category: initialData.category, 
-      brand_id: initialData.brand, 
-      model_id: initialData.model, 
+      category: initialData.categoryId, 
+      brand_id: initialData.brandId, 
+      model_id: initialData.modelId, 
+
+      brand: initialData.brand,
+      model: initialData.model,
 
       year: initialData.year,
       ownerExpectedPrice: initialData.ownerExpectedPrice,
@@ -125,7 +128,7 @@ export default function useConsignmentCreate(
       videos: [],
 
       note: initialData.note || "",
-      preferredBranchId: null, 
+      preferredBranchId: initialData.preferredBranchId, 
     });
   }, [initialData, form]);
 

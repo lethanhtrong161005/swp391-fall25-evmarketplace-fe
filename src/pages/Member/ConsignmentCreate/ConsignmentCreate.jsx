@@ -104,7 +104,7 @@ const ConsignmentForm = ({
           <CategoryBrandModel form={form} tax={tax} />
           <YearColorFields isBattery={isBattery} mode="consignment" />
           {isBattery ? (
-            <SectionDetailBattery />
+            <SectionDetailBattery mode="consignment"/>
           ) : (
             <SectionDetailVehicle mode="consignment" />
           )}
