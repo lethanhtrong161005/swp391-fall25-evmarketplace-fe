@@ -10,7 +10,7 @@ import EmptyState from "./EmptyState";
 import CashCollectModal from "./CashCollectModal";
 import ContractCreateModal from "./ContractCreateModal";
 import OrderDetail from "@components/OrderDetail";
-
+import HistoryPaymentModal from "@components/HistoryPaymentModal";
 
 const StaffOrder = () => {
     const logic = useStaffOrder();
@@ -52,6 +52,13 @@ const StaffOrder = () => {
                     open={logic.detailModal.open}
                     orderId={logic.detailModal.orderId}
                     onClose={logic.closeDetail}
+                    onOpenPaymentHistory={logic.openPaymentHistory}
+                />
+
+                <HistoryPaymentModal
+                    open={logic.paymentModal.open}
+                    orderId={logic.paymentModal.orderId}
+                    onClose={logic.closePaymentHistory}
                 />
             </div>
         </App>

@@ -3,7 +3,7 @@ import { App } from "antd";
 import { getOrderDetail } from "@services/order.service";
 import cookieUtils from "@utils/cookieUtils";
 
-export default function useOrderDetail(open, orderId) {
+export default function useOrderDetail(open, orderId, onOpenPaymentHistory) {
     const { message } = App.useApp();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(null);
@@ -55,9 +55,18 @@ export default function useOrderDetail(open, orderId) {
         }
     };
 
-    const viewPaymentHistory = () => message.info("Lịch sử thanh toán (stub)");
 
-    return { loading, data, actions: { canDownloadContract, viewContract, closeContract, contract, copyOrderNo, viewPaymentHistory } };
+    return {
+        loading, data, actions:
+        {
+            canDownloadContract,
+            viewContract,
+            closeContract,
+            contract,
+            copyOrderNo,
+            openPaymentHistory: () => onOpenPaymentHistory?.(data?.order)
+        }
+    };
 }
 
 

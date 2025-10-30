@@ -6,8 +6,8 @@ import PartyInfo from "./party-info";
 import ProductCard from "./product-card";
 import s from "./styles.module.scss";
 
-export default function OrderDetail({ open, orderId, onClose }) {
-    const { loading, data, actions } = useOrderDetail(open, orderId);
+export default function OrderDetail({ open, orderId, onClose, onOpenPaymentHistory }) {
+    const { loading, data, actions } = useOrderDetail(open, orderId, onOpenPaymentHistory);
 
     return (
         <>
@@ -33,7 +33,7 @@ export default function OrderDetail({ open, orderId, onClose }) {
                                 <Button type="primary" onClick={actions.viewContract} aria-label="Xem hợp đồng">Xem hợp đồng</Button>
                             ) : null}
                             <Button onClick={actions.copyOrderNo} aria-label="Sao chép Order No">Sao chép Order No</Button>
-                            <Button onClick={actions.viewPaymentHistory} aria-label="Xem lịch sử thanh toán">Xem lịch sử thanh toán</Button>
+                            <Button onClick={actions.openPaymentHistory}>Lịch sử thanh toán</Button>
                         </div>
                     </Space>
                 )}

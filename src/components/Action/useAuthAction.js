@@ -35,10 +35,16 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
   };
 
   const getMenuItems = () => {
-    const items = [
+
+    let items = [
       { key: "infouser", label: "Hồ sơ", path: "/info-user" },
       { key: "order", label: "Đơn hàng", path: "/my-order" }
     ];
+
+    if (user?.role !== "member") {
+      items = items.filter(i => i.key !== "order");
+    }
+
     if (hasDashboardAccess(user?.role)) {
       const dashboardPath = getDashboardPath(user?.role);
       if (dashboardPath)

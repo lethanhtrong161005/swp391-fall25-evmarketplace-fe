@@ -1,6 +1,7 @@
 import React from "react";
 import { Breadcrumb, Card, App } from "antd";
 import OrderDetail from "@components/OrderDetail";
+import HistoryPaymentModal from "@components/HistoryPaymentModal";
 import s from "./styles.module.scss";
 import useMyOrder from "./useMyOrder";
 import ProfileBar from "./ProfileBar";
@@ -48,6 +49,13 @@ const MyOrder = () => {
                     open={logic.detailModal.open}
                     orderId={logic.detailModal.orderId}
                     onClose={logic.closeDetailModal}
+                    onOpenPaymentHistory={logic.openPaymentHistory}
+                />
+
+                <HistoryPaymentModal
+                    open={logic.historyModal.open}
+                    orderId={logic.historyModal.orderId}
+                    onClose={logic.closePaymentHistory}
                 />
         </div>
         </App>

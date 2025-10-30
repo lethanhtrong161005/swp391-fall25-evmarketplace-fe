@@ -30,6 +30,7 @@ export default function useMyOrder() {
     const { loading, rows, total, load } = useOrders(queryParams);
     const [detailModal, setDetailModal] = useState({ open: false, orderId: null });
     const closeDetailModal = () => setDetailModal({ open: false, orderId: null });
+    const [historyModal, setHistoryModal] = useState({ open: false, orderId: null });
 
     // Payment Modal
     const [paymentModal, setPaymentModal] = useState({ open: false, order: null });
@@ -127,6 +128,9 @@ export default function useMyOrder() {
         onCancel,
         detailModal,
         closeDetailModal,
+        historyModal,
+        openPaymentHistory: (order) => setHistoryModal({ open: true, orderId: order?.id }),
+        closePaymentHistory: () => setHistoryModal({ open: false, orderId: null }),
     };
 }
 

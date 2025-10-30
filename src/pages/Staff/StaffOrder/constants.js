@@ -5,7 +5,6 @@ export const SORT_FIELD_WHITELIST = new Set([
 
 export const DEFAULT_PAGE_SIZE = 10;
 
-// Khớp enum BE, label tiếng Việt
 export const STATUS_META = {
     INITIATED: { color: "default", label: "Khởi tạo" },
     PENDING_PAYMENT: { color: "processing", label: "Chờ thanh toán" },
@@ -16,7 +15,6 @@ export const STATUS_META = {
     PAYMENT_FAILED: { color: "error", label: "Thanh toán thất bại" },
 };
 
-// Select options: value = enum BE, label = tiếng Việt
 export const STATUS_OPTIONS = Object.keys(STATUS_META).map((k) => ({
     label: STATUS_META[k].label,
     value: k,

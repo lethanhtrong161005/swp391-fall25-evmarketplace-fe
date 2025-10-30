@@ -1,4 +1,3 @@
-// src/pages/Staff/StaffOrder/useStaffOrder.js
 import { useMemo, useState } from "react";
 import { App } from "antd";
 import { buildQueryParams } from "./params";
@@ -12,7 +11,8 @@ import { useStaffId } from "./ProfileBar/useProfileBar";
 
 export default function useStaffOrder() {
     const { message: messageApi, modal } = App.useApp();
-    
+    const [paymentModal, setPaymentModal] = useState({ open: false, orderId: null });
+
     const filters = useOrderFilters();
     const sorting = useOrderSorting("createdAt", "descend");
     const pagination = usePagination(DEFAULT_PAGE_SIZE);
@@ -68,8 +68,8 @@ export default function useStaffOrder() {
                 staffId,
                 file,
                 note,
-                effectiveFrom, 
-                effectiveTo,   
+                effectiveFrom,
+                effectiveTo,
             });
             messageApi.success("Đã tạo hợp đồng (bản giấy) thành công");
             closeCreateContract();
@@ -78,6 +78,14 @@ export default function useStaffOrder() {
             messageApi.error(e?.message || "Tạo hợp đồng thất bại");
         }
     };
+
+    const openPaymentHistory = (order) => {
+        setPaymentModal({ open: true, orderId: order?.id });
+    }
+
+    const closePaymentHistory = () => {
+        setPaymentModal({ open: false, orderId: null });
+    }
 
     const handleCancel = async (order) => {
         modal.confirm({
@@ -121,5 +129,7 @@ export default function useStaffOrder() {
         detailModal: detail,
         closeDetail() { setDetail({ open: false, orderId: null }); },
         staffId,
+
+        paymentModal, openPaymentHistory, closePaymentHistory,
     };
 }
