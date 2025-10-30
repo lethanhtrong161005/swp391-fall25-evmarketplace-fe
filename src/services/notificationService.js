@@ -1,6 +1,5 @@
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
-import cookieUtils from "@utils/cookieUtils";
 
 // Polyfill for global in browser environment
 if (typeof global === "undefined") {
@@ -33,7 +32,7 @@ class NotificationService {
         if (typeof callback === "function") {
           callback(event, data);
         }
-      } catch (error) {
+      } catch {
         // Silent error handling
       }
     });
@@ -81,7 +80,7 @@ class NotificationService {
               try {
                 const notification = JSON.parse(message.body);
                 this.notifyListeners("notification", notification);
-              } catch (error) {
+              } catch {
                 // Nếu không parse được JSON, gửi raw message
                 this.notifyListeners("rawMessage", message.body);
               }
@@ -90,18 +89,18 @@ class NotificationService {
 
           this.notifyListeners("subscribed", { destination: this.destination });
         },
-        (error) => {
+        () => {
           this.isConnected = false;
           this.notifyListeners("error", {
             message: "Connection failed",
-            error: error.toString(),
+            error: "connection_failed",
           });
         }
       );
-    } catch (error) {
+    } catch {
       this.notifyListeners("error", {
         message: "Setup failed",
-        error: error.toString(),
+        error: "setup_failed",
       });
     }
   }
@@ -120,7 +119,7 @@ class NotificationService {
           });
         });
       }
-    } catch (error) {
+    } catch {
       // Silent error handling
     } finally {
       this.client = null;
@@ -150,15 +149,20 @@ class NotificationService {
         }
       );
       return response.ok;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
 
   async getNotifications(token, page = 0, size = 20) {
     try {
+      const url = `/api/notification?page=${page}&size=${size}`;
+      if (import.meta && import.meta.env && import.meta.env.DEV) {
+        console.debug("[NotificationService] GET", url);
+      }
+
       const response = await fetch(
-        `/api/notification?page=${page}&size=${size}`, // Sử dụng proxy
+        url, // Sử dụng proxy
         {
           method: "GET",
           headers: {
@@ -170,10 +174,68 @@ class NotificationService {
 
       if (response.ok) {
         const data = await response.json();
-        return data;
+        if (import.meta && import.meta.env && import.meta.env.DEV) {
+          console.debug("[NotificationService] Response shape:", {
+            keys: Object.keys(data || {}),
+            dataPreview: JSON.stringify(data).slice(0, 500) + "...",
+          });
+        }
+        const headerTotal =
+          response.headers.get("X-Total-Count") ||
+          response.headers.get("x-total-count") ||
+          response.headers.get("X-Total") ||
+          response.headers.get("x-total") ||
+          null;
+
+        // Normalize Page or Slice payloads to a common shape
+        const d = data && data.data ? data.data : data;
+
+        // Items: common fields
+        const items =
+          d?.items || d?.content || d?.data?.items || d?.data?.content || [];
+
+        // Resolve total for Page; may be in body or via headers; Slice usually lacks total
+        const bodyTotal =
+          d?.total ||
+          d?.totalItems ||
+          d?.totalElements ||
+          d?.page?.totalElements ||
+          d?.metadata?.total ||
+          null;
+
+        const normalized = {
+          items,
+          total:
+            headerTotal !== null
+              ? Number(headerTotal)
+              : bodyTotal !== null
+              ? Number(bodyTotal)
+              : null, // null when Slice (no total)
+          hasNext:
+            typeof d?.hasNext === "boolean"
+              ? d.hasNext
+              : typeof d?.last === "boolean"
+              ? !d.last
+              : typeof d?.numberOfElements === "number"
+              ? d.numberOfElements === size
+              : null,
+          page:
+            typeof d?.page === "number"
+              ? d.page
+              : typeof d?.number === "number"
+              ? d.number
+              : page,
+          size:
+            typeof d?.size === "number" ? d.size : size,
+        };
+
+        return normalized;
       }
       return null;
-    } catch (error) {
+    } catch {
+      if (import.meta && import.meta.env && import.meta.env.DEV) {
+        console.debug("[NotificationService] Error during fetch");
+      }
       return null;
     }
   }

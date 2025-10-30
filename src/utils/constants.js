@@ -1,8 +1,8 @@
 export const CATEGORIES = {
-  EV_CAR: "EV_CAR",
-  E_MOTORBIKE: "E_MOTORBIKE",
-  E_BIKE: "E_BIKE",
-  BATTERY: "BATTERY",
+  EV_CAR: "Xe ô tô điện",
+  E_MOTORBIKE: "Xe máy điện",
+  E_BIKE: "Xe đạp điện",
+  BATTERY: "Pin",
 };
 
 export const BRANDS_BY_CATEGORY = {
@@ -29,5 +29,57 @@ export const YEARS_EXTENDED = [
     const y = now - i;
     return { label: `${y}`, value: y };
   }),
-  { label: "trước năm 1980", value: 1979 }, // chuẩn hoá về 1979 để BE lưu SMALLINT
+  { label: "trước năm 1980", value: 1979 }, 
 ];
+
+
+export const CONSIGNMENT_STATUS_LABELS = {
+    SUBMITTED: "Đã gửi yêu cầu",
+    SCHEDULING: "Chờ lên lịch",
+    SCHEDULED: "Đã lên lịch",
+    RESCHEDULED: "Hẹn lại",
+    INSPECTING: "Đang kiểm định",
+    INSPECTED_PASS: "Kiểm định đạt",
+    INSPECTED_FAIL: "Kiểm định không đạt",
+    REQUEST_REJECTED: "Bị từ chối",
+    FINISHED: "Hoàn thành",
+    EXPIRED: "Hết hạn",
+    CANCELLED: "Đã hủy",
+  };
+
+  export const CONSIGNMENT_STATUS_COLOR = {
+    SUBMITTED: "blue",
+    SCHEDULING: "processing",
+    SCHEDULED: "gold",
+    INSPECTING: "processing",
+    INSPECTED_PASS: "green",
+    INSPECTED_FAIL: "red",
+    REQUEST_REJECTED: "volcano",
+    FINISHED: "success",
+    EXPIRED: "gray",
+  };
+
+  export const ITEM_TYPE = {
+    VEHICLE: "Phương tiện",
+    BATTERY: "Pin"
+  }
+
+  export const INSPECTION_STATUS_LABELS = {
+  SCHEDULED: "Đã lên lịch",
+  CHECKED_IN: "Đã check-in",
+  NO_SHOW: "Vắng mặt",
+  CANCELLED: "Đã hủy",
+};
+
+export const INSPECTION_STATUS_COLOR = {
+  SCHEDULED: "gold",
+  CHECKED_IN: "green",
+  NO_SHOW: "gray",
+  CANCELLED: "red",
+};
+
+export const ERROR_MESSAGES = {
+  "Can not cancel": "Không thể hủy yêu cầu ký gửi này",
+  "Request not found": "Không tìm thấy yêu cầu ký gửi",
+  "Invalid status transition": "Trạng thái hiện tại không thể chuyển sang trạng thái này",
+};

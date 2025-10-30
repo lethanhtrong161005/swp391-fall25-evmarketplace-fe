@@ -1,0 +1,40 @@
+.modal {
+    .ant-descriptions {
+      font-size: 14px;
+    }
+  }
+  
+  .divider {
+    margin-top: 20px !important;
+    margin-bottom: 12px !important;
+    color: #1677ff;
+    font-weight: 500;
+  }
+  
+  .mediaGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+  
+  .image,
+  .video {
+    width: 100%;
+    aspect-ratio: 1 / 1; // ✅ giữ tỉ lệ vuông đồng nhất
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: #000; // nền đồng nhất cho ảnh và video
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+    &:hover {
+      transform: scale(1.03);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+  }
+  
+  .video {
+    display: block;
+  }
+  

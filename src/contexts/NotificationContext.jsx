@@ -8,6 +8,7 @@ import { NotificationContext } from "./NotificationContext";
 function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState("disconnected");
   const { user, isLoggedIn } = useAuth();
@@ -93,22 +94,58 @@ function NotificationProvider({ children }) {
     setConnectionStatus("disconnected");
   }, []);
 
-  const fetchNotifications = useCallback(async () => {
-    if (!isLoggedIn) return;
+  const fetchNotifications = useCallback(
+    async (page = 0, size = 20) => {
+      if (!isLoggedIn) return;
 
-    const token = cookieUtils.getToken();
-    if (!token) return;
+      const token = cookieUtils.getToken();
+      if (!token) return;
 
-    try {
-      const data = await notificationService.getNotifications(token);
-      if (data?.data?.items) {
-        setNotifications(data.data.items);
-        setUnreadCount(data.data.items.filter((n) => !n.isRead).length);
+      try {
+        const result = await notificationService.getNotifications(
+          token,
+          page,
+          size
+        );
+
+        if (import.meta && import.meta.env && import.meta.env.DEV) {
+          console.groupCollapsed("[NotificationContext] fetchNotifications");
+          console.debug("params:", { page, size });
+          console.debug("raw keys:", Object.keys((result && result.data) || {}));
+          console.groupEnd();
+        }
+
+        if (!result) {
+          setNotifications([]);
+          setTotalCount(0);
+          return;
+        }
+
+        const items = result.items || [];
+        const total =
+          typeof result.total === "number"
+            ? result.total
+            : // Khi Slice: không có total, dùng công thức gần đúng:
+              result.hasNext === false
+            ? (page || 0) * size + items.length
+            : null;
+        const unreadFromApi =
+          null; // backend chưa chuẩn hoá unreadCount cho response này
+
+        setNotifications(items);
+        setTotalCount(typeof total === "number" ? Number(total) : total ?? 0);
+
+        if (typeof unreadFromApi === "number") {
+          setUnreadCount(unreadFromApi);
+        } else {
+          setUnreadCount(items.filter((n) => !n.isRead).length);
+        }
+      } catch {
+        // Silent error handling
       }
-    } catch {
-      // Silent error handling
-    }
-  }, [isLoggedIn]);
+    },
+    [isLoggedIn]
+  );
 
   useEffect(() => {
     if (!FEATURE_FLAGS.ENABLE_NOTIFICATIONS) return;
@@ -162,7 +199,7 @@ function NotificationProvider({ children }) {
   }, [addNotification]);
 
   useEffect(() => {
-    fetchNotifications();
+    fetchNotifications(0, 20);
   }, [fetchNotifications]);
 
   useEffect(() => {
@@ -174,6 +211,7 @@ function NotificationProvider({ children }) {
   const value = {
     notifications,
     unreadCount,
+    totalCount,
     isConnected,
     connectionStatus,
     addNotification,

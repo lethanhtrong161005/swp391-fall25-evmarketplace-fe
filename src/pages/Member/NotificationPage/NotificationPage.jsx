@@ -1,8 +1,9 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useEffect } from "react";
 import { Card, Typography, Button, Space, Divider, Pagination } from "antd";
 import { BellOutlined, CheckOutlined } from "@ant-design/icons";
 import { useNotifications } from "@hooks/useNotifications";
 import NotificationList from "@components/Notification/List/NotificationList";
+import NotificationModal from "@components/Notification/Modal/NotificationModal";
 import {
   getNotificationIcon,
   getNotificationColor,
@@ -12,31 +13,43 @@ import "./NotificationPage.styles.scss";
 const { Title, Text } = Typography;
 
 const NotificationPage = () => {
-  const { notifications, unreadCount, markAsRead, markAllAsRead } =
-    useNotifications();
+  const {
+    notifications,
+    unreadCount,
+    totalCount,
+    markAsRead,
+    markAllAsRead,
+    fetchNotifications,
+  } = useNotifications();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
   const handleNotificationClick = useCallback(
     async (notification) => {
+      setSelectedNotification(notification);
+      setIsModalVisible(true);
       if (!notification.isRead) {
         await markAsRead(notification.id);
       }
-      // Có thể thêm logic điều hướng đến trang chi tiết nếu cần
     },
     [markAsRead]
   );
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalVisible(false);
+    setSelectedNotification(null);
+  }, []);
 
   const handleMarkAllAsRead = useCallback(async () => {
     await markAllAsRead();
   }, [markAllAsRead]);
 
-  // Pagination logic
-  const paginatedNotifications = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return notifications.slice(startIndex, endIndex);
-  }, [notifications, currentPage, pageSize]);
+  // Fetch server-side page when currentPage changes
+  useEffect(() => {
+    fetchNotifications(currentPage - 1, pageSize);
+  }, [currentPage, pageSize, fetchNotifications]);
 
   // const totalPages = Math.ceil(notifications.length / pageSize);
 
@@ -50,6 +63,11 @@ const NotificationPage = () => {
     <div className="notification-page">
       <div className="notification-page__container">
         <Card className="notification-page__card">
+          <NotificationModal
+            visible={isModalVisible}
+            notification={selectedNotification}
+            onClose={handleCloseModal}
+          />
           <div className="notification-page__header">
             <div className="notification-page__title-section">
               <BellOutlined className="notification-page__icon" />
@@ -81,17 +99,17 @@ const NotificationPage = () => {
 
           <div className="notification-page__content">
             <NotificationList
-              notifications={paginatedNotifications}
+              notifications={notifications}
               onNotificationClick={handleNotificationClick}
               getNotificationIcon={getNotificationIcon}
               getNotificationColor={getNotificationColor}
             />
 
-            {notifications.length > pageSize && (
+            {totalCount > pageSize && (
               <div className="notification-page__pagination">
                 <Pagination
                   current={currentPage}
-                  total={notifications.length}
+                  total={totalCount}
                   pageSize={pageSize}
                   onChange={handlePageChange}
                   showSizeChanger={false}

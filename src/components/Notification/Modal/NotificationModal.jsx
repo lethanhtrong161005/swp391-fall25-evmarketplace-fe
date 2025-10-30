@@ -2,6 +2,11 @@ import React from "react";
 import { Modal, Button } from "antd";
 import { CloseCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/vi";
+
+dayjs.extend(relativeTime);
+dayjs.locale("vi");
 import {
   getNotificationIcon,
   getNotificationColor,
@@ -44,7 +49,6 @@ const NotificationModal = ({ visible, notification, onClose }) => {
       closeIcon={<CloseCircleOutlined />}
     >
       <div className="notification-modal-content">
-        {/* Header */}
         <div className="notification-modal-header">
           <div
             className="notification-modal-icon"
@@ -64,7 +68,6 @@ const NotificationModal = ({ visible, notification, onClose }) => {
           </div>
         </div>
 
-        {/* Status Badge */}
         <div className="notification-modal-status">
           <div
             className="status-badge"
@@ -74,12 +77,10 @@ const NotificationModal = ({ visible, notification, onClose }) => {
           </div>
         </div>
 
-        {/* Main Content */}
         <div className="notification-modal-body">
           {notification.message || "Không có nội dung chi tiết."}
         </div>
 
-        {/* Footer */}
         <div className="notification-modal-footer">
           <div className="notification-modal-timestamp">
             <ClockCircleOutlined />

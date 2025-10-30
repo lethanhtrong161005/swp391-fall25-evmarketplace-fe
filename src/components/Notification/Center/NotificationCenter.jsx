@@ -81,7 +81,6 @@ const NotificationCenter = () => {
         </div>
       </div>
 
-      {/* Body: scrollable list area */}
       <div className="notification-popover-body">
         <NotificationList
           notifications={filteredNotifications.slice(0, 10)}
@@ -91,7 +90,6 @@ const NotificationCenter = () => {
         />
       </div>
 
-      {/* Footer: fixed button area */}
       {notifications.length > 0 && (
         <div className="notification-popover-footer">
           <Button

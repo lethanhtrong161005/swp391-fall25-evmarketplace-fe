@@ -2,6 +2,11 @@ import React from "react";
 import { Empty, Tag } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/vi";
+
+dayjs.extend(relativeTime);
+dayjs.locale("vi");
 import "./NotificationList.style.scss";
 
 const getStatusBadge = (type) => {

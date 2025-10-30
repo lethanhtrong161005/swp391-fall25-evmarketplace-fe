@@ -48,9 +48,6 @@ const NotificationToast = () => {
 
     const latestNotification = notifications[0];
 
-    // Chỉ hiển thị toast nếu:
-    // 1. Notification chưa được hiển thị trước đó
-    // 2. Notification đáp ứng điều kiện shouldShowToast
     if (
       latestNotification &&
       !latestNotification.isRead &&
@@ -58,8 +55,7 @@ const NotificationToast = () => {
       !displayedNotificationsRef.current.has(latestNotification.id)
     ) {
       const title = getNotificationTitle(latestNotification.type);
-      // derive base color if needed (kept in local block only)
-      /* const baseColor = getNotificationColor(latestNotification.type); */
+      
 
       const statusMap = {
         LISTING_APPROVED: { text: "Đã duyệt", color: "success" },
@@ -146,7 +142,6 @@ const NotificationToast = () => {
         onClick: () => {},
       });
 
-      // Đánh dấu notification đã được hiển thị
       displayedNotificationsRef.current.add(latestNotification.id);
     }
   }, [
