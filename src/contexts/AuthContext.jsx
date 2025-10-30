@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
   // hydrate khi F5
   useEffect(() => {
     const payload = cookieUtils.decodeJwt();
+    console.log(payload)
     if (payload) {
       setUser({ ...payload, role: getRoleFromPayload(payload) });
     } else {

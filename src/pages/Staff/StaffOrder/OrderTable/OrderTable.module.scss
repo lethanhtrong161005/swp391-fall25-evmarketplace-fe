@@ -1,0 +1,125 @@
+.root {
+    overflow: hidden;
+}
+
+.table {
+    :global(.ant-table-thead > tr > th) {
+        white-space: nowrap;
+    }
+}
+
+.subtle {
+    color: var(--ant-color-text-tertiary);
+    font-size: 12px;
+}
+
+.strong {
+    font-weight: 600;
+}
+
+.mono {
+    font-variant-numeric: tabular-nums;
+}
+
+.orderNoCell {
+    max-width: 240px;
+}
+
+.orderNo {
+    display: inline-block;
+    max-width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.walletBtn {
+    white-space: nowrap;
+    /* tránh xuống dòng “Thu tiền mặt” */
+}
+
+
+/* ----- Dropdown actions ----- */
+.actionMenu {
+    :global(.ant-dropdown-menu) {
+        min-width: 230px;
+        padding: 6px;
+        border-radius: 12px;
+        box-shadow:
+            0 6px 16px rgba(0, 0, 0, 0.08),
+            0 3px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    :global(.ant-dropdown-menu-item) {
+        padding: 8px 10px;
+        border-radius: 10px;
+        transition: background 0.15s ease;
+
+        .menuLabel {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+
+            .menuPrimary {
+                font-weight: 600;
+                color: var(--ant-color-text);
+            }
+
+            .menuHint {
+                font-size: 12px;
+                color: var(--ant-color-text-tertiary);
+            }
+        }
+
+        :global(.ant-dropdown-menu-item-icon),
+        :global(.anticon) {
+            font-size: 16px;
+            color: var(--ant-color-text-secondary);
+        }
+
+        &:hover {
+            background: var(--ant-color-fill-tertiary);
+        }
+    }
+
+    /* Divider mảnh & thoáng hơn */
+    :global(.ant-dropdown-menu-item-divider) {
+        margin: 6px 8px;
+        background: var(--ant-color-border-secondary);
+    }
+
+    /* Trạng thái disabled: vẫn đọc được lý do */
+    :global(.ant-dropdown-menu-item-disabled) {
+        opacity: 1;
+
+        .menuPrimary {
+            color: var(--ant-color-text-tertiary);
+            font-weight: 500;
+        }
+
+        :global(.anticon) {
+            color: var(--ant-color-text-quaternary);
+        }
+    }
+}
+
+/* Nút 3 chấm */
+.moreBtn {
+    padding: 0 8px;
+    border-radius: 8px;
+
+    &:hover {
+        background: var(--ant-color-fill-tertiary);
+    }
+}
+
+/* Mobile tweak */
+@media (max-width: 575px) {
+    .orderNoCell {
+        max-width: 180px;
+    }
+}

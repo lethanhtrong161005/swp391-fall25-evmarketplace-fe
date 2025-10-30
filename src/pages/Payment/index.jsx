@@ -44,8 +44,8 @@ const VnpReturnPage = () => {
             title={status === "success" ? "Thanh toán thành công!" : "Thanh toán thất bại!"}
             subTitle={message}
             extra={
-                <Button type="primary" onClick={() => navigate("/my-ads")}>
-                    Quay lại danh sách tin
+                <Button type="primary" onClick={() => navigate("/")}>
+                    Về trang chủ
                 </Button>
             }
         />
