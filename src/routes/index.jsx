@@ -60,6 +60,7 @@ import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
 import StaffOrder from "@pages/Staff/StaffOrder";
 import MyOrder from "@pages/Member/MyOrder";
+import StaffContract from "@pages/Staff/StaffContract";
 
 export const routes = () => [
   {
@@ -157,6 +158,10 @@ export const routes = () => [
           {
             path: "order",
             element: <StaffOrder/>
+          },
+          {
+            path: "contract",
+            element: <StaffContract/>
           },
         ],
       },
