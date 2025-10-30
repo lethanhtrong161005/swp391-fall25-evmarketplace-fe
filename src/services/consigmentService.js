@@ -83,6 +83,33 @@ export const getMemberInspectionSchedule = async (requestId, statuses = []) => {
   return res.data;
 };
 
+export const getInspectionAvailability = async (params) => {
+  const res = await api.get("/api/inspection_schedule/availability", {
+    params: params,
+  });
+  return res.data;
+};
+
+export const bookInspectionSchedule = async (payload) => {
+  try {
+    const res = await post("/api/inspection_schedule/booking", payload, {}, {
+      "Content-Type": "application/json",
+    });
+    return res;
+  } catch (err) {
+    console.error("Error booking inspection schedule:", err);
+    throw err;
+  }
+};
+
+
+export const markCancelInspectionSchedule = async (id, reason = "Khách hàng vắng mặt") => {
+  const endpoint = `/api/inspection_schedule/${id}/cancel`;
+  const body = { reason };
+  const res = await api.patch(endpoint, body);
+  return res.data;
+};
+
 //Manager
 export const getConsignmentsAssign = async (branchId) => {
   return await get(

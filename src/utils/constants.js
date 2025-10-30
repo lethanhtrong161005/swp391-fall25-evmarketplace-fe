@@ -77,3 +77,9 @@ export const INSPECTION_STATUS_COLOR = {
   NO_SHOW: "gray",
   CANCELLED: "red",
 };
+
+export const ERROR_MESSAGES = {
+  "Can not cancel": "Không thể hủy yêu cầu ký gửi này",
+  "Request not found": "Không tìm thấy yêu cầu ký gửi",
+  "Invalid status transition": "Trạng thái hiện tại không thể chuyển sang trạng thái này",
+};
