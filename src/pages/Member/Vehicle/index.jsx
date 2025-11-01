@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import VehicleList from "./VehicleList";
-import { getAllListings } from "@/services/listingHomeService";
+import { getVehicleListings } from "@/services/listingHomeService";
 const Vehicle = () => {
   const [listings, setListings] = useState([]);
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await getAllListings({
+      const result = await getVehicleListings({
         page: 0,
         size: 20,
         sort: "createdAt",
         dir: "desc",
       });
-      const items = res?.data?.items || [];
+      const items = result?.items || [];
       setListings(items);
     };
     fetch();

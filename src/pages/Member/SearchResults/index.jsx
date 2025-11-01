@@ -132,9 +132,8 @@ const SearchResults = () => {
         setCurrentPage((prev) => prev + 1);
         setHasNext(response.data.hasNext);
       }
-    } catch (error) {
-      console.error("❌ Load more error:", error);
-      message.error("Có lỗi xảy ra khi tải thêm kết quả");
+    } catch {
+      message.error("Có lỗi xảy ra khi tải thêm dữ liệu");
     } finally {
       setLoading(false);
     }

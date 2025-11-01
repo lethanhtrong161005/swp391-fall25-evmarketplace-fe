@@ -43,7 +43,7 @@ export default function MyFavoritesPage() {
     navigate(`/detail/${listingId}`);
   };
 
-  const handleChatClick = (e, listingId) => {
+  const handleChatClick = (e) => {
     e.stopPropagation();
     // TODO: Implement chat functionality
   };
@@ -94,7 +94,7 @@ export default function MyFavoritesPage() {
                 className="favorite-item"
                 hoverable
                 onClick={() => handleItemClick(item.listingId)}
-                bodyStyle={{ padding: 16 }}
+                styles={{ body: { padding: 16 } }}
               >
                 <Row gutter={16} align="middle">
                   {/* Image Section */}
@@ -195,7 +195,7 @@ export default function MyFavoritesPage() {
                       <Button
                         type="default"
                         className="favorite-item__chat-btn"
-                        onClick={(e) => handleChatClick(e, item.listingId)}
+                        onClick={(e) => handleChatClick(e)}
                       >
                         Chat
                       </Button>

@@ -1,6 +1,11 @@
 import React from "react";
-import { Button, Dropdown, Avatar, Grid } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Button, Dropdown, Avatar, Grid, Tooltip, Space } from "antd";
+import {
+  UserOutlined,
+  HeartOutlined,
+  MessageOutlined,
+  BellOutlined,
+} from "@ant-design/icons";
 
 const { useBreakpoint } = Grid;
 
@@ -11,9 +16,13 @@ import ResetPasswordModal from "@components/Modal/ResetPasswordModal";
 import OtpVerifyModal from "@components/Modal/OtpVerifyModal";
 import RegisterModal from "@components/Modal/RegisterModal";
 import FavoritesDropdown from "@components/FavoritesDropdown/FavoritesDropdown";
+import UnauthenticatedFavoritesDropdown from "@components/FavoritesDropdown/UnauthenticatedFavoritesDropdown";
 import NotificationCenter from "@components/Notification/Center/NotificationCenter";
+import UnauthenticatedNotificationCenter from "@components/Notification/UnauthenticatedCenter/UnauthenticatedNotificationCenter";
+import UnauthenticatedChatButton from "@components/Chat/UnauthenticatedChatButton";
 
 import { useHeaderAction } from "./useHeaderAction";
+import "./HeaderAction.scss";
 
 const MANAGE_LISTINGS_PATH = "/my-ads";
 const MANAGE_CONSIGNMENTS_PATH = "/consignment";
@@ -50,21 +59,23 @@ const HeaderAction = () => {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "24px", // Khoảng cách lớn giữa các nhóm chức năng
+          gap: "16px",
         }}
       >
         {contextHolder}
 
-        {/* Nhóm Button - Desktop only */}
+        {/* Nhóm Button - Desktop only khi là member */}
         {isDesktop && isMember && (
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "8px", // Khoảng cách nhỏ giữa các button
+              gap: "8px",
             }}
           >
             <Button
+              type="text"
+              className="header-text-button"
               onClick={() =>
                 handleLoginRequire(
                   CREATE_LISTING_PATH,
@@ -76,6 +87,8 @@ const HeaderAction = () => {
             </Button>
 
             <Button
+              type="text"
+              className="header-text-button"
               onClick={() =>
                 handleLoginRequire(
                   MANAGE_LISTINGS_PATH,
@@ -87,6 +100,8 @@ const HeaderAction = () => {
             </Button>
 
             <Button
+              type="text"
+              className="header-text-button"
               onClick={() =>
                 handleLoginRequire(
                   MANAGE_CONSIGNMENTS_PATH,
@@ -99,67 +114,123 @@ const HeaderAction = () => {
           </div>
         )}
 
-        {/* Nhóm Icon */}
-        {isLoggedIn && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px", // Khoảng cách nhỏ giữa các icon
-            }}
-          >
-            <NotificationCenter />
+        {/* Nhóm Icon với kiểu mới */}
+        <Space size={8}>
+          {/* Icon Favorited - Heart */}
+          {isLoggedIn ? (
             <FavoritesDropdown />
-          </div>
-        )}
+          ) : (
+            <UnauthenticatedFavoritesDropdown
+              onLoginClick={() => auth.setOpenLogin?.(true)}
+            />
+          )}
+
+          {/* Icon Chat - Message */}
+          {isLoggedIn ? (
+            <Tooltip title="Chat">
+              <Button
+                type="text"
+                icon={<MessageOutlined style={{ fontSize: "18px" }} />}
+                onClick={() => {
+                  // TODO: Navigate to chat page when implemented
+                }}
+                style={{
+                  borderRadius: "50%",
+                  width: "40px",
+                  height: "40px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+            </Tooltip>
+          ) : (
+            <UnauthenticatedChatButton
+              onLoginClick={() => auth.setOpenLogin?.(true)}
+            />
+          )}
+
+          {/* Icon Notification - Bell */}
+          {isLoggedIn ? (
+            <NotificationCenter />
+          ) : (
+            <UnauthenticatedNotificationCenter
+              onLoginClick={() => auth.setOpenLogin?.(true)}
+            />
+          )}
+        </Space>
 
         {/* Khối Người dùng */}
         {isLoggedIn ? (
-          <div
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: "profile-header",
+                  label: (
+                    <div className="profile-dropdown-header">
+                      <div className="profile-dropdown-avatar">
+                        <Avatar
+                          src={avatarSrc}
+                          icon={<UserOutlined />}
+                          size={48}
+                          style={{
+                            backgroundColor: avatarSrc
+                              ? "transparent"
+                              : "#1890ff",
+                          }}
+                        >
+                          {!avatarSrc
+                            ? avatarName?.charAt(0)?.toUpperCase()
+                            : null}
+                        </Avatar>
+                      </div>
+                      <div className="profile-dropdown-name">{displayName}</div>
+                    </div>
+                  ),
+                  disabled: true,
+                },
+                { type: "divider" },
+                ...menuItems,
+              ],
+              onClick: handleMenuClick,
+            }}
+            placement="bottom"
+            trigger={["click"]}
+            overlayClassName="header-profile-dropdown"
+            align={{
+              offset: [0, 4],
+            }}
+            getPopupContainer={(triggerNode) =>
+              triggerNode.parentElement || document.body
+            }
+          >
+            <div className="header-avatar-container">
+              <Avatar
+                src={avatarSrc}
+                icon={<UserOutlined />}
+                size={40}
+                style={{
+                  backgroundColor: avatarSrc ? "transparent" : "#1890ff",
+                }}
+              >
+                {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
+              </Avatar>
+            </div>
+          </Dropdown>
+        ) : (
+          <Button
+            type="primary"
+            onClick={() => auth.setOpenLogin?.(true)}
             style={{
-              display: "flex",
-              alignItems: "center",
+              borderRadius: "20px",
+              height: "40px",
+              padding: "0 24px",
+              fontWeight: "500",
             }}
           >
-            <Dropdown
-              menu={{ items: menuItems, onClick: handleMenuClick }}
-              placement="bottomRight"
-              trigger={["click"]}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  cursor: "pointer",
-                  padding: "4px 8px",
-                  borderRadius: "6px",
-                  transition: "background-color 0.2s",
-                }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "#f5f5f5")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "transparent")
-                }
-              >
-                <Avatar src={avatarSrc} icon={<UserOutlined />} size="small">
-                  {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
-                </Avatar>
-                {isDesktop && (
-                  <span style={{ fontSize: "14px", color: "#262626" }}>
-                    {displayName}
-                  </span>
-                )}
-              </div>
-            </Dropdown>
-          </div>
-        ) : (
-          isDesktop && (
-            <Button type="primary" onClick={() => auth.setOpenLogin?.(true)}>
-              Đăng nhập
-            </Button>
-          )
+            Đăng nhập
+          </Button>
         )}
 
         <LoginModal

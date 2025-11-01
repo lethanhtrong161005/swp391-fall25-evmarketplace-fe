@@ -55,6 +55,7 @@ import NotificationPage from "@pages/Member/NotificationPage";
 import VnpReturnPage from "@pages/Payment";
 import MemberConsignment from "@/pages/Member/MemberConsignment/MemberConsignment";
 import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate";
+import AllListings from "@pages/Member/AllListings";
 
 // Errors
 import Error403 from "@pages/Errors/Error403";
@@ -72,6 +73,7 @@ export const routes = () => [
       { index: true, element: <HomeWrapper /> },
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
+      { path: "listings", element: <AllListings /> },
       { path: "search-results", element: <SearchResults /> },
       { path: "detail/:id", element: <ProductDetail /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
@@ -104,9 +106,8 @@ export const routes = () => [
               },
               {
                 path: "availability",
-                element: <InspectionAvailabilityPage />
+                element: <InspectionAvailabilityPage />,
               },
-              
             ],
           },
           { path: "my-favorites", element: <MyFavoritesPage /> },
@@ -163,10 +164,11 @@ export const routes = () => [
           },
           {
             path: "consignment/inspecting",
-            element: <StaffInspectingManagement/>
-          },{
+            element: <StaffInspectingManagement />,
+          },
+          {
             path: "consignment/agreement",
-            element: <StaffAgreementManagement/>
+            element: <StaffAgreementManagement />,
           },
         ],
       },

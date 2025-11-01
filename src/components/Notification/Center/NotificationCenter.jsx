@@ -138,8 +138,16 @@ const NotificationCenter = () => {
             >
               <Button
                 type="text"
-                icon={<BellOutlined />}
+                icon={<BellOutlined style={{ fontSize: "18px" }} />}
                 className="notification-bell-button"
+                style={{
+                  borderRadius: "50%",
+                  width: "40px",
+                  height: "40px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               />
             </Badge>
           </div>

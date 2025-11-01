@@ -22,7 +22,7 @@ const FavoritesDropdown = () => {
       setLoading(true);
       const response = await getFavorites(0, 5); // Chỉ lấy 5 item đầu tiên
       setFavorites(response.data?.items || []);
-    } catch (error) {
+    } catch {
       setFavorites([]); // Set empty array nếu có lỗi
     } finally {
       setLoading(false);
@@ -38,7 +38,7 @@ const FavoritesDropdown = () => {
       setFavorites((prev) =>
         prev.filter((item) => item.listingId !== listingId)
       );
-    } catch (error) {
+    } catch {
       // Error handling - có thể thêm notification sau
     } finally {
       setRemovingIds((prev) => {
@@ -200,9 +200,17 @@ const FavoritesDropdown = () => {
     >
       <Button
         type="text"
-        icon={<HeartOutlined />}
+        icon={<HeartOutlined style={{ fontSize: "18px" }} />}
         className="favorites-dropdown__trigger"
-        title="Tin đã lưu"
+        title="Tin đăng đã lưu"
+        style={{
+          borderRadius: "50%",
+          width: "40px",
+          height: "40px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       />
     </Popover>
   );

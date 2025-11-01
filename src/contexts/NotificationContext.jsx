@@ -108,29 +108,24 @@ function NotificationProvider({ children }) {
           size
         );
 
-        if (import.meta && import.meta.env && import.meta.env.DEV) {
-          console.groupCollapsed("[NotificationContext] fetchNotifications");
-          console.debug("params:", { page, size });
-          console.debug("raw keys:", Object.keys((result && result.data) || {}));
-          console.groupEnd();
-        }
-
-        if (!result) {
+        if (!result || !result.data) {
           setNotifications([]);
           setTotalCount(0);
+          setUnreadCount(0);
           return;
         }
 
-        const items = result.items || [];
+        // Safely access result.data
+        const resultData = result.data || {};
+        const items = resultData.items || [];
         const total =
-          typeof result.total === "number"
-            ? result.total
+          typeof resultData.total === "number"
+            ? resultData.total
             : // Khi Slice: không có total, dùng công thức gần đúng:
-              result.hasNext === false
+            resultData.hasNext === false
             ? (page || 0) * size + items.length
             : null;
-        const unreadFromApi =
-          null; // backend chưa chuẩn hoá unreadCount cho response này
+        const unreadFromApi = null; // backend chưa chuẩn hoá unreadCount cho response này
 
         setNotifications(items);
         setTotalCount(typeof total === "number" ? Number(total) : total ?? 0);

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { getAllListings } from "@/services/listingHomeService";
+import { getBatteryListings } from "@/services/listingHomeService";
 import BatteryList from "./BatteryList";
 const Battery = () => {
   const [listings, setListings] = useState([]);
 
   useEffect(() => {
     const fetch = async () => {
-      const res = await getAllListings({
+      const result = await getBatteryListings({
         page: 0,
         size: 20,
         sort: "createdAt",
         dir: "desc",
       });
-      setListings(res?.data?.items || []);
+      setListings(result?.items || []);
     };
     fetch();
   }, []);
