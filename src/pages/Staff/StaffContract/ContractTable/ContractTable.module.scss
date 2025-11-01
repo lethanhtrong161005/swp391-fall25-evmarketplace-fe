@@ -1,0 +1,62 @@
+.root {
+  overflow: hidden;
+}
+
+.table {
+  :global(.ant-table-thead > tr > th) {
+    white-space: nowrap;
+  }
+}
+
+.subtle {
+  color: var(--ant-color-text-tertiary);
+  font-size: 12px;
+}
+
+.strong {
+  font-weight: 600;
+}
+
+.mono {
+  font-variant-numeric: tabular-nums;
+}
+
+.vcol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.orderNoCell {
+  max-width: 260px;
+}
+
+.orderNo {
+  display: inline-block;
+  max-width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.orderNoMeta {
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.viewActionBtn {
+  padding: 0 6px;
+  border-radius: 8px;
+
+  &:hover {
+    background: var(--ant-color-fill-tertiary);
+  }
+}
+
+@media (max-width: 575px) {
+  .orderNoCell {
+    max-width: 200px;
+  }
+}
+

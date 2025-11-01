@@ -1,14 +1,14 @@
 import React from "react";
 import { Avatar, Badge, Space, Tag, Skeleton } from "antd";
 import styles from "./ProfileBar.module.scss";
-import useUserProfileBar from "./useProfileBar";
+import useProfileBar from "./useProfileBar";
 
 const roleLabel = (r) => (r === "ADMIN" ? "Quản trị" : r === "STAFF" ? "Nhân viên" : "Thành viên");
 
-const ProfileBar = () => {
-    const { loading, data } = useUserProfileBar();
+const ProfileBar = ({ rows = [], loading }) => {
+    const { loading: profileLoading, data } = useProfileBar();
 
-    if (loading) {
+    if (loading || profileLoading) {
         return (
             <div className={styles.profileBar}>
                 <div className={styles.left}>
@@ -32,6 +32,12 @@ const ProfileBar = () => {
         data?.profile?.avatarUrl ||
         `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=96&background=D9E3F0&color=2F365F`;
 
+    // Calculate stats from rows
+    const stats = {
+        total: rows.length,
+        pending: rows.filter(r => ['PENDING_PAYMENT'].includes(r.status)).length,
+        completed: rows.filter(r => ['COMPLETED', 'CONTRACT_SIGNED'].includes(r.status)).length,
+    };
 
     return (
         <div className={styles.profileBar}>
@@ -43,20 +49,21 @@ const ProfileBar = () => {
                     <div className={styles.name}>{name}</div>
                     <Space size={8} wrap>
                         <Tag>{roleLabel(role)}</Tag>
-                        <Tag color="processing">Có gì mới</Tag>
+                        <Tag color="processing">Đơn hàng của tôi</Tag>
                     </Space>
                 </div>
             </div>
 
             <div className={styles.actions}>
                 <Space size={8}>
-                    {data?.stats?.published > 0 && <Tag color="success">Đang hiển thị: {data.stats.published}</Tag>}
-                    {data?.stats?.pending > 0 && <Tag color="gold">Chờ duyệt: {data.stats.pending}</Tag>}
-                    {data?.stats?.draft > 0 && <Tag color="blue">Nháp: {data.stats.draft}</Tag>}
+                    {stats.total > 0 && <Tag color="success">Tổng đơn: {stats.total}</Tag>}
+                    {stats.pending > 0 && <Tag color="gold">Chờ thanh toán: {stats.pending}</Tag>}
+                    {stats.completed > 0 && <Tag color="green">Hoàn tất: {stats.completed}</Tag>}
                 </Space>
             </div>
         </div>
-    );   
+    );
 };
 
 export default ProfileBar;
+

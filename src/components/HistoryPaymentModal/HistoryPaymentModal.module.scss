@@ -1,0 +1,51 @@
+.headerRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.countTag {
+    margin-left: 8px;
+}
+
+.spacer { flex: 1; }
+
+.listWrap {
+    max-height: 56vh;
+    overflow: auto;
+    padding-right: 4px;
+}
+
+.item {
+    padding: 8px 0;
+
+    .ant-card {
+        width: 100%;
+    }
+}
+
+.footerBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.loadMore {
+    display: flex;
+    justify-content: flex-start;
+    padding: 12px 0;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.emptyWrap { padding: 24px 0; }

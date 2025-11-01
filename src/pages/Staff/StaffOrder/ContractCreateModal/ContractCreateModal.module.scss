@@ -1,0 +1,135 @@
+.root {
+    width: 100%;
+}
+
+.stack {
+    width: 100%;
+    gap: 12px;
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+/* Modal overall tweaks */
+.modalWrap {
+    :global(.ant-modal-content) {
+        border-radius: 14px;
+    }
+
+    :global(.ant-modal-header) {
+        border-radius: 14px 14px 0 0;
+    }
+
+    :global(.ant-modal-body) {
+        padding: 16px 20px;
+    }
+
+    @media (min-width: 768px) {
+        :global(.ant-modal-body) {
+            padding: 20px 24px;
+        }
+    }
+}
+
+/* Alert look */
+.alert {
+    :global(.ant-alert) {
+        border-radius: 10px;
+    }
+}
+
+/* Form layout */
+.form {
+    width: 100%;
+
+    :global(.ant-form-item) {
+        margin-bottom: 14px;
+    }
+
+    :global(.ant-form-item-label > label) {
+        font-weight: 600;
+    }
+}
+
+/* Two-column grid on >=768px, single column on mobile */
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+
+    @media (min-width: 768px) {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    @media (min-width: 1200px) {
+        gap: 18px;
+    }
+}
+
+/* Card-ish container for each column */
+.card {
+    background: var(--ant-color-bg-elevated);
+    border: 1px solid var(--ant-color-border);
+    border-radius: 12px;
+    padding: 12px;
+
+    @media (min-width: 768px) {
+        padding: 14px;
+    }
+
+    @media (min-width: 1200px) {
+        padding: 16px;
+    }
+}
+
+/* Dragger style */
+.dragger {
+    :global(.ant-upload-drag) {
+        border-radius: 12px;
+        padding: 14px;
+        border-color: var(--ant-color-border-secondary);
+        transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    :global(.ant-upload-drag:hover) {
+        border-color: var(--ant-color-primary);
+        background: var(--ant-color-fill-tertiary);
+    }
+
+    :global(.ant-upload-text) {
+        font-weight: 600;
+    }
+
+    :global(.ant-upload-hint) {
+        color: var(--ant-color-text-tertiary);
+    }
+
+    /* Danh sách file */
+    :global(.ant-upload-list) {
+        margin-top: 8px;
+    }
+}
+
+/* Subtips block under upload */
+.tips {
+    font-size: 12px;
+    color: var(--ant-color-text-tertiary);
+    margin-top: 6px;
+    line-height: 1.5;
+
+    b {
+        font-weight: 600;
+        color: var(--ant-color-text);
+    }
+
+    i {
+        color: var(--ant-color-text-secondary);
+    }
+}
+
+/* Make pickers full width */
+:global(.ant-picker) {
+    width: 100%;
+}

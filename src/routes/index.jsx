@@ -62,6 +62,9 @@ import InspectionAvailabilityPage from "@pages/Member/MemberConsignment/Inpectio
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
+import StaffOrder from "@pages/Staff/StaffOrder";
+import MyOrder from "@pages/Member/MyOrder";
+import StaffContract from "@pages/Staff/StaffContract";
 
 export const routes = () => [
   {
@@ -84,6 +87,7 @@ export const routes = () => [
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
           { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
+          { path: "my-order", element: <MyOrder /> },
           {
             path: "consignment",
             breadcrumb: "Ký gửi",
@@ -158,6 +162,14 @@ export const routes = () => [
           {
             path: "consignment/inspection-schedule",
             element: <StaffInspectionSchedule />,
+          },
+          {
+            path: "order",
+            element: <StaffOrder />,
+          },
+          {
+            path: "contract",
+            element: <StaffContract />,
           },
           {
             path: "consignment/inspecting",

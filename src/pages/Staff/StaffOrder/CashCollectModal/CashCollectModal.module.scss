@@ -1,0 +1,45 @@
+/* src/pages/Staff/StaffOrder/CashCollectModal.module.scss */
+.root {
+    /* bọc nội dung modal để style cục bộ */
+}
+
+.stack {
+    width: 100%;
+}
+
+.form {
+    :global(.ant-form-item) {
+        margin-bottom: 10px;
+    }
+}
+
+.info {
+    border-radius: 8px;
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    /* nút “Thu đủ còn lại” canh phải */
+    margin-top: 6px;
+}
+
+.disabledNote {
+    display: block;
+    margin-top: 6px;
+}
+
+/* tinh chỉnh nhỏ cho nhãn + nội dung */
+:global(.ant-modal-body) .ant-form-item-label>label {
+    font-weight: 500;
+}
+
+:global(.ant-input),
+:global(.ant-input-number) {
+    border-radius: 8px;
+}
