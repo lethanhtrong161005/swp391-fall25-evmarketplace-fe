@@ -13,6 +13,7 @@ const VnpReturnPage = () => {
     const params = Object.fromEntries(
       new URLSearchParams(location.search).entries()
     );
+    console.log("VNPay return params:", params);
 
     verifyVnpReturn(params)
       .then(({ ok, payload }) => {
@@ -49,8 +50,8 @@ const VnpReturnPage = () => {
       }
       subTitle={message}
       extra={
-        <Button type="primary" onClick={() => navigate("/my-ads")}>
-          Quay lại danh sách tin
+        <Button type="primary" onClick={() => navigate("/")}>
+          Về trang chủ
         </Button>
       }
     />

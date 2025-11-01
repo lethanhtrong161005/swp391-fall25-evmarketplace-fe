@@ -43,9 +43,15 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
   };
 
   const getMenuItems = () => {
-    const items = [];
+    let items = [
+      { key: "infouser", label: "Hồ sơ", path: "/info-user" },
+      { key: "order", label: "Đơn hàng", path: "/my-order" },
+    ];
 
-    // Dashboard section for roles with dashboard access
+    if (user?.role !== "member") {
+      items = items.filter((i) => i.key !== "order");
+    }
+
     if (hasDashboardAccess(user?.role)) {
       const dashboardPath = getDashboardPath(user?.role);
       if (dashboardPath) {
@@ -176,7 +182,11 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
       navigate("/history/transactions");
     } else if (key === "logout") {
       await logout();
+      return;
     }
+
+    const item = getMenuItems().find((i) => i.key === key);
+    if (item?.path) navigate(item.path);
   };
 
   return {

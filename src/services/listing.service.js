@@ -17,7 +17,7 @@ export async function createListing(payload, images = [], videos = []) {
   const ok =
     res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
   if (!ok) {
-    throw new Error(res?.data?.message || `Upload failed (${res?.status})`);
+    throw new Error(res?.data?.message || `Upload failed (${res?.data?.message })`);
   }
   return res.data;
 }

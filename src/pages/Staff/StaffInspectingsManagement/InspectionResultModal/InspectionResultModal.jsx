@@ -20,6 +20,7 @@ const InspectionResultModal = ({
       title={`Kết quả kiểm định `}
       onCancel={onCancel}
       okText="Lưu"
+      cancelText="Đóng"
       onOk={() => form.submit()}
       confirmLoading={loading}
       destroyOnClose

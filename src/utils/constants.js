@@ -42,6 +42,7 @@ export const CONSIGNMENT_STATUS_LABELS = {
     INSPECTED_PASS: "Kiểm định đạt",
     INSPECTED_FAIL: "Kiểm định không đạt",
     REQUEST_REJECTED: "Bị từ chối",
+    SIGNED: "Đã ký hợp đồng",
     FINISHED: "Hoàn thành",
     EXPIRED: "Hết hạn",
     CANCELLED: "Đã hủy",
@@ -55,6 +56,7 @@ export const CONSIGNMENT_STATUS_LABELS = {
     INSPECTED_PASS: "green",
     INSPECTED_FAIL: "red",
     REQUEST_REJECTED: "volcano",
+    SIGNED:"blue",
     FINISHED: "success",
     EXPIRED: "gray",
   };
@@ -83,3 +85,8 @@ export const ERROR_MESSAGES = {
   "Request not found": "Không tìm thấy yêu cầu ký gửi",
   "Invalid status transition": "Trạng thái hiện tại không thể chuyển sang trạng thái này",
 };
+
+export const DURATION_LABEL = {
+  SIX_MONTHS: "6 tháng",
+  ONE_YEAR: "1 năm"
+}

@@ -15,20 +15,16 @@ export default function useStaffInspectionSchedule() {
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const isMounted = useRef(true);
-
+  const selectedDateRef = useRef(dayjs());
   const statuses = useMemo(() => STATIC_STATUSES, []);
-  const formattedSelected = useMemo(
-    () => dayjs(selectedDate).format("YYYY-MM-DD"),
-    [selectedDate]
-  );
 
   const fetchSchedulesByDate = useCallback(
-    async (date) => {
+    async (dateParam) => {
+      const dateToFetch = dayjs(dateParam || selectedDateRef.current).format("YYYY-MM-DD");
       setLoading(true);
       setError(null);
       try {
-        const formattedDate = dayjs(date).format("YYYY-MM-DD");
-        const res = await getStaffInspectionSchedule(formattedDate, statuses);
+        const res = await getStaffInspectionSchedule(dateToFetch, statuses);
         if (res?.success && Array.isArray(res.data)) {
           if (isMounted.current) setSchedules(res.data);
         } else {
@@ -45,13 +41,13 @@ export default function useStaffInspectionSchedule() {
   );
 
   const handleCheckIn = useCallback(
-    async (id) => {
+    async (id, dateOverride) => {
       try {
         setLoading(true);
         const res = await checkInInspectionSchedule(id);
         if (res?.success) {
           message.success("Check-in thành công!");
-          await fetchSchedulesByDate(formattedSelected);
+          await fetchSchedulesByDate(dateOverride || selectedDateRef.current);
         } else {
           message.error(res?.message || "Không thể check-in lịch này.");
         }
@@ -61,36 +57,41 @@ export default function useStaffInspectionSchedule() {
         if (isMounted.current) setLoading(false);
       }
     },
-    [fetchSchedulesByDate, formattedSelected]
+    [fetchSchedulesByDate]
   );
 
   const handleCancelSchedule = useCallback(
-    async (id, reason) => {
+    async (id, reason, dateOverride) => {
       try {
         setLoading(true);
         const res = await markCancelInspectionSchedule(id, reason);
         if (res?.success) {
-          message.warning("Đã đánh dấu vắng mặt!");
-          await fetchSchedulesByDate(formattedSelected);
+          message.warning("Đã hủy lịch kiểm định!");
+          await fetchSchedulesByDate(dateOverride || selectedDateRef.current);
         } else {
-          message.error(res?.message || "Không thể đánh dấu vắng mặt.");
+          message.error(res?.message || "Không thể hủy lịch kiểm định.");
         }
       } catch {
-        message.error("Lỗi khi đánh dấu vắng mặt.");
+        message.error("Lỗi khi hủy lịch kiểm định.");
       } finally {
         if (isMounted.current) setLoading(false);
       }
     },
-    [fetchSchedulesByDate, formattedSelected]
+    [fetchSchedulesByDate]
   );
 
   useEffect(() => {
+    selectedDateRef.current = selectedDate;
+    fetchSchedulesByDate(selectedDate);
+  }, [selectedDate, fetchSchedulesByDate]);
+
+  useEffect(() => {
     isMounted.current = true;
-    fetchSchedulesByDate(formattedSelected);
+    fetchSchedulesByDate(selectedDateRef.current);
     return () => {
       isMounted.current = false;
     };
-  }, [fetchSchedulesByDate, formattedSelected]);
+  }, [fetchSchedulesByDate]);
 
   return {
     schedules,

@@ -1,7 +1,7 @@
 import api from "@utils/apiCaller";
 import { normalizeAuthError } from "@utils/authErrorMapper";
 
-//RequestOTP
+
 export const requestOtp = async ({phoneNumber, type}) => {
     
     const res = await api.post(

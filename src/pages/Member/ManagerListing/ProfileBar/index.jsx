@@ -32,6 +32,7 @@ const ProfileBar = () => {
         data?.profile?.avatarUrl ||
         `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=96&background=D9E3F0&color=2F365F`;
 
+
     return (
         <div className={styles.profileBar}>
             <div className={styles.left}>

@@ -93,42 +93,22 @@ export const inactivateInspection = async (inspectionId) => {
   return res.data;
 };
 
-export const getInspections = async (status = [], isActive = undefined) => {
-  const endpoint = "/api/inspections";
-  const params = {};
-
-  if (Array.isArray(status) && status.length > 0) {
-    params.status = status;
-  }
-  if (typeof isActive === "boolean") {
-    params.isActive = isActive;
-  }
-
-  const res = await api.get(endpoint, { params });
+export const getStaffInspections = async () => {
+  const res = await api.get(`/api/inspections/staff/all`);
   return res.data;
-};
+}
 
 //Agreement
+// /services/staff/staffConsignmentService.js
+export const addAgreement = async (payload, file) => {
+  const formData = new FormData();
+  formData.append(
+    "payload",
+    new Blob([JSON.stringify(payload)], { type: "application/json" })
+  );
+  formData.append("file", file);
 
-export const addAgreement = async (
-  requestId,
-  commissionPercent,
-  acceptablePrice,
-  startAt,
-  duration,
-  depositPercent
-) => {
-  const endpoint = "/api/agreements/add";
-
-  const body = {
-    requestId,
-    commissionPercent,
-    acceptablePrice,
-    startAt,
-    duration,
-    depositPercent,
-  };
-
-  const res = await api.post(endpoint, body);
-  return res.data;
+  return api.post("/api/agreements/add", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 };
