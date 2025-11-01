@@ -22,7 +22,7 @@ const Home = () => {
   } = useHomeData();
 
   const handleViewMoreListings = () => {
-    // TODO: điều hướng tới trang danh sách tất cả sản phẩm
+    navigate("/listings");
   };
   const handleViewMoreFeatured = () => {
     // TODO: điều hướng tới trang danh sách sản phẩm nổi bật (nếu có)

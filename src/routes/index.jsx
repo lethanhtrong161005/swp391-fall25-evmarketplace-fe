@@ -57,6 +57,7 @@ import MyFavoritesPage from "@pages/Member/MyFavoritesPage/MyFavoritesPage";
 import VnpReturnPage from "@pages/Payment";
 import MemberConsignment from "@/pages/Member/MemberConsignment/MemberConsignment";
 import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate";
+import AllListings from "@pages/Member/AllListings/AllListings";
 import InspectionAvailabilityPage from "@pages/Member/MemberConsignment/InpectionAvailabilityPage/InspectionAvailabilityPage";
 
 // Errors
@@ -75,6 +76,7 @@ export const routes = () => [
       { index: true, element: <HomeWrapper /> },
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
+      { path: "listings", element: <AllListings /> },
       { path: "search-results", element: <SearchResults /> },
       { path: "detail/:id", element: <ProductDetail /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },

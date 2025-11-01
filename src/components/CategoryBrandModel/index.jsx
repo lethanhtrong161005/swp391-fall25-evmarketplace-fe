@@ -51,7 +51,7 @@ export default function CategoryBrandModel({
       >
         <Select
           className={styles.select}
-          popupClassName={styles.dropdown}
+          classNames={{ popup: styles.dropdown }}
           options={tax?.categoryOptions}
           placeholder="Chọn danh mục"
           showSearch
@@ -88,7 +88,7 @@ export default function CategoryBrandModel({
           >
             <AutoComplete
               className={styles.autoComplete}
-              popupClassName={styles.dropdown}
+              classNames={{ popup: styles.dropdown }}
               // QUAN TRỌNG: tắt filterOption để không bị AntD tự lọc theo giá trị đang hiển thị
               filterOption={false}
               options={brandOptions}
@@ -130,13 +130,13 @@ export default function CategoryBrandModel({
           >
             <AutoComplete
               className={styles.autoComplete}
-              popupClassName={styles.dropdown}
+              classNames={{ popup: styles.dropdown }}
               filterOption={false}
               options={modelOptions}
               placeholder="Nhập hoặc chọn Model"
               allowClear
               onSearch={(val) => setModelSearch(val)}
-              onDropdownVisibleChange={(open) => {
+              onOpenChange={(open) => {
                 if (open) setModelSearch("");
               }}
               onSelect={(_, option) =>

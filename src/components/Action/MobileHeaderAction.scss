@@ -1,0 +1,38 @@
+/* Override styles cho mobile FavoritesDropdown và NotificationCenter */
+.mobile-header-action {
+  .mobile-icon-wrapper {
+    .favorites-dropdown__trigger,
+    .notification-bell-button,
+    .unauthenticated-favorites-button,
+    .unauthenticated-notification-button,
+    .unauthenticated-chat-button,
+    .ant-btn {
+      border-radius: 50% !important;
+      width: 48px !important;
+      height: 48px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    .favorites-dropdown__trigger .anticon,
+    .notification-bell-button .anticon,
+    .unauthenticated-favorites-button .anticon,
+    .unauthenticated-notification-button .anticon,
+    .unauthenticated-chat-button .anticon,
+    .ant-btn .anticon {
+      font-size: 20px !important;
+    }
+  }
+
+  /* Mobile text buttons */
+  .ant-btn-text {
+    transition: all 0.2s ease;
+    border-radius: 8px !important;
+  }
+
+  .ant-btn-text:hover {
+    background-color: rgba(24, 144, 255, 0.1) !important;
+    color: #1890ff !important;
+  }
+}

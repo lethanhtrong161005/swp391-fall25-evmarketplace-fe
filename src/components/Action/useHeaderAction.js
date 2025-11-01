@@ -1,8 +1,8 @@
-import { useAuthAction } from "./useAuthAction";
+import { useAuthAction } from "./useAuthAction.jsx";
 import { useOtpAction } from "./useOtpAction";
 import { useRegisterAction } from "./useRegisterAction";
 import { useResetPasswordAction } from "./useResetPasswordAction";
-import { useAuth} from "@hooks/useAuth";
+import { useAuth } from "@hooks/useAuth";
 
 export const useHeaderAction = () => {
   const { isLoggedIn, user, login, logout } = useAuth();

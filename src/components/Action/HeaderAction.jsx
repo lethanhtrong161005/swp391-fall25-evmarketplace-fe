@@ -1,6 +1,13 @@
 import React from "react";
-import { Button, Dropdown } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Button, Popover, Avatar, Grid, Tooltip, Space, Divider } from "antd";
+import {
+  UserOutlined,
+  HeartOutlined,
+  MessageOutlined,
+  BellOutlined,
+} from "@ant-design/icons";
+
+const { useBreakpoint } = Grid;
 
 import LoginModal from "@components/Modal/LoginModal";
 import PhoneRegisterModal from "@components/Modal/PhoneRegisterModal";
@@ -9,8 +16,13 @@ import ResetPasswordModal from "@components/Modal/ResetPasswordModal";
 import OtpVerifyModal from "@components/Modal/OtpVerifyModal";
 import RegisterModal from "@components/Modal/RegisterModal";
 import FavoritesDropdown from "@components/FavoritesDropdown/FavoritesDropdown";
+import UnauthenticatedFavoritesDropdown from "@components/FavoritesDropdown/UnauthenticatedFavoritesDropdown";
+import NotificationCenter from "@components/Notification/Center/NotificationCenter";
+import UnauthenticatedNotificationCenter from "@components/Notification/UnauthenticatedCenter/UnauthenticatedNotificationCenter";
+import UnauthenticatedChatButton from "@components/Chat/UnauthenticatedChatButton";
 
 import { useHeaderAction } from "./useHeaderAction";
+import "./HeaderAction.scss";
 
 const MANAGE_LISTINGS_PATH = "/my-ads";
 const MANAGE_CONSIGNMENTS_PATH = "/consignment";
@@ -19,6 +31,9 @@ const CREATE_LISTING_PATH = "/listing/new";
 const HeaderAction = () => {
   const { auth, otp, register, reset, handleOtpSuccess, handleOtpStart } =
     useHeaderAction();
+
+  const screens = useBreakpoint();
+  const isDesktop = screens.lg;
 
   const {
     isLoggedIn,
@@ -34,13 +49,34 @@ const HeaderAction = () => {
   const menuItems = getMenuItems();
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
 
+  // Avatar logic
+  const avatarSrc = user?.avatar || user?.avatarUrl;
+  const avatarName = displayName;
+
   return (
     <>
-      <div style={{ display: "flex", gap: 8 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "16px",
+        }}
+      >
         {contextHolder}
-        {isMember && (
-          <>
+
+        {/* Nhóm Button - Desktop only khi là member */}
+        {isDesktop && isMember && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            {/* Nút Đăng tin - Luôn hiển thị */}
             <Button
+              type="text"
+              className="header-text-button"
               onClick={() =>
                 handleLoginRequire(
                   CREATE_LISTING_PATH,
@@ -51,45 +87,169 @@ const HeaderAction = () => {
               Đăng tin
             </Button>
 
-            <Button
-              onClick={() =>
-                handleLoginRequire(
-                  MANAGE_LISTINGS_PATH,
-                  "Vui lòng đăng nhập để quản lý tin"
-                )
-              }
-            >
-              Quản lý tin
-            </Button>
+            {/* Quản lý tin và Ký gửi - Chỉ hiện khi đã đăng nhập */}
+            {isLoggedIn && (
+              <>
+                <Button
+                  type="text"
+                  className="header-text-button"
+                  onClick={() =>
+                    handleLoginRequire(
+                      MANAGE_LISTINGS_PATH,
+                      "Vui lòng đăng nhập để quản lý tin"
+                    )
+                  }
+                >
+                  Quản lý tin
+                </Button>
 
-            <Button
-              onClick={() =>
-                handleLoginRequire(
-                  MANAGE_CONSIGNMENTS_PATH,
-                  "Vui lòng đăng nhập để ký gửi"
-                )
-              }
-            >
-              Ký gửi
-            </Button>
-          </>
+                <Button
+                  type="text"
+                  className="header-text-button"
+                  onClick={() =>
+                    handleLoginRequire(
+                      MANAGE_CONSIGNMENTS_PATH,
+                      "Vui lòng đăng nhập để ký gửi"
+                    )
+                  }
+                >
+                  Ký gửi
+                </Button>
+              </>
+            )}
+          </div>
         )}
 
-        {isLoggedIn ? (
-          <>
+        {/* Nhóm Icon với kiểu mới */}
+        <Space size={8}>
+          {/* Icon Favorited - Heart */}
+          {isLoggedIn ? (
             <FavoritesDropdown />
-            <Dropdown
-              menu={{ items: menuItems, onClick: handleMenuClick }}
-              placement="bottomRight"
-              trigger={["click"]}
-            >
-              <Button icon={<UserOutlined />} type="text">
-                {displayName}
-              </Button>
-            </Dropdown>
-          </>
+          ) : (
+            <UnauthenticatedFavoritesDropdown
+              onLoginClick={() => auth.setOpenLogin?.(true)}
+            />
+          )}
+
+          {/* Icon Chat - Message */}
+          {isLoggedIn ? (
+            <Tooltip title="Chat">
+              <Button
+                type="text"
+                icon={<MessageOutlined style={{ fontSize: "18px" }} />}
+                onClick={() => {
+                  // TODO: Navigate to chat page when implemented
+                }}
+                style={{
+                  borderRadius: "50%",
+                  width: "40px",
+                  height: "40px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+            </Tooltip>
+          ) : (
+            <UnauthenticatedChatButton
+              onLoginClick={() => auth.setOpenLogin?.(true)}
+            />
+          )}
+
+          {/* Icon Notification - Bell */}
+          {isLoggedIn ? (
+            <NotificationCenter />
+          ) : (
+            <UnauthenticatedNotificationCenter
+              onLoginClick={() => auth.setOpenLogin?.(true)}
+            />
+          )}
+        </Space>
+
+        {/* Khối Người dùng */}
+        {isLoggedIn ? (
+          <Popover
+            content={
+              <div className="profile-popover-container">
+                {/* Header với Avatar và Tên */}
+                <div className="profile-dropdown-header">
+                  <div className="profile-dropdown-avatar">
+                    <Avatar
+                      src={avatarSrc}
+                      icon={<UserOutlined />}
+                      size={48}
+                      style={{
+                        backgroundColor: avatarSrc ? "transparent" : "#1890ff",
+                      }}
+                    >
+                      {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
+                    </Avatar>
+                  </div>
+                  <div className="profile-dropdown-name">{displayName}</div>
+                </div>
+
+                <Divider style={{ margin: 0 }} />
+
+                {/* Menu Items */}
+                <div className="profile-menu-list">
+                  {menuItems.map((item) => {
+                    if (item.type === "divider") {
+                      return (
+                        <Divider
+                          key={item.key || Math.random()}
+                          style={{ margin: 0 }}
+                        />
+                      );
+                    }
+
+                    return (
+                      <div
+                        key={item.key}
+                        className={`profile-menu-item ${
+                          item.danger ? "profile-menu-item-danger" : ""
+                        }`}
+                        onClick={() => handleMenuClick({ key: item.key })}
+                      >
+                        {item.icon && (
+                          <span className="profile-menu-icon">{item.icon}</span>
+                        )}
+                        <span className="profile-menu-label">{item.label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            }
+            title={null}
+            trigger="click"
+            placement="bottomRight"
+            overlayClassName="profile-popover-overlay"
+          >
+            <div className="header-avatar-container">
+              <Avatar
+                src={avatarSrc}
+                icon={<UserOutlined />}
+                size={40}
+                style={{
+                  backgroundColor: avatarSrc ? "transparent" : "#1890ff",
+                  cursor: "pointer",
+                }}
+              >
+                {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
+              </Avatar>
+            </div>
+          </Popover>
         ) : (
-          <Button type="primary" onClick={() => auth.setOpenLogin?.(true)}>
+          <Button
+            type="primary"
+            onClick={() => auth.setOpenLogin?.(true)}
+            style={{
+              borderRadius: "20px",
+              height: "40px",
+              padding: "0 24px",
+              fontWeight: "500",
+            }}
+          >
             Đăng nhập
           </Button>
         )}

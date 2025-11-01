@@ -1,0 +1,7 @@
+const FEATURE_FLAGS = {
+  ENABLE_NOTIFICATIONS: true,
+  ENABLE_WEBSOCKET: true,
+  ENABLE_TOAST_NOTIFICATIONS: true,
+};
+
+export default FEATURE_FLAGS;

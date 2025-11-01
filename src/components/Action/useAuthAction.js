@@ -2,6 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { message } from "antd";
 import { useState } from "react";
 import { hasDashboardAccess, getDashboardPath } from "@config/roles";
+import {
+  UserOutlined,
+  HeartOutlined,
+  HistoryOutlined,
+  LogoutOutlined,
+  DashboardOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
 export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
   const navigate = useNavigate();
@@ -35,32 +43,144 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
   };
 
   const getMenuItems = () => {
-
     let items = [
       { key: "infouser", label: "Hồ sơ", path: "/info-user" },
-      { key: "order", label: "Đơn hàng", path: "/my-order" }
+      { key: "order", label: "Đơn hàng", path: "/my-order" },
     ];
 
     if (user?.role !== "member") {
-      items = items.filter(i => i.key !== "order");
+      items = items.filter((i) => i.key !== "order");
     }
 
     if (hasDashboardAccess(user?.role)) {
       const dashboardPath = getDashboardPath(user?.role);
-      if (dashboardPath)
-        items.unshift({
+      if (dashboardPath) {
+        items.push({
           key: "dashboard",
-          label: "Dashboard",
+          label: (
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span
+                style={{ display: "flex", alignItems: "center", gap: "12px" }}
+              >
+                <DashboardOutlined />
+                Dashboard
+              </span>
+              <RightOutlined className="profile-menu-arrow" />
+            </span>
+          ),
           path: dashboardPath,
         });
+      }
     }
-    items.push({ key: "logout", label: "Đăng xuất" });
+
+    // Personal section
+    items.push(
+      {
+        key: "profile",
+        label: (
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              style={{ display: "flex", alignItems: "center", gap: "12px" }}
+            >
+              <UserOutlined />
+              Hồ sơ
+            </span>
+            <RightOutlined className="profile-menu-arrow" />
+          </span>
+        ),
+        path: "/info-user",
+      },
+      {
+        key: "favorites",
+        label: (
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              style={{ display: "flex", alignItems: "center", gap: "12px" }}
+            >
+              <HeartOutlined />
+              Tin đăng đã lưu
+            </span>
+            <RightOutlined className="profile-menu-arrow" />
+          </span>
+        ),
+        path: "/my-favorites",
+      },
+      {
+        key: "history-transaction",
+        label: (
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              style={{ display: "flex", alignItems: "center", gap: "12px" }}
+            >
+              <HistoryOutlined />
+              Lịch sử giao dịch
+            </span>
+            <RightOutlined className="profile-menu-arrow" />
+          </span>
+        ),
+        path: "/history/transactions",
+      }
+    );
+
+    // Logout section
+    items.push({
+      key: "logout",
+      label: (
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <LogoutOutlined />
+            Đăng xuất
+          </span>
+          <RightOutlined className="profile-menu-arrow" />
+        </span>
+      ),
+      danger: true,
+    });
+
     return items;
   };
 
-  const handleMenuClick = async ({ key, domEvent }) => {
-    domEvent?.stopPropagation?.();
-    if (key === "logout") {
+  const handleMenuClick = async ({ key }) => {
+    if (key === "dashboard") {
+      const path = getDashboardPath(user?.role);
+      if (path) navigate(path);
+    } else if (key === "profile") {
+      navigate("/info-user");
+    } else if (key === "favorites") {
+      navigate("/my-favorites");
+    } else if (key === "history-transaction") {
+      navigate("/history/transactions");
+    } else if (key === "logout") {
       await logout();
       return;
     }

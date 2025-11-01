@@ -1,0 +1,83 @@
+.require-login-layout {
+  width: 100%;
+  min-height: 400px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.require-login-content {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.require-login-header {
+  width: 100%;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.require-login-title {
+  margin: 0 0 16px 0 !important;
+  color: #262626;
+  font-weight: 600;
+}
+
+.require-login-subtitle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.require-login-subtitle {
+  color: #595959;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.require-login-underline {
+  width: 60px;
+  height: 2px;
+  background-color: #262626;
+  border-radius: 1px;
+}
+
+.require-login-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.require-login-message {
+  color: #8c8c8c;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.require-login-button {
+  padding: 8px 24px;
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+  background: #ffffff;
+  color: #262626;
+  font-weight: 500;
+  height: auto;
+  min-height: 36px;
+  transition: all 0.2s;
+}
+
+.require-login-button:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Row, Col, Typography, Space } from "antd";
+import { Layout, Row, Col, Typography } from "antd";
 import { Link } from "react-router-dom";
 import {
   FacebookOutlined,
@@ -7,6 +7,7 @@ import {
   MailOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
+import styles from "./Footer.module.scss";
 
 const { Footer } = Layout;
 
@@ -14,135 +15,103 @@ export default function SiteFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <Footer
-      style={{
-        background: "#fff",
-        borderTop: "1px solid #f0f0f0",
-        padding: "32px 24px 16px 24px",
-      }}
-    >
-      <Row gutter={[24, 16]}>
-        {/* About Us Section */}
-        <Col xs={24} md={8}>
-          <Typography.Title
-            level={5}
-            style={{ marginTop: 0, color: "#1890ff" }}
-          >
-            Về ReEV
-          </Typography.Title>
-          <Space direction="vertical" size="small">
-            <Link to="/about" style={{ color: "#666", textDecoration: "none" }}>
-              <Typography.Text>Giới thiệu về chúng tôi</Typography.Text>
-            </Link>
-            <Typography.Text style={{ color: "#666" }}>
-              Tuyển dụng
-            </Typography.Text>
-            <Typography.Text style={{ color: "#666" }}>
-              Liên hệ hợp tác
-            </Typography.Text>
-            <Typography.Text style={{ color: "#666" }}>
-              Tin tức & Blog
-            </Typography.Text>
-          </Space>
-        </Col>
+    <Footer className={styles.footer}>
+      <div className={styles.container}>
+        <Row gutter={[32, 24]}>
+          {/* About Us Section */}
+          <Col xs={24} sm={12} md={8}>
+            <Typography.Title level={5} className={styles.sectionTitle}>
+              Về ReEV
+            </Typography.Title>
+            <div className={styles.linkList}>
+              <Link to="/about" className={styles.link}>
+                Giới thiệu về chúng tôi
+              </Link>
+              <span className={styles.textItem}>Tuyển dụng</span>
+              <span className={styles.textItem}>Liên hệ hợp tác</span>
+              <span className={styles.textItem}>Tin tức & Blog</span>
+            </div>
+          </Col>
 
-        {/* Support Section */}
-        <Col xs={24} md={8}>
-          <Typography.Title
-            level={5}
-            style={{ marginTop: 0, color: "#1890ff" }}
-          >
-            Hỗ trợ khách hàng
-          </Typography.Title>
-          <Space direction="vertical" size="small">
-            <Typography.Text style={{ color: "#666" }}>
-              Trung tâm trợ giúp
-            </Typography.Text>
-            <Typography.Text style={{ color: "#666" }}>
-              Hướng dẫn mua bán xe
-            </Typography.Text>
-            <Typography.Text style={{ color: "#666" }}>
-              Chính sách bảo hành
-            </Typography.Text>
-            <Typography.Text style={{ color: "#666" }}>
-              Chính sách bảo mật
-            </Typography.Text>
-            <Typography.Text style={{ color: "#666" }}>
-              Điều khoản sử dụng
-            </Typography.Text>
-          </Space>
-        </Col>
+          {/* Support Section */}
+          <Col xs={24} sm={12} md={8}>
+            <Typography.Title level={5} className={styles.sectionTitle}>
+              Hỗ trợ khách hàng
+            </Typography.Title>
+            <div className={styles.linkList}>
+              <span className={styles.textItem}>Trung tâm trợ giúp</span>
+              <span className={styles.textItem}>Hướng dẫn mua bán xe</span>
+              <span className={styles.textItem}>Chính sách bảo hành</span>
+              <span className={styles.textItem}>Chính sách bảo mật</span>
+              <span className={styles.textItem}>Điều khoản sử dụng</span>
+            </div>
+          </Col>
 
-        {/* Contact Section */}
-        <Col xs={24} md={8}>
-          <Typography.Title
-            level={5}
-            style={{ marginTop: 0, color: "#1890ff" }}
-          >
-            Kết nối với ReEV
-          </Typography.Title>
-          <Space direction="vertical" size="small">
-            <Space size="middle">
-              <Typography.Link
+          {/* Contact Section */}
+          <Col xs={24} sm={24} md={8}>
+            <Typography.Title level={5} className={styles.sectionTitle}>
+              Kết nối với ReEV
+            </Typography.Title>
+
+            {/* Social Links */}
+            <div className={styles.socialLinks}>
+              <a
                 href="https://facebook.com"
                 target="_blank"
-                style={{ color: "#1877f2" }}
+                rel="noopener noreferrer"
+                className={`${styles.socialLink} ${styles.facebook}`}
+                aria-label="Facebook"
               >
-                <FacebookOutlined /> Facebook
-              </Typography.Link>
-              <Typography.Link
+                <FacebookOutlined />
+                <span>Facebook</span>
+              </a>
+              <a
                 href="https://youtube.com"
                 target="_blank"
-                style={{ color: "#ff0000" }}
+                rel="noopener noreferrer"
+                className={`${styles.socialLink} ${styles.youtube}`}
+                aria-label="YouTube"
               >
-                <YoutubeOutlined /> YouTube
-              </Typography.Link>
-            </Space>
+                <YoutubeOutlined />
+                <span>YouTube</span>
+              </a>
+            </div>
 
-            <Space align="start">
-              <MailOutlined style={{ color: "#666" }} />
-              <Typography.Text style={{ color: "#666" }}>
+            {/* Contact Info */}
+            <div className={styles.contactItem}>
+              <MailOutlined className={styles.contactIcon} />
+              <div className={styles.contactText}>
                 Email:{" "}
-                <Typography.Link href="mailto:support@reev.vn">
+                <a href="mailto:support@reev.vn" className={styles.contactLink}>
                   support@reev.vn
-                </Typography.Link>
-              </Typography.Text>
-            </Space>
+                </a>
+              </div>
+            </div>
 
-            <Space align="start">
-              <PhoneOutlined style={{ color: "#666" }} />
-              <Typography.Text style={{ color: "#666" }}>
+            <div className={styles.contactItem}>
+              <PhoneOutlined className={styles.contactIcon} />
+              <div className={styles.contactText}>
                 Hotline:{" "}
-                <Typography.Link href="tel:1900123456">
+                <a href="tel:1900123456" className={styles.contactLink}>
                   1900 123 456
-                </Typography.Link>
-              </Typography.Text>
-            </Space>
+                </a>
+              </div>
+            </div>
 
-            <Typography.Text style={{ color: "#999", fontSize: "12px" }}>
-              Địa chỉ: Số 123, Đường ABC, Quận XYZ, TP. Hồ Chí Minh
-            </Typography.Text>
-          </Space>
-        </Col>
-      </Row>
+            <div className={styles.addressText}>
+              Số 123, Đường ABC, Quận XYZ, TP. Hồ Chí Minh
+            </div>
+          </Col>
+        </Row>
 
-      {/* Copyright Section */}
-      <Row
-        style={{
-          marginTop: "24px",
-          paddingTop: "16px",
-          borderTop: "1px solid #f0f0f0",
-        }}
-      >
-        <Col span={24}>
-          <div style={{ textAlign: "center" }}>
-            <Typography.Text style={{ color: "#999", fontSize: "14px" }}>
-              © {currentYear} ReEV - Sàn giao dịch xe điện hàng đầu Việt Nam.
-              All rights reserved.
-            </Typography.Text>
-          </div>
-        </Col>
-      </Row>
+        {/* Copyright Section */}
+        <div className={styles.copyright}>
+          <Typography.Text className={styles.copyrightText}>
+            © {currentYear} <strong>ReEV</strong> - Sàn giao dịch xe điện hàng
+            đầu Việt Nam. All rights reserved.
+          </Typography.Text>
+        </div>
+      </div>
     </Footer>
   );
 }

@@ -19,7 +19,10 @@ import {
   Spin,
   Tag,
   message,
+  Grid,
 } from "antd";
+
+const { useBreakpoint } = Grid;
 import {
   CheckOutlined,
   CloseOutlined,
@@ -70,6 +73,8 @@ export default function ReviewModal({
   const [form] = Form.useForm();
   const [rejectReason, setRejectReason] = useState("");
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const [showApproveConfirm, setShowApproveConfirm] = useState(false);
+  const screens = useBreakpoint();
 
   // Reset chỉ số media khi modal mở
   React.useEffect(() => {
@@ -94,6 +99,23 @@ export default function ReviewModal({
     setRejectReason("");
     form.resetFields();
     onExitRejectMode();
+  };
+
+  const handleApproveClick = () => {
+    setShowApproveConfirm(true);
+  };
+
+  const handleConfirmApprove = () => {
+    setShowApproveConfirm(false);
+    onApprove();
+  };
+
+  // Determine modal width based on screen size - reduced by 30%
+  const getModalWidth = () => {
+    if (!screens.md) return "90%"; // was 95%
+    if (!screens.lg) return "80%"; // was 90%
+    if (!screens.xl) return "70%"; // was 85%
+    return 980; // was 1400, now ~70% of original
   };
 
   const modalTitle = (
@@ -177,8 +199,8 @@ export default function ReviewModal({
         <div
           style={{
             position: "relative",
-            height: 500,
-            maxWidth: 600,
+            height: screens.md ? 350 : 250, // Responsive height
+            maxWidth: screens.lg ? 500 : "100%", // Responsive max width
             margin: "0 auto",
             backgroundColor: "#f5f5f5",
             borderRadius: 8,
@@ -190,7 +212,7 @@ export default function ReviewModal({
           <div
             style={{
               width: "100%",
-              height: 500,
+              height: screens.md ? 350 : 250, // Responsive height
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -363,8 +385,9 @@ export default function ReviewModal({
             style={{
               display: "flex",
               justifyContent: "center",
-              gap: 6,
-              padding: "8px 0",
+              gap: 4,
+              padding: "6px 0",
+              flexWrap: screens.xs ? "wrap" : "nowrap", // Responsive wrapping
             }}
           >
             {item.media.map((media, index) => (
@@ -372,8 +395,8 @@ export default function ReviewModal({
                 key={index}
                 onClick={() => handleDotClick(index)}
                 style={{
-                  width: 50,
-                  height: 50,
+                  width: screens.md ? 40 : 35, // Responsive thumbnail size
+                  height: screens.md ? 40 : 35,
                   borderRadius: 6,
                   overflow: "hidden",
                   cursor: "pointer",
@@ -446,7 +469,7 @@ export default function ReviewModal({
           <Descriptions
             bordered
             size="small"
-            column={2}
+            column={screens.md ? 2 : 1} // Responsive columns
             items={[
               {
                 key: "title",
@@ -586,7 +609,7 @@ export default function ReviewModal({
         <Descriptions
           bordered
           size="small"
-          column={2}
+          column={screens.md ? 2 : 1} // Responsive columns
           items={[
             {
               key: "phone",
@@ -668,7 +691,7 @@ export default function ReviewModal({
         <Descriptions
           bordered
           size="small"
-          column={2}
+          column={screens.md ? 2 : 1} // Responsive columns
           items={[
             {
               key: "category",
@@ -821,57 +844,59 @@ export default function ReviewModal({
 
         {/* Các nút thao tác */}
         <Card size="small" title="Thao tác">
-          <Row gutter={[12, 12]}>
-            <Col xs={24} sm={12} md={6}>
-              <Button
-                type="primary"
-                icon={<CheckOutlined />}
-                onClick={onApprove}
-                loading={loading}
-                block
-                size="large"
-              >
-                Đồng ý
-              </Button>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Button
-                danger
-                icon={<CloseOutlined />}
-                onClick={onEnterRejectMode}
-                loading={loading}
-                block
-                size="large"
-              >
-                Từ chối
-              </Button>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Button
-                icon={<ClockCircleOutlined />}
-                onClick={onExtend}
-                loading={loading}
-                block
-                size="large"
-              >
-                Gia hạn
-              </Button>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Button
-                icon={<UnlockOutlined />}
-                onClick={onRelease}
-                loading={loading}
-                block
-                size="large"
-              >
-                Thả bài
-              </Button>
-            </Col>
-          </Row>
+          {!isRejecting && (
+            <Row gutter={[12, 12]}>
+              <Col xs={24} sm={12} md={6}>
+                <Button
+                  type="primary"
+                  icon={<CheckOutlined />}
+                  onClick={handleApproveClick}
+                  loading={loading}
+                  block
+                  size="large"
+                >
+                  Đồng ý
+                </Button>
+              </Col>
+              <Col xs={24} sm={12} md={6}>
+                <Button
+                  danger
+                  icon={<CloseOutlined />}
+                  onClick={onEnterRejectMode}
+                  loading={loading}
+                  block
+                  size="large"
+                >
+                  Từ chối
+                </Button>
+              </Col>
+              <Col xs={24} sm={12} md={6}>
+                <Button
+                  icon={<ClockCircleOutlined />}
+                  onClick={onExtend}
+                  loading={loading}
+                  block
+                  size="large"
+                >
+                  Gia hạn
+                </Button>
+              </Col>
+              <Col xs={24} sm={12} md={6}>
+                <Button
+                  icon={<UnlockOutlined />}
+                  onClick={onRelease}
+                  loading={loading}
+                  block
+                  size="large"
+                >
+                  Thả bài
+                </Button>
+              </Col>
+            </Row>
+          )}
 
           {isRejecting && (
-            <Row gutter={[12, 12]} style={{ marginTop: 16 }}>
+            <Row gutter={[12, 12]}>
               <Col xs={24} sm={12}>
                 <Button
                   type="primary"
@@ -887,7 +912,12 @@ export default function ReviewModal({
                 </Button>
               </Col>
               <Col xs={24} sm={12}>
-                <Button onClick={handleCancelReject} loading={loading} block>
+                <Button
+                  onClick={handleCancelReject}
+                  loading={loading}
+                  block
+                  size="large"
+                >
                   Hủy
                 </Button>
               </Col>
@@ -899,17 +929,35 @@ export default function ReviewModal({
   };
 
   return (
-    <Modal
-      title={modalTitle}
-      open={open}
-      onCancel={onClose}
-      width={1400}
-      style={{ top: 24 }}
-      footer={null}
-      destroyOnHidden
-      maskClosable={false}
-    >
-      {renderModalContent()}
-    </Modal>
+    <>
+      <Modal
+        title={modalTitle}
+        open={open}
+        onCancel={onClose}
+        width={getModalWidth()}
+        style={{
+          top: screens.md ? 24 : 12, // Responsive top margin
+          maxHeight: screens.md ? "90vh" : "95vh", // Responsive max height
+        }}
+        footer={null}
+        destroyOnHidden
+        maskClosable={false}
+        centered={screens.xs} // Center on mobile
+      >
+        {renderModalContent()}
+      </Modal>
+
+      {/* Confirmation modal for approve */}
+      <Modal
+        open={showApproveConfirm}
+        onCancel={() => setShowApproveConfirm(false)}
+        onOk={handleConfirmApprove}
+        okText="Xác nhận đồng ý"
+        cancelText="Hủy"
+        title="Xác nhận duyệt tin đăng"
+      >
+        <p>Bạn có chắc chắn muốn đồng ý duyệt tin đăng này không?</p>
+      </Modal>
+    </>
   );
 }

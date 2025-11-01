@@ -22,12 +22,12 @@ export default function DynamicBreadcrumb() {
     new: "Tạo mới",
     "info-user": "Thông tin cá nhân",
     listing: "Tin đăng",
+    listings: "Tất cả tin đăng",
     edit: "Chỉnh sửa",
     member: "Thành viên",
-    availability: "Lên lịch"
+    availability: "Lên lịch",
   };
 
-  // ⚙️ Loại bỏ các đoạn là số (id)
   const filteredSnippets = pathSnippets.filter(
     (segment) => !/^\d+$/.test(segment)
   );
@@ -49,7 +49,13 @@ export default function DynamicBreadcrumb() {
   });
 
   const items = [
-    { title: <Link to="/" className="link">ReEV</Link> },
+    {
+      title: (
+        <Link to="/" className="link">
+          ReEV
+        </Link>
+      ),
+    },
     ...breadcrumbItems,
   ];
 
