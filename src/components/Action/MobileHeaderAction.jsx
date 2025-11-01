@@ -103,6 +103,7 @@ const MobileHeaderAction = ({
             gap: "8px",
           }}
         >
+          {/* Nút Đăng tin - Luôn hiển thị */}
           <Button
             block
             type="text"
@@ -116,31 +117,36 @@ const MobileHeaderAction = ({
             Đăng tin
           </Button>
 
-          <Button
-            block
-            type="text"
-            onClick={() =>
-              handleLoginRequire(
-                MANAGE_LISTINGS_PATH,
-                "Vui lòng đăng nhập để quản lý tin"
-              )
-            }
-          >
-            Quản lý tin
-          </Button>
+          {/* Quản lý tin và Ký gửi - Chỉ hiện khi đã đăng nhập */}
+          {isLoggedIn && (
+            <>
+              <Button
+                block
+                type="text"
+                onClick={() =>
+                  handleLoginRequire(
+                    MANAGE_LISTINGS_PATH,
+                    "Vui lòng đăng nhập để quản lý tin"
+                  )
+                }
+              >
+                Quản lý tin
+              </Button>
 
-          <Button
-            block
-            type="text"
-            onClick={() =>
-              handleLoginRequire(
-                MANAGE_CONSIGNMENTS_PATH,
-                "Vui lòng đăng nhập để ký gửi"
-              )
-            }
-          >
-            Ký gửi
-          </Button>
+              <Button
+                block
+                type="text"
+                onClick={() =>
+                  handleLoginRequire(
+                    MANAGE_CONSIGNMENTS_PATH,
+                    "Vui lòng đăng nhập để ký gửi"
+                  )
+                }
+              >
+                Ký gửi
+              </Button>
+            </>
+          )}
         </div>
       )}
 

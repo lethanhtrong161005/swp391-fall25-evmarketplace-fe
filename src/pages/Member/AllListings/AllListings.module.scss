@@ -5,6 +5,9 @@
   padding: 24px 40px;
   background: #f5f5f5;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .header {
@@ -22,15 +25,36 @@
   padding: 16px 24px;
   border-radius: 8px;
   margin-bottom: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+  z-index: 1;
+  
+  /* Hide scrollbar but keep functionality */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+  
+  > :global(.ant-space) {
+    min-width: max-content;
+  }
 
   .filterBtn {
     font-weight: 500;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
   }
 
   .categoryBtn {
     border-radius: 20px;
     height: 36px;
     padding: 0 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 }
 
@@ -43,44 +67,59 @@
 }
 
 .priceFilterDropdown {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 0;
-  min-width: 350px;
+  width: 340px;
+  max-width: calc(100vw - 32px);
 }
 
 .priceFilter {
-  padding: 20px;
+  padding: 16px;
 
-  .priceSlider {
-    margin-bottom: 16px;
-    
-    .priceLabels {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-      font-size: 12px;
-      color: #8c8c8c;
-    }
+  .priceFilterTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #262626;
+    margin-bottom: 12px;
   }
 
   .priceInputs {
-    margin-bottom: 16px;
     display: flex;
     align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .priceInput {
+    flex: 1;
+    width: 100%;
     
-    > span {
-      margin: 0 8px;
-      font-weight: 500;
+    :global(.ant-input-number-input) {
+      font-size: 14px;
     }
   }
 
+  .priceSeparator {
+    color: #8c8c8c;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
   .filterActions {
-    border-top: 1px solid #f0f0f0;
-    padding-top: 16px;
     display: flex;
-    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .resetBtn {
+    flex: 1;
+    height: 36px;
+    border-radius: 6px;
+  }
+
+  .applyBtn {
+    flex: 1;
+    height: 36px;
+    border-radius: 6px;
   }
 }
 
@@ -92,6 +131,8 @@
   padding: 12px 24px;
   border-radius: 8px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
 
   .sortLabel {
     font-weight: 500;
@@ -100,6 +141,7 @@
 
   .sortSelect {
     font-weight: 500;
+    min-width: 160px;
   }
 }
 
@@ -192,37 +234,247 @@
   padding: 24px 0;
   background: white;
   border-radius: 8px;
+  overflow-x: auto;
+  
+  :global(.ant-pagination) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+// Price Filter Popover Overlay
+:global {
+  .price-filter-popover {
+    .ant-popover-inner {
+      padding: 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .ant-popover-arrow {
+      display: none;
+    }
+  }
 }
 
 // Responsive
+@media (max-width: 1024px) {
+  .container {
+    padding: 16px 24px;
+  }
+  
+  .toolbar {
+    .sortSelect {
+      width: 160px !important;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .container {
-    padding: 16px 20px;
+    padding: 12px 16px;
+  }
+
+  .header {
+    margin-bottom: 16px;
+    
+    .title {
+      font-size: 22px;
+    }
   }
 
   .categoryFilter {
+    padding: 12px 16px;
+    margin-bottom: 0;
+    
+    :global(.ant-space) {
+      width: max-content;
+    }
+    
+    .filterBtn {
+      font-size: 13px;
+      height: 32px;
+      padding: 0 12px;
+      
+      :global(.anticon) {
+        font-size: 12px;
+      }
+    }
+
     .categoryBtn {
       font-size: 13px;
       height: 32px;
       padding: 0 12px;
+      
+      :global(.anticon) {
+        font-size: 12px;
+      }
+    }
+  }
+  
+  .priceFilterDropdown {
+    width: 300px;
+  }
+  
+  .priceFilter {
+    padding: 14px;
+    
+    .priceFilterTitle {
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .priceInputs {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .priceSeparator {
+      display: none;
+    }
+
+    .priceInput {
+      width: 100%;
+    }
+
+    .filterActions {
+      padding-top: 10px;
+      gap: 6px;
+    }
+
+    .resetBtn,
+    .applyBtn {
+      height: 34px;
+      font-size: 13px;
     }
   }
 
   .toolbar {
     flex-direction: column;
     gap: 12px;
-    align-items: flex-start;
+    align-items: stretch;
+    padding: 12px 16px;
+    
+    > :global(.ant-space) {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .sortSelect {
+      width: 100% !important;
+    }
+  }
+  
+  .gridView {
+    margin-bottom: 16px;
   }
 
   .listView {
+    margin-bottom: 16px;
+    gap: 12px;
+    
     .listItem {
       flex-direction: column;
+      padding: 12px;
 
       .listItemImage {
         width: 100%;
-        height: 200px;
+        height: 180px;
         margin-right: 0;
         margin-bottom: 12px;
+      }
+      
+      .listItemContent {
+        .listItemTitle {
+          font-size: 16px;
+        }
+        
+        .listItemDetails {
+          flex-wrap: wrap;
+          gap: 8px;
+          font-size: 13px;
+        }
+        
+        .listItemPrice {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+  
+  .pagination {
+    padding: 16px 0;
+    
+    :global(.ant-pagination) {
+      font-size: 13px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 8px 12px;
+  }
+  
+  .header {
+    .title {
+      font-size: 20px;
+    }
+  }
+  
+  .categoryFilter {
+    padding: 10px 12px;
+    
+    .filterBtn,
+    .categoryBtn {
+      font-size: 12px;
+      height: 30px;
+      padding: 0 10px;
+    }
+  }
+  
+  .priceFilterDropdown {
+    width: calc(100vw - 24px);
+    max-width: 280px;
+  }
+
+  .priceFilter {
+    padding: 12px;
+    
+    .priceFilterTitle {
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .filterActions {
+      padding-top: 8px;
+    }
+
+    .resetBtn,
+    .applyBtn {
+      height: 32px;
+      font-size: 12px;
+    }
+  }
+  
+  .toolbar {
+    padding: 10px 12px;
+  }
+  
+  .listView {
+    .listItem {
+      .listItemImage {
+        height: 160px;
+      }
+      
+      .listItemContent {
+        .listItemTitle {
+          font-size: 15px;
+        }
+        
+        .listItemPrice {
+          font-size: 16px;
+        }
       }
     }
   }

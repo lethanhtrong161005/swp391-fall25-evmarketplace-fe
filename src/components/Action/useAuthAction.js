@@ -6,8 +6,6 @@ import {
   UserOutlined,
   HeartOutlined,
   HistoryOutlined,
-  ClockCircleOutlined,
-  SettingOutlined,
   LogoutOutlined,
   DashboardOutlined,
   RightOutlined,
@@ -120,27 +118,6 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
         path: "/my-favorites",
       },
       {
-        key: "history-view",
-        label: (
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <span
-              style={{ display: "flex", alignItems: "center", gap: "12px" }}
-            >
-              <ClockCircleOutlined />
-              Lịch sử xem tin
-            </span>
-            <RightOutlined className="profile-menu-arrow" />
-          </span>
-        ),
-        path: "/history/view",
-      },
-      {
         key: "history-transaction",
         label: (
           <span
@@ -162,27 +139,6 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
         path: "/history/transactions",
       }
     );
-
-    // Settings section
-    items.push({
-      key: "settings",
-      label: (
-        <span
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <SettingOutlined />
-            Cài đặt tài khoản
-          </span>
-          <RightOutlined className="profile-menu-arrow" />
-        </span>
-      ),
-      path: "/settings",
-    });
 
     // Logout section
     items.push({
@@ -216,12 +172,8 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
       navigate("/info-user");
     } else if (key === "favorites") {
       navigate("/my-favorites");
-    } else if (key === "history-view") {
-      navigate("/history/view");
     } else if (key === "history-transaction") {
       navigate("/history/transactions");
-    } else if (key === "settings") {
-      navigate("/settings");
     } else if (key === "logout") {
       await logout();
     }

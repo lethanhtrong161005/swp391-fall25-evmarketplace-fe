@@ -7,7 +7,6 @@ import {
   UserOutlined,
   HeartOutlined,
   HistoryOutlined,
-  ClockCircleOutlined,
   LogoutOutlined,
   DashboardOutlined,
 } from "@ant-design/icons";
@@ -88,16 +87,6 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
         path: "/my-favorites",
       },
       {
-        key: "history-view",
-        label: (
-          <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <ClockCircleOutlined />
-            Lịch sử xem tin
-          </span>
-        ),
-        path: "/history/view",
-      },
-      {
         key: "history-transaction",
         label: (
           <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -132,8 +121,6 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
       navigate("/info-user");
     } else if (key === "favorites") {
       navigate("/my-favorites");
-    } else if (key === "history-view") {
-      navigate("/history/view");
     } else if (key === "history-transaction") {
       navigate("/history/transactions");
     } else if (key === "logout") {

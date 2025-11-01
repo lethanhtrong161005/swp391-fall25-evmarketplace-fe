@@ -54,7 +54,7 @@ import MyFavoritesPage from "@pages/Member/MyFavoritesPage/MyFavoritesPage";
 import VnpReturnPage from "@pages/Payment";
 import MemberConsignment from "@/pages/Member/MemberConsignment/MemberConsignment";
 import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate";
-import AllListings from "@pages/Member/AllListings";
+import AllListings from "@pages/Member/AllListings/AllListings";
 
 // Errors
 import Error403 from "@pages/Errors/Error403";
