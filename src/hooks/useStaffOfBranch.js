@@ -10,7 +10,7 @@ const useStaffOfBranch = (branchId) => {
     if (!branchId) return;
     setLoading(true);
     try {
-      const res = await getStaffOfBranch(branchId);
+      const res = await getStaffOfBranch();
       if (res.success) {
         setStaffList(res.data || []);
       } else {

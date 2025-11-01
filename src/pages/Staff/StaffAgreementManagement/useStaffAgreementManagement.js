@@ -1,110 +1,159 @@
-import { useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { message } from "antd";
-import {
-  getInspections,
-  addAgreement,
-} from "@/services/staff/staffConsignmentService";
+import { getStaffInspections } from "@/services/staff/staffConsignmentService";
 import { getConsignmentById } from "../../../services/consigmentService";
+import {
+  cancelAgreement,
+  getAgreementByRequestId,
+  extendAgreement,
+} from "../../../services/agreementService";
 
 const useStaffAgreementManagement = () => {
   const [loading, setLoading] = useState(false);
   const [inspections, setInspections] = useState([]);
   const [selectedInspection, setSelectedInspection] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditingDraft, setIsEditingDraft] = useState(false);
+  const [agreementDetail, setAgreementDetail] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isExtendOpen, setIsExtendOpen] = useState(false);
+  const [extendDuration, setExtendDuration] = useState("SIX_MONTHS");
+  const [selectedConsignmentForPost, setSelectedConsignmentForPost] = useState(null);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
-  const fetchInspections = useCallback(
-    async (
-      status = ["PASS", "FAIL"], // kết quả kiểm định (PASS, FAIL)
-      isActive = true // chỉ lấy bản ghi hoạt động
-    ) => {
-      try {
-        setLoading(true);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await getStaffInspections();
+      const inspectionList = Array.isArray(res.data)
+        ? res.data
+        : res?.data?.data || [];
 
-        // 🔹 Bước 1: Gọi API lấy danh sách kiểm định
-        const res = await getInspections(status, isActive);
-        const data = res.data || [];
+      const inspectionsWithConsignment = await Promise.all(
+        inspectionList.map(async (item) => {
+          try {
+            const consignmentRes = await getConsignmentById(item.requestId);
+            const consignmentData = consignmentRes?.data || {};
+            return { ...item, ...consignmentData };
+          } catch {
+            return { ...item };
+          }
+        })
+      );
 
-        // 🔹 Bước 2: Với mỗi inspection, gọi API lấy consignment
-        const enrichedData = await Promise.all(
-          data.map(async (inspection) => {
-            try {
-              if (inspection.requestId) {
-                const consignmentRes = await getConsignmentById(inspection.requestId);
-                return {
-                  ...inspection,
-                  consignment: consignmentRes.data,
-                };
-              }
-              return inspection;
-            } catch (err) {
-              console.warn(`Không thể tải consignment `, err);
-              return inspection;
-            }
-          })
-        );
+      setInspections(inspectionsWithConsignment);
+    } catch {
+      message.error("Không thể tải danh sách kiểm định");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // 🔹 Bước 3: Lọc chỉ giữ các consignment có status mong muốn
-        const allowedStatuses = ["INSPECTED_PASS", "INSPECTED_FAIL", "SIGNED"];
-        const filtered = enrichedData.filter(
-          (item) =>
-            item.consignment &&
-            allowedStatuses.includes(item.consignment.status)
-        );
-
-        setInspections(filtered);
-      } catch (err) {
-        console.error(err);
-        message.error("Không thể tải danh sách kiểm định");
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const openAddAgreementModal = (inspection) => {
     setSelectedInspection(inspection);
+    setIsEditingDraft(false);
+    setIsModalVisible(true);
+  };
+
+  const openEditDraftModal = (inspection) => {
+    setSelectedInspection(inspection);
+    setIsEditingDraft(true);
     setIsModalVisible(true);
   };
 
   const closeAddAgreementModal = () => {
     setIsModalVisible(false);
     setSelectedInspection(null);
+    setIsEditingDraft(false);
   };
 
-  const handleAddAgreement = async (values) => {
+  const openAgreementDetail = async (requestId) => {
+    if (!requestId) return;
     try {
-      const {
-        commissionPercent,
-        acceptablePrice,
-        startAt,
-        duration,
-        depositPercent,
-      } = values;
-
-      const requestId = selectedInspection?.requestId;
-      if (!requestId) {
-        message.error("Không tìm thấy requestId của kiểm định này");
-        return;
+      setLoading(true);
+      const res = await getAgreementByRequestId(requestId);
+      if (res?.success && res?.data) {
+        setAgreementDetail(res.data);
+        setIsDetailOpen(true);
+      } else {
+        message.warning("Không tìm thấy dữ liệu hợp đồng.");
       }
-
-      const res = await addAgreement(
-        requestId,
-        commissionPercent,
-        acceptablePrice,
-        startAt,
-        duration,
-        depositPercent
-      );
-
-      message.success("Thêm hợp đồng thành công!");
-      closeAddAgreementModal();
-      fetchInspections(); // refresh lại danh sách sau khi thêm
-      return res;
-    } catch (error) {
-      console.error(error);
-      message.error("Không thể thêm hợp đồng");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const closeAgreementDetail = () => {
+    setIsDetailOpen(false);
+    setAgreementDetail(null);
+  };
+
+  const handleCancelAgreement = () => {
+    if (!agreementDetail?.id) return;
+    setIsConfirmOpen(true);
+  };
+
+  const confirmCancelAgreement = async () => {
+    try {
+      setLoading(true);
+      const res = await cancelAgreement(agreementDetail.id);
+      if (res?.success) {
+        message.success("Hủy hợp đồng thành công");
+        setIsConfirmOpen(false);
+        closeAgreementDetail();
+        fetchData();
+      } else {
+        message.warning(res?.message || "Không thể hủy hợp đồng");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenExtendModal = async (record) => {
+    try {
+      setLoading(true);
+      const res = await getAgreementByRequestId(record.requestId || record.id);
+      if (res?.success && res?.data) {
+        setAgreementDetail(res.data);
+        setExtendDuration("SIX_MONTHS");
+        setIsExtendOpen(true);
+      } else {
+        message.warning("Không tìm thấy hợp đồng để gia hạn.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirmExtend = async () => {
+    if (!agreementDetail?.id) {
+      message.error("Không xác định được mã hợp đồng để gia hạn!");
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await extendAgreement(agreementDetail.id, extendDuration);
+      if (res?.success) {
+        message.success("Gia hạn hợp đồng thành công!");
+        setIsExtendOpen(false);
+        fetchData();
+      } else {
+        message.warning(res?.message || "Không thể gia hạn hợp đồng");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateOrder = (consignment) => {
+    setSelectedConsignmentForPost(consignment);
+    setIsPostModalOpen(true);
   };
 
   return {
@@ -112,10 +161,29 @@ const useStaffAgreementManagement = () => {
     inspections,
     selectedInspection,
     isModalVisible,
-    fetchInspections,
+    isEditingDraft,
     openAddAgreementModal,
+    openEditDraftModal,
     closeAddAgreementModal,
-    handleAddAgreement,
+    fetchData,
+    isDetailOpen,
+    agreementDetail,
+    openAgreementDetail,
+    closeAgreementDetail,
+    handleCancelAgreement,
+    confirmCancelAgreement,
+    isConfirmOpen,
+    setIsConfirmOpen,
+    isExtendOpen,
+    setIsExtendOpen,
+    extendDuration,
+    setExtendDuration,
+    handleOpenExtendModal,
+    handleConfirmExtend,
+    selectedConsignmentForPost,
+    isPostModalOpen,
+    setIsPostModalOpen,
+    handleCreateOrder,
   };
 };
 
