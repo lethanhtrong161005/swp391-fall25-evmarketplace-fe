@@ -165,7 +165,7 @@ const useManagerListing = () => {
   const onView = useCallback(
     (row) => {
       if (row._localDraft) navigate(`/listing/new?draftId=${row._draftId}`);
-      else navigate(`/listing/${row.id}`);
+      else navigate(`/detail/${row.id}`);
     },
     [navigate]
   );
