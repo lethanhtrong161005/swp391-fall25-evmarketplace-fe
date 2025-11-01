@@ -211,7 +211,6 @@ export default function AllListings() {
         </Space>
       </div>
 
-      {/* Loading & Content */}
       {loading ? (
         <div className={styles.loading}>
           <Spin size="large" />
