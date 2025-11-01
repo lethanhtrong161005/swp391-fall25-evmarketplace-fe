@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from "react";
-import { Badge, Popover, Button, Tooltip } from "antd";
+import React, { useState, useMemo, useRef, useCallback } from "react";
+import { Badge, Popover, Button, Tooltip, Spin } from "antd";
 import { BellOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import { useNotifications } from "@hooks/useNotifications";
 import NotificationList from "../List/NotificationList";
 import NotificationModal from "../Modal/NotificationModal";
@@ -16,9 +15,18 @@ const NotificationCenter = () => {
   const [activeTab, setActiveTab] = useState("1");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
-  const navigate = useNavigate();
-  const { notifications, unreadCount, markAsRead, markAllAsRead } =
-    useNotifications();
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const scrollContainerRef = useRef(null);
+
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    fetchNotifications,
+  } = useNotifications();
 
   const filteredNotifications = useMemo(() => {
     return activeTab === "2"
@@ -41,9 +49,53 @@ const NotificationCenter = () => {
     setSelectedNotification(null);
   };
 
-  const handleViewAllNotifications = () => {
-    setIsOpen(false);
-    navigate("/notifications");
+  const loadMore = useCallback(async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      const nextPage = page + 1;
+      const result = await fetchNotifications(nextPage, 20, true); // append = true
+      setPage(nextPage);
+
+      // Update hasMore based on backend response
+      if (result && typeof result.hasMore === "boolean") {
+        setHasMore(result.hasMore);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, hasMore, page, fetchNotifications]);
+
+  const handleScroll = useCallback(() => {
+    if (!scrollContainerRef.current || loading || !hasMore) return;
+
+    const { scrollTop, scrollHeight, clientHeight } =
+      scrollContainerRef.current;
+
+    // Load more when user scrolls to bottom (with 50px threshold)
+    if (scrollHeight - scrollTop - clientHeight < 50) {
+      loadMore();
+    }
+  }, [loadMore, loading, hasMore]);
+
+  // Reset page when tab changes or popover opens
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setPage(0);
+    setHasMore(true);
+  };
+
+  const handleOpenChange = (open) => {
+    setIsOpen(open);
+    if (open) {
+      setPage(0);
+      setHasMore(true);
+    }
   };
 
   const notificationContent = (
@@ -65,13 +117,13 @@ const NotificationCenter = () => {
         <div className="notification-popover-tabs-wrapper">
           <div
             className={`notification-tab ${activeTab === "1" ? "active" : ""}`}
-            onClick={() => setActiveTab("1")}
+            onClick={() => handleTabChange("1")}
           >
             Tất cả
           </div>
           <div
             className={`notification-tab ${activeTab === "2" ? "active" : ""}`}
-            onClick={() => setActiveTab("2")}
+            onClick={() => handleTabChange("2")}
           >
             Chưa đọc
             {unreadCount > 0 && (
@@ -81,27 +133,28 @@ const NotificationCenter = () => {
         </div>
       </div>
 
-      <div className="notification-popover-body">
+      <div
+        className="notification-popover-body"
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+      >
         <NotificationList
-          notifications={filteredNotifications.slice(0, 10)}
+          notifications={filteredNotifications}
           onNotificationClick={handleNotificationClick}
           getNotificationIcon={getNotificationIcon}
           getNotificationColor={getNotificationColor}
         />
-      </div>
 
-      {notifications.length > 0 && (
-        <div className="notification-popover-footer">
-          <Button
-            type="primary"
-            block
-            className="notification-button"
-            onClick={handleViewAllNotifications}
-          >
-            Xem tất cả thông báo
-          </Button>
-        </div>
-      )}
+        {loading && (
+          <div className="notification-loading">
+            <Spin size="small" />
+          </div>
+        )}
+
+        {!hasMore && notifications.length > 0 && (
+          <div className="notification-end">Đã hiển thị tất cả thông báo</div>
+        )}
+      </div>
     </div>
   );
 
@@ -118,7 +171,7 @@ const NotificationCenter = () => {
         title={null}
         trigger="click"
         open={isOpen}
-        onOpenChange={setIsOpen}
+        onOpenChange={handleOpenChange}
         placement="bottomRight"
         arrow={false}
         overlayClassName="notification-popover"

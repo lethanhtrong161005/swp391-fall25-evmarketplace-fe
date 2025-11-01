@@ -143,17 +143,10 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
-.notification-popover-footer {
-  padding: 16px 24px;
-  border-top: 1px solid #f0f0f0;
-  background: #fafafa;
-  flex-shrink: 0;
-}
-
-/* Scrollable body keeps footer visible */
+/* Scrollable body with infinite scroll */
 .notification-popover-body {
   overflow-y: auto;
-  max-height: 360px; /* header + tabs + footer spacing */
+  max-height: 480px; /* Increased for more content */
   -webkit-overflow-scrolling: touch; /* iOS smooth scroll */
   scrollbar-width: thin; /* Firefox */
 }
@@ -164,6 +157,22 @@
 .notification-popover-body::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 3px;
+}
+
+/* Loading state */
+.notification-loading {
+  padding: 16px;
+  text-align: center;
+  color: #8c8c8c;
+}
+
+/* End of list message */
+.notification-end {
+  padding: 16px;
+  text-align: center;
+  color: #8c8c8c;
+  font-size: 12px;
+  border-top: 1px solid #f0f0f0;
 }
 
 .notification-bell-container {

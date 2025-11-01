@@ -95,11 +95,11 @@ function NotificationProvider({ children }) {
   }, []);
 
   const fetchNotifications = useCallback(
-    async (page = 0, size = 20) => {
-      if (!isLoggedIn) return;
+    async (page = 0, size = 20, append = false) => {
+      if (!isLoggedIn) return { hasMore: false, items: [] };
 
       const token = cookieUtils.getToken();
-      if (!token) return;
+      if (!token) return { hasMore: false, items: [] };
 
       try {
         const result = await notificationService.getNotifications(
@@ -108,35 +108,50 @@ function NotificationProvider({ children }) {
           size
         );
 
-        if (!result || !result.data) {
-          setNotifications([]);
-          setTotalCount(0);
-          setUnreadCount(0);
-          return;
+        // Service returns normalized object directly, not wrapped in .data
+        if (!result) {
+          if (!append) {
+            setNotifications([]);
+            setTotalCount(0);
+            setUnreadCount(0);
+          }
+          return { hasMore: false, items: [] };
         }
 
-        // Safely access result.data
-        const resultData = result.data || {};
-        const items = resultData.items || [];
+        // Access result directly (not result.data)
+        const items = result.items || [];
+        const hasNext = result.hasNext || false;
         const total =
-          typeof resultData.total === "number"
-            ? resultData.total
+          typeof result.total === "number"
+            ? result.total
             : // Khi Slice: không có total, dùng công thức gần đúng:
-            resultData.hasNext === false
+            result.hasNext === false
             ? (page || 0) * size + items.length
             : null;
-        const unreadFromApi = null; // backend chưa chuẩn hoá unreadCount cho response này
 
-        setNotifications(items);
+        // Append or replace notifications
+        setNotifications((prev) => {
+          if (append) {
+            // Remove duplicates when appending
+            const existingIds = new Set(prev.map((n) => n.id));
+            const newItems = items.filter((item) => !existingIds.has(item.id));
+            return [...prev, ...newItems];
+          }
+          return items;
+        });
+
         setTotalCount(typeof total === "number" ? Number(total) : total ?? 0);
 
-        if (typeof unreadFromApi === "number") {
-          setUnreadCount(unreadFromApi);
-        } else {
-          setUnreadCount(items.filter((n) => !n.isRead).length);
-        }
+        // Calculate unread count from all notifications
+        setNotifications((currentNotifications) => {
+          const unread = currentNotifications.filter((n) => !n.isRead).length;
+          setUnreadCount(unread);
+          return currentNotifications;
+        });
+
+        return { hasMore: hasNext, items };
       } catch {
-        // Silent error handling
+        return { hasMore: false, items: [] };
       }
     },
     [isLoggedIn]

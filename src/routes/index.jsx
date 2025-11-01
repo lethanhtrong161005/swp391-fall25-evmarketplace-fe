@@ -51,7 +51,6 @@ import SearchResults from "@pages/Member/SearchResults";
 import ListingEdit from "@pages/Member/ListingEdit";
 import ManagerListing from "@pages/Member/ManagerListing";
 import MyFavoritesPage from "@pages/Member/MyFavoritesPage/MyFavoritesPage";
-import NotificationPage from "@pages/Member/NotificationPage";
 import VnpReturnPage from "@pages/Payment";
 import MemberConsignment from "@/pages/Member/MemberConsignment/MemberConsignment";
 import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate";
@@ -111,7 +110,6 @@ export const routes = () => [
             ],
           },
           { path: "my-favorites", element: <MyFavoritesPage /> },
-          { path: "notifications", element: <NotificationPage /> },
           { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
           { path: "staff", element: <StaffDashboard /> },
         ],

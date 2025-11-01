@@ -157,9 +157,6 @@ class NotificationService {
   async getNotifications(token, page = 0, size = 20) {
     try {
       const url = `/api/notification?page=${page}&size=${size}`;
-      if (import.meta && import.meta.env && import.meta.env.DEV) {
-        console.debug("[NotificationService] GET", url);
-      }
 
       const response = await fetch(
         url, // Sử dụng proxy
@@ -174,12 +171,6 @@ class NotificationService {
 
       if (response.ok) {
         const data = await response.json();
-        if (import.meta && import.meta.env && import.meta.env.DEV) {
-          console.debug("[NotificationService] Response shape:", {
-            keys: Object.keys(data || {}),
-            dataPreview: JSON.stringify(data).slice(0, 500) + "...",
-          });
-        }
         const headerTotal =
           response.headers.get("X-Total-Count") ||
           response.headers.get("x-total-count") ||
@@ -188,11 +179,28 @@ class NotificationService {
           null;
 
         // Normalize Page or Slice payloads to a common shape
-        const d = data && data.data ? data.data : data;
+        // Backend might return: { data: { items: [...] } } or { items: [...] } or direct array
+        let d = data;
 
-        // Items: common fields
-        const items =
-          d?.items || d?.content || d?.data?.items || d?.data?.content || [];
+        // If wrapped in { data: {...} }, unwrap it
+        if (data && data.data && typeof data.data === "object") {
+          d = data.data;
+        }
+
+        // Items: common fields - check multiple possible structures
+        let items = [];
+        if (Array.isArray(d)) {
+          // Direct array response
+          items = d;
+        } else if (Array.isArray(d?.items)) {
+          items = d.items;
+        } else if (Array.isArray(d?.content)) {
+          items = d.content;
+        } else if (Array.isArray(d?.data?.items)) {
+          items = d.data.items;
+        } else if (Array.isArray(d?.data?.content)) {
+          items = d.data.content;
+        }
 
         // Resolve total for Page; may be in body or via headers; Slice usually lacks total
         const bodyTotal =
@@ -203,8 +211,24 @@ class NotificationService {
           d?.metadata?.total ||
           null;
 
+        // Normalize field names from snake_case to camelCase if needed
+        const normalizedItems = items.map((item) => ({
+          id: item.id,
+          accountId: item.account_id || item.accountId,
+          type: item.type,
+          message: item.message,
+          referenceId: item.reference_id || item.referenceId,
+          isRead:
+            item.is_read !== undefined
+              ? item.is_read === 1
+              : item.isRead || false,
+          createdAt: item.created_at || item.createdAt,
+          updatedAt: item.updated_at || item.updatedAt,
+          title: item.title || item.message || "Thông báo",
+        }));
+
         const normalized = {
-          items,
+          items: normalizedItems,
           total:
             headerTotal !== null
               ? Number(headerTotal)
@@ -218,24 +242,20 @@ class NotificationService {
               ? !d.last
               : typeof d?.numberOfElements === "number"
               ? d.numberOfElements === size
-              : null,
+              : items.length === size, // If we got full page, assume there might be more
           page:
             typeof d?.page === "number"
               ? d.page
               : typeof d?.number === "number"
               ? d.number
               : page,
-          size:
-            typeof d?.size === "number" ? d.size : size,
+          size: typeof d?.size === "number" ? d.size : size,
         };
 
         return normalized;
       }
       return null;
     } catch {
-      if (import.meta && import.meta.env && import.meta.env.DEV) {
-        console.debug("[NotificationService] Error during fetch");
-      }
       return null;
     }
   }
