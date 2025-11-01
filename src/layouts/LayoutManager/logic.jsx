@@ -4,11 +4,11 @@ import {
   FileTextOutlined,
   CheckCircleOutlined,
   BarChartOutlined,
+  FileDoneOutlined,
 } from "@ant-design/icons";
 import { useSidebar } from "@hooks/useSidebar";
 
 export function useLayoutManager() {
-  // Menu items configuration cho Manager
   const menuItems = [
     {
       key: "dashboard",
@@ -47,6 +47,12 @@ export function useLayoutManager() {
       ],
     },
     {
+      key: "agreement",
+      icon: <FileDoneOutlined />,
+      label: "Danh sách hợp đồng",
+      path: "/manager/agreement/management",
+    },
+    {
       key: "reports",
       icon: <BarChartOutlined />,
       label: "Báo cáo",
@@ -54,7 +60,6 @@ export function useLayoutManager() {
     },
   ];
 
-  // Mock notifications - replace with real data
   const notifications = [
     { id: 1, title: "Có tin đăng mới cần duyệt", time: "10:35 hôm nay" },
     { id: 2, title: "Báo cáo tháng đã sẵn sàng", time: "Hôm qua" },

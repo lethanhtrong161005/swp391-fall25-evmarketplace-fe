@@ -62,7 +62,6 @@ export function normalizeAuthError(beError) {
     let viMessage = toViMessage(beError?.message);
     let viFieldErrors = translateFieldErrors(beError?.fieldErrors || {});
 
-    // Fallback: BE không trả fieldErrors nhưng message cho biết nguyên nhân
     if (!viFieldErrors || Object.keys(viFieldErrors).length === 0) {
         if (/wrong password/i.test(beError?.message || "")) {
             viFieldErrors = { password: ["Mật khẩu không đúng !"] };

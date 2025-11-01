@@ -5,8 +5,13 @@ import useStaffInspectingManagement from "./useStaffInspectingManagement";
 import ConsignmentFilterCard from "../../../components/ConsignmentFilterCard/ConsignmentFilterCard";
 import InspectionResultModal from "./InspectionResultModal/InspectionResultModal";
 import InspectionInactiveModal from "./InspectionInactiveModal/InpectionInactiveModal";
-import "./StaffInspectingManagement.scss"
-
+import {
+  SearchOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
+import "./StaffInspectingManagement.scss";
 
 const StaffInspectingManagement = () => {
   const {
@@ -28,20 +33,30 @@ const StaffInspectingManagement = () => {
   } = useStaffInspectingManagement();
 
   const [selectedItem, setSelectedItem] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("INSPECTING");
+
+  const statusOptions = [
+    {
+      value: "INSPECTING",
+      label: "Đang kiểm định",
+      icon: <SyncOutlined style={{ color: "#1890ff", fontSize: 20 }} />,
+    },
+    {
+      value: "INSPECTED_PASS",
+      label: "Kiểm định đạt",
+      icon: <CheckCircleOutlined style={{ color: "green", fontSize: 20 }} />,
+    },
+    {
+      value: "INSPECTED_FAIL",
+      label: "Không đạt",
+      icon: <CloseCircleOutlined style={{ color: "volcano", fontSize: 20 }} />,
+    },
+  ];
 
   const filteredData = useMemo(() => {
     if (!Array.isArray(consignments)) return [];
-    if (statusFilter === "all") return consignments;
     return consignments.filter((item) => item.status === statusFilter);
   }, [consignments, statusFilter]);
-
-  const statusOptions = [
-    { value: "all", label: "Tất cả" },
-    { value: "INSPECTING", label: "Đang kiểm định" },
-    { value: "INSPECTED_PASS", label: "Đạt kiểm định" },
-    { value: "INSPECTED_FAIL", label: "Không đạt kiểm định" },
-  ];
 
   const handleViewDetail = (item) => {
     setSelectedItem(item);
@@ -53,7 +68,7 @@ const StaffInspectingManagement = () => {
 
   return (
     <div className="staff-management-page">
-      <h2>Quản lý kiểm định</h2>
+      <h2 className="page-title">Quản lý kiểm định</h2>
 
       <div className="filter-section">
         <ConsignmentFilterCard
@@ -65,7 +80,10 @@ const StaffInspectingManagement = () => {
       </div>
 
       <div className="list-section">
-        <div className="list-header">Danh sách ký gửi kiểm định</div>
+        <div className="list-header">
+          <span>Danh sách ký gửi kiểm định</span>
+        </div>
+
         <StaffInspectingTable
           items={filteredData}
           loading={loading}
@@ -94,7 +112,7 @@ const StaffInspectingManagement = () => {
         loading={confirmLoading}
         onCancel={handleCloseInactive}
         onConfirm={handleConfirmInactive}
-        description={`Bạn có chắc chắn muốn hủy kết quả kiểm định không?`}
+        description="Bạn có chắc chắn muốn hủy kết quả kiểm định không?"
       />
     </div>
   );

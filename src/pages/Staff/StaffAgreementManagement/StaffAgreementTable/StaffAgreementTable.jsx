@@ -1,93 +1,86 @@
-import React from "react";
-import { Table, Button, Tag, Space, Typography, Tooltip } from "antd";
+import React, { useState } from "react";
+import { Table, Tag, Typography, Tooltip, Space, Button } from "antd";
 import dayjs from "dayjs";
+import {
+  CONSIGNMENT_STATUS_COLOR,
+  CONSIGNMENT_STATUS_LABELS,
+} from "../../../../utils/constants";
+import ConsignmentDetailModal from "../../../Member/MemberConsignment/ConsigmentDetailModal/ConsignmentDetailModal";
 
 const { Paragraph } = Typography;
-
-// 🎨 Mapping trạng thái consignment sang label & màu
-const STATUS_LABELS = {
-  SUBMITTED: "Đã gửi",
-  SCHEDULING: "Đã duyệt",
-  SCHEDULED: "Đã lên lịch",
-  INSPECTING: "Đang kiểm định",
-  INSPECTED_PASS: "Đạt kiểm định",
-  INSPECTED_FAIL: "Không đạt",
-  REQUEST_REJECTED: "Từ chối yêu cầu",
-  SIGNED: "Đã ký hợp đồng",
-  CANCELLED: "Đã hủy",
-  FINISHED: "Hoàn thành",
-  EXPIRED: "Hết hạn",
-};
-
-const STATUS_COLORS = {
-  SUBMITTED: "blue",
-  SCHEDULING: "gold",
-  SCHEDULED: "cyan",
-  INSPECTING: "processing",
-  INSPECTED_PASS: "green",
-  INSPECTED_FAIL: "volcano",
-  REQUEST_REJECTED: "red",
-  SIGNED: "purple",
-  CANCELLED: "gray",
-  FINISHED: "green",
-  EXPIRED: "default",
-};
 
 const StaffAgreementTable = ({
   items,
   loading,
   pagination,
   onChange,
-  onRowClick,
   onAddAgreement,
   onEditDraft,
+  onViewAgreement,
+  onCreateOrder,
+  onRenew,
 }) => {
+  // ✅ State modal chi tiết ký gửi
+  const [selectedConsignment, setSelectedConsignment] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const handleRowClick = (record) => {
+    setSelectedConsignment(record);
+    setIsDetailOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsDetailOpen(false);
+    setSelectedConsignment(null);
+  };
+
   const columns = [
     {
       title: "Tên khách hàng",
-      dataIndex: ["consignment", "accountName"],
+      dataIndex: "requestOwnerFullName",
+      key: "requestOwnerFullName",
       align: "left",
       width: 180,
       render: (v) => v || "-",
     },
     {
       title: "Số điện thoại",
-      dataIndex: ["consignment", "accountPhone"],
+      dataIndex: "requestOwnerPhone",
+      key: "requestOwnerPhone",
       align: "center",
       width: 140,
       render: (v) => v || "-",
     },
     {
-      title: "Trạng thái",
-      dataIndex: ["consignment", "status"], 
+      title: "Trạng thái ký gửi",
+      dataIndex: "status",
+      key: "status",
       align: "center",
-      width: 150,
-      render: (v) => {
-        const color = STATUS_COLORS[v] || "default";
-        const label = STATUS_LABELS[v] || v || "-";
+      width: 180,
+      render: (status) => {
+        const color = CONSIGNMENT_STATUS_COLOR[status] || "default";
+        const label = CONSIGNMENT_STATUS_LABELS[status] || status || "-";
         return <Tag color={color}>{label}</Tag>;
       },
     },
     {
       title: "Giá đề xuất",
       dataIndex: "suggestedPrice",
+      key: "suggestedPrice",
       align: "right",
       width: 160,
       render: (v) => (v ? `${v.toLocaleString("vi-VN")} ₫` : "-"),
     },
     {
-      title: "Tóm tắt",
+      title: "Tóm tắt kiểm định",
       dataIndex: "inspectionSummary",
+      key: "inspectionSummary",
       align: "left",
-      width: 250,
+      width: 300,
       render: (text) => {
         if (!text) return "-";
-        const words = text.split(" ");
-        const shortText = words.slice(0, 15).join(" ");
-        const isLong = words.length > 15;
-
         return (
-          <Tooltip title={isLong ? text : null}>
+          <Tooltip title={text}>
             <Paragraph
               style={{
                 margin: 0,
@@ -95,63 +88,124 @@ const StaffAgreementTable = ({
                 wordBreak: "break-word",
               }}
             >
-              {shortText}
-              {isLong && "..."}
+              {text}
             </Paragraph>
           </Tooltip>
         );
       },
     },
     {
+      title: "Ngày tạo",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      align: "center",
+      width: 160,
+      render: (v) => (v ? dayjs(v).format("DD/MM/YYYY HH:mm") : "-"),
+    },
+    {
       title: "Thao tác",
       key: "actions",
       align: "center",
-      fixed: "right",
-      width: 200,
-      render: (_, record) => (
-        <Space>
-          {/* Chỉ cho tạo hợp đồng nếu trạng thái là ĐẠT KIỂM ĐỊNH */}
-          {record.consignment?.status === "INSPECTED_PASS" && (
-            <Button
-              type="primary"
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddAgreement?.(record);
-              }}
-            >
-              Tạo hợp đồng
-            </Button>
-          )}
-          <Button
-            size="small"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEditDraft?.();
-            }}
-          >
-            Xem nháp
-          </Button>
-        </Space>
-      ),
+      width: 300,
+      render: (_, record) => {
+        const { status } = record;
+        if (status === "INSPECTED_FAIL") return null;
+        if (status === "INSPECTED_PASS")
+          return (
+            <Space size="small">
+              <Button
+                type="primary"
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddAgreement?.(record);
+                }}
+              >
+                Tạo hợp đồng
+              </Button>
+              <Button
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEditDraft?.(record);
+                }}
+              >
+                Bản nháp
+              </Button>
+            </Space>
+          );
+        if (status === "SIGNED")
+          return (
+            <Space size="small">
+              <Button
+                type="primary"
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewAgreement?.(record);
+                }}
+              >
+                Hợp đồng
+              </Button>
+              <Button
+                size="small"
+                style={{
+                  backgroundColor: "#fa8c16",
+                  color: "#fff",
+                  border: "none",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCreateOrder?.(record);
+                }}
+              >
+                Tạo bài đăng
+              </Button>
+            </Space>
+          );
+        if (status === "EXPIRED")
+          return (
+            <Space size="small">
+              <Button
+                type="primary"
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRenew?.(record);
+                }}
+              >
+                Gia hạn
+              </Button>
+            </Space>
+          );
+        return null;
+      },
     },
   ];
 
   return (
-    <Table
-      className="customTable"
-      rowKey="id"
-      columns={columns}
-      dataSource={items}
-      loading={loading}
-      pagination={pagination}
-      onChange={onChange}
-      scroll={{ x: 1200 }}
-      onRow={(record) => ({
-        onClick: () => onRowClick?.(record),
-        style: { cursor: "pointer" },
-      })}
-    />
+    <>
+      <Table
+        rowKey="id"
+        columns={columns}
+        dataSource={items}
+        loading={loading}
+        pagination={pagination}
+        onChange={onChange}
+        onRow={(record) => ({
+          onClick: () => handleRowClick(record),
+          style: { cursor: "pointer" },
+        })}
+        style={{ width: "100%" }}
+        bordered={false}
+      />
+
+      <ConsignmentDetailModal
+        item={selectedConsignment}
+        onClose={handleCloseModal}
+        open={isDetailOpen}
+      />
+    </>
   );
 };
 

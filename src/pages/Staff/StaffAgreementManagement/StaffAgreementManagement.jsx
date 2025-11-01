@@ -1,94 +1,166 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import useStaffAgreementManagement from "./useStaffAgreementManagement";
 import StaffAgreementTable from "./StaffAgreementTable/StaffAgreementTable";
 import AddAgreementModal from "./AddAgreementModal/AddAgreementModal";
+import AgreementDetailModal from "./AgreementDetailModal/AgreementDetailModal";
+import ExtendAgreementModal from "./AgreementExtendModal/AgreementExtendModal";
+import ConfirmCancelModal from "./AgreementDetailModal/ConfirmCancelModal";
 import ConsignmentFilterCard from "../../../components/ConsignmentFilterCard/ConsignmentFilterCard";
 import { message } from "antd";
+import { addAgreement } from "@/services/staff/staffConsignmentService";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  FileDoneOutlined,
+  ClockCircleOutlined,
+} from "@ant-design/icons";
 import "./StaffAgreementManagement.scss";
+import AgreementListingModal from "./AgreementListingCreate/AgreementListingCreate";
 
 const StaffAgreementManagement = () => {
   const {
-    inspections,
     loading,
-    fetchInspections,
+    inspections,
+    selectedInspection,
     isModalVisible,
+    isEditingDraft,
     openAddAgreementModal,
+    openEditDraftModal,
     closeAddAgreementModal,
-    handleAddAgreement,
+    fetchData,
+    isDetailOpen,
+    agreementDetail,
+    openAgreementDetail,
+    closeAgreementDetail,
+    handleCancelAgreement,
+    confirmCancelAgreement,
+    isConfirmOpen,
+    setIsConfirmOpen,
+    isExtendOpen,
+    setIsExtendOpen,
+    extendDuration,
+    setExtendDuration,
+    handleOpenExtendModal,
+    handleConfirmExtend,
+    selectedConsignmentForPost,
+    isPostModalOpen,
+    setIsPostModalOpen,
+    handleCreateOrder,
   } = useStaffAgreementManagement();
 
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [isEditingDraft, setIsEditingDraft] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("INSPECTED_PASS");
 
-  // ✅ Fetch inspections on mount
-  useEffect(() => {
-    // Hook đã tự lọc INSPECTED_PASS, INSPECTED_FAIL, SIGNED trong đó rồi
-    fetchInspections();
-  }, [fetchInspections]);
+  const filterOptions = [
+    {
+      value: "INSPECTED_PASS",
+      label: "Kiểm định đạt",
+      icon: <CheckCircleOutlined style={{ color: "green", fontSize: 20 }} />,
+    },
+    {
+      value: "INSPECTED_FAIL",
+      label: "Không đạt",
+      icon: <CloseCircleOutlined style={{ color: "volcano", fontSize: 20 }} />,
+    },
+    {
+      value: "SIGNED",
+      label: "Đã ký hợp đồng",
+      icon: <FileDoneOutlined style={{ color: "blue", fontSize: 20 }} />,
+    },
+    {
+      value: "EXPIRED",
+      label: "Hết hạn",
+      icon: <ClockCircleOutlined style={{ color: "gray", fontSize: 20 }} />,
+    },
+  ];
 
-  // ✅ Lọc lại theo filter card (trên UI)
   const filteredData = useMemo(() => {
     if (!Array.isArray(inspections)) return [];
-    if (statusFilter === "all") return inspections;
-    return inspections.filter(
-      (item) => item.consignment?.status === statusFilter
-    );
+    return inspections.filter((item) => item.status === statusFilter);
   }, [inspections, statusFilter]);
 
-  const handleRowClick = (record) => {
-    const name = record?.consignment?.accountName || "Không rõ";
-    message.info(`Kiểm định của ${name} (#${record.id})`);
-  };
-
-  const handleEditDraft = () => {
-    setIsEditingDraft(true);
-    openAddAgreementModal();
+  const handleAddAgreementSubmit = async (payload, file) => {
+    try {
+      const res = await addAgreement(payload, file);
+      message.success("Tạo hợp đồng ký gửi thành công!");
+      closeAddAgreementModal();
+      fetchData();
+      return res;
+    } catch {
+      message.error("Không thể tạo hợp đồng. Vui lòng thử lại!");
+    }
   };
 
   return (
     <div className="staff-management-page">
       <h2 className="page-title">Quản lý hợp đồng ký gửi</h2>
 
-      {/* Bộ lọc */}
       <div className="filter-section">
-        <div className="filter-title">Lọc theo trạng thái ký gửi</div>
         <ConsignmentFilterCard
-          options={[
-            { value: "all", label: "Tất cả" },
-            { value: "INSPECTED_PASS", label: "Đạt kiểm định" },
-            { value: "INSPECTED_FAIL", label: "Không đạt kiểm định" },
-            { value: "SIGNED", label: "Đã ký hợp đồng" },
-          ]}
+          title="Lọc theo trạng thái"
+          options={filterOptions}
           selectedValue={statusFilter}
-          onChange={setStatusFilter}
+          onChange={(value) => setStatusFilter(value)}
         />
       </div>
 
-      {/* Danh sách kiểm định */}
       <div className="list-section">
         <div className="list-header">
-          <span>Danh sách kiểm định hợp lệ</span>
+          <span>Danh sách kiểm định</span>
         </div>
 
         <StaffAgreementTable
           items={filteredData}
           loading={loading}
-          onRowClick={handleRowClick}
+          pagination={{ pageSize: 10 }}
+          onChange={() => {}}
           onAddAgreement={openAddAgreementModal}
-          onEditDraft={handleEditDraft}
+          onEditDraft={openEditDraftModal}
+          onViewAgreement={(record) =>
+            openAgreementDetail(record.requestId || record.id)
+          }
+          onCreateOrder={handleCreateOrder}
+          onRenew={(record) => handleOpenExtendModal(record)}
         />
       </div>
 
-      {/* Modal thêm hợp đồng */}
       <AddAgreementModal
         visible={isModalVisible}
-        onCancel={() => {
-          closeAddAgreementModal();
-          setIsEditingDraft(false);
-        }}
-        onSubmit={handleAddAgreement}
+        onCancel={closeAddAgreementModal}
+        onSubmit={handleAddAgreementSubmit}
         loading={loading}
         isEditingDraft={isEditingDraft}
+        requestId={selectedInspection?.requestId || selectedInspection?.id}
+      />
+
+      <AgreementDetailModal
+        open={isDetailOpen}
+        onClose={closeAgreementDetail}
+        agreement={agreementDetail}
+        loading={loading}
+        onCancelAgreement={handleCancelAgreement}
+      />
+
+      <ConfirmCancelModal
+        open={isConfirmOpen}
+        title="Hủy hợp đồng ký gửi"
+        content="Bạn có chắc chắn muốn hủy hợp đồng này?"
+        loading={loading}
+        onConfirm={confirmCancelAgreement}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
+
+      <ExtendAgreementModal
+        open={isExtendOpen}
+        onCancel={() => setIsExtendOpen(false)}
+        onConfirm={handleConfirmExtend}
+        loading={loading}
+        duration={extendDuration}
+        setDuration={setExtendDuration}
+      />
+
+      <AgreementListingModal
+        open={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
       />
     </div>
   );
