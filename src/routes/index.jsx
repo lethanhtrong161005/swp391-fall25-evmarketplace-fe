@@ -7,7 +7,6 @@ import LayoutModerator from "@layouts/LayoutModerator";
 import LayoutManager from "@layouts/LayoutManager";
 import LayoutInspector from "@layouts/LayoutInspector";
 import LayoutStaff from "../layouts/LayoutStaff";
-// import ConsignmentCreate from "@pages/Member/ConsignmentCreate/ConsignmentCreate";
 
 // Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
@@ -27,6 +26,10 @@ import StaffConsignmentsConsider from "@/pages/Staff/StaffConsignmentsConsider/S
 import StaffInspectionSchedule from "@/pages/Staff/StaffInspectionSchedule/StaffInspectionSchedule";
 import StaffInspectingManagement from "@pages/Staff/StaffInspectingsManagement/StaffInspectingManagement";
 import StaffAgreementManagement from "@pages/Staff/StaffAgreementManagement/StaffAgreementManagement";
+import StaffOrder from "@pages/Staff/StaffOrder";
+import StaffContract from "@pages/Staff/StaffContract";
+import StaffListing from "@pages/Staff/StaffListing";
+
 
 // Moderator pages
 import ModeratorDashboard from "@pages/Moderator/ModeratorDashboard";
@@ -59,13 +62,11 @@ import MemberConsignment from "@/pages/Member/MemberConsignment/MemberConsignmen
 import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate";
 import AllListings from "@pages/Member/AllListings/AllListings";
 import InspectionAvailabilityPage from "@pages/Member/MemberConsignment/InpectionAvailabilityPage/InspectionAvailabilityPage";
+import MyOrder from "@pages/Member/MyOrder";
 
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
-import StaffOrder from "@pages/Staff/StaffOrder";
-import MyOrder from "@pages/Member/MyOrder";
-import StaffContract from "@pages/Staff/StaffContract";
 
 export const routes = () => [
   {
@@ -170,10 +171,6 @@ export const routes = () => [
             element: <StaffOrder />,
           },
           {
-            path: "contract",
-            element: <StaffContract />,
-          },
-          {
             path: "consignment/inspecting",
             element: <StaffInspectingManagement />,
           },
@@ -181,6 +178,14 @@ export const routes = () => [
             path: "consignment/agreement",
             element: <StaffAgreementManagement />,
           },
+          {
+            path: "listings",
+            element: <StaffListing/>
+          },
+          {
+            path: "contract",
+            element: <StaffContract/>
+          }
         ],
       },
     ],

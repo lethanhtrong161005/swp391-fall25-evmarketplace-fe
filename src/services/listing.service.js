@@ -17,7 +17,7 @@ export async function createListing(payload, images = [], videos = []) {
   const ok =
     res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
   if (!ok) {
-    throw new Error(res?.data?.message || `Upload failed (${res?.data?.message })`);
+    throw new Error(res?.data?.message || `Upload failed (${res?.data?.message})`);
   }
   return res.data;
 }
@@ -175,3 +175,73 @@ export const restoreListing = async (id) => {
   );
   return res; // trả axios response
 };
+
+export async function fetchConsignmentListings({
+  page = 0,
+  size = 10,
+  sort,
+  dir,
+  filters = {},
+} = {}) {
+  const p = new URLSearchParams();
+  p.set("page", String(Math.max(0, page)));
+  p.set("size", String(Math.max(1, size)));
+  if (sort) p.set("sort", sort);
+  if (dir) p.set("dir", dir);
+
+  const setIf = (k, v) => {
+    if (v === undefined || v === null || v === "") return;
+    p.set(k, String(v));
+  };
+
+  // Map BE ConsignmentListingFilter
+  setIf("q", filters.q);
+  setIf("itemType", filters.itemType);              // VEHICLE | BATTERY
+  setIf("status", filters.status);
+  setIf("visibility", filters.visibility);
+  setIf("categoryId", filters.categoryId);
+  setIf("brandId", filters.brandId);
+  setIf("modelId", filters.modelId);
+
+  setIf("priceMin", filters.priceMin);
+  setIf("priceMax", filters.priceMax);
+  setIf("createdAtFrom", filters.createdAtFrom);
+  setIf("createdAtTo", filters.createdAtTo);
+  setIf("yearMin", filters.yearMin);
+  setIf("yearMax", filters.yearMax);
+  setIf("mileageMax", filters.mileageMax);
+  setIf("sohMin", filters.sohMin);
+
+  setIf("batteryCapacityMinKwh", filters.batteryCapacityMinKwh);
+  setIf("batteryCapacityMaxKwh", filters.batteryCapacityMaxKwh);
+  setIf("voltageMinV", filters.voltageMinV);
+  setIf("voltageMaxV", filters.voltageMaxV);
+  setIf("massMaxKg", filters.massMaxKg);
+
+  if (Array.isArray(filters.chemistries) && filters.chemistries.length) {
+    p.set("chemistries", JSON.stringify(filters.chemistries));
+  }
+
+  const res = await api.get(`/api/listing/consignment?${p.toString()}`, {
+    validateStatus: () => true,
+    withCredentials: true,
+  });
+
+  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok) throw new Error(res?.data?.message || `Fetch failed (${res?.status})`);
+
+  const d = res.data?.data || {};
+  return {
+    page: d.page ?? 0,
+    size: d.size ?? size,
+    total: d.totalElements ?? 0,
+    totalPages: d.totalPages ?? 0,
+    hasNext: !!d.hasNext,
+    hasPrevious: !!d.hasPrevious,
+    items: Array.isArray(d.items) ? d.items : [],
+  };
+}
+
+
+
+
