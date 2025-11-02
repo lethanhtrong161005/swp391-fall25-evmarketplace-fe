@@ -34,7 +34,7 @@ export default function ContractTable({
   sortField,
   sortOrder,
   onTableChange,
-  onViewDetail, // 👈 thêm prop callback xem chi tiết
+  onViewDetail, 
 }) {
   const screens = Grid.useBreakpoint();
   const isMobile = !screens.md;
@@ -60,7 +60,6 @@ export default function ContractTable({
             {record?.orderCode != null && (
               <span className={s.subtle}>code: {String(record.orderCode)}</span>
             )}
-            {/* ❌ bỏ nút Xem file hợp đồng ở đây */}
           </div>
         </div>
       ),
@@ -126,7 +125,7 @@ export default function ContractTable({
       render: (d) => (d ? dayjs(d).format("DD/MM/YYYY HH:mm") : <span className={s.subtle}>—</span>),
     },
 
-    // ✅ Cột thao tác "Xem" cố định bên phải
+    
     {
       title: "Thao tác",
       key: "actions",
@@ -176,5 +175,6 @@ export default function ContractTable({
     />
   );
 }
+
 
 

@@ -1,0 +1,22 @@
+.root {
+    width: 100%;
+}
+
+.root {
+    padding: 8px 0;
+}
+
+.right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.collapse {
+    margin-top: 8px;
+}
+
+@media (max-width: 576px) {
+    .root {
+        padding: 4px 0;
+    }
+}

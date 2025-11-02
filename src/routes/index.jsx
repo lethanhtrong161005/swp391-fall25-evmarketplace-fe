@@ -64,6 +64,7 @@ import StaffContract from "@pages/Staff/StaffContract";
 import InspectionAvailabilityPage from "../pages/Member/MemberConsignment/InpectionAvailabilityPage/InspectionAvailabilityPage";
 import StaffInspectingManagement from "../pages/Staff/StaffInspectingsManagement/StaffInspectingManagement";
 import StaffAgreementManagement from "../pages/Staff/StaffAgreementManagement/StaffAgreementManagement";
+import StaffListing from "@pages/Staff/StaffListing";
 
 export const routes = () => [
   {
@@ -168,8 +169,6 @@ export const routes = () => [
             element: <StaffOrder/>
           },
           {
-            path: "contract",
-            element: <StaffContract/>,
             path: "consignment/inspecting",
             element: <StaffInspectingManagement/>
           },
@@ -177,6 +176,14 @@ export const routes = () => [
             path: "consignment/agreement",
             element: <StaffAgreementManagement/>
           },
+          {
+            path: "listings",
+            element: <StaffListing/>
+          },
+          {
+            path: "contract",
+            element: <StaffContract/>
+          }
         ],
       },
     ],
