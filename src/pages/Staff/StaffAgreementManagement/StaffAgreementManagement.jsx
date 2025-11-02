@@ -15,7 +15,7 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import "./StaffAgreementManagement.scss";
-import AgreementListingModal from "./AgreementListingCreate/AgreementListingCreate";
+import AgreementListingCreate from "./AgreementListingCreate/AgreementListingCreate";
 
 const StaffAgreementManagement = () => {
   const {
@@ -158,9 +158,10 @@ const StaffAgreementManagement = () => {
         setDuration={setExtendDuration}
       />
 
-      <AgreementListingModal
+      <AgreementListingCreate
         open={isPostModalOpen}
         onClose={() => setIsPostModalOpen(false)}
+        consignmentData={selectedConsignmentForPost}
       />
     </div>
   );

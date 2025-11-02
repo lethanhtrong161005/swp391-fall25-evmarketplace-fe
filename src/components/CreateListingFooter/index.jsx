@@ -12,10 +12,13 @@ const CreateListingFooter = ({
   submitting,
   maxWidth = 1024,
   isEdit = false,
+  mode = "normal", // 🔹 thêm prop mới
 }) => {
-  const mode = currentPostType || currentMode || "NORMAL";
+  const displayMode = currentPostType || currentMode || "NORMAL";
   const label =
-    mode === "BOOSTED" ? "Đăng tin trả phí" : "Đăng tin thường (Miễn phí)";
+    displayMode === "BOOSTED"
+      ? "Đăng tin trả phí"
+      : "Đăng tin thường (Miễn phí)";
 
   const handleDraftClick = () => {
     if (submitting) return;
@@ -24,7 +27,11 @@ const CreateListingFooter = ({
 
   const handleSubmitClick = () => {
     if (submitting) return;
-    onSubmit && onSubmit({ status: "PENDING" });
+    if (mode === "agreement") {
+      onSubmit && onSubmit("agreement"); // 🔹 gọi đúng mode agreement
+    } else {
+      onSubmit && onSubmit({ status: "PENDING" });
+    }
   };
 
   return (
@@ -49,7 +56,6 @@ const CreateListingFooter = ({
                 </Button>
               </Col>
             )}
-
             <Col style={{ marginLeft: "auto" }}>
               <Row gutter={8} wrap={false} className={styles.actionsRow}>
                 {!isEdit && (

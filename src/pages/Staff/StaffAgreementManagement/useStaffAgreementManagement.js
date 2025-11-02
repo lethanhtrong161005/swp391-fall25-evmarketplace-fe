@@ -26,24 +26,66 @@ const useStaffAgreementManagement = () => {
     try {
       setLoading(true);
       const res = await getStaffInspections();
-      const inspectionList = Array.isArray(res.data)
-        ? res.data
-        : res?.data?.data || [];
+      const inspectionList = Array.isArray(res.data) ? res.data : res?.data?.data || [];
 
-      const inspectionsWithConsignment = await Promise.all(
+      const fullData = await Promise.all(
         inspectionList.map(async (item) => {
           try {
-            const consignmentRes = await getConsignmentById(item.requestId);
-            const consignmentData = consignmentRes?.data || {};
-            return { ...item, ...consignmentData };
-          } catch {
+            const [consignmentRes, agreementRes] = await Promise.all([
+              getConsignmentById(item.requestId),
+              getAgreementByRequestId(item.requestId).catch(() => null),
+            ]);
+
+            const consignment = consignmentRes?.data || {};
+            const agreement = agreementRes?.data || {};
+
+            return {
+              ...item,
+              consignmentId: consignment.id,
+              categoryId: consignment.categoryId,
+              category: consignment.category,
+              brandId: consignment.brandId,
+              brand: consignment.brand,
+              modelId: consignment.modelId,
+              model: consignment.model,
+              year: consignment.year,
+              mileageKm: consignment.mileageKm,
+              sohPercent: consignment.sohPercent,
+              batteryCapacityKwh: consignment.batteryCapacityKwh,
+              preferredBranchId: consignment.preferredBranchId,
+              preferredBranchName: consignment.preferredBranchName,
+              ownerExpectedPrice: consignment.ownerExpectedPrice,
+              status: agreement.status || consignment.status || item.status,
+              mediaUrls: Array.isArray(consignment.mediaUrls) ? consignment.mediaUrls : [],
+              itemType: consignment.itemType,
+              rejectedReason: consignment.rejectedReason,
+              cancelledReason: consignment.cancelledReason,
+              createdAt: consignment.createdAt || item.createdAt,
+              agreementId: agreement.id,
+              agreementRequestId: agreement.requestId,
+              agreementOwnerName: agreement.ownerName,
+              agreementStaffName: agreement.staffName,
+              agreementBranchName: agreement.branchName,
+              commissionPercent: agreement.commissionPercent,
+              acceptablePrice: agreement.acceptablePrice,
+              agreementStatus: agreement.status,
+              agreementDuration: agreement.duration,
+              agreementFileUrl: agreement.medialUrl,
+              agreementStartAt: agreement.startAt,
+              agreementExpireAt: agreement.expireAt,
+              agreementCreatedAt: agreement.createdAt,
+              agreementUpdatedAt: agreement.updatedAt,
+            };
+          } catch (error) {
+            console.error("Lỗi khi merge dữ liệu:", error);
             return { ...item };
           }
         })
       );
 
-      setInspections(inspectionsWithConsignment);
-    } catch {
+      setInspections(fullData);
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách kiểm định:", error);
       message.error("Không thể tải danh sách kiểm định");
     } finally {
       setLoading(false);
@@ -83,6 +125,9 @@ const useStaffAgreementManagement = () => {
       } else {
         message.warning("Không tìm thấy dữ liệu hợp đồng.");
       }
+    } catch (error) {
+      console.error("Lỗi khi mở chi tiết hợp đồng:", error);
+      message.error("Không thể tải dữ liệu hợp đồng.");
     } finally {
       setLoading(false);
     }
@@ -110,6 +155,9 @@ const useStaffAgreementManagement = () => {
       } else {
         message.warning(res?.message || "Không thể hủy hợp đồng");
       }
+    } catch (error) {
+      console.error("Lỗi khi hủy hợp đồng:", error);
+      message.error("Hủy hợp đồng thất bại.");
     } finally {
       setLoading(false);
     }
@@ -126,6 +174,9 @@ const useStaffAgreementManagement = () => {
       } else {
         message.warning("Không tìm thấy hợp đồng để gia hạn.");
       }
+    } catch (error) {
+      console.error("Lỗi khi mở modal gia hạn:", error);
+      message.error("Không thể tải thông tin hợp đồng.");
     } finally {
       setLoading(false);
     }
@@ -146,12 +197,16 @@ const useStaffAgreementManagement = () => {
       } else {
         message.warning(res?.message || "Không thể gia hạn hợp đồng");
       }
+    } catch (error) {
+      console.error("Lỗi khi gia hạn hợp đồng:", error);
+      message.error("Gia hạn hợp đồng thất bại.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleCreateOrder = (consignment) => {
+    if (!consignment) return;
     setSelectedConsignmentForPost(consignment);
     setIsPostModalOpen(true);
   };

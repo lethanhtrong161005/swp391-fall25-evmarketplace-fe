@@ -112,3 +112,34 @@ export const addAgreement = async (payload, file) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
+
+export const staffCreateListing = async (payload, images = [], videos = []) => {
+  const formData = new FormData();
+
+  formData.append("payload", JSON.stringify(payload));
+
+  if (Array.isArray(images)) {
+    images.forEach((img) => {
+      if (img && img.originFileObj) {
+        formData.append("images", img.originFileObj);
+      } else if (img instanceof File) {
+        formData.append("images", img);
+      }
+    });
+  }
+
+  if (Array.isArray(videos)) {
+    videos.forEach((vid) => {
+      if (vid && vid.originFileObj) {
+        formData.append("videos", vid.originFileObj);
+      } else if (vid instanceof File) {
+        formData.append("videos", vid);
+      }
+    });
+  }
+
+  const res = await api.post("/api/listing/consignment", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+};
