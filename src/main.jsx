@@ -3,9 +3,12 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { ConfigProvider, App as AntApp, message } from "antd";
 import "@styles/styles.scss";
+import "@styles/notification.scss";
 import App from "./App.jsx";
 import { AuthProvider } from "@contexts/AuthContext.jsx";
 import { FavoritesProvider } from "@contexts/FavoritesContext.jsx";
+import { NotificationProvider } from "@contexts/NotificationContext.jsx";
+import NotificationToast from "@components/Notification/Toast/NotificationToast";
 
 message.config({
   duration: 3, // hiển thị 3 giây (sweet spot)
@@ -29,7 +32,10 @@ createRoot(document.getElementById("root")).render(
         <BrowserRouter>
           <AuthProvider>
             <FavoritesProvider>
-              <App />
+              <NotificationProvider>
+                <App />
+                <NotificationToast />
+              </NotificationProvider>
             </FavoritesProvider>
           </AuthProvider>
         </BrowserRouter>

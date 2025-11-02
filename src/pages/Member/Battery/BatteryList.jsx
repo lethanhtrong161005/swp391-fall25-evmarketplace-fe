@@ -17,19 +17,12 @@ const BatteryList = ({ listings, onClick }) => {
     }
   };
 
-  // lọc ra sản phẩm là BATTERY và ACTIVE
-  const batteries = listings.filter(
-    (listing) =>
-      listing.category?.toUpperCase() === "BATTERY" &&
-      listing.status?.toUpperCase() === "ACTIVE"
-  );
-
-  // lấy tối đa 20 sản phẩm mới nhất (API đã sort)
-  const currentData = batteries.slice(0, pageSize);
+  // API đã lọc theo type=BATTERY và status=ACTIVE rồi, không cần lọc lại
+  const currentData = listings.slice(0, pageSize);
 
   return (
     <>
-      {batteries.length === 0 ? (
+      {listings.length === 0 ? (
         <div style={{ textAlign: "center", marginTop: 40 }}>
           <Empty description="Không có sản phẩm nào được tìm thấy" />
         </div>

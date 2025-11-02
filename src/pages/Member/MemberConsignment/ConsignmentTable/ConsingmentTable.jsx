@@ -11,6 +11,7 @@ const ConsignmentTable = ({
   setCancelId,
   onViewSchedule,
   onOpenSchedule,
+  onViewAgreement,
 }) => {
   const navigate = useNavigate();
 
@@ -117,6 +118,22 @@ const ConsignmentTable = ({
                   }}
                 >
                   Chỉnh sửa
+                </Button>
+              </Space>
+            );
+
+          case "SIGNED":
+            return (
+              <Space>
+                {cancelButton}
+                <Button
+                  type="default"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onViewAgreement(record.id);
+                  }}
+                >
+                  Hợp đồng
                 </Button>
               </Space>
             );

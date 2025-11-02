@@ -1,6 +1,9 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { getAllContracts } from '@services/contract.service';
 import dayjs from 'dayjs';
+import { message } from 'antd';
+import cookieUtils from "@utils/cookieUtils";
+
 
 const toLocalIso = (d) => (d ? dayjs(d).format('YYYY-MM-DDTHH:mm:ss') : undefined);
 
@@ -92,6 +95,39 @@ export default function useStaffContract() {
         }
     };
 
+
+    //Mở file hợp đồng
+    const [contract, setContract] = useState({open: false, url: "" });
+    const openContract = async (rows) => {
+        let url = rows?.fileUrl;
+
+        if(!url){
+            return message.info("Không thể load được hợp đồng");
+        }
+
+        try{
+            const token = cookieUtils.getToken();
+            const resp = await fetch(url, {
+                method: "GET",
+                headers: { Authorization: `Bearer ${token}`, Accept: "application/pdf" },
+                credentials: "include",
+            });
+
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const blob = await resp.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            setContract({ open: true, url: blobUrl });
+        }catch(e){
+            message.error("Không thể tải hợp đồng")
+        }
+
+    }
+
+    const closeContract = () => {
+        if (contract?.url) URL.revokeObjectURL(contract.url);
+        setContract({open: false, url: ""});
+    }
+
     return {
         loading, rows, total, page, size,
         sortField, sortOrder,
@@ -100,5 +136,10 @@ export default function useStaffContract() {
         effectiveRange, setEffectiveRange,
         onSearchSubmit, onResetFilters, onTableChange, onRefresh,
         fetchContracts,
+
+        contract,
+        openContract, closeContract
+
+        
     };
 }

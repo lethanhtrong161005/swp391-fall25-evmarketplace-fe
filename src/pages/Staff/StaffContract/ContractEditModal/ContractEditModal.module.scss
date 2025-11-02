@@ -1,0 +1,19 @@
+.centerModal {
+    :global(.ant-modal-content) {
+        border-radius: 12px;
+    }
+
+    :global(.ant-modal-header),
+    :global(.ant-modal-title) {
+        text-align: center;
+    }
+
+    :global(.ant-modal-footer) {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.currentFile {
+    margin-top: 6px;
+}

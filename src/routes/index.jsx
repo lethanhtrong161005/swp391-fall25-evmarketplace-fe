@@ -7,7 +7,6 @@ import LayoutModerator from "@layouts/LayoutModerator";
 import LayoutManager from "@layouts/LayoutManager";
 import LayoutInspector from "@layouts/LayoutInspector";
 import LayoutStaff from "../layouts/LayoutStaff";
-// import ConsignmentCreate from "@pages/Member/ConsignmentCreate/ConsignmentCreate";
 
 // Admin pages
 import AdminDashboard from "@pages/Admin/AdminDashboard";
@@ -25,6 +24,12 @@ import StaffDashboard from "@pages/Staff/StaffDashboard";
 import StaffConsignmentsManagement from "@/pages/Staff/StaffConsignmentsManagement/StaffConsignmentsManagement";
 import StaffConsignmentsConsider from "@/pages/Staff/StaffConsignmentsConsider/StaffConsignmentsConsider";
 import StaffInspectionSchedule from "@/pages/Staff/StaffInspectionSchedule/StaffInspectionSchedule";
+import StaffInspectingManagement from "@pages/Staff/StaffInspectingsManagement/StaffInspectingManagement";
+import StaffAgreementManagement from "@pages/Staff/StaffAgreementManagement/StaffAgreementManagement";
+import StaffOrder from "@pages/Staff/StaffOrder";
+import StaffContract from "@pages/Staff/StaffContract";
+import StaffListing from "@pages/Staff/StaffListing";
+
 
 // Moderator pages
 import ModeratorDashboard from "@pages/Moderator/ModeratorDashboard";
@@ -35,6 +40,7 @@ import ModeratorHistoryPage from "@pages/Moderator/ModeratorHistory";
 import ManagerDashboard from "@pages/Manager/ManagerDashboard";
 import ManagerConsigmentsAssign from "@/pages/Manager/ManagerConsignmentsAssign/ManagerConsignmentsAssign";
 import ManagerConsigmentsManagement from "@/pages/Manager/ManagerConsignmentsManagement/ManagerConsignmentsManagement";
+import ManagerAgreementsManagement from "@pages/Manager/ManagerAgreementsManagement/ManagerAgreementsManagement";
 
 // Inspector pages
 import InspectorDashboard from "@pages/Inspector/InspectorDashboard";
@@ -54,17 +60,13 @@ import MyFavoritesPage from "@pages/Member/MyFavoritesPage/MyFavoritesPage";
 import VnpReturnPage from "@pages/Payment";
 import MemberConsignment from "@/pages/Member/MemberConsignment/MemberConsignment";
 import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate";
+import AllListings from "@pages/Member/AllListings/AllListings";
+import InspectionAvailabilityPage from "@pages/Member/MemberConsignment/InpectionAvailabilityPage/InspectionAvailabilityPage";
+import MyOrder from "@pages/Member/MyOrder";
 
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
-import StaffOrder from "@pages/Staff/StaffOrder";
-import MyOrder from "@pages/Member/MyOrder";
-import StaffContract from "@pages/Staff/StaffContract";
-import InspectionAvailabilityPage from "../pages/Member/MemberConsignment/InpectionAvailabilityPage/InspectionAvailabilityPage";
-import StaffInspectingManagement from "../pages/Staff/StaffInspectingsManagement/StaffInspectingManagement";
-import StaffAgreementManagement from "../pages/Staff/StaffAgreementManagement/StaffAgreementManagement";
-import StaffListing from "@pages/Staff/StaffListing";
 
 export const routes = () => [
   {
@@ -75,6 +77,7 @@ export const routes = () => [
       { index: true, element: <HomeWrapper /> },
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
+      { path: "listings", element: <AllListings /> },
       { path: "search-results", element: <SearchResults /> },
       { path: "detail/:id", element: <ProductDetail /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
@@ -87,7 +90,7 @@ export const routes = () => [
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
           { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
-          { path: "my-order", element: <MyOrder/>},
+          { path: "my-order", element: <MyOrder /> },
           {
             path: "consignment",
             breadcrumb: "Ký gửi",
@@ -108,9 +111,8 @@ export const routes = () => [
               },
               {
                 path: "availability",
-                element: <InspectionAvailabilityPage />
+                element: <InspectionAvailabilityPage />,
               },
-              
             ],
           },
           { path: "my-favorites", element: <MyFavoritesPage /> },
@@ -145,7 +147,7 @@ export const routes = () => [
 
   //Staff
   {
-    path: "/staff/*", // ✅ tách scope riêng
+    path: "/staff/*",
     element: <LayoutStaff />,
     children: [
       {
@@ -166,15 +168,15 @@ export const routes = () => [
           },
           {
             path: "order",
-            element: <StaffOrder/>
+            element: <StaffOrder />,
           },
           {
             path: "consignment/inspecting",
-            element: <StaffInspectingManagement/>
+            element: <StaffInspectingManagement />,
           },
           {
             path: "consignment/agreement",
-            element: <StaffAgreementManagement/>
+            element: <StaffAgreementManagement />,
           },
           {
             path: "listings",
@@ -205,6 +207,10 @@ export const routes = () => [
           {
             path: "manager/consignment/management",
             element: <ManagerConsigmentsManagement />,
+          },
+          {
+            path: "manager/agreement/management",
+            element: <ManagerAgreementsManagement />,
           },
         ],
       },

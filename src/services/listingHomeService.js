@@ -10,13 +10,12 @@ export const getAllListings = async (params = {}) => {
     ...params,
   };
 
-  return await get("/api/listing/all", defaultParams);
+  return await get("/api/listing/", defaultParams);
 };
 
-// Tìm kiếm listing theo từ khóa
+// Tìm kiếm listing với đầy đủ filters
 export const searchListings = async (params = {}) => {
   const defaultParams = {
-    key: "",
     page: 0,
     size: 10,
     sort: "createdAt",
@@ -24,14 +23,16 @@ export const searchListings = async (params = {}) => {
     ...params,
   };
 
-  // API search yêu cầu key trực tiếp trong query string
-  return await get("/api/listing/search", {
-    key: defaultParams.key,
-    page: defaultParams.page,
-    size: defaultParams.size,
-    sort: defaultParams.sort,
-    dir: defaultParams.dir,
+  // Chỉ gửi các params có giá trị
+  const queryParams = {};
+  Object.keys(defaultParams).forEach((key) => {
+    const value = defaultParams[key];
+    if (value !== undefined && value !== null && value !== "") {
+      queryParams[key] = value;
+    }
   });
+
+  return await get("/api/listing/search", queryParams);
 };
 
 // Lấy danh sách listing mới nhất cho trang chủ
@@ -95,15 +96,116 @@ export const getTotalListingsCount = async () => {
     });
 
     if (response?.success && response?.data) {
-      // Nếu có hasNext, có thể estimate tổng số
-      // Hoặc có thể gọi API khác để lấy count chính xác
-      return response.data.items.length > 0 ? 100 : 0; // Placeholder
+      // BE trả về totalElements trong PageResponse
+      return response.data.totalElements || 0;
     }
 
     return 0;
   } catch (error) {
     console.error("Error fetching total listings count:", error);
     return 0;
+  }
+};
+
+// Lấy danh sách phương tiện (VEHICLE) - Xe đạp, xe máy, ô tô
+export const getVehicleListings = async ({
+  page = 0,
+  size = 10,
+  sort = "createdAt",
+  dir = "desc",
+} = {}) => {
+  try {
+    const response = await getAllListings({
+      type: "VEHICLE",
+      page,
+      size,
+      sort,
+      dir,
+    });
+
+    if (response?.success && response?.data) {
+      return {
+        items: response.data.items.map(transformListingData),
+        totalElements: response.data.totalElements || 0,
+        totalPages: response.data.totalPages || 0,
+        hasNext: response.data.hasNext || false,
+        hasPrevious: response.data.hasPrevious || false,
+        page: response.data.page || page,
+        size: response.data.size || size,
+      };
+    }
+
+    return {
+      items: [],
+      totalElements: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrevious: false,
+      page: 0,
+      size,
+    };
+  } catch (error) {
+    console.error("Error fetching vehicle listings:", error);
+    return {
+      items: [],
+      totalElements: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrevious: false,
+      page: 0,
+      size,
+    };
+  }
+};
+
+// Lấy danh sách pin (BATTERY)
+export const getBatteryListings = async ({
+  page = 0,
+  size = 10,
+  sort = "createdAt",
+  dir = "desc",
+} = {}) => {
+  try {
+    const response = await getAllListings({
+      type: "BATTERY",
+      page,
+      size,
+      sort,
+      dir,
+    });
+
+    if (response?.success && response?.data) {
+      return {
+        items: response.data.items.map(transformListingData),
+        totalElements: response.data.totalElements || 0,
+        totalPages: response.data.totalPages || 0,
+        hasNext: response.data.hasNext || false,
+        hasPrevious: response.data.hasPrevious || false,
+        page: response.data.page || page,
+        size: response.data.size || size,
+      };
+    }
+
+    return {
+      items: [],
+      totalElements: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrevious: false,
+      page: 0,
+      size,
+    };
+  } catch (error) {
+    console.error("Error fetching battery listings:", error);
+    return {
+      items: [],
+      totalElements: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrevious: false,
+      page: 0,
+      size,
+    };
   }
 };
 
@@ -128,12 +230,19 @@ const transformListingData = (apiItem) => {
   const getThumbnailUrl = (thumbnailUrl) => {
     if (!thumbnailUrl) return "";
 
-    // Đảm bảo URL hợp lệ
-    if (typeof thumbnailUrl === "string" && thumbnailUrl.startsWith("http")) {
-      return thumbnailUrl.trim();
+    const url = String(thumbnailUrl).trim();
+    if (!url) return "";
+
+    // Nếu đã là full URL thì giữ nguyên
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return url;
     }
 
-    return "";
+    // Nếu chưa có base URL, thêm vào
+    const API_BASE =
+      import.meta.env.VITE_API_BASE_URL || "http://localhost:8089";
+    const cleanUrl = url.startsWith("/") ? url : `/${url}`;
+    return `${API_BASE}${cleanUrl}`;
   };
 
   return {
@@ -222,6 +331,8 @@ const determineCategory = (brand, model) => {
 
 // Chuẩn hoá dữ liệu chi tiết cho trang ProductDetail
 const transformListingDetail = (apiData) => {
+  // apiData chính là ListingDetailResponseDto từ BE
+  // BE trả: data: { listing: {...}, sellerId: {...}, media: [...], ... }
   const listing = apiData?.listing || {};
   const seller = apiData?.sellerId || {};
   const profile = seller?.profile || {};
@@ -231,11 +342,22 @@ const transformListingDetail = (apiData) => {
 
   const normalizeUrl = (u) => {
     if (typeof u !== "string") return "";
+
+    // Nếu đã là full URL (http/https) thì giữ nguyên
+    if (u.startsWith("http://") || u.startsWith("https://")) {
+      return u;
+    }
+
+    // Nếu chưa có base URL, thêm vào
+    const API_BASE =
+      import.meta.env.VITE_API_BASE_URL || "http://localhost:8089";
+    const cleanUrl = u.startsWith("/") ? u : `/${u}`;
+
     try {
-      const raw = decodeURI(u);
-      return raw.replace(/ /g, "%20");
+      const raw = decodeURI(cleanUrl);
+      return `${API_BASE}${raw.replace(/ /g, "%20")}`;
     } catch {
-      return String(u).replace(/ /g, "%20");
+      return `${API_BASE}${String(cleanUrl).replace(/ /g, "%20")}`;
     }
   };
 

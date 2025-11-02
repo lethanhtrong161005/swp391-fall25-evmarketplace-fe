@@ -92,7 +92,7 @@ const useStaffConsignmentsConsider = () => {
     setLoading(true);
     try {
       const res = await considerAccepted(id);
-      if (res?.success) {
+      if (res?.data.success) {
         message.success("Đã chấp nhận yêu cầu ký gửi!");
         fetchData();
       } else {

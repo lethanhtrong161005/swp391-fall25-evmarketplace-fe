@@ -54,6 +54,9 @@
   }
 }
 
+.actionBtn { padding: 0 6px; border-radius: 8px; &:hover { background: var(--ant-color-fill-tertiary); } }
+
+
 @media (max-width: 575px) {
   .orderNoCell {
     max-width: 200px;

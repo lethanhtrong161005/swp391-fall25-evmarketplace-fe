@@ -1,0 +1,51 @@
+.rev-toast {
+  .ant-notification-notice {
+    padding: 12px 16px;
+  }
+  .ant-notification-notice-message {
+    margin-bottom: 4px;
+  }
+
+  .ant-notification-notice-with-icon .ant-notification-notice-message {
+    margin-left: 0; /* we control icon block ourselves */
+  }
+
+  .ant-notification-notice-close {
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    &:hover { opacity: 1; }
+  }
+}
+
+.rev-toast-desc {
+  line-height: 1.6;
+}
+
+.rev-toast-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.rev-toast-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid currentColor;
+}
+
+.rev-toast-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rev-toast-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+

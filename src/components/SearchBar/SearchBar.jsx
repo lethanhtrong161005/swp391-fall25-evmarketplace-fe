@@ -3,7 +3,7 @@ import { Input, Button, Select, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { searchListings } from "@/services/listingHomeService";
-import "@components/SearchBar/SearchBar.scss"
+import "@components/SearchBar/SearchBar.scss";
 
 const { Option } = Select;
 
@@ -46,8 +46,7 @@ const SearchBar = () => {
       } else {
         message.error("Không tìm thấy kết quả nào");
       }
-    } catch (error) {
-      console.error("❌ Search error:", error);
+    } catch {
       message.error("Có lỗi xảy ra khi tìm kiếm");
     } finally {
       setLoading(false);

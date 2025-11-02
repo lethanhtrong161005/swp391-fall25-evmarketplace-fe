@@ -18,6 +18,13 @@ import {
   INSPECTION_STATUS_COLOR,
   INSPECTION_STATUS_LABELS,
 } from "../../../utils/constants";
+import {
+  CalendarOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  StopOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -35,20 +42,39 @@ export default function StaffInspectionSchedule() {
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
-
   const [selectedStatus, setSelectedStatus] = useState("ALL");
 
   const statusOptions = [
-    { value: "ALL", label: "Tất cả" },
-    { value: "SCHEDULED", label: "Đã lên lịch" },
-    { value: "CHECKED_IN", label: "Đã check-in" },
-    { value: "NO_SHOW", label: "Vắng mặt" },
-    { value: "CANCELLED", label: "Đã hủy" },
+    {
+      value: "ALL",
+      label: "Tất cả",
+      icon: <AppstoreOutlined style={{ color: "#595959", fontSize: 20 }} />,
+    },
+    {
+      value: "SCHEDULED",
+      label: "Đã lên lịch",
+      icon: <CalendarOutlined style={{ color: "#1677ff", fontSize: 20 }} />,
+    },
+    {
+      value: "CHECKED_IN",
+      label: "Đã đến",
+      icon: <CheckCircleOutlined style={{ color: "green", fontSize: 20 }} />,
+    },
+    {
+      value: "NO_SHOW",
+      label: "Vắng mặt",
+      icon: <CloseCircleOutlined style={{ color: "volcano", fontSize: 20 }} />,
+    },
+    {
+      value: "CANCELLED",
+      label: "Đã hủy",
+      icon: <StopOutlined style={{ color: "gray", fontSize: 20 }} />,
+    },
   ];
 
   useEffect(() => {
-    fetchSchedulesByDate(selectedDate.format("YYYY-MM-DD"));
-  }, [selectedDate]);
+    fetchSchedulesByDate(selectedDate);
+  }, [selectedDate, fetchSchedulesByDate]);
 
   const handleOpenCancelModal = (id) => {
     setSelectedId(id);
@@ -58,8 +84,8 @@ export default function StaffInspectionSchedule() {
   const handleConfirmCancel = async (reason) => {
     setConfirmLoading(true);
     try {
-      await handleCancelSchedule(selectedId, reason);
-      message.success("Đã đánh dấu vắng mặt!");
+      await handleCancelSchedule(selectedId, reason, selectedDate);
+      message.success("Đã hủy lịch kiểm định!");
       setCancelModalOpen(false);
     } catch {
       message.error("Không thể hủy lịch kiểm định.");
@@ -69,10 +95,8 @@ export default function StaffInspectionSchedule() {
   };
 
   const filteredSchedules = useMemo(() => {
-    let data = schedules;
-    if (selectedStatus !== "ALL")
-      data = data.filter((s) => s.status === selectedStatus);
-    return data;
+    if (selectedStatus === "ALL") return schedules;
+    return schedules.filter((s) => s.status === selectedStatus);
   }, [schedules, selectedStatus]);
 
   const columns = [
@@ -137,7 +161,7 @@ export default function StaffInspectionSchedule() {
           <Button
             type="primary"
             size="small"
-            onClick={() => handleCheckIn(record.id)}
+            onClick={() => handleCheckIn(record.id, selectedDate)}
             disabled={record.status !== "SCHEDULED"}
           >
             Đã đến
@@ -155,12 +179,9 @@ export default function StaffInspectionSchedule() {
     },
   ];
 
-  // const disabledDate = (current) =>
-  //   current && (current < today.startOf("day") || current > today.add(2, "day").endOf("day"));
-
   return (
     <div className="staff-inspection-page">
-      <h2>Lịch hẹn kiểm định</h2>
+      <h2 className="page-title">Lịch hẹn kiểm định</h2>
 
       <div className="filter-section">
         <div className="date-picker">
@@ -169,7 +190,6 @@ export default function StaffInspectionSchedule() {
             value={selectedDate}
             onChange={(date) => setSelectedDate(date || today)}
             format="DD/MM/YYYY"
-            // disabledDate={disabledDate}
           />
         </div>
 

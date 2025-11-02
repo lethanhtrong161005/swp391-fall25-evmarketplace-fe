@@ -1,12 +1,29 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 import * as path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: {
+    global: "globalThis",
+  },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:8089",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/ws": {
+        target: "ws://localhost:8089",
+        ws: true,
+        changeOrigin: true,
+      },
+    },
+  },
   optimizeDeps: {
-    exclude: ['fsevents']
+    exclude: ["fsevents"],
   },
   resolve: {
     alias: {
@@ -25,7 +42,7 @@ export default defineConfig({
       "@validators": path.resolve(__dirname, "./src/validators"),
       "@data": path.resolve(__dirname, "./src/data"),
       "@dtos": path.resolve(__dirname, "./src/dtos"),
-      "@mappers":path.resolve(__dirname, "./src/mappers"),
+      "@mappers": path.resolve(__dirname, "./src/mappers"),
     },
   },
-})
+});

@@ -11,6 +11,7 @@ import styles from "../ManagerListing/styles.module.scss";
 import DynamicBreadcrumb from "../../../components/Breadcrumb/Breadcrumb";
 import CancelConsignmentModal from "./ConsignmentCancelModal/ConsignmentCancelModal.jsx";
 import InspectionScheduleModal from "./InspectionScheduleModal/InspectionScheduleModal.jsx";
+import AgreementDetailModal from "../../Staff/StaffAgreementManagement/AgreementDetailModal/AgreementDetailModal.jsx";
 
 const tabs = [
   { key: "SUBMITTED", label: "Đã gửi", statuses: ["SUBMITTED"] },
@@ -20,7 +21,7 @@ const tabs = [
   {
     key: "INSPECTION_GROUP",
     label: "Kiểm định",
-    statuses: ["INSPECTING", "INSPECTED_PASS", "INSPECTED_FAIL"],
+    statuses: ["INSPECTING", "INSPECTED_PASS", "INSPECTED_FAIL", "SIGNED"],
   },
   { key: "REQUEST_REJECTED", label: "Bị từ chối", statuses: ["REQUEST_REJECTED"] },
   { key: "FINISHED", label: "Hoàn thành", statuses: ["FINISHED"] },
@@ -40,7 +41,6 @@ const MemberConsignment = () => {
     activeTab,
     setActiveTab,
     counts,
-    // fetchData,
     goCreateConsignment,
     setCancelId,
     handleCancel,
@@ -51,6 +51,10 @@ const MemberConsignment = () => {
     closeScheduleModal,
     handleOpenSchedule,
     handleCancelSchedule,
+    agreementDetail,
+    isAgreementModalOpen,
+    handleOpenAgreementDetail,
+    closeAgreementModal,
   } = useManagerConsignment(tabs);
 
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -100,6 +104,7 @@ const MemberConsignment = () => {
             setCancelId={handleOpenCancelModal}
             onViewSchedule={handleViewSchedule}
             onOpenSchedule={handleOpenSchedule}
+            onViewAgreement={(requestId) => handleOpenAgreementDetail(requestId)}
           />
         ) : (
           <EmptyState
@@ -125,7 +130,15 @@ const MemberConsignment = () => {
         onClose={closeScheduleModal}
         data={scheduleData}
         loading={loadingSchedule}
-        onCancelSchedule={handleCancelSchedule} 
+        onCancelSchedule={handleCancelSchedule}
+      />
+
+      <AgreementDetailModal
+        open={isAgreementModalOpen}
+        onClose={closeAgreementModal}
+        agreement={agreementDetail}
+        loading={loading}
+        isCancelView={true}
       />
 
       <ConsignmentDetailModal item={selectedItem} onClose={onCloseDetail} />

@@ -267,7 +267,7 @@ export const getAccountActivityLogs = async (accountId, params = {}) => {
 };
 
 // Manager get account staff
-export const getStaffOfBranch = async (branchId) => {
-  const res = await api.get(`/api/manager/branches/${branchId}/accounts/staff`);
+export const getStaffOfBranch = async () => {
+  const res = await api.get(`/api/manager/accounts/staff`);
   return res.data;
 };

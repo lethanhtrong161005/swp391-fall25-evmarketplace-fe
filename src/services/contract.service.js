@@ -1,12 +1,19 @@
 import api from "@utils/apiCaller";
+const BASE = "/api/contract";
+import dayjs from "dayjs";
+
+
+const toLocalLdt = (d) => (d ? dayjs(d).format("YYYY-MM-DDTHH:mm:ss") : null);
+
+
 
 export async function createOrderContract({
     orderId,
     staffId,
-    file,        
+    file,
     note,
-    effectiveFrom, 
-    effectiveTo,   
+    effectiveFrom,
+    effectiveTo,
 }) {
     const formData = new FormData();
     formData.append(
@@ -94,3 +101,23 @@ export async function getAllContracts({
         throw err;
     }
 }
+
+export const updateContract = async (id, data = {}, file) => {
+    const payload = {
+        status: data.status ?? null,
+        effectiveFrom: toLocalLdt(data.effectiveFrom),
+        effectiveTo: toLocalLdt(data.effectiveTo),
+        note: data.note ?? null,
+    };
+
+    const form = new FormData();
+    form.append("payload", new Blob([JSON.stringify(payload)], { type: "application/json" }));
+    if (file) form.append("file", file);
+
+    console.log(payload);
+
+    const { data: res } = await api.put(`${BASE}/${id}`, form, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+    return res;
+};

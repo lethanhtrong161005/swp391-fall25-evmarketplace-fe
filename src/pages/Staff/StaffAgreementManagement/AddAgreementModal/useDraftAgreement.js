@@ -7,12 +7,9 @@ const useDraftAgreement = (form, key = "agreement_draft") => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-
-        // ✅ Convert lại startAt nếu có
         if (parsed.startAt && typeof parsed.startAt === "string") {
           parsed.startAt = dayjs(parsed.startAt);
         }
-
         form.setFieldsValue(parsed);
       } catch (err) {
         console.error("Failed to parse saved draft:", err);
@@ -22,14 +19,15 @@ const useDraftAgreement = (form, key = "agreement_draft") => {
 
   const saveDraft = () => {
     try {
-      const values = form.getFieldsValue();
+      const values = form.getFieldsValue(true);
+      // ❌ Không lưu các field chứa file
+      const { images, videos, agreementFile, ...rest } = values;
 
-      // ⚠️ Không lưu dayjs object trực tiếp (chuyển sang string)
-      if (values.startAt && values.startAt.isValid) {
-        values.startAt = values.startAt.format("YYYY-MM-DD HH:mm:ss");
+      if (rest.startAt && rest.startAt.isValid) {
+        rest.startAt = rest.startAt.format("YYYY-MM-DD HH:mm:ss");
       }
 
-      localStorage.setItem(key, JSON.stringify(values));
+      localStorage.setItem(key, JSON.stringify(rest));
       return true;
     } catch (err) {
       console.error("Failed to save draft:", err);
@@ -39,19 +37,16 @@ const useDraftAgreement = (form, key = "agreement_draft") => {
 
   const loadDraft = () => {
     const saved = localStorage.getItem(key);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        // ✅ Convert lại
-        if (parsed.startAt && typeof parsed.startAt === "string") {
-          parsed.startAt = dayjs(parsed.startAt);
-        }
-        return parsed;
-      } catch {
-        return null;
+    if (!saved) return null;
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed.startAt && typeof parsed.startAt === "string") {
+        parsed.startAt = dayjs(parsed.startAt);
       }
+      return parsed;
+    } catch {
+      return null;
     }
-    return null;
   };
 
   const clearDraft = () => {

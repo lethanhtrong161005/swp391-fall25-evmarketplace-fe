@@ -1,7 +1,6 @@
 import api, { put, remove as httpDelete } from "@utils/apiCaller";
 
 export async function createListing(payload, images = [], videos = []) {
-  console.log(payload);
   const fd = new FormData();
   const blob = new Blob([JSON.stringify(payload)], {
     type: "application/json",
@@ -25,18 +24,20 @@ export async function createListing(payload, images = [], videos = []) {
 
 export async function fetchMyListings({ page = 0, size = 10, status, q } = {}) {
   const params = new URLSearchParams();
-  params.set('page', page);
-  params.set('size', size);
-  if (status && status !== 'DRAFT') params.set('status', status); // DRAFT là local only
-  if (q) params.set('q', q);
+  params.set("page", page);
+  params.set("size", size);
+  if (status && status !== "DRAFT") params.set("status", status); // DRAFT là local only
+  if (q) params.set("q", q);
 
   const res = await api.get(`/api/listing/mine?${params.toString()}`, {
     validateStatus: () => true,
     withCredentials: true,
   });
 
-  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
-  if (!ok) throw new Error(res?.data?.message || `Fetch failed (${res?.status})`);
+  const ok =
+    res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok)
+    throw new Error(res?.data?.message || `Fetch failed (${res?.status})`);
 
   const d = res.data?.data || {};
   return {
@@ -51,56 +52,68 @@ export async function fetchMyListings({ page = 0, size = 10, status, q } = {}) {
 }
 
 export async function fetchMyListingCounts() {
-  const res = await api.get('/api/listing/mine/counts', {
+  const res = await api.get("/api/listing/mine/counts", {
     validateStatus: () => true,
     withCredentials: true,
   });
-  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
-  if (!ok) throw new Error(res?.data?.message || `Fetch counts failed (${res?.status})`);
+  const ok =
+    res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok)
+    throw new Error(
+      res?.data?.message || `Fetch counts failed (${res?.status})`
+    );
   return res.data?.data || {};
 }
-
 
 export const uploadListingMedia = (listingId, files = []) => {
   const form = new FormData();
   files.forEach((f) => form.append("files", f));
-  return api.post(`/listings/${listingId}/media`, form, {}, {
-    "Content-Type": "multipart/form-data",
-  });
+  return api.post(
+    `/listings/${listingId}/media`,
+    form,
+    {},
+    {
+      "Content-Type": "multipart/form-data",
+    }
+  );
 };
-
 
 export const getFeeListing = async () => {
   const res = await api.get("/api/config/listing/fee");
   if (res.status == 200) {
     return res.data;
   }
-}
+};
 
 //Lấy chi tiết bài đăng của người đăng
 export const getListingDetailBySeller = async (id) => {
-  const res = await api.get(
-    `/api/listing/seller/${id}`,
-    {
-      validateStatus: () => true
-    }
-  )
+  const res = await api.get(`/api/listing/seller/${id}`, {
+    validateStatus: () => true,
+  });
 
-  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  const ok =
+    res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
   if (!ok) {
-    throw new Error(res?.data?.message || `Fetch listing detail failed (${res?.status})`);
+    throw new Error(
+      res?.data?.message || `Fetch listing detail failed (${res?.status})`
+    );
   }
 
   return res.data;
-}
+};
 
-export async function updateListing(listingId, payload, images = [], videos = []) {
+export async function updateListing(
+  listingId,
+  payload,
+  images = [],
+  videos = []
+) {
   const fd = new FormData();
-
 
   fd.append("payload", JSON.stringify(payload));
 
-  const isServerItem = (x) => x && (x.origin === "server" || x?._raw?.id || x?.id);
+  const isServerItem = (x) =>
+    x && (x.origin === "server" || x?._raw?.id || x?.id);
   const getServerId = (x) => x?._raw?.id ?? x?.id ?? null;
   const asFile = (x) => x?.originFileObj || (x instanceof File ? x : null);
 
@@ -126,10 +139,16 @@ export async function updateListing(listingId, payload, images = [], videos = []
 
   keepMediaIds.forEach((id) => fd.append("keepMediaIds", String(id)));
 
-  const res = await put(`/api/listing/${listingId}`, fd, {}, { /* headers auto */ });
+  const res = await put(
+    `/api/listing/${listingId}`,
+    fd,
+    {},
+    {
+      /* headers auto */
+    }
+  );
   return res;
 }
-
 
 //Xoá bài đăng
 export const deleteListing = async (listingId) => {
@@ -137,7 +156,6 @@ export const deleteListing = async (listingId) => {
   if (data?.success) return data;
   throw new Error(data?.message || "Delete failed");
 };
-
 
 export const changeStatusListing = async ({ id, status }) => {
   const res = await api.post(
@@ -157,7 +175,6 @@ export const restoreListing = async (id) => {
   );
   return res; // trả axios response
 };
-
 
 export async function fetchConsignmentListings({
   page = 0,

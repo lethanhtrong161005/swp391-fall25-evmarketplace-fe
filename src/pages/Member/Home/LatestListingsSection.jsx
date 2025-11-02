@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 
 import ProductCard from "@/components/ProductCard/ProductCard";
-import ViewAllLink from "@/components/ViewAllLinkButton/ViewAllLink";
+import ViewMoreButton from "@/components/ViewMoreButton";
 import styles from "./LatestListingsSection.module.scss";
 
 const { Title } = Typography;
@@ -103,18 +103,7 @@ export default function LatestListingsSection({
           />
         )}
 
-        <div
-          style={{ display: "flex", justifyContent: "center", marginTop: 16 }}
-        >
-          <Button
-            onClick={() => onViewMore?.()}
-            shape="round"
-            size="large"
-            style={{ borderRadius: 999, padding: "8px 20px", fontWeight: 600 }}
-          >
-            {`Xem thêm ${total.toLocaleString("vi-VN")} tin đăng`}
-          </Button>
-        </div>
+        <ViewMoreButton count={total} onClick={onViewMore} loading={loading} />
       </section>
 
       <Divider />

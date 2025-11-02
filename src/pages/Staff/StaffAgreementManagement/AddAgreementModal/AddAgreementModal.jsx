@@ -6,12 +6,16 @@ import {
   DatePicker,
   Select,
   Button,
-  message,
+  Upload,
+  Typography,
+  App,
 } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import useDraftAgreement from "./useDraftAgreement";
 
 const { Option } = Select;
+const { Text } = Typography;
 
 const AddAgreementModal = ({
   visible,
@@ -19,22 +23,16 @@ const AddAgreementModal = ({
   onSubmit,
   loading,
   isEditingDraft = false,
+  requestId,
 }) => {
   const [form] = Form.useForm();
-  const { saveDraft, loadDraft, clearDraft } = useDraftAgreement(
-    form,
-    "agreement_draft"
-  );
+  const { message } = App.useApp();
+  const { saveDraft, loadDraft, clearDraft } = useDraftAgreement(form, "agreement_draft");
 
-  /**
-   * Khi mở modal ở chế độ chỉnh sửa nháp
-   * -> Tự động load dữ liệu nháp vào form
-   */
   useEffect(() => {
     if (visible && isEditingDraft) {
       const draft = loadDraft();
       if (draft) {
-        // ✅ Nếu có trường ngày, convert lại sang dayjs để DatePicker hiểu được
         if (draft.startAt && typeof draft.startAt === "string") {
           draft.startAt = dayjs(draft.startAt);
         }
@@ -43,54 +41,52 @@ const AddAgreementModal = ({
     }
   }, [visible, isEditingDraft, form, loadDraft]);
 
-  /** ✅ Lưu bản nháp vào localStorage */
   const handleSaveDraft = () => {
     const success = saveDraft();
     if (success) message.success("Đã lưu bản nháp hợp đồng!");
   };
 
-  /** ✅ Gửi form lên server */
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
 
-      const formattedValues = {
-        ...values,
-        // ⚠️ Dùng 'T' giữa ngày và giờ để Spring Boot parse đúng LocalDateTime
-        startAt: values.startAt
-          ? values.startAt.format("YYYY-MM-DDTHH:mm:ss")
-          : null,
+      const payload = {
+        requestId,
+        commissionPercent: values.commissionPercent,
+        acceptablePrice: values.acceptablePrice,
+        startAt: values.startAt ? values.startAt.toISOString() : null,
+        duration: values.duration,
       };
 
-      await onSubmit(formattedValues);
+      const fileList = values.contractFile || [];
+      const file = fileList[0]?.originFileObj;
+      if (!file) {
+        message.error("Vui lòng tải lên tệp hợp đồng (PDF)");
+        return;
+      }
+
+      await onSubmit(payload, file);
       clearDraft();
       form.resetFields();
     } catch (err) {
-      console.error("Validation failed:", err);
+      console.error(err);
     }
   };
 
   return (
     <Modal
-      title={
-        isEditingDraft ? "Chỉnh sửa bản nháp hợp đồng" : "Thêm hợp đồng ký gửi"
-      }
+      title={isEditingDraft ? "Chỉnh sửa bản nháp hợp đồng" : "Thêm hợp đồng ký gửi"}
       open={visible}
       onCancel={() => {
         form.resetFields();
         onCancel();
       }}
-      width={500}
+      width={600}
       footer={[
         <Button key="draft" onClick={handleSaveDraft}>
           Lưu nháp
         </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          loading={loading}
-          onClick={handleOk}
-        >
+        <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
           {isEditingDraft ? "Xác nhận lưu" : "Xác nhận"}
         </Button>,
       ]}
@@ -105,16 +101,9 @@ const AddAgreementModal = ({
         <Form.Item
           label="Phần trăm hoa hồng (%)"
           name="commissionPercent"
-          rules={[
-            { required: true, message: "Vui lòng nhập phần trăm hoa hồng" },
-          ]}
+          rules={[{ required: true, message: "Vui lòng nhập phần trăm hoa hồng" }]}
         >
-          <InputNumber
-            min={0}
-            max={100}
-            style={{ width: "100%" }}
-            placeholder="Nhập % hoa hồng"
-          />
+          <InputNumber min={0} max={100} style={{ width: "100%" }} placeholder="Nhập % hoa hồng" />
         </Form.Item>
 
         <Form.Item
@@ -127,9 +116,7 @@ const AddAgreementModal = ({
             step={100000}
             style={{ width: "100%" }}
             placeholder="Nhập giá chấp nhận"
-            formatter={(v) =>
-              `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            }
+            formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             parser={(v) => v.replace(/,/g, "")}
           />
         </Form.Item>
@@ -160,19 +147,28 @@ const AddAgreementModal = ({
         </Form.Item>
 
         <Form.Item
-          label="Phần trăm đặt cọc (%)"
-          name="depositPercent"
-          rules={[
-            { required: true, message: "Vui lòng nhập phần trăm đặt cọc" },
-          ]}
+          label="Tệp hợp đồng ký gửi (PDF)"
+          name="contractFile"
+          valuePropName="fileList"
+          getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList || [])}
+          rules={[{ required: true, message: "Vui lòng tải lên tệp PDF" }]}
         >
-          <InputNumber
-            min={0}
-            max={100}
-            style={{ width: "100%" }}
-            placeholder="Nhập % đặt cọc"
-          />
+          <Upload
+            accept="application/pdf"
+            listType="picture-card"
+            maxCount={1}
+            beforeUpload={() => false}
+          >
+            <div>
+              <PlusOutlined />
+              <div style={{ marginTop: 8 }}>Tải hợp đồng (PDF)</div>
+            </div>
+          </Upload>
         </Form.Item>
+
+        <Text type="secondary">
+          Chỉ hỗ trợ tệp hợp đồng định dạng PDF (tối đa 20MB)
+        </Text>
       </Form>
     </Modal>
   );

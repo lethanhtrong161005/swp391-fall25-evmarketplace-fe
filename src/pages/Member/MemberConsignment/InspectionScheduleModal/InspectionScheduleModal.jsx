@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Descriptions, Tag, Spin, Button } from "antd";
+import dayjs from "dayjs";
 import "./InspectionScheduleModal.scss";
 import {
   INSPECTION_STATUS_COLOR,
@@ -12,7 +13,7 @@ const InspectionScheduleModal = ({
   onClose,
   data,
   loading,
-  onCancelSchedule, // ✅ callback từ parent (useManagerConsignment)
+  onCancelSchedule,
 }) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [loadingCancel, setLoadingCancel] = useState(false);
@@ -21,9 +22,9 @@ const InspectionScheduleModal = ({
     if (!data?.id) return;
     try {
       setLoadingCancel(true);
-      await onCancelSchedule(data.id, reason); // Gọi API hủy
+      await onCancelSchedule(data.id, reason);
       setShowCancelModal(false);
-      onClose(); // Đóng modal lịch
+      onClose();
     } catch (err) {
       console.error("Cancel inspection error:", err);
     } finally {
@@ -33,72 +34,95 @@ const InspectionScheduleModal = ({
 
   return (
     <>
-      {/* 🔹 Modal chính hiển thị thông tin lịch kiểm định */}
       <Modal
+        title="Chi tiết Lịch kiểm định"
         open={open}
         onCancel={onClose}
-        footer={
-          <div style={{ textAlign: "right" }}>
-            <Button onClick={onClose}>Đóng</Button>
-            <Button
-              danger
-              type="primary"
-              style={{ marginLeft: 8 }}
-              disabled={data?.status !== "SCHEDULED"}
-              onClick={() => setShowCancelModal(true)} // mở modal nhập lý do
-            >
-              Hủy lịch
-            </Button>
-          </div>
-        }
-        title="Thông tin lịch kiểm định"
-        width={650}
-        className="modal"
+        footer={null}
+        centered
+        width={700}
+        className="inspection-schedule-modal"
       >
-        {loading ? (
-          <div style={{ textAlign: "center", padding: "40px 0" }}>
-            <Spin size="large" />
-          </div>
-        ) : data ? (
-          <Descriptions column={1} bordered>
-            <Descriptions.Item label="Ngày hẹn">
-              {data.scheduleDate}
-            </Descriptions.Item>
-            <Descriptions.Item label="Ca làm">
-              {data.shiftCode} ({data.shiftStartTime} - {data.shiftEndTime})
-            </Descriptions.Item>
-            <Descriptions.Item label="Chi nhánh">
-              {data.branchName}
-            </Descriptions.Item>
-            <Descriptions.Item label="Trạng thái">
-              <Tag color={INSPECTION_STATUS_COLOR[data.status] || "default"}>
-                {INSPECTION_STATUS_LABELS[data.status] || data.status}
-              </Tag>
-            </Descriptions.Item>
-            <Descriptions.Item label="Người lên lịch">
-              {data.scheduledByName || "Không có"}
-            </Descriptions.Item>
-            <Descriptions.Item label="Người kiểm định">
-              {data.staffName || "Chưa có"}
-            </Descriptions.Item>
-            <Descriptions.Item label="Ghi chú">
-              {data.note || "Không có"}
-            </Descriptions.Item>
-            <Descriptions.Item label="Ngày tạo">
-              {new Date(data.createdAt).toLocaleString()}
-            </Descriptions.Item>
-            {data.cancelledReason && (
-              <Descriptions.Item label="Lý do hủy">
-                {data.cancelledReason}
-              </Descriptions.Item>
-            )}
-          </Descriptions>
-        ) : (
-          <p style={{ textAlign: "center" }}>Không có dữ liệu lịch hẹn.</p>
-        )}
+        <Spin spinning={loading}>
+          {data ? (
+            <>
+              <Descriptions
+                bordered={false}
+                column={2}
+                labelStyle={{ fontWeight: 600 }}
+              >
+                <Descriptions.Item label="Mã lịch">
+                  {data.id}
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Trạng thái">
+                  <Tag color={INSPECTION_STATUS_COLOR[data.status] || "default"}>
+                    {INSPECTION_STATUS_LABELS[data.status] || data.status}
+                  </Tag>
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Ngày hẹn">
+                  {dayjs(data.scheduleDate).format("DD/MM/YYYY")}
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Ca làm">
+                  {data.shiftCode} ({data.shiftStartTime} - {data.shiftEndTime})
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Chi nhánh">
+                  {data.branchName || "Không có"}
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Người lên lịch">
+                  {data.scheduledByName || "Không có"}
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Người kiểm định">
+                  {data.staffName || "Chưa có"}
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Ghi chú">
+                  {data.note || "Không có"}
+                </Descriptions.Item>
+
+                <Descriptions.Item label="Ngày tạo">
+                  {dayjs(data.createdAt).format("DD/MM/YYYY HH:mm")}
+                </Descriptions.Item>
+
+                {data.cancelledReason && (
+                  <Descriptions.Item label="Lý do hủy" span={2}>
+                    {data.cancelledReason}
+                  </Descriptions.Item>
+                )}
+              </Descriptions>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: 24,
+                  gap: 10,
+                }}
+              >
+                <Button onClick={onClose}>Đóng</Button>
+                <Button
+                  danger
+                  type="primary"
+                  disabled={data?.status !== "SCHEDULED"}
+                  onClick={() => setShowCancelModal(true)}
+                >
+                  Hủy lịch
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div style={{ textAlign: "center", padding: "24px 0" }}>
+              <p>Không có dữ liệu lịch kiểm định để hiển thị.</p>
+            </div>
+          )}
+        </Spin>
       </Modal>
 
-      {/* 🔹 Modal nhập lý do (dùng lại component bạn đã có) */}
       <CancelInspectionModal
         open={showCancelModal}
         onCancel={() => setShowCancelModal(false)}

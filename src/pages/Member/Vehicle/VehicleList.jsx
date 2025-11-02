@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Empty } from "antd";
 import styles from "../Home/LatestListingsSection.module.scss";
 import { useNavigate } from "react-router-dom";
@@ -16,20 +16,12 @@ const VehicleList = ({ listings, onClick }) => {
     }
   };
 
-  // lọc ra sản phẩm là phương tiện và ACTIVE
-  const vehicles = listings.filter(
-    (listing) =>
-      ["EV_CAR", "E_MOTORBIKE", "E_BIKE"].includes(
-        listing.category?.toUpperCase()
-      ) && listing.status?.toUpperCase() === "ACTIVE"
-  );
-
-  // lấy tối đa 20 sản phẩm mới nhất (giả định danh sách đã sort theo createdAt desc từ API)
-  const currentData = vehicles.slice(0, pageSize);
+  // API đã lọc theo type=VEHICLE và status=ACTIVE rồi, không cần lọc lại
+  const currentData = listings.slice(0, pageSize);
 
   return (
     <>
-      {vehicles.length === 0 ? (
+      {listings.length === 0 ? (
         <div style={{ textAlign: "center", marginTop: 40 }}>
           <Empty description="Không có sản phẩm nào được tìm thấy" />
         </div>
