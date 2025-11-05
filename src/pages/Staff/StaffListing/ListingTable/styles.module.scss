@@ -1,0 +1,51 @@
+.titleCell {
+    display: flex;
+    flex-direction: column;
+}
+.titleLine {
+    font-weight: 600;
+}
+.metaLine {
+    color: rgba(0,0,0,0.45);
+    font-size: 12px;
+}
+
+.thumb {
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.noThumb {
+    width: 64px;
+    height: 48px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 12px;
+}
+
+.vcol {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.title {
+    font-weight: 600;
+}
+
+.meta {
+    font-size: 12px;
+}
+
+@media (max-width: 576px) {
+    .titleLine {
+        font-size: 13px;
+    }
+    .metaLine {
+        font-size: 11px;
+    }
+}

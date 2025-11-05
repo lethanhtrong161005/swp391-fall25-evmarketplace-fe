@@ -1,0 +1,13 @@
+.root {
+    padding: 12px;
+}
+
+.stack {
+    width: 100%;
+}
+
+@media (max-width: 576px) {
+    .root {
+        padding: 8px;
+    }
+}

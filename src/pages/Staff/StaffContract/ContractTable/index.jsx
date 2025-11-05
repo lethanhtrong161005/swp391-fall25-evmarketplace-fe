@@ -2,7 +2,9 @@ import React from "react";
 import { Table, Tag, Tooltip, Grid, Typography, Button } from "antd";
 import dayjs from "dayjs";
 import s from "./ContractTable.module.scss";
-import { EyeOutlined } from "@ant-design/icons"; 
+import { EyeOutlined, EditOutlined } from "@ant-design/icons";
+import { Space } from "antd";
+import { isLockedStatus } from "../ContractEditModal/useContractEditModal";
 
 const { Text } = Typography;
 
@@ -13,16 +15,11 @@ const SIGN_META = {
 };
 
 const STATUS_META = {
-  DRAFT: { color: "default", label: "DRAFT" },
-  SUBMITTED: { color: "processing", label: "SUBMITTED" },
-  APPROVED: { color: "success", label: "APPROVED" },
-  PUBLISHED: { color: "cyan", label: "PUBLISHED" },
-  RESERVED: { color: "gold", label: "RESERVED" },
   UPLOADED: { color: "cyan", label: "UPLOADED" },
+  CANCELLED: { color: "red", label: "CANCELLED" },
   SIGNED: { color: "green", label: "SIGNED" },
+  ACTIVE: { color: "green", label: "ACTIVE" },
   EXPIRED: { color: "volcano", label: "EXPIRED" },
-  HIDDEN: { color: "purple", label: "HIDDEN" },
-  DELETED: { color: "red", label: "DELETED" },
 };
 
 export default function ContractTable({
@@ -34,7 +31,8 @@ export default function ContractTable({
   sortField,
   sortOrder,
   onTableChange,
-  onViewDetail, // 👈 thêm prop callback xem chi tiết
+  onViewDetail,
+  onEdit
 }) {
   const screens = Grid.useBreakpoint();
   const isMobile = !screens.md;
@@ -60,20 +58,20 @@ export default function ContractTable({
             {record?.orderCode != null && (
               <span className={s.subtle}>code: {String(record.orderCode)}</span>
             )}
-            {/* ❌ bỏ nút Xem file hợp đồng ở đây */}
           </div>
         </div>
       ),
     },
 
     {
-      title: "Người bán",
+      title: "Khách hàng",
       key: "seller",
       width: 180,
       responsive: ["lg"],
       render: (_, r) => (
         <div className={s.vcol}>
-          <span title={r.sellerName}>{r.sellerName || "-"}</span>
+          <span title={r.buyerName}>{r.buyerName || "-"}</span>
+          <span title={r.buyerPhoneNumber}>{r.buyerPhoneNumber || "-"}</span>
         </div>
       ),
     },
@@ -126,25 +124,41 @@ export default function ContractTable({
       render: (d) => (d ? dayjs(d).format("DD/MM/YYYY HH:mm") : <span className={s.subtle}>—</span>),
     },
 
-    // ✅ Cột thao tác "Xem" cố định bên phải
+
     {
       title: "Thao tác",
       key: "actions",
       fixed: "right",
-      width: 96,
+      width: 210,
       render: (_, r) => (
-        <Button
-          size="small"
-          type="link"
-          className={s.viewActionBtn}
-          icon={<EyeOutlined />}
-          onClick={(e) => {
-            e.stopPropagation();
-            onViewDetail?.(r);
-          }}
-        >
-          Xem
-        </Button>
+        <Space size = "small" className={s.actions} >
+          <Button
+            size="small"
+            type="text"
+            icon={<EditOutlined />}
+            className={s.actionBtn}
+            disabled={isLockedStatus(r.status)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit?.(r);
+            }}
+          >
+            Sửa
+          </Button>
+
+          <Button
+            size="small"
+            type="link"
+            className={s.viewActionBtn}
+            icon={<EyeOutlined />}
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetail?.(r);
+            }}
+          >
+            Xem Hợp Đồng
+          </Button>
+        </Space>
       ),
     },
   ];
@@ -176,5 +190,6 @@ export default function ContractTable({
     />
   );
 }
+
 
 
