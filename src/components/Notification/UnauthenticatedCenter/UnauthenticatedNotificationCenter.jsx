@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Badge, Popover, Button, Tooltip } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import RequireLoginLayout from "../RequireLogin/RequireLoginLayout";
+import "../notification.scss";
 
 const UnauthenticatedNotificationCenter = ({ onLoginClick }) => {
   const [isOpen, setIsOpen] = useState(false);

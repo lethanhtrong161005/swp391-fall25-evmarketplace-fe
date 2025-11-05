@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { ConfigProvider, App as AntApp, message } from "antd";
 import "@styles/styles.scss";
-import "@styles/notification.scss";
 import App from "./App.jsx";
 import { AuthProvider } from "@contexts/AuthContext.jsx";
 import { FavoritesProvider } from "@contexts/FavoritesContext.jsx";

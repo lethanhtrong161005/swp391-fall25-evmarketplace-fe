@@ -1,6 +1,6 @@
-@use "@styles/pages/all" as *;
+/* Notification Component Styles - Scoped to avoid global conflicts */
 
-/* Modern Notification Animations */
+/* Keyframes - Shared animations for notification components */
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -61,19 +61,14 @@
   }
 }
 
-/* Notification Bell Container */
+/* Notification Bell Container - Scoped badge count animation only */
+/* Note: .notification-bell-container base styles are in NotificationCenter.style.scss */
 .notification-bell-container {
-  position: relative;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* Notification Bell Button */
-.notification-bell-btn {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Scoped badge count animation - only for notification bell */
+  :global(.ant-badge-count) {
+    animation: pulse 2s infinite;
+    box-shadow: 0 2px 8px rgba(255, 77, 79, 0.3);
+  }
 }
 
 /* Focus state for accessibility */
@@ -82,46 +77,14 @@
   outline-offset: 2px;
 }
 
-/* Notification Panel */
+/* Notification Panel - Scoped to notification popover */
 .notification-panel {
   animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid #f0f0f0;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-/* Notification Badge */
-.ant-badge-count {
-  animation: pulse 2s infinite;
-  box-shadow: 0 2px 8px rgba(255, 77, 79, 0.3);
-}
-
-/* Notification Dropdown Animation */
-.ant-dropdown {
-  animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Notification Popover Styles */
-.notification-popover {
-  .ant-popover-inner {
-    padding: 0;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-  }
-  
-  .ant-popover-arrow {
-    &::before {
-      background: #fff;
-      border: 1px solid #f0f0f0;
-    }
-  }
-  
-  .ant-popover-content {
-    padding: 0;
-  }
-}
-
-/* Notification Item Hover Effect */
+/* Notification Item Hover Effect - Scoped to notification items */
 .notification-item {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -132,17 +95,18 @@
   }
 }
 
-/* Toast Notification Animation */
-.ant-notification {
+/* Toast Notification Animation - Scoped to notification toast */
+.rev-toast,
+:global(.ant-notification) {
   animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Bell Icon Animation */
-.ant-btn:hover .anticon {
+/* Bell Icon Animation - Scoped to notification bell button */
+.notification-bell-container :global(.ant-btn:hover .anticon) {
   animation: bounce 0.6s ease-in-out;
 }
 
-/* Modern Scrollbar */
+/* Modern Scrollbar - Scoped to notification panel */
 .notification-panel::-webkit-scrollbar {
   width: 6px;
 }
@@ -186,7 +150,7 @@
   }
   
   .notification-bell-container {
-    .ant-btn {
+    :global(.ant-btn) {
       width: 36px !important;
       height: 36px !important;
     }
@@ -217,7 +181,7 @@
     border-width: 2px !important;
   }
   
-  .ant-badge-count {
+  .notification-bell-container :global(.ant-badge-count) {
     border: 2px solid #fff !important;
   }
 }
@@ -226,8 +190,11 @@
 @media (prefers-reduced-motion: reduce) {
   .notification-item,
   .notification-panel,
-  .ant-badge-count {
+  .notification-bell-container :global(.ant-badge-count),
+  .rev-toast,
+  :global(.ant-notification) {
     animation: none !important;
     transition: none !important;
   }
 }
+
