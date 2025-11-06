@@ -10,8 +10,13 @@ import styles from "./index.module.scss";
 const SectionDetailVehicle = ({ mode = "listing" }) => {
   const priceFieldName =
     mode === "consignment" ? "ownerExpectedPrice" : "price";
+
   const priceLabel =
-    mode === "consignment" ? "Giá dự kiến (VND)" : "Giá bán (VND)";
+    mode === "consignment"
+      ? "Giá dự kiến (VND)"
+      : "Giá bán (VND)";
+
+  const isPriceDisabled = mode === "agreement-update";
 
   return (
     <>
@@ -78,6 +83,7 @@ const SectionDetailVehicle = ({ mode = "listing" }) => {
           >
             <InputNumber
               controls={false}
+              disabled={isPriceDisabled}
               min={0}
               step={100000}
               className={styles.number}

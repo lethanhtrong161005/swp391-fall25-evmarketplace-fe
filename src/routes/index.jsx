@@ -67,6 +67,7 @@ import MyOrder from "@pages/Member/MyOrder";
 // Errors
 import Error403 from "@pages/Errors/Error403";
 import Error404 from "@pages/Errors/Error404";
+import ManagerListingManagement from "../pages/Manager/ManagerListing/ManagerListingManagement";
 
 export const routes = () => [
   {
@@ -211,6 +212,10 @@ export const routes = () => [
           {
             path: "manager/agreement/management",
             element: <ManagerAgreementsManagement />,
+          },
+          {
+            path: "/manager/listings",
+            element: <ManagerListingManagement />,
           },
         ],
       },

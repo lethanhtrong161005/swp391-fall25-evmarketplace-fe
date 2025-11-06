@@ -76,6 +76,16 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
         ),
         path: "/info-user",
       },
+       {
+        key: "order",
+        label: (
+          <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <UserOutlined />
+            Đơn hàng
+          </span>
+        ),
+        path: "/my-order",
+      },
       {
         key: "favorites",
         label: (
@@ -123,9 +133,11 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
       navigate("/my-favorites");
     } else if (key === "history-transaction") {
       navigate("/history/transactions");
+    } else if (key== "order") {
+       navigate("/my-order")
     } else if (key === "logout") {
       await logout();
-    }
+    } 
   };
 
   return {
