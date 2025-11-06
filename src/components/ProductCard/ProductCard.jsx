@@ -234,7 +234,7 @@ export default function ProductCard({
         {/* Meta line khác nhau theo loại */}
         {kindIsBattery ? (
           <Space direction="vertical" size={2} style={{ marginTop: 6 }}>
-            <Text type="secondary">Chemistry: {data.chemistry}</Text>
+            <Text type="secondary">Loại hóa học: {data.chemistry}</Text>
             <Text type="secondary">{data.location}</Text>
           </Space>
         ) : (

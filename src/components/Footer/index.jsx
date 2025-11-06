@@ -15,7 +15,10 @@ export default function SiteFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <Footer className={styles.footer}>
+    <Footer
+      className={styles.footer}
+      style={{ flexShrink: 0 }}
+    >
       <div className={styles.container}>
         <Row gutter={[32, 24]}>
           {/* About Us Section */}

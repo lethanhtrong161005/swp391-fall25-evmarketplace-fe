@@ -36,7 +36,8 @@ export function useUserProfile() {
 
         const response = await getUserProfile();
 
-        if (response?.status === 200 && response?.success) {
+        // Kiểm tra response không null và có data trước khi sử dụng
+        if (response && response?.status === 200 && response?.success && response?.data) {
           // Normalize the profile data to handle both snake_case and camelCase
           const normalizedProfile = normalizeUserData(response.data);
           setProfile(normalizedProfile);
@@ -76,7 +77,8 @@ export function useUserProfile() {
 
       const response = await getUserProfile();
 
-      if (response?.status === 200 && response?.success) {
+      // Kiểm tra response không null và có data trước khi sử dụng
+      if (response && response?.status === 200 && response?.success && response?.data) {
         // Normalize the profile data to handle both snake_case and camelCase
         const normalizedProfile = normalizeUserData(response.data);
         setProfile(normalizedProfile);

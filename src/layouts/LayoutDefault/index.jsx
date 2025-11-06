@@ -13,7 +13,13 @@ const LayoutDefault = () => {
   const hideFooter = location.pathname.startsWith("/listing/new") || location.pathname.startsWith("/listing/edit");
   return (
     <>
-      <Layout>
+      <Layout
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Header
           style={{
             background: "#fff",
@@ -21,13 +27,22 @@ const LayoutDefault = () => {
             height: "138px",
             lineHeight: "normal",
             gap: "64px",
+            flexShrink: 0,
           }}
         >
           <DefaultHeader />
           <SearchBar />
         </Header>
 
-        <Content style={{ padding: "16px 40px", background: "#f0f2f5" }}>
+        <Content
+          style={{
+            padding: "16px 40px",
+            background: "#f0f2f5",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Outlet />
         </Content>
 

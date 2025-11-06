@@ -52,7 +52,8 @@ const request = async (
       data: body,
       headers,
     });
-    return res.data;
+    // Kiểm tra res không null trước khi truy cập .data
+    return res?.data || null;
   } catch (err) {
     throw err.response?.data || err;
   }

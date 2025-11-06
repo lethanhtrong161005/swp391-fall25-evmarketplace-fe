@@ -114,7 +114,7 @@ const HeaderNavbar = () => {
         </>
       )}
 
-      {/* desktop */}
+      {/* desktop và tablet */}
       {screens.lg && (
         <div
           style={{
@@ -123,6 +123,8 @@ const HeaderNavbar = () => {
             justifyContent: "space-between",
             width: "100%",
             gap: "24px",
+            minWidth: 0, // Đảm bảo flex item có thể shrink
+            overflow: "visible", // Đảm bảo dropdown không bị cắt
           }}
         >
           <Menu
@@ -135,6 +137,7 @@ const HeaderNavbar = () => {
               borderBottom: "none",
               display: "flex",
               alignItems: "center",
+              minWidth: 0, // Cho phép shrink
             }}
           />
           <div
@@ -142,6 +145,8 @@ const HeaderNavbar = () => {
               display: "flex",
               alignItems: "center",
               gap: "16px",
+              flexShrink: 0, // Không cho shrink để đảm bảo header action luôn visible
+              minWidth: "fit-content", // Đảm bảo có đủ không gian
             }}
           >
             <HeaderAction />

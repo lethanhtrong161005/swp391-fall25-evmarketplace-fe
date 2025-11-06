@@ -75,11 +75,11 @@ const SectionDetailBattery = ({ mode = "listing" }) => {
             <Col xs={24} md={12}>
               <Form.Item
                 className={styles.formItem}
-                label="Hoá học pin (tùy chọn)"
+                label="Loại hóa học pin (tùy chọn)"
                 name="chemistry"
                 rules={chemistryOptionalRule}
               >
-                <Input className={styles.input} placeholder="VD: LFP, NMC…" />
+                <Input className={styles.input} placeholder="VD: LFP, NMC, LFP (LiFePO4)…" />
               </Form.Item>
             </Col>
           </Row>

@@ -10,7 +10,8 @@ export const loginPhone = async (payload) => {
     validateStatus: () => true,
   });
 
-  const data = res.data;
+  // Kiểm tra res không null trước khi truy cập .data
+  const data = res?.data || null;
 
   if (data?.status === 200 && data?.success) {
     const access = data?.data?.accessToken || "";
@@ -42,7 +43,8 @@ export const getGoogleAuthUrl = async () => {
     config.publicRuntime.OAUTH_GOOGLE_INIT || "/api/auth/google",
     { validateStatus: () => true }
   );
-  const data = res.data;
+  // Kiểm tra res không null trước khi truy cập .data
+  const data = res?.data || null;
   if (data?.status === 200 && data?.success && typeof data?.data === "string") {
     return data.data; // chính là URL Google
   }
@@ -58,7 +60,8 @@ export const exchangeGoogleCode = async (code) => {
     { code },
     { validateStatus: () => true }
   );
-  const data = res.data;
+  // Kiểm tra res không null trước khi truy cập .data
+  const data = res?.data || null;
 
   if (data?.status === 200 && data?.success) {
     const access = data?.data?.accessToken || "";

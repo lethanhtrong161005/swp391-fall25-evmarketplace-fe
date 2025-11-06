@@ -19,13 +19,24 @@ export default function DynamicBreadcrumb() {
     manager: "Quản lý",
     inspector: "Kiểm định viên",
     consignment: "Quản lý ký gửi",
-    new: "Tạo mới",
+    new: "Tạo tin đăng",
     "info-user": "Thông tin cá nhân",
     listing: "Tin đăng",
     listings: "Tất cả tin đăng",
-    edit: "Chỉnh sửa",
+    edit: "Chỉnh sửa tin đăng",
     member: "Thành viên",
     availability: "Lên lịch",
+    "my-ads": "Quản lý tin",
+  };
+
+  // Custom URL mapping cho các route đặc biệt
+  const getCustomUrl = (segment, segments, index) => {
+    // Nếu đang ở /listing/new hoặc /listing/edit, thì "Tin đăng" link đến /my-ads
+    if (segment === "listing" && segments[index + 1] && (segments[index + 1] === "new" || segments[index + 1] === "edit")) {
+      return "/my-ads";
+    }
+    // Trường hợp khác, tạo URL bình thường
+    return "/" + segments.slice(0, index + 1).join("/");
   };
 
   const filteredSnippets = pathSnippets.filter(
@@ -33,7 +44,7 @@ export default function DynamicBreadcrumb() {
   );
 
   const breadcrumbItems = filteredSnippets.map((_, index) => {
-    const url = "/" + filteredSnippets.slice(0, index + 1).join("/");
+    const url = getCustomUrl(filteredSnippets[index], filteredSnippets, index);
     const isLast = index === filteredSnippets.length - 1;
     const label = nameMap[filteredSnippets[index]] || filteredSnippets[index];
 

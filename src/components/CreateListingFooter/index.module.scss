@@ -3,37 +3,48 @@ $shadow: 0 -2px 10px rgba(0, 0, 0, .06);
 $tablet: 768px; 
 
 .bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     width: 100%;
     background: #fff;
     border-top: 1px solid $border;
     box-shadow: $shadow;
     z-index: 1000;
+    // Đảm bảo không bị ảnh hưởng bởi padding/margin của parent
+    margin: 0;
+    padding: 0;
 }
 
 .inner {
     max-width: var(--max-w, 1024px);
     margin: 0 auto;
-    padding: 10px 16px;
+    padding: 12px 24px;
 
     @media (max-width: ($tablet - 0.02px)) {
-        padding: 8px 12px;
+        padding: 12px 16px;
     }
 }
 
-.layoutRow {
+.contentWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+
     @media (max-width: ($tablet - 0.02px)) {
-    
-        display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 12px;
     }
 }
-
 
 .postTypeBtn {
     min-width: 280px;
     height: 40px;
     text-align: left;
+    border-radius: 6px;
 
     :global(.anticon) {
         margin-left: 6px;
@@ -42,28 +53,33 @@ $tablet: 768px;
     @media (max-width: ($tablet - 0.02px)) {
         min-width: 0;
         width: 100%;
+    }
 
+    @media (min-width: ($tablet + 0.02px)) {
+        flex-shrink: 0;
     }
 }
 
-.actionsRow {
+.actionsWrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+
     @media (max-width: ($tablet - 0.02px)) {
-        display: flex !important;
+        width: 100%;
         flex-direction: column;
         gap: 8px;
-        width: 100%;
-
-        /* các Col con full-width */
-        :global(.ant-col) {
-            width: 100%;
-        }
     }
 }
 
 .actionBtn {
     height: 40px;
+    border-radius: 6px;
+    min-width: 120px;
 
     @media (max-width: ($tablet - 0.02px)) {
         width: 100%;
+        min-width: 0;
     }
 }

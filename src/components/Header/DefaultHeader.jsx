@@ -24,15 +24,23 @@ const DefaultHeader = () => {
   };
   return (
     <Header
-      style={{ background: "#fff", paddingLeft: "16px", paddingRight: "16px" }}
+      style={{ 
+        background: "#fff", 
+        paddingLeft: "16px", 
+        paddingRight: "16px",
+        overflow: "visible", // Đảm bảo dropdown không bị cắt
+        position: "relative", // Đảm bảo z-index hoạt động đúng
+        zIndex: 1000, // Đảm bảo header luôn trên content nhưng dưới dropdown (1060)
+      }}
     >
-      <Row align="middle" gutter={16}>
+      <Row align="middle" gutter={16} style={{ overflow: "visible" }}>
         <Col
           xs={20}
           sm={20}
           md={20}
           lg={{ span: 4, offset: 0 }}
           xl={{ span: 4, offset: 0 }}
+          style={{ overflow: "visible" }}
         >
           <Space
             wrap={false}
@@ -55,6 +63,8 @@ const DefaultHeader = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            overflow: "visible", // Đảm bảo dropdown không bị cắt
+            minWidth: 0, // Cho phép shrink khi cần
           }}
         >
           <HeaderNavbar />

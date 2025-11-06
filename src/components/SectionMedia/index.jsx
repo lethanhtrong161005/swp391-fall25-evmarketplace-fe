@@ -9,11 +9,20 @@ import {
 } from "@hooks/useSectionMedia";
 
 export default function SectionMedia({ messageApi }) {
+  const form = Form.useFormInstance();
+  const images = Form.useWatch("images", form);
+  
   const {
         beforeUploadImage, normImages,
         beforeUploadVideo, normVideos,
         onDragStart, onDragOver, onDrop,
   } = useSectionMedia(messageApi);
+  
+  // Kiểm tra xem file có phải là ảnh đầu tiên không
+  const isFirstImage = (file) => {
+    const imageList = images || [];
+    return imageList.length > 0 && imageList[0]?.uid === file?.uid;
+  };
 
   return (
     <Space direction="vertical" size={16} className={styles.wrapper}>
@@ -57,17 +66,25 @@ export default function SectionMedia({ messageApi }) {
                         maxCount={MAX_IMAGES}
             showUploadList={{ showPreviewIcon: false }}
                         beforeUpload={beforeUploadImage} // (file, fileList)
-            itemRender={(originNode, file) => (
-              <div
-                className={styles.draggable}
-                draggable
-                onDragStart={(e) => onDragStart(e, file)}
-                onDragOver={onDragOver}
-                onDrop={(e) => onDrop(e, file)}
-              >
-                {originNode}
-              </div>
-            )}
+            itemRender={(originNode, file, fileList) => {
+              const isCover = isFirstImage(file);
+              return (
+                <div
+                  className={styles.draggable}
+                  draggable
+                  onDragStart={(e) => onDragStart(e, file)}
+                  onDragOver={onDragOver}
+                  onDrop={(e) => onDrop(e, file)}
+                >
+                  {originNode}
+                  {isCover && (
+                    <div className={styles.coverBadge}>
+                      <span className={styles.coverText}>Hình bìa</span>
+                    </div>
+                  )}
+                </div>
+              );
+            }}
           >
             <div className={styles.addCard}>
               <PlusOutlined />

@@ -75,7 +75,7 @@ const MemberConsignment = () => {
         <DynamicBreadcrumb />
       </div>
 
-      <Card className={styles.card} bordered={false}>
+      <Card className={styles.card} variant="borderless">
         <ProfileBar />
         <SearchActions
           query={""}

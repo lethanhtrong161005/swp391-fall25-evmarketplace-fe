@@ -61,11 +61,11 @@ export default function ProductBatteryModal({
         )}
 
         <Form.Item
-          label="Loại hóa học (Chemistry)"
+          label="Loại hóa học pin"
           name="chemistry"
           rules={[{ required: true, message: "Nhập loại hóa học pin" }]}
         >
-          <Input placeholder="VD: Li-ion, LFP, NMC..." />
+          <Input placeholder="VD: LFP, NMC, LFP (LiFePO4)…" />
         </Form.Item>
 
         <Row gutter={16}>

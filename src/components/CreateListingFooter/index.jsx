@@ -1,4 +1,4 @@
-import { Affix, Row, Col, Button } from "antd";
+import { Button } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import styles from "./index.module.scss";
 
@@ -28,59 +28,43 @@ const CreateListingFooter = ({
   };
 
   return (
-    <Affix offsetBottom={0}>
-      <div className={styles.bar}>
-        <div className={styles.inner} style={{ "--max-w": `${maxWidth}px` }}>
-          <Row
-            align="middle"
-            justify="space-between"
-            gutter={12}
-            wrap
-            className={styles.layoutRow}
-          >
-            {onChoosePostType && (
-              <Col flex="1 1 auto">
-                <Button
-                  onClick={onChoosePostType}
-                  size="large"
-                  className={styles.postTypeBtn}
-                >
-                  {label} <DownOutlined />
-                </Button>
-              </Col>
-            )}
+    <div className={styles.bar}>
+      <div className={styles.inner} style={{ "--max-w": `${maxWidth}px` }}>
+        <div className={styles.contentWrapper}>
+          {onChoosePostType && (
+            <Button
+              onClick={onChoosePostType}
+              size="large"
+              className={styles.postTypeBtn}
+            >
+              {label} <DownOutlined />
+            </Button>
+          )}
 
-            <Col style={{ marginLeft: "auto" }}>
-              <Row gutter={8} wrap={false} className={styles.actionsRow}>
-                {!isEdit && (
-                  <Col>
-                    <Button
-                      size="large"
-                      className={styles.actionBtn}
-                      onClick={handleDraftClick}
-                      disabled={submitting}
-                    >
-                      Lưu nháp
-                    </Button>
-                  </Col>
-                )}
-                <Col>
-                  <Button
-                    type="primary"
-                    size="large"
-                    className={styles.actionBtn}
-                    onClick={handleSubmitClick}
-                    loading={submitting}
-                  >
-                    {isEdit ? "Cập nhật tin" : "Đăng tin"}
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
+          <div className={styles.actionsWrapper}>
+            {!isEdit && (
+              <Button
+                size="large"
+                className={styles.actionBtn}
+                onClick={handleDraftClick}
+                disabled={submitting}
+              >
+                Lưu nháp
+              </Button>
+            )}
+            <Button
+              type="primary"
+              size="large"
+              className={styles.actionBtn}
+              onClick={handleSubmitClick}
+              loading={submitting}
+            >
+              {isEdit ? "Cập nhật tin" : "Đăng tin"}
+            </Button>
+          </div>
         </div>
       </div>
-    </Affix>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Popover, Avatar, Grid, Tooltip, Space, Divider } from "antd";
+import { Button, Dropdown, Avatar, Grid, Tooltip, Space } from "antd";
 import {
   UserOutlined,
   HeartOutlined,
@@ -52,6 +52,80 @@ const HeaderAction = () => {
   // Avatar logic
   const avatarSrc = user?.avatar || user?.avatarUrl;
   const avatarName = displayName;
+
+  // Chuyển đổi menuItems thành format của Dropdown với header
+  const dropdownItems = [
+    // Header với Avatar và Tên - Custom dropdown header (disabled item)
+    {
+      key: "header",
+      label: (
+        <div className="profile-dropdown-header">
+          <div className="profile-dropdown-avatar">
+            <Avatar
+              src={avatarSrc}
+              icon={<UserOutlined />}
+              size={48}
+              style={{
+                backgroundColor: avatarSrc ? "transparent" : "#1890ff",
+              }}
+            >
+              {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
+            </Avatar>
+          </div>
+          <div className="profile-dropdown-name">{displayName}</div>
+        </div>
+      ),
+      disabled: true,
+      style: { 
+        cursor: "default", 
+        padding: 0,
+        backgroundColor: "transparent",
+      },
+    },
+    { type: "divider" },
+    // Menu items
+    ...menuItems.map((item) => {
+      if (item.type === "divider") {
+        return { type: "divider" };
+      }
+
+      return {
+        key: item.key,
+        label: (
+          <div
+            className={`profile-menu-item ${
+              item.danger ? "profile-menu-item-danger" : ""
+            }`}
+          >
+            {item.icon && (
+              <span className="profile-menu-icon">{item.icon}</span>
+            )}
+            <span className="profile-menu-label">{item.label}</span>
+          </div>
+        ),
+        danger: item.danger,
+        onClick: () => handleMenuClick({ key: item.key }),
+      };
+    }),
+  ];
+
+  // Xác định placement responsive dựa trên breakpoint
+  const getDropdownPlacement = () => {
+    // Trên màn hình rất nhỏ (xs), đặt menu ở bottomLeft để tránh bị cắt
+    if (screens.xs) {
+      return "bottomLeft";
+    }
+    // Trên màn hình nhỏ (sm), đặt ở bottomLeft hoặc bottom
+    if (screens.sm && !screens.md) {
+      return "bottomLeft";
+    }
+    // Trên màn hình trung bình (md), đặt ở bottomRight nhưng có thể điều chỉnh
+    if (screens.md && !screens.lg) {
+      return "bottomRight";
+    }
+    // Trên màn hình lớn (lg+), đặt ở bottomRight
+    return "bottomRight";
+  };
 
   return (
     <>
@@ -168,62 +242,18 @@ const HeaderAction = () => {
 
         {/* Khối Người dùng */}
         {isLoggedIn ? (
-          <Popover
-            content={
-              <div className="profile-popover-container">
-                {/* Header với Avatar và Tên */}
-                <div className="profile-dropdown-header">
-                  <div className="profile-dropdown-avatar">
-                    <Avatar
-                      src={avatarSrc}
-                      icon={<UserOutlined />}
-                      size={48}
-                      style={{
-                        backgroundColor: avatarSrc ? "transparent" : "#1890ff",
-                      }}
-                    >
-                      {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
-                    </Avatar>
-                  </div>
-                  <div className="profile-dropdown-name">{displayName}</div>
-                </div>
-
-                <Divider style={{ margin: 0 }} />
-
-                {/* Menu Items */}
-                <div className="profile-menu-list">
-                  {menuItems.map((item) => {
-                    if (item.type === "divider") {
-                      return (
-                        <Divider
-                          key={item.key || Math.random()}
-                          style={{ margin: 0 }}
-                        />
-                      );
-                    }
-
-                    return (
-                      <div
-                        key={item.key}
-                        className={`profile-menu-item ${
-                          item.danger ? "profile-menu-item-danger" : ""
-                        }`}
-                        onClick={() => handleMenuClick({ key: item.key })}
-                      >
-                        {item.icon && (
-                          <span className="profile-menu-icon">{item.icon}</span>
-                        )}
-                        <span className="profile-menu-label">{item.label}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            }
-            title={null}
-            trigger="click"
-            placement="bottomRight"
-            overlayClassName="profile-popover-overlay"
+          <Dropdown
+            menu={{
+              items: dropdownItems,
+            }}
+            trigger={["click"]}
+            placement={getDropdownPlacement()}
+            overlayClassName="profile-dropdown-overlay"
+            getPopupContainer={(trigger) => {
+              // Luôn dùng document.body để tránh vấn đề với overflow/transform của parent
+              return document.body;
+            }}
+            destroyOnHidden={false}
           >
             <div className="header-avatar-container">
               <Avatar
@@ -238,7 +268,7 @@ const HeaderAction = () => {
                 {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
               </Avatar>
             </div>
-          </Popover>
+          </Dropdown>
         ) : (
           <Button
             type="primary"
