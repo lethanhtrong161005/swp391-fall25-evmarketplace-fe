@@ -112,3 +112,58 @@ export const addAgreement = async (payload, file) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
+
+export async function staffCreateListing(payload, images = [], videos = []) {
+  const fd = new FormData();
+  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  fd.append("payload", blob);
+  (images || []).forEach((f) => fd.append("images", f));
+  (videos || []).forEach((f) => fd.append("videos", f));
+
+  const res = await api.post("/api/listing/consignment", fd, {
+    validateStatus: () => true,
+    withCredentials: true,
+    headers: { /* để browser tự set boundary */ },
+  });
+  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok) throw new Error(res?.data?.message || `Create failed (${res?.status})`);
+  return res.data;
+}
+
+export async function updateConsignmentListing(
+  listingId,
+  payload,
+  images = [],
+  videos = [],
+  keepMediaIds = null
+) {
+  const fd = new FormData();
+  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  fd.append("payload", blob);
+
+  (images || []).forEach((f) => fd.append("images", f));
+  (videos || []).forEach((f) => fd.append("videos", f));
+
+  if (Array.isArray(keepMediaIds)) {
+    keepMediaIds.forEach((id) => fd.append("keepMediaIds", String(id)));
+  }
+
+  const res = await api.put(`/api/listing/consignment/${listingId}`, fd, {
+    validateStatus: () => true,
+    withCredentials: true,
+    headers: { /* để browser tự set boundary */ },
+  });
+  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok) throw new Error(res?.data?.message || `Update failed (${res?.status})`);
+  return res.data;
+}
+
+
+//Sale order
+export const createOrder = async (listingId, buyerPhoneNumber) => {
+  const body = {
+    listingId,
+    buyerPhoneNumber,
+  };
+  return await api.post("/api/order", body);
+};

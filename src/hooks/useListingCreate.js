@@ -2,11 +2,15 @@ import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Form, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useTaxonomy } from "@hooks/useTaxonomy";
-import { createListing } from "@services/listing.service";
 import { normalizeListingPayload } from "@utils/normalizeListingPayload";
 import { listingDrafts } from "@utils/listingDrafts";
+import {
+  staffCreateListing as StaffCreateListing,
+  updateConsignmentListing,
+} from "../services/staff/staffConsignmentService";
+import { createListing as createUserListing } from "@services/listing.service";
 
-export function useListingCreate({ userId = null } = {}) {
+export function useListingCreate({ userId = null, currentListingId = null } = {}) {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [msg, contextHolder] = message.useMessage();
@@ -21,10 +25,9 @@ export function useListingCreate({ userId = null } = {}) {
   const [submitting, setSubmitting] = useState(false);
   const [postType, setPostType] = useState("FREE");
   const [visibility, setVisibility] = useState("NORMAL");
-
-  const [draftId, setDraftId] = useState(() =>
-    listingDrafts.getCurrentId(userId)
-  );
+  const [images, setImages] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [draftId, setDraftId] = useState(() => listingDrafts.getCurrentId(userId));
 
   const categoryId = Form.useWatch("category", form);
   const selectedCategory = useMemo(
@@ -44,7 +47,6 @@ export function useListingCreate({ userId = null } = {}) {
     if (mountedRef.current) setSubmitting(v);
   };
 
-  // ====== Thay đổi loại hiển thị
   const handleChangeVisibility = useCallback(
     (v) => {
       setVisibility(v);
@@ -59,7 +61,6 @@ export function useListingCreate({ userId = null } = {}) {
     [draftId, userId]
   );
 
-  // ====== Khôi phục nháp cũ
   useEffect(() => {
     const curId = listingDrafts.getCurrentId(userId);
     const id = draftId || curId;
@@ -71,10 +72,8 @@ export function useListingCreate({ userId = null } = {}) {
     if (d.postType) setPostType(d.postType);
     setDraftId(id);
     msg.info("Đã khôi phục bản nháp từ máy.");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ====== Autosave (debounce 600ms)
   const autosaveTimer = useRef(null);
   const onValuesChange = useCallback(
     (_, all) => {
@@ -97,7 +96,6 @@ export function useListingCreate({ userId = null } = {}) {
   );
   useEffect(() => () => clearTimeout(autosaveTimer.current), []);
 
-  // ====== Lưu nháp thủ công
   const handleDraft = useCallback(() => {
     const id = draftId || undefined;
     const formValues = form.getFieldsValue(true);
@@ -113,46 +111,104 @@ export function useListingCreate({ userId = null } = {}) {
     msg.success(`Đã lưu nháp #${String(newId).slice(-6)} trên máy.`);
   }, [draftId, form, visibility, postType, userId, msg]);
 
-  // ====== Submit bài đăng thật
   const handleSubmit = useCallback(
-    async (extra) => {
+    async (arg1 = "normal", arg2 = {}) => {
       if (submitting) return;
       try {
         const values = await form.validateFields();
+        const allValues = form.getFieldsValue(true);
         safeSetSubmitting(true);
+
+        const isModeString = typeof arg1 === "string";
+        const mode = isModeString ? arg1 : "normal";
+        const extra = isModeString ? arg2 : arg1;
 
         const status = extra?.status || "PENDING";
         const payload = normalizeListingPayload(
-          values,
+          allValues,
           tax,
           postType,
           visibility,
           status
         );
 
-        // LƯU Ý: localStorage không lưu được ảnh/video
-        const res = await createListing(payload, values.images, values.videos);
-        if (res?.success !== false) {
-          msg.success("Đăng tin thành công!");
+        if (mode === "agreement") {
+          payload.consignmentAgreementId =
+            allValues.consignmentAgreementId ?? payload.consignmentAgreementId ?? null;
+          payload.responsibleStaffId =
+            allValues.responsibleStaffId ?? payload.responsibleStaffId ?? userId ?? null;
+          payload.branchId = allValues.branchId ?? payload.branchId ?? null;
+        }
 
-          // Xoá nháp local nếu có
+        let res;
+
+        if (mode === "agreement-update") {
+          const listingId = currentListingId || allValues.id;
+          if (!listingId) {
+            msg.error("Không tìm thấy ID tin đăng để cập nhật!");
+            safeSetSubmitting(false);
+            return;
+          }
+
+          const newImages =
+            (allValues.images || [])
+              .filter((f) => f?.originFileObj)
+              .map((f) => f.originFileObj) || [];
+
+          const newVideos =
+            (allValues.videos || [])
+              .filter((f) => f?.originFileObj)
+              .map((f) => f.originFileObj) || [];
+
+          const keepMediaIds = null;
+
+          res = await updateConsignmentListing(
+            listingId,
+            payload,
+            newImages,
+            newVideos,
+            keepMediaIds
+          );
+        } else if (mode === "agreement") {
+          const imgs = (allValues.images || [])
+            .map((f) => f.originFileObj || f)
+            .filter((f) => f instanceof File);
+          const vids = (allValues.videos || [])
+            .map((f) => f.originFileObj || f)
+            .filter((f) => f instanceof File);
+
+          res = await StaffCreateListing(payload, imgs, vids);
+        } else {
+          res = await createUserListing(payload, images, videos);
+        }
+
+        if (res?.success !== false) {
+          msg.success(
+            mode === "agreement-update"
+              ? "Cập nhật tin đăng thành công!"
+              : "Đăng tin thành công!"
+          );
+
           if (draftId) {
             listingDrafts.remove(draftId, userId);
             setDraftId(null);
           }
-          form.resetFields();
 
-          // Chuyển hướng đến trang quản lý tin của Member
-          setTimeout(() => {
-            navigate("/my-ads");
-          }, 1000);
+          form.resetFields();
+          setImages([]);
+          setVideos([]);
+
+          if (mode === "agreement") {
+            setTimeout(() => navigate("/staff/consignment/agreement"), 800);
+          } else if (mode !== "agreement-update") {
+            setTimeout(() => navigate("/my-ads"), 1000);
+          }
         } else {
-          msg.error(res?.message || "Đăng tin thất bại!");
+          msg.error(res?.message || "Thao tác thất bại!");
         }
       } catch (e) {
-        if (e?.errorFields)
-          msg.error("Vui lòng điền đầy đủ các trường bắt buộc.");
-        else msg.error(e?.message || "Đăng tin thất bại.");
+        if (e?.errorFields) msg.error("Vui lòng điền đầy đủ các trường bắt buộc.");
+        else msg.error(e?.message || "Gửi dữ liệu thất bại.");
       } finally {
         safeSetSubmitting(false);
       }
@@ -167,10 +223,12 @@ export function useListingCreate({ userId = null } = {}) {
       draftId,
       userId,
       navigate,
+      images,
+      videos,
+      currentListingId,
     ]
   );
 
-  // ====== Xem trước
   const handlePreview = useCallback(async () => {
     try {
       const values = await form.validateFields();
@@ -188,11 +246,8 @@ export function useListingCreate({ userId = null } = {}) {
     }
   }, [form, tax, postType, visibility, msg]);
 
-  // ====== Quản lý nhiều nháp
-  const listLocalDrafts = useCallback(
-    () => listingDrafts.list(userId),
-    [userId]
-  );
+  const listLocalDrafts = useCallback(() => listingDrafts.list(userId), [userId]);
+
   const loadLocalDraftById = useCallback(
     (id) => {
       const d = listingDrafts.load(id, userId);
@@ -238,5 +293,9 @@ export function useListingCreate({ userId = null } = {}) {
     listLocalDrafts,
     loadLocalDraftById,
     deleteLocalDraftById,
+    images,
+    setImages,
+    videos,
+    setVideos,
   };
 }

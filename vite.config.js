@@ -14,11 +14,35 @@ export default defineConfig({
         target: "http://localhost:8089",
         changeOrigin: true,
         secure: false,
+        ws: true, // Enable WebSocket for /api if needed
+        configure: (proxy, _options) => {
+          proxy.on("error", (err, _req, _res) => {
+            // Log proxy errors but don't crash
+            console.log("[proxy error]", err.message);
+          });
+          proxy.on("proxyReqWs", (proxyReq, _req, _socket) => {
+            // Handle WebSocket proxy requests
+            proxyReq.on("error", (err) => {
+              // Ignore WebSocket connection errors (common when server restarts)
+              if (err.code !== "ECONNRESET") {
+                console.log("[ws proxy error]", err.message);
+              }
+            });
+          });
+        },
       },
       "/ws": {
         target: "ws://localhost:8089",
         ws: true,
         changeOrigin: true,
+        configure: (proxy, _options) => {
+          proxy.on("error", (err, _req, _res) => {
+            // Log proxy errors but don't crash
+            if (err.code !== "ECONNRESET") {
+              console.log("[ws proxy error]", err.message);
+            }
+          });
+        },
       },
     },
   },

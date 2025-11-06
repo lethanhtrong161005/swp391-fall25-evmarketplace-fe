@@ -73,6 +73,15 @@ $tablet: 768px;
     }
 }
 
+.layoutRow {
+    width: 100%;
+}
+
+.actionsRow {
+    display: flex;
+    align-items: center;
+}
+
 .actionBtn {
     height: 40px;
     border-radius: 6px;

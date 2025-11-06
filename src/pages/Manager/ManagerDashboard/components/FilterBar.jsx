@@ -6,7 +6,8 @@ const FilterBar = ({
   onValuesChange,
   listingTypeOptions,
   categoryOptions,
-  currencyOptions,
+  branchOptions = [],
+  branchLoading = false,
 }) => {
   return (
     <Form
@@ -30,10 +31,8 @@ const FilterBar = ({
         <Select
           placeholder="Chọn chi nhánh"
           style={{ minWidth: 180 }}
-          options={[
-            { label: "Branch 1", value: 1 },
-            { label: "Branch 2", value: 2 },
-          ]}
+          loading={branchLoading}
+          options={branchOptions}
         />
       </Form.Item>
       <Form.Item name="listingType" label="Loại tin">
@@ -51,9 +50,6 @@ const FilterBar = ({
           style={{ minWidth: 160 }}
           options={categoryOptions}
         />
-      </Form.Item>
-      <Form.Item name="currency" label="Tiền tệ">
-        <Select style={{ minWidth: 120 }} options={currencyOptions} />
       </Form.Item>
     </Form>
   );
