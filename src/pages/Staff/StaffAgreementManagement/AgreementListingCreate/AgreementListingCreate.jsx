@@ -11,6 +11,7 @@ import { useListingCreate } from "@hooks/useListingCreate";
 import { useAuth } from "@contexts/AuthContext";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { mapMediaToUploadFormat, debugMediaMapping } from "@utils/mediaUtils";
 
 const PAGE_WIDTH = 1200;
 
@@ -18,9 +19,11 @@ export default function AgreementListingCreate({
   open,
   onClose,
   consignmentData = null,
+  mode = "agreement", // "agreement" (create) hoặc "agreement-update" (update)
 }) {
   const { user } = useAuth();
   const userId = Number(user?.uid) || null;
+  const isUpdateMode = mode === "agreement-update";
 
   const {
     form,
@@ -36,7 +39,14 @@ export default function AgreementListingCreate({
     handleDraft,
     onValuesChange,
     loadLocalDraftById,
-  } = useListingCreate({ user });
+    images,
+    setImages,
+    videos,
+    setVideos,
+  } = useListingCreate({
+    userId,
+    currentListingId: isUpdateMode ? consignmentData?.id || null : null,
+  });
 
   const [params] = useSearchParams();
 
@@ -46,77 +56,65 @@ export default function AgreementListingCreate({
   }, [params, loadLocalDraftById]);
 
   useEffect(() => {
-    if (consignmentData && form) {
-      const initValues = {
-        category: consignmentData.categoryId,
-        brand: consignmentData.brand,
-        brand_id: consignmentData.brandId,
-        model: consignmentData.model,
-        model_id: consignmentData.modelId,
-        year: consignmentData.year,
-        color: consignmentData.color || "",
-        mileage_km: consignmentData.mileageKm,
-        soh_percent: consignmentData.sohPercent,
-        battery_capacity_kwh: consignmentData.batteryCapacityKwh,
-        price:
-          consignmentData.acceptablePrice ||
-          consignmentData.ownerExpectedPrice ||
-          0,
-        ownerExpectedPrice: consignmentData.ownerExpectedPrice || 0,
-        preferredBranchName: consignmentData.preferredBranchName,
-        preferredBranchId: consignmentData.preferredBranchId,
-        responsibleStaffId: userId,
-        item_type: consignmentData.itemType || "VEHICLE",
-        visibility: consignmentData.visibility || "NORMAL",
-        status: "PENDING",
-        dimension: consignmentData.dimensionsMm || "",
-        weight_kg: consignmentData.massKg || 0,
-        chemistry: consignmentData.batteryChemistry || "",
-        voltage: consignmentData.voltageV || 0,
-        title: consignmentData.title || "",
-        description: consignmentData.description || "",
-        province: consignmentData.province || "",
-        district: consignmentData.district || "",
-        ward: consignmentData.ward || "",
-        address: consignmentData.address || "",
-        post_type: consignmentData.postType || "NORMAL",
-        consignmentAgreementId:
-          consignmentData.agreementId ||
-          consignmentData.id ||
-          consignmentData.agreementRequestId ||
-          null,
-        branchId:
-          consignmentData.branchId ||
-          consignmentData.preferredBranchId ||
-          null,
-      };
+    if (!consignmentData || !form) return;
 
-      if (Array.isArray(consignmentData.mediaUrls)) {
-        const images = consignmentData.mediaUrls
-          .filter((url) => /\.(png|jpg|jpeg|webp)$/i.test(url))
-          .map((url, index) => ({
-            uid: `img-${index}`,
-            name: `img-${index}`,
-            status: "done",
-            url,
-          }));
+    const initValues = {
+      id: consignmentData.id || null,
+      category: consignmentData.categoryId,
+      brand: consignmentData.brand,
+      brand_id: consignmentData.brandId,
+      model: consignmentData.model,
+      model_id: consignmentData.modelId,
+      year: consignmentData.year,
+      color: consignmentData.color || "",
+      mileage_km: consignmentData.mileageKm,
+      soh_percent: consignmentData.sohPercent,
+      battery_capacity_kwh: consignmentData.batteryCapacityKwh,
+      price:
+        consignmentData.acceptablePrice ||
+        consignmentData.ownerExpectedPrice ||
+        consignmentData.price ||
+        0,
+      ownerExpectedPrice: consignmentData.ownerExpectedPrice || 0,
+      preferredBranchName: consignmentData.preferredBranchName,
+      preferredBranchId: consignmentData.preferredBranchId,
+      responsibleStaffId: userId,
+      item_type: consignmentData.itemType || "VEHICLE",
+      visibility: consignmentData.visibility || "NORMAL",
+      status: "PENDING",
+      dimension: consignmentData.dimensionsMm || "",
+      weight_kg: consignmentData.massKg || 0,
+      chemistry: consignmentData.batteryChemistry || "",
+      voltage: consignmentData.voltageV || 0,
+      title: consignmentData.title || "",
+      description: consignmentData.description || "",
+      province: consignmentData.province || "",
+      district: consignmentData.district || "",
+      ward: consignmentData.ward || "",
+      address: consignmentData.address || "",
+      post_type: consignmentData.postType || "NORMAL",
+      consignmentAgreementId:
+        consignmentData.agreementId ||
+        consignmentData.agreementRequestId ||
+        null,
+      branchId:
+        consignmentData.branchId || consignmentData.preferredBranchId || null,
+    };
 
-        const videos = consignmentData.mediaUrls
-          .filter((url) => /\.(mp4|mov|avi|mkv)$/i.test(url))
-          .map((url, index) => ({
-            uid: `vid-${index}`,
-            name: `vid-${index}`,
-            status: "done",
-            url,
-          }));
+    const media = consignmentData.media || [];
+    debugMediaMapping(media);
 
-        initValues.images = images;
-        initValues.videos = videos;
-      }
+    const mappedImages = mapMediaToUploadFormat(media, "IMAGE");
+    const mappedVideos = mapMediaToUploadFormat(media, "VIDEO");
 
-      form.setFieldsValue(initValues);
-    }
-  }, [consignmentData, form, userId]);
+    initValues.images = mappedImages;
+    initValues.videos = mappedVideos;
+
+    setImages(mappedImages);
+    setVideos(mappedVideos);
+
+    form.setFieldsValue(initValues);
+  }, [consignmentData, form, userId, setImages, setVideos]);
 
   return (
     <Modal
@@ -159,7 +157,7 @@ export default function AgreementListingCreate({
                   {isBattery ? (
                     <SectionDetailBattery />
                   ) : (
-                    <SectionDetailVehicle />
+                    <SectionDetailVehicle mode="agreement-update"/>
                   )}
                 </Col>
               </Row>
@@ -168,20 +166,22 @@ export default function AgreementListingCreate({
               <SectionTitleDesc />
               <Divider />
 
-              <Row>
-                <Col span={24}>
-                  <AddressField />
-                </Col>
-              </Row>
+              {!isUpdateMode && (
+                <Row>
+                  <Col span={24}>
+                    <AddressField />
+                  </Col>
+                </Row>
+              )}
             </Form>
           </Card>
 
           <CreateListingFooter
-            mode="agreement"
+            mode={mode}
             currentMode={visibility}
             onPreview={handlePreview}
             onDraft={handleDraft}
-            onSubmit={(extra) => handleSubmit("agreement", extra)}
+            onSubmit={(extra) => handleSubmit(mode, extra)}
             submitting={submitting}
           />
         </>

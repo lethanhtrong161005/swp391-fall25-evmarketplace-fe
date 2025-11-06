@@ -20,7 +20,6 @@ const StaffAgreementTable = ({
   onCreateOrder,
   onRenew,
 }) => {
-  // ✅ State modal chi tiết ký gửi
   const [selectedConsignment, setSelectedConsignment] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
@@ -108,7 +107,7 @@ const StaffAgreementTable = ({
       align: "center",
       width: 300,
       render: (_, record) => {
-        const { status } = record;
+        const { status, agreementIsCreatelisting } = record;
         if (status === "INSPECTED_FAIL") return null;
         if (status === "INSPECTED_PASS")
           return (
@@ -147,20 +146,22 @@ const StaffAgreementTable = ({
               >
                 Hợp đồng
               </Button>
-              <Button
-                size="small"
-                style={{
-                  backgroundColor: "#fa8c16",
-                  color: "#fff",
-                  border: "none",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCreateOrder?.(record);
-                }}
-              >
-                Tạo bài đăng
-              </Button>
+              {agreementIsCreatelisting && (
+                <Button
+                  size="small"
+                  style={{
+                    backgroundColor: "#fa8c16",
+                    color: "#fff",
+                    border: "none",
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCreateOrder?.(record);
+                  }}
+                >
+                  Tạo bài đăng
+                </Button>
+              )}
             </Space>
           );
         if (status === "EXPIRED")
@@ -199,7 +200,6 @@ const StaffAgreementTable = ({
         style={{ width: "100%" }}
         bordered={false}
       />
-
       <ConsignmentDetailModal
         item={selectedConsignment}
         onClose={handleCloseModal}

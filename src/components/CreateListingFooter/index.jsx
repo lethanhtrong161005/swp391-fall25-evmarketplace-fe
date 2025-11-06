@@ -12,7 +12,7 @@ const CreateListingFooter = ({
   submitting,
   maxWidth = 1024,
   isEdit = false,
-  mode = "normal", // 🔹 thêm prop mới
+  mode = "normal", // normal | agreement | agreement-update
 }) => {
   const displayMode = currentPostType || currentMode || "NORMAL";
   const label =
@@ -27,12 +27,17 @@ const CreateListingFooter = ({
 
   const handleSubmitClick = () => {
     if (submitting) return;
-    if (mode === "agreement") {
-      onSubmit && onSubmit("agreement"); // 🔹 gọi đúng mode agreement
+
+    if (mode === "agreement-update") {
+      onSubmit && onSubmit({ status: "ACTIVE" });
+    } else if (mode === "agreement") {
+      onSubmit && onSubmit({ status: "ACTIVE" });
     } else {
       onSubmit && onSubmit({ status: "PENDING" });
     }
   };
+
+  const showDraftButton = !isEdit && mode !== "agreement" && mode !== "agreement-update";
 
   return (
     <Affix offsetBottom={0}>
@@ -58,7 +63,7 @@ const CreateListingFooter = ({
             )}
             <Col style={{ marginLeft: "auto" }}>
               <Row gutter={8} wrap={false} className={styles.actionsRow}>
-                {!isEdit && (
+                {showDraftButton && (
                   <Col>
                     <Button
                       size="large"
@@ -78,7 +83,11 @@ const CreateListingFooter = ({
                     onClick={handleSubmitClick}
                     loading={submitting}
                   >
-                    {isEdit ? "Cập nhật tin" : "Đăng tin"}
+                    {mode === "agreement-update"
+                      ? "Cập nhật tin"
+                      : isEdit
+                      ? "Cập nhật tin"
+                      : "Đăng tin"}
                   </Button>
                 </Col>
               </Row>

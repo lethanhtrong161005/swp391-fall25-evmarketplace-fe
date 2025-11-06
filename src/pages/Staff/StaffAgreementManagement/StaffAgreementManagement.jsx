@@ -162,6 +162,7 @@ const StaffAgreementManagement = () => {
         open={isPostModalOpen}
         onClose={() => setIsPostModalOpen(false)}
         consignmentData={selectedConsignmentForPost}
+        mode="agreement"
       />
     </div>
   );

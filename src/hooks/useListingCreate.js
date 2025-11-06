@@ -4,10 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useTaxonomy } from "@hooks/useTaxonomy";
 import { normalizeListingPayload } from "@utils/normalizeListingPayload";
 import { listingDrafts } from "@utils/listingDrafts";
-import { staffCreateListing as StaffCreateListing } from "../services/staff/staffConsignmentService";
+import {
+  staffCreateListing as StaffCreateListing,
+  updateConsignmentListing,
+} from "../services/staff/staffConsignmentService";
 import { createListing as createUserListing } from "@services/listing.service";
 
-export function useListingCreate({ userId = null } = {}) {
+export function useListingCreate({ userId = null, currentListingId = null } = {}) {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [msg, contextHolder] = message.useMessage();
@@ -24,10 +27,7 @@ export function useListingCreate({ userId = null } = {}) {
   const [visibility, setVisibility] = useState("NORMAL");
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
-
-  const [draftId, setDraftId] = useState(() =>
-    listingDrafts.getCurrentId(userId)
-  );
+  const [draftId, setDraftId] = useState(() => listingDrafts.getCurrentId(userId));
 
   const categoryId = Form.useWatch("category", form);
   const selectedCategory = useMemo(
@@ -116,7 +116,7 @@ export function useListingCreate({ userId = null } = {}) {
       if (submitting) return;
       try {
         const values = await form.validateFields();
-        const allValues = form.getFieldsValue(true); // ✅ lấy toàn bộ kể cả hidden
+        const allValues = form.getFieldsValue(true);
         safeSetSubmitting(true);
 
         const isModeString = typeof arg1 === "string";
@@ -132,41 +132,83 @@ export function useListingCreate({ userId = null } = {}) {
           status
         );
 
-        // ✅ đảm bảo 3 field luôn có mặt trong payload
-        payload.consignmentAgreementId =
-          allValues.consignmentAgreementId ?? payload.consignmentAgreementId ?? null;
-        payload.responsibleStaffId =
-          allValues.responsibleStaffId ?? payload.responsibleStaffId ?? userId ?? null;
-        payload.branchId =
-          allValues.branchId ?? payload.branchId ?? null;
+        if (mode === "agreement") {
+          payload.consignmentAgreementId =
+            allValues.consignmentAgreementId ?? payload.consignmentAgreementId ?? null;
+          payload.responsibleStaffId =
+            allValues.responsibleStaffId ?? payload.responsibleStaffId ?? userId ?? null;
+          payload.branchId = allValues.branchId ?? payload.branchId ?? null;
+        }
 
         let res;
-        if (mode === "agreement") {
-          console.log("🧾 Gọi API STAFF /api/listing/consignment");
-          console.log("➡ payload:", payload);
-          res = await StaffCreateListing(payload, images, videos);
+
+        if (mode === "agreement-update") {
+          const listingId = currentListingId || allValues.id;
+          if (!listingId) {
+            msg.error("Không tìm thấy ID tin đăng để cập nhật!");
+            safeSetSubmitting(false);
+            return;
+          }
+
+          const newImages =
+            (allValues.images || [])
+              .filter((f) => f?.originFileObj)
+              .map((f) => f.originFileObj) || [];
+
+          const newVideos =
+            (allValues.videos || [])
+              .filter((f) => f?.originFileObj)
+              .map((f) => f.originFileObj) || [];
+
+          const keepMediaIds = null;
+
+          res = await updateConsignmentListing(
+            listingId,
+            payload,
+            newImages,
+            newVideos,
+            keepMediaIds
+          );
+        } else if (mode === "agreement") {
+          const imgs = (allValues.images || [])
+            .map((f) => f.originFileObj || f)
+            .filter((f) => f instanceof File);
+          const vids = (allValues.videos || [])
+            .map((f) => f.originFileObj || f)
+            .filter((f) => f instanceof File);
+
+          res = await StaffCreateListing(payload, imgs, vids);
         } else {
-          console.log("🧾 Gọi API USER /api/listing");
           res = await createUserListing(payload, images, videos);
         }
 
         if (res?.success !== false) {
-          msg.success("Đăng tin thành công!");
+          msg.success(
+            mode === "agreement-update"
+              ? "Cập nhật tin đăng thành công!"
+              : "Đăng tin thành công!"
+          );
+
           if (draftId) {
             listingDrafts.remove(draftId, userId);
             setDraftId(null);
           }
+
           form.resetFields();
           setImages([]);
           setVideos([]);
-          setTimeout(() => navigate("/my-ads"), 1000);
+
+          if (mode === "agreement") {
+            setTimeout(() => navigate("/staff/consignment/agreement"), 800);
+          } else if (mode !== "agreement-update") {
+            setTimeout(() => navigate("/my-ads"), 1000);
+          }
         } else {
-          msg.error(res?.message || "Đăng tin thất bại!");
+          msg.error(res?.message || "Thao tác thất bại!");
         }
       } catch (e) {
-        if (e?.errorFields)
-          msg.error("Vui lòng điền đầy đủ các trường bắt buộc.");
-        else msg.error(e?.message || "Đăng tin thất bại.");
+        if (e?.errorFields) msg.error("Vui lòng điền đầy đủ các trường bắt buộc.");
+        else msg.error(e?.message || "Gửi dữ liệu thất bại.");
       } finally {
         safeSetSubmitting(false);
       }
@@ -183,6 +225,7 @@ export function useListingCreate({ userId = null } = {}) {
       navigate,
       images,
       videos,
+      currentListingId,
     ]
   );
 
@@ -203,10 +246,7 @@ export function useListingCreate({ userId = null } = {}) {
     }
   }, [form, tax, postType, visibility, msg]);
 
-  const listLocalDrafts = useCallback(
-    () => listingDrafts.list(userId),
-    [userId]
-  );
+  const listLocalDrafts = useCallback(() => listingDrafts.list(userId), [userId]);
 
   const loadLocalDraftById = useCallback(
     (id) => {

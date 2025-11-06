@@ -37,7 +37,9 @@ const useStaffAgreementManagement = () => {
             ]);
 
             const consignment = consignmentRes?.data || {};
-            const agreement = agreementRes?.data || {};
+            const agreementWrapper = agreementRes?.data || {};
+            const agreement = agreementWrapper?.item || {};
+            const isCreateListing = agreementWrapper?.isCreateListing ?? false;
 
             return {
               ...item,
@@ -75,6 +77,7 @@ const useStaffAgreementManagement = () => {
               agreementExpireAt: agreement.expireAt,
               agreementCreatedAt: agreement.createdAt,
               agreementUpdatedAt: agreement.updatedAt,
+              agreementIsCreatelisting: isCreateListing,
             };
           } catch (error) {
             console.error("Lỗi khi merge dữ liệu:", error);
@@ -96,31 +99,17 @@ const useStaffAgreementManagement = () => {
     fetchData();
   }, []);
 
-  const openAddAgreementModal = (inspection) => {
-    setSelectedInspection(inspection);
-    setIsEditingDraft(false);
-    setIsModalVisible(true);
-  };
-
-  const openEditDraftModal = (inspection) => {
-    setSelectedInspection(inspection);
-    setIsEditingDraft(true);
-    setIsModalVisible(true);
-  };
-
-  const closeAddAgreementModal = () => {
-    setIsModalVisible(false);
-    setSelectedInspection(null);
-    setIsEditingDraft(false);
-  };
-
   const openAgreementDetail = async (requestId) => {
     if (!requestId) return;
     try {
       setLoading(true);
       const res = await getAgreementByRequestId(requestId);
-      if (res?.success && res?.data) {
-        setAgreementDetail(res.data);
+      const wrapper = res?.data;
+      if (res?.success && wrapper?.item) {
+        setAgreementDetail({
+          ...wrapper.item,
+          isCreateListing: wrapper.isCreateListing,
+        });
         setIsDetailOpen(true);
       } else {
         message.warning("Không tìm thấy dữ liệu hợp đồng.");
@@ -167,8 +156,12 @@ const useStaffAgreementManagement = () => {
     try {
       setLoading(true);
       const res = await getAgreementByRequestId(record.requestId || record.id);
-      if (res?.success && res?.data) {
-        setAgreementDetail(res.data);
+      const wrapper = res?.data;
+      if (res?.success && wrapper?.item) {
+        setAgreementDetail({
+          ...wrapper.item,
+          isCreateListing: wrapper.isCreateListing,
+        });
         setExtendDuration("SIX_MONTHS");
         setIsExtendOpen(true);
       } else {
@@ -217,9 +210,21 @@ const useStaffAgreementManagement = () => {
     selectedInspection,
     isModalVisible,
     isEditingDraft,
-    openAddAgreementModal,
-    openEditDraftModal,
-    closeAddAgreementModal,
+    openAddAgreementModal: (i) => {
+      setSelectedInspection(i);
+      setIsEditingDraft(false);
+      setIsModalVisible(true);
+    },
+    openEditDraftModal: (i) => {
+      setSelectedInspection(i);
+      setIsEditingDraft(true);
+      setIsModalVisible(true);
+    },
+    closeAddAgreementModal: () => {
+      setIsModalVisible(false);
+      setSelectedInspection(null);
+      setIsEditingDraft(false);
+    },
     fetchData,
     isDetailOpen,
     agreementDetail,
