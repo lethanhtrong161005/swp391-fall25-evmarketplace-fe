@@ -1,7 +1,45 @@
 import React from "react";
-import { Table, Tag, Typography } from "antd";
+import { Table, Tag, Typography, Select } from "antd";
+import { CATEGORIES } from "../../../../utils/constants";
+import "./ManagerListingTable.scss";
 
 const { Text } = Typography;
+
+const STATUS_OPTIONS = [
+  "PENDING",
+  "APPROVED",
+  "ACTIVE",
+  "RESERVED",
+  "SOLD",
+  "EXPIRED",
+  "REJECTED",
+  "HIDDEN",
+  "SOFT_DELETED",
+];
+
+const colorMap = {
+  PENDING: "gold",
+  APPROVED: "blue",
+  ACTIVE: "green",
+  RESERVED: "geekblue",
+  SOLD: "purple",
+  EXPIRED: "volcano",
+  REJECTED: "red",
+  HIDDEN: "gray",
+  SOFT_DELETED: "magenta",
+};
+
+const labelMap = {
+  PENDING: "Chờ duyệt",
+  APPROVED: "Đã duyệt",
+  ACTIVE: "Đang hiển thị",
+  RESERVED: "Đã đặt cọc",
+  SOLD: "Đã bán",
+  EXPIRED: "Hết hạn",
+  REJECTED: "Từ chối",
+  HIDDEN: "Ẩn",
+  SOFT_DELETED: "Đã xóa tạm",
+};
 
 export default function ManagerListingTable({
   rows = [],
@@ -10,6 +48,7 @@ export default function ManagerListingTable({
   pageSize,
   total,
   onChange,
+  onStatusChange,
 }) {
   const columns = [
     {
@@ -27,8 +66,9 @@ export default function ManagerListingTable({
     },
     {
       title: "Danh mục",
-      dataIndex: "categoryName",
-      width: 120,
+      dataIndex: "categoryCode",
+      width: 140,
+      render: (v) => CATEGORIES[v] || v || "-",
     },
     {
       title: "Giá",
@@ -38,59 +78,48 @@ export default function ManagerListingTable({
     },
     {
       title: "Người bán",
-      dataIndex: "sellerPhone",
-      width: 140,
-    },
-    {
-      title: "Tỉnh / Thành phố",
-      dataIndex: "province",
+      dataIndex: "sellerName",
       width: 180,
-    },
-    {
-      title: "Quận / Huyện",
-      dataIndex: "district",
-      width: 180,
-    },
-    {
-      title: "Phường / Xã",
-      dataIndex: "ward",
-      width: 180,
+      render: (v, r) => (
+        <>
+          <div>{v || "-"}</div>
+          <Text type="secondary">{r.sellerPhone || "-"}</Text>
+        </>
+      ),
     },
     {
       title: "Địa chỉ",
       dataIndex: "address",
       ellipsis: true,
+      render: (_, r) =>
+        [r.ward, r.district, r.province].filter(Boolean).join(", ") || "-",
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
-      width: 140,
-      render: (s) => {
-        const colorMap = {
-          PENDING: "gold",
-          APPROVED: "blue",
-          ACTIVE: "green",
-          RESERVED: "geekblue",
-          SOLD: "purple",
-          EXPIRED: "volcano",
-          REJECTED: "red",
-          ARCHIVED: "default",
-          HIDDEN: "gray",
-          SOFT_DELETED: "magenta",
-        };
-        const labelMap = {
-          PENDING: "Chờ duyệt",
-          APPROVED: "Đã duyệt",
-          ACTIVE: "Đang hiển thị",
-          RESERVED: "Đã đặt cọc",
-          SOLD: "Đã bán",
-          EXPIRED: "Hết hạn",
-          REJECTED: "Từ chối",
-          ARCHIVED: "Lưu trữ",
-          HIDDEN: "Ẩn",
-          SOFT_DELETED: "Đã xóa tạm",
-        };
-        return <Tag color={colorMap[s] || "default"}>{labelMap[s] || s}</Tag>;
+      width: 180,
+      render: (s, record) => {
+        const disabledStatuses = ["PENDING", "APPROVED", "REJECTED"];
+        const isDisabled = disabledStatuses.includes(s);
+
+        return (
+          <Select
+            size="small"
+            value={s}
+            disabled={isDisabled}
+            className="status-select" // 👈 style riêng
+            onChange={(newStatus) => onStatusChange(record, newStatus)}
+            dropdownStyle={{ minWidth: 160 }}
+          >
+            {STATUS_OPTIONS.map((opt) => (
+              <Select.Option key={opt} value={opt}>
+                <Tag color={colorMap[opt] || "default"}>
+                  {labelMap[opt] || opt}
+                </Tag>
+              </Select.Option>
+            ))}
+          </Select>
+        );
       },
     },
     {
@@ -108,7 +137,7 @@ export default function ManagerListingTable({
       dataSource={rows}
       loading={loading}
       size="middle"
-      scroll={{ x: 1000 }}
+      scroll={{ x: 1200 }}
       pagination={{
         current: page,
         pageSize,

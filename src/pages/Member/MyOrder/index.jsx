@@ -20,10 +20,12 @@ const MyOrder = () => {
                 <div className={s.breadcrumb}>
                     <Breadcrumb items={[{ title: "ReEV", href: "/" }, { title: "Đơn hàng của tôi" }]} />
                 </div>
+
                 <div className={s.content}>
                     <Card className={s.card} bordered={false}>
                         <ProfileBar rows={rows} loading={loading} />
                         <SearchActions {...logic} />
+
                         {(!loading && total === 0) ? (
                             <EmptyState onRefresh={logic.onRefresh} />
                         ) : (
@@ -33,10 +35,11 @@ const MyOrder = () => {
                                 onDownloadContract={logic.onDownloadContract}
                                 onCancel={logic.onCancel}
                                 onViewDetail={logic.onViewDetail}
+                                reloadOrders={logic.onRefresh}
                             />
                         )}
-            </Card>
-                            </div>
+                    </Card>
+                </div>
 
                 <PaymentModal
                     open={logic.paymentModal.open}
@@ -57,7 +60,7 @@ const MyOrder = () => {
                     orderId={logic.historyModal.orderId}
                     onClose={logic.closePaymentHistory}
                 />
-        </div>
+            </div>
         </App>
     );
 };
