@@ -21,12 +21,27 @@ export default function ListingCreate() {
   const userId = user?.id ?? user?.accountId ?? user?.sub ?? null;
 
   const {
-    form, msg, contextHolder, loading, tax,
-    visibility, handleChangeVisibility, isBattery,
-    postTypeOpen, submitting, setPostTypeOpen,
-    handleSubmit, handlePreview, handleDraft, onValuesChange,
+    form,
+    msg,
+    contextHolder,
+    loading,
+    tax,
+    visibility,
+    handleChangeVisibility,
+    isBattery,
+    postTypeOpen,
+    submitting,
+    setPostTypeOpen,
+    handleSubmit,
+    handlePreview,
+    handleDraft,
+    onValuesChange,
     loadLocalDraftById,
-  } = useListingCreate({ userId }); 
+    images,
+    setImages,
+    videos,
+    setVideos,
+  } = useListingCreate({ userId });
 
   const [params] = useSearchParams();
   useEffect(() => {
@@ -46,11 +61,20 @@ export default function ListingCreate() {
   return (
     <>
       {contextHolder}
-      <Card style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }} variant="bordered">
+      <Card
+        style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }}
+        variant="bordered"
+      >
         <Form form={form} layout="vertical" onValuesChange={onValuesChange}>
           <Row gutter={16}>
             <Col xs={24} md={8}>
-              <SectionMedia messageApi={msg} />
+              <SectionMedia
+                messageApi={msg}
+                images={images}
+                setImages={setImages}
+                videos={videos}
+                setVideos={setVideos}
+              />
             </Col>
             <Col xs={24} md={16}>
               <CategoryBrandModel form={form} tax={tax} />
