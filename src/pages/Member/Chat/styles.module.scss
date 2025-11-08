@@ -1,0 +1,28 @@
+.wrapper {
+  padding: 16px 24px 48px;
+  background: #f5f7fa;
+  min-height: calc(100vh - 64px);
+}
+
+.breadcrumb {
+  max-width: 1400px;
+  margin: 0 auto 8px;
+}
+
+.content {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: calc(100vh - 120px);
+  min-height: 600px;
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    padding: 8px 12px 24px;
+  }
+
+  .content {
+    height: calc(100vh - 100px);
+  }
+}
+

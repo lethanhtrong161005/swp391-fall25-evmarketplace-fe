@@ -63,6 +63,7 @@ import ConsignmentForm from "@/pages/Member/ConsignmentCreate/ConsignmentCreate"
 import AllListings from "@pages/Member/AllListings/AllListings";
 import InspectionAvailabilityPage from "@pages/Member/MemberConsignment/InpectionAvailabilityPage/InspectionAvailabilityPage";
 import MyOrder from "@pages/Member/MyOrder";
+import Chat from "@pages/Member/Chat";
 
 // Errors
 import Error403 from "@pages/Errors/Error403";
@@ -118,6 +119,8 @@ export const routes = () => [
           },
           { path: "my-favorites", element: <MyFavoritesPage /> },
           { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
+          { path: "chat", element: <Chat /> },
+          { path: "chat/:conversationId", element: <Chat /> },
           { path: "staff", element: <StaffDashboard /> },
         ],
       },

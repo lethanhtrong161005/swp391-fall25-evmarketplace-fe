@@ -19,7 +19,8 @@ import FavoritesDropdown from "@components/FavoritesDropdown/FavoritesDropdown";
 import UnauthenticatedFavoritesDropdown from "@components/FavoritesDropdown/UnauthenticatedFavoritesDropdown";
 import NotificationCenter from "@components/Notification/Center/NotificationCenter";
 import UnauthenticatedNotificationCenter from "@components/Notification/UnauthenticatedCenter/UnauthenticatedNotificationCenter";
-import UnauthenticatedChatButton from "@components/Chat/UnauthenticatedChatButton";
+import UnauthenticatedChatButton from "@components/Chat/UnauthenticatedChatButton/index";
+import ChatButton from "@components/Chat/ChatButton/index";
 
 import { useHeaderAction } from "./useHeaderAction";
 import "./HeaderAction.scss";
@@ -207,23 +208,7 @@ const HeaderAction = () => {
 
           {/* Icon Chat - Message */}
           {isLoggedIn ? (
-            <Tooltip title="Chat">
-              <Button
-                type="text"
-                icon={<MessageOutlined style={{ fontSize: "18px" }} />}
-                onClick={() => {
-                  // TODO: Navigate to chat page when implemented
-                }}
-                style={{
-                  borderRadius: "50%",
-                  width: "40px",
-                  height: "40px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              />
-            </Tooltip>
+            <ChatButton />
           ) : (
             <UnauthenticatedChatButton
               onLoginClick={() => auth.setOpenLogin?.(true)}

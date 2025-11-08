@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Popover, Button, Tooltip } from "antd";
 import { MessageOutlined } from "@ant-design/icons";
-import RequireLoginLayout from "../Notification/RequireLogin/RequireLoginLayout";
+import { useNavigate } from "react-router-dom";
+import RequireLoginLayout from "../../Notification/RequireLogin/RequireLoginLayout";
 
 const UnauthenticatedChatButton = ({ onLoginClick }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const chatContent = (
@@ -14,7 +16,7 @@ const UnauthenticatedChatButton = ({ onLoginClick }) => {
       buttonText="Đăng ký / Đăng nhập"
       onLoginClick={() => {
         setIsOpen(false);
-        onLoginClick();
+        onLoginClick?.();
       }}
     />
   );
@@ -50,3 +52,4 @@ const UnauthenticatedChatButton = ({ onLoginClick }) => {
 };
 
 export default UnauthenticatedChatButton;
+

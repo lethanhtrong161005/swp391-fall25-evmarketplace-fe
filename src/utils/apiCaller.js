@@ -53,9 +53,18 @@ const request = async (
       headers,
     });
     // Kiểm tra res không null trước khi truy cập .data
-    return res?.data || null;
+    if (!res) {
+      console.warn("[apiCaller] Response is null for:", endpoint);
+      return null;
+    }
+    return res.data;
   } catch (err) {
-    throw err.response?.data || err;
+    console.error("[apiCaller] Request error for:", endpoint, err);
+    // Return error in a consistent format
+    if (err.response) {
+      throw err.response.data || { success: false, message: err.message };
+    }
+    throw { success: false, message: err.message || "Network error" };
   }
 };
 
