@@ -282,7 +282,15 @@ const ManagerDashboard = () => {
       }
 
       if (mkRes.status === "fulfilled") {
-        setMarketState({ loading: false, error: null, data: mkRes.value ?? null });
+        const marketData = mkRes.value ?? null;
+        // Log response để kiểm tra cấu trúc dữ liệu
+        console.log("=== MARKET API RESPONSE ===", marketData);
+        if (marketData) {
+          console.log("topBrands:", marketData.topBrands);
+          console.log("topModels:", marketData.topModels);
+          console.log("avgListingPriceByCategory:", marketData.avgListingPriceByCategory);
+        }
+        setMarketState({ loading: false, error: null, data: marketData });
       } else {
         const errorMsg = getErrorMessage(mkRes.reason);
         setMarketState({ loading: false, error: errorMsg, data: null });
@@ -505,19 +513,57 @@ const ManagerDashboard = () => {
     }));
 
     // topBrands and topModels: List<NameCount> -> { name, count }
-    // For now, we'll create a simple structure. If backend provides nested brand/model data, adjust accordingly
+    // Backend provides separate topBrands and topModels lists
+    // We'll map them by index (assuming they correspond) and use avgListingPriceByCategory for price
     const topBrands = d.topBrands || [];
     const topModels = d.topModels || [];
+    // Note: avgListingPriceByCategory is already declared above (line 496)
     
-    // Create brandsRows from topBrands and topModels
-    // Note: Backend provides separate topBrands and topModels lists
-    // If you need nested brand->model structure, backend needs to provide it
-    const brandsRows = topModels.map((m) => ({
-      brand: m.name || "Không xác định", // topModels might not have brand info
-      model: m.name || "Không xác định",
-      count: m.count || 0,
-      avgPrice: 0, // topModels doesn't include price
-    }));
+    // Log để kiểm tra cấu trúc dữ liệu
+    console.log("=== PROCESSING MARKET DATA ===");
+    console.log("topBrands:", topBrands);
+    console.log("topModels:", topModels);
+    console.log("avgListingPriceByCategory:", avgListingPriceByCategory);
+    console.log("categoryBreakdown:", d.categoryBreakdown);
+    
+    // Determine which category to use for price
+    // If there's only one category with data, use that
+    const categoryKeys = Object.keys(d.categoryBreakdown || {});
+    const categoryWithData = categoryKeys.find(key => (d.categoryBreakdown[key] || 0) > 0);
+    
+    // Get average price for the category (or use first available)
+    let defaultAvgPrice = 0;
+    if (categoryWithData && avgListingPriceByCategory[categoryWithData]) {
+      defaultAvgPrice = parseFloat(avgListingPriceByCategory[categoryWithData]) || 0;
+    } else if (Object.keys(avgListingPriceByCategory).length > 0) {
+      // Fallback: use first available category price
+      const firstCategory = Object.keys(avgListingPriceByCategory)[0];
+      defaultAvgPrice = parseFloat(avgListingPriceByCategory[firstCategory]) || 0;
+    }
+    
+    console.log("Using avgPrice from category:", categoryWithData, "=", defaultAvgPrice);
+    
+    // Create brandsRows by mapping topBrands with topModels
+    // Assumption: topBrands[i] corresponds to topModels[i] (same index)
+    const maxLength = Math.max(topBrands.length, topModels.length);
+    const brandsRows = [];
+    
+    for (let i = 0; i < maxLength; i++) {
+      const brand = topBrands[i] || { name: "Không xác định", count: 0 };
+      const model = topModels[i] || { name: "Không xác định", count: 0 };
+      
+      // Try to get model-specific price, fallback to category average
+      const avgPrice = model.avgPrice || model.averagePrice || model.avgListingPrice || defaultAvgPrice;
+      
+      brandsRows.push({
+        brand: brand.name || "Không xác định",
+        model: model.name || "Không xác định",
+        count: model.count || brand.count || 0,
+        avgPrice: avgPrice,
+      });
+    }
+    
+    console.log("Final brandsRows:", brandsRows);
 
     // If backend provides nested structure later, use:
     // const brandsRows = (d.brands || []).flatMap((b) =>
@@ -648,10 +694,6 @@ const ManagerDashboard = () => {
         <FilterBar
           form={form}
           onValuesChange={onFilterChange}
-          listingTypeOptions={listingTypeOptions}
-          categoryOptions={categoryOptions}
-          branchOptions={branchOptions}
-          branchLoading={branchLoading}
         />
 
       <Row gutter={[16, 16]}>

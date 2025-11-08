@@ -18,6 +18,12 @@ const MarketWidget = ({ state, vm, onRetry, onExport, formatCurrency, currency }
     booster: "Nổi bật",
   };
 
+  // Color mapping for post types
+  const postTypeColors = {
+    "Thường": "#1677ff", // Xanh dương đậm
+    "Nổi bật": "#ff7a00", // Cam vàng
+  };
+
   return (
     <Card title="Xu hướng thị trường" extra={<Button icon={<DownloadOutlined />} onClick={onExport}>Xuất CSV</Button>}>
       {state.loading ? (
@@ -43,11 +49,25 @@ const MarketWidget = ({ state, vm, onRetry, onExport, formatCurrency, currency }
                 })} 
                 angleField="value" 
                 colorField="type" 
+                color={(type) => postTypeColors[type] || "#8c8c8c"}
                 innerRadius={0.64} 
-                label={{ 
-                  type: "inner", 
-                  offset: "-50%", 
-                  content: (item) => item.percentage || ""
+                label={false}
+                legend={{
+                  position: "bottom",
+                  itemName: {
+                    style: {
+                      fill: "#333"
+                    }
+                  }
+                }}
+                tooltip={{
+                  fields: ["type", "value", "percentage"],
+                  formatter: (datum) => {
+                    return {
+                      name: datum.type,
+                      value: `${datum.value} (${datum.percentage})`
+                    };
+                  }
                 }} 
               />
             </Col>

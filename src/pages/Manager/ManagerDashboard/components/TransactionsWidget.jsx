@@ -11,6 +11,16 @@ const TransactionsWidget = ({ state, vm, onRetry, onExport, formatPercent }) => 
     other: "Khác",
   };
 
+  // Color mapping for transaction types
+  const typeColors = {
+    "Ký gửi": "#52c41a", // Xanh lá
+    "Đăng tin": "#1677ff", // Xanh dương đậm
+    "Khác": "#ff4d4f", // Đỏ cam
+    "Tổng": "#1677ff", // Xanh dương
+    "Thành công": "#52c41a", // Xanh lá
+    "Thất bại/Huỷ": "#ff4d4f", // Đỏ cam
+  };
+
   return (
     <Card title="Số lượng giao dịch" extra={<Button icon={<DownloadOutlined />} onClick={onExport}>Xuất CSV</Button>}>
       {state.loading ? (
@@ -28,10 +38,30 @@ const TransactionsWidget = ({ state, vm, onRetry, onExport, formatPercent }) => 
             <Col span={6}><Statistic title="Thất bại/Huỷ" value={vm.failed} /></Col>
           </Row>
           {vm.tsLong && vm.tsLong.length > 0 ? (
-            <Area height={240} data={vm.tsLong} xField="date" yField="value" seriesField="series" smooth xAxis={{ type: "timeCat" }} tooltip={{ shared: true }} />
+            <Area 
+              height={240} 
+              data={vm.tsLong} 
+              xField="date" 
+              yField="value" 
+              seriesField="series" 
+              color={(series) => typeColors[series] || "#8c8c8c"}
+              smooth 
+              xAxis={{ type: "timeCat" }} 
+              tooltip={{ shared: true }} 
+            />
           ) : null}
           <Row gutter={16}>
-            <Col span={12}><Column height={220} data={vm.byTypeArr.map(d => ({ name: d.label || typeLabels[d.type] || d.type, value: d.value, series: "Số lượng" }))} xField="name" yField="value" seriesField="series" isGroup /></Col>
+            <Col span={12}>
+              <Column 
+                height={220} 
+                data={vm.byTypeArr.map(d => ({ name: d.label || typeLabels[d.type] || d.type, value: d.value, series: "Số lượng" }))} 
+                xField="name" 
+                yField="value" 
+                seriesField="series" 
+                color={(name) => typeColors[name] || "#8c8c8c"}
+                isGroup 
+              />
+            </Col>
             <Col span={12}>
               <Pie 
                 height={220} 
@@ -46,11 +76,25 @@ const TransactionsWidget = ({ state, vm, onRetry, onExport, formatPercent }) => 
                 })} 
                 angleField="value" 
                 colorField="type" 
+                color={(type) => typeColors[type] || "#8c8c8c"}
                 innerRadius={0.64} 
-                label={{ 
-                  type: "inner", 
-                  offset: "-50%", 
-                  content: (item) => item.percentage || ""
+                label={false}
+                legend={{
+                  position: "bottom",
+                  itemName: {
+                    style: {
+                      fill: "#333"
+                    }
+                  }
+                }}
+                tooltip={{
+                  fields: ["type", "value", "percentage"],
+                  formatter: (datum) => {
+                    return {
+                      name: datum.type,
+                      value: `${datum.value} (${datum.percentage})`
+                    };
+                  }
                 }} 
               />
             </Col>

@@ -11,6 +11,13 @@ const RevenueWidget = ({ state, vm, onRetry, onExport, formatCurrency, formatPer
     other: "Khác",
   };
 
+  // Color mapping for revenue sources
+  const sourceColors = {
+    "Ký gửi": "#52c41a", // Xanh lá
+    "Đăng tin": "#1677ff", // Xanh dương đậm
+    "Khác": "#ff4d4f", // Đỏ cam
+  };
+
   return (
     <Card title="Doanh thu" extra={<Button icon={<DownloadOutlined />} onClick={onExport}>Xuất CSV</Button>}>
       {state.loading ? (
@@ -37,6 +44,7 @@ const RevenueWidget = ({ state, vm, onRetry, onExport, formatCurrency, formatPer
               xField="date" 
               yField="value" 
               seriesField="source" 
+              color={(source) => sourceColors[source] || "#8c8c8c"}
               isStack 
               smooth 
               xAxis={{ type: "timeCat" }} 
@@ -55,11 +63,25 @@ const RevenueWidget = ({ state, vm, onRetry, onExport, formatCurrency, formatPer
             })} 
             angleField="value" 
             colorField="type" 
+            color={(type) => sourceColors[type] || "#8c8c8c"}
             innerRadius={0.64} 
-            label={{ 
-              type: "inner", 
-              offset: "-50%", 
-              content: (item) => item.percentage || ""
+            label={false}
+            legend={{
+              position: "bottom",
+              itemName: {
+                style: {
+                  fill: "#333"
+                }
+              }
+            }}
+            tooltip={{
+              fields: ["type", "value", "percentage"],
+              formatter: (datum) => {
+                return {
+                  name: datum.type,
+                  value: `${datum.value} (${datum.percentage})`
+                };
+              }
             }} 
           />
         </Space>
