@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { message } from "antd";
-import { getManagerListings } from "@/services/listing.service";
+import { getManagerListings, managerUpdateListingStatus } from "@/services/listing.service";
 
 export default function useManagerListing() {
   const [status, setStatus] = useState("");
@@ -11,9 +11,15 @@ export default function useManagerListing() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  // modal control
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedListing, setSelectedListing] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
-    setRows([]); // 🧹 reset table trước khi load
+    setRows([]);
     try {
       const { items, total } = await getManagerListings({
         status,
@@ -21,8 +27,6 @@ export default function useManagerListing() {
         page: page - 1,
         size: pageSize,
       });
-
-      console.log("✅ Data received:", items);
       setRows(items || []);
       setTotal(total || 0);
     } catch (err) {
@@ -33,7 +37,6 @@ export default function useManagerListing() {
     }
   }, [status, query, page, pageSize]);
 
-  // Gọi API mỗi khi filter hoặc phân trang thay đổi
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -53,6 +56,31 @@ export default function useManagerListing() {
     setPage(1);
   }, []);
 
+  /** 🧩 Mở modal xác nhận */
+  const openStatusModal = useCallback((record, newStatus) => {
+    if (!record || !record.id || !newStatus || newStatus === record.status) return;
+    setSelectedListing(record);
+    setSelectedStatus(newStatus);
+    setModalOpen(true);
+  }, []);
+
+  /** ✅ Xác nhận đổi trạng thái */
+  const confirmStatusChange = useCallback(async (record, newStatus) => {
+    setConfirmLoading(true);
+    try {
+      const res = await managerUpdateListingStatus({ id: record.id, status: newStatus });
+      message.success(`Cập nhật trạng thái thành công (${newStatus})`);
+      setModalOpen(false);
+      fetchData();
+      return res;
+    } catch (err) {
+      console.error("❌ Update status error:", err);
+      message.error(err?.message || "Không thể cập nhật trạng thái!");
+    } finally {
+      setConfirmLoading(false);
+    }
+  }, [fetchData]);
+
   return {
     rows,
     total,
@@ -64,6 +92,14 @@ export default function useManagerListing() {
     handleTableChange,
     handleSearch,
     handleStatusFilter,
+    // modal
+    modalOpen,
+    selectedListing,
+    selectedStatus,
+    confirmLoading,
+    openStatusModal,
+    confirmStatusChange,
+    closeModal: () => setModalOpen(false),
     refresh: fetchData,
   };
 }
