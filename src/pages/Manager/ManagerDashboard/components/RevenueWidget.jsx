@@ -2,8 +2,16 @@ import React from "react";
 import { Card, Row, Col, Statistic, Skeleton, Alert, Button, Space, Tooltip } from "antd";
 import { DownloadOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Area, Pie } from "@ant-design/plots";
+import { useResponsive } from "@/utils/responsive";
+
+const statisticStyle = {
+  width: "100%",
+  overflow: "hidden",
+};
 
 const RevenueWidget = ({ state, vm, onRetry, onExport, formatCurrency, formatPercent }) => {
+  const { isMobile } = useResponsive();
+  
   // Map revenue source types to Vietnamese
   const sourceLabels = {
     postListing: "Đăng tin",
@@ -19,7 +27,18 @@ const RevenueWidget = ({ state, vm, onRetry, onExport, formatCurrency, formatPer
   };
 
   return (
-    <Card title="Doanh thu" extra={<Button icon={<DownloadOutlined />} onClick={onExport}>Xuất CSV</Button>}>
+    <Card 
+      title="Doanh thu" 
+      extra={
+        <Button 
+          icon={<DownloadOutlined />} 
+          onClick={onExport}
+          size={isMobile ? "small" : "middle"}
+        >
+          <span style={{ display: isMobile ? "none" : "inline" }}>Xuất CSV</span>
+        </Button>
+      }
+    >
       {state.loading ? (
         <Skeleton active />
       ) : state.error ? (
@@ -28,62 +47,107 @@ const RevenueWidget = ({ state, vm, onRetry, onExport, formatCurrency, formatPer
         <div style={{ height: 220, color: "#999", display: "flex", alignItems: "center", justifyContent: "center" }}>Không có dữ liệu</div>
       ) : (
         <Space direction="vertical" style={{ width: "100%" }} size={16}>
-          <Row gutter={16}>
-            <Col span={6}><Statistic title="Tổng doanh thu" value={formatCurrency(vm.total, vm.currency)} /></Col>
-            <Col span={6}><Statistic title="TB/ngày" value={formatCurrency(vm.avgPerDay, vm.currency)} /></Col>
-            <Col span={6}><Statistic title="TB/user giao dịch" value={formatCurrency(vm.avgPerUser, vm.currency)} /></Col>
-            <Col span={6}><Statistic title="TB/giao dịch" value={formatCurrency(vm.avgPerTx, vm.currency)} /></Col>
+          <style>{`
+            .revenue-statistic-wrapper .ant-statistic-title {
+              white-space: normal !important;
+              word-break: break-word !important;
+              line-height: 1.2 !important;
+              margin-bottom: 4px !important;
+              font-size: 14px !important;
+            }
+            .revenue-statistic-wrapper .ant-statistic-content {
+              white-space: normal !important;
+              word-break: break-word !important;
+              overflow: hidden !important;
+              width: 100% !important;
+            }
+            .revenue-statistic-wrapper .ant-statistic-content-value {
+              font-size: clamp(16px, 2vw, 24px) !important;
+              line-height: 1.2 !important;
+              word-break: break-word !important;
+              white-space: normal !important;
+            }
+            .revenue-statistic-wrapper .ant-statistic-content-suffix {
+              white-space: normal !important;
+              word-break: break-word !important;
+            }
+          `}</style>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} sm={24} md={24} lg={12} xl={6} style={{ minWidth: 0, padding: "0 4px" }}>
+              <div className="revenue-statistic-wrapper" style={statisticStyle}>
+                <Statistic title="Tổng doanh thu" value={formatCurrency(vm.total, vm.currency)} />
+              </div>
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={12} xl={6} style={{ minWidth: 0, padding: "0 4px" }}>
+              <div className="revenue-statistic-wrapper" style={statisticStyle}>
+                <Statistic title="TB/ngày" value={formatCurrency(vm.avgPerDay, vm.currency)} />
+              </div>
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={12} xl={6} style={{ minWidth: 0, padding: "0 4px" }}>
+              <div className="revenue-statistic-wrapper" style={statisticStyle}>
+                <Statistic title="TB/user giao dịch" value={formatCurrency(vm.avgPerUser, vm.currency)} />
+              </div>
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={12} xl={6} style={{ minWidth: 0, padding: "0 4px" }}>
+              <div className="revenue-statistic-wrapper" style={statisticStyle}>
+                <Statistic title="TB/giao dịch" value={formatCurrency(vm.avgPerTx, vm.currency)} />
+              </div>
+            </Col>
           </Row>
-          <Row gutter={16}>
-            <Col span={12}><Statistic title="Tỷ lệ Ký gửi / Tổng" valueRender={() => <Tooltip title={vm.total === 0 ? "Không có dữ liệu" : undefined}>{formatPercent(vm.consignmentRatio)}</Tooltip>} /></Col>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} sm={24} md={24} lg={12} xl={12}><Statistic title="Tỷ lệ Ký gửi / Tổng" valueRender={() => <Tooltip title={vm.total === 0 ? "Không có dữ liệu" : undefined}>{formatPercent(vm.consignmentRatio)}</Tooltip>} /></Col>
           </Row>
           {vm.stackedTs && vm.stackedTs.length > 0 ? (
-            <Area 
-              height={240} 
-              data={vm.stackedTs.map(t => ({ ...t, source: sourceLabels[t.source] || t.source }))} 
-              xField="date" 
-              yField="value" 
-              seriesField="source" 
-              color={(source) => sourceColors[source] || "#8c8c8c"}
-              isStack 
-              smooth 
-              xAxis={{ type: "timeCat" }} 
-            />
+            <div style={{ width: "100%", overflowX: "auto" }}>
+              <Area 
+                height={240} 
+                data={vm.stackedTs.map(t => ({ ...t, source: sourceLabels[t.source] || t.source }))} 
+                xField="date" 
+                yField="value" 
+                seriesField="source" 
+                color={(source) => sourceColors[source] || "#8c8c8c"}
+                isStack 
+                smooth 
+                xAxis={{ type: "timeCat" }} 
+              />
+            </div>
           ) : null}
-          <Pie 
-            height={240} 
-            data={vm.donut.map(d => {
-              const total = vm.donut.reduce((sum, item) => sum + (item.value || 0), 0);
-              const percentage = total > 0 ? ((d.value / total) * 100).toFixed(1) : "0";
-              return { 
-                ...d, 
-                type: sourceLabels[d.type] || d.type,
-                percentage: `${percentage}%`
-              };
-            })} 
-            angleField="value" 
-            colorField="type" 
-            color={(type) => sourceColors[type] || "#8c8c8c"}
-            innerRadius={0.64} 
-            label={false}
-            legend={{
-              position: "bottom",
-              itemName: {
-                style: {
-                  fill: "#333"
-                }
-              }
-            }}
-            tooltip={{
-              fields: ["type", "value", "percentage"],
-              formatter: (datum) => {
-                return {
-                  name: datum.type,
-                  value: `${datum.value} (${datum.percentage})`
+          <div style={{ width: "100%", overflowX: "auto" }}>
+            <Pie 
+              height={240} 
+              data={vm.donut.map(d => {
+                const total = vm.donut.reduce((sum, item) => sum + (item.value || 0), 0);
+                const percentage = total > 0 ? ((d.value / total) * 100).toFixed(1) : "0";
+                return { 
+                  ...d, 
+                  type: sourceLabels[d.type] || d.type,
+                  percentage: `${percentage}%`
                 };
-              }
-            }} 
-          />
+              })} 
+              angleField="value" 
+              colorField="type" 
+              color={(type) => sourceColors[type] || "#8c8c8c"}
+              innerRadius={0.64} 
+              label={false}
+              legend={{
+                position: "bottom",
+                itemName: {
+                  style: {
+                    fill: "#333"
+                  }
+                }
+              }}
+              tooltip={{
+                fields: ["type", "value", "percentage"],
+                formatter: (datum) => {
+                  return {
+                    name: datum.type,
+                    value: `${datum.value} (${datum.percentage})`
+                  };
+                }
+              }} 
+            />
+          </div>
         </Space>
       )}
     </Card>

@@ -27,6 +27,7 @@ import MarketWidget from "./components/MarketWidget";
 import dayjs from "dayjs";
 import { get } from "@/utils/apiCaller";
 import { getAllBranches } from "@/services/branchService";
+import { useResponsive } from "@/utils/responsive";
 
 // Toggle mock data to preview UI without backend
 const USE_MOCK_DASHBOARD = false;
@@ -111,6 +112,7 @@ const timezoneDefault = "Asia/Ho_Chi_Minh";
 
 const ManagerDashboard = () => {
   const { token } = theme.useToken();
+  const { isMobile } = useResponsive();
   const [form] = Form.useForm();
   const abortRef = useRef({});
 
@@ -689,7 +691,7 @@ const ManagerDashboard = () => {
 
   // UI
   return (
-    <div style={{ padding: "24px", background: token.colorBgLayout }}>
+    <div style={{ padding: isMobile ? "12px" : "24px", background: token.colorBgLayout }}>
       <Space direction="vertical" size={16} style={{ width: "100%" }}>
         <FilterBar
           form={form}
@@ -697,11 +699,11 @@ const ManagerDashboard = () => {
         />
 
       <Row gutter={[16, 16]}>
-          <Col xs={24} lg={12}>
+          <Col xs={24} md={24} lg={12} xl={12}>
             <TransactionsWidget state={txState} vm={txVM} onRetry={retryTx} onExport={exportTxTimeseries} formatPercent={formatPercent} />
           </Col>
 
-          <Col xs={24} lg={12}>
+          <Col xs={24} md={24} lg={12} xl={12}>
             <RevenueWidget state={revState} vm={revVM} onRetry={retryRev} onExport={exportRev} formatCurrency={formatCurrency} formatPercent={formatPercent} />
           </Col>
         </Row>
