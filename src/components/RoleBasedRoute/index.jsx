@@ -3,7 +3,7 @@ import { Spin } from "antd";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@hooks/useAuth";
 
-const RoleBasedRoute = ({ allowedRoles = [] }) => {
+const RoleBasedRoute = ({ allowedRoles = [], children = null }) => {
   const { isLoggedIn, user, loading } = useAuth();
   const location = useLocation();
 
@@ -45,7 +45,7 @@ const RoleBasedRoute = ({ allowedRoles = [] }) => {
   if (normAllowed.length && !normAllowed.includes(role)) {
     return <Navigate to="/403" replace />;
   }
-  return <Outlet />;
+  return children ? children : <Outlet />;
 };
 
 export default RoleBasedRoute;
