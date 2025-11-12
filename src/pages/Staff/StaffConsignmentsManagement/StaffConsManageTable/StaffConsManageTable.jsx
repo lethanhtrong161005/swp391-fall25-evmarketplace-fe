@@ -11,18 +11,24 @@ const StaffConsManageTable = ({
 }) => {
   const columns = [
     {
+      title: "Số điện thoại",
+      dataIndex: "accountPhone",
+      key: "accountPhone",
+      align: "left",
+    },
+    {
+      title: "Khách hàng",
+      dataIndex: "accountName",
+      key: "accountName",
+      align: "left",
+    },
+    {
       title: "Loại",
       dataIndex: "itemType",
       key: "itemType",
     },
     { title: "Model", dataIndex: "model", key: "model", align: "left" },
     { title: "Năm SX", dataIndex: "year", key: "year", align: "center" },
-    {
-      title: "Chi nhánh ưu tiên",
-      dataIndex: "preferredBranchName",
-      key: "preferredBranchName",
-      align: "left",
-    },
     {
       title: "Trạng thái",
       dataIndex: "statusLabel",

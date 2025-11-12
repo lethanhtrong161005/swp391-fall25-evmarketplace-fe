@@ -103,6 +103,13 @@ export const getStaffInspections = async () => {
   return res.data;
 };
 
+export const searchStaffInspectionByPhone = async (phone) => {
+  if (!phone) throw new Error("Số điện thoại không được để trống");
+  const res = await api.get(`/api/inspections/staff/search`, {
+    params: { phone },
+  });
+  return res.data;
+};
 //Agreement
 // /services/staff/staffConsignmentService.js
 export const addAgreement = async (payload, file) => {

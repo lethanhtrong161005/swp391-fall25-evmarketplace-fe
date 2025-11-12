@@ -1,9 +1,17 @@
 import useManagerConsignmentsManagement from "./useManagerConsignmentsManagement";
 import ManagerConsignmentManagementTable from "./ManagerConsignmentsManagementTable/ManagerConsignmentManagementTable";
 import ConsignmentDetailModal from "../../Member/MemberConsignment/ConsigmentDetailModal/ConsignmentDetailModal";
-import ConsignmentFilterCard from "../../../components/ConsignmentFilterCard/ConsignmentFilterCard";
+import ConsignmentSearch from "../../../components/ConsignmentSearch/ConsignmentSearch";
 import { useState, useMemo } from "react";
+import { message } from "antd";
+import { searchConsignmentByPhone } from "../../../services/consigmentService";
 import "./ManagerConsignmentsManagement.scss";
+import {
+  CATEGORIES,
+  CONSIGNMENT_STATUS_COLOR,
+  CONSIGNMENT_STATUS_LABELS,
+  ITEM_TYPE,
+} from "../../../utils/constants";
 
 const ManagerConsigmentsManagement = () => {
   const {
@@ -13,39 +21,67 @@ const ManagerConsigmentsManagement = () => {
     selectedItem,
     onViewDetail,
     onCloseDetail,
+    fetchManagerConsignments,
+    // setConsignmentsManagement,
   } = useManagerConsignmentsManagement();
 
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [filteredData, setFilteredData] = useState(
+    consignmentsManagement || []
+  );
 
-  const filteredData = useMemo(() => {
-    if (!Array.isArray(consignmentsManagement)) return [];
-    if (statusFilter === "all") return consignmentsManagement;
-    return consignmentsManagement.filter(
-      (item) => item.status === statusFilter
-    );
-  }, [consignmentsManagement, statusFilter]);
+  useMemo(() => {
+    if (Array.isArray(consignmentsManagement)) {
+      setFilteredData(consignmentsManagement);
+    }
+  }, [consignmentsManagement]);
 
-  const statusOptions = [
-    { value: "all", label: "Tất cả" },
-    { value: "REQUEST_REJECTED", label: "Bị từ chối" },
-    { value: "FINISHED", label: "Hoàn thành" },
-    { value: "EXPIRED", label: "Hết hạn" },
-  ];
+  const handleSearch = async (phone) => {
+    if (!phone?.trim()) {
+      message.warning("Vui lòng nhập số điện thoại để tìm kiếm");
+      return;
+    }
+
+    try {
+      const res = await searchConsignmentByPhone(phone.trim());
+      const data = Array.isArray(res) ? res : [];
+      const filtered = data.filter(
+        (item) => item?.status !== "SUBMITTED"
+      );
+      const mapped = filtered.map((item) => ({
+        ...item,
+        category: CATEGORIES[item.category] || item.category,
+        itemType: ITEM_TYPE[item.itemType] || item.itemType,
+        statusLabel: CONSIGNMENT_STATUS_LABELS[item.status] || item.status,
+        statusColor: CONSIGNMENT_STATUS_COLOR[item.status] || "default",
+      }));
+
+      if (mapped.length === 0) {
+        message.info("Không tìm thấy yêu cầu ký gửi nào với số điện thoại này");
+      }
+
+      setFilteredData(mapped);
+    } catch (err) {
+      console.error(err);
+      message.error("Không thể tìm kiếm yêu cầu ký gửi.");
+    }
+  };
+
+  const handleReset = async () => {
+    if (fetchManagerConsignments) {
+      await fetchManagerConsignments();
+    }
+  };
 
   return (
     <div className="manager-management-page">
       <h2>Danh sách ký gửi</h2>
 
-      <div className="filter-section">
-        <ConsignmentFilterCard
-          options={statusOptions}
-          selectedValue={statusFilter}
-          onChange={setStatusFilter}
-        />
+      <div className="search-section">
+        <ConsignmentSearch onSearch={handleSearch} onReset={handleReset} />
       </div>
 
       <div className="list-section">
-        <div className="list-header">Danh sách </div>
+        <div className="list-header">Danh sách</div>
         <ManagerConsignmentManagementTable
           items={filteredData}
           loading={loading}

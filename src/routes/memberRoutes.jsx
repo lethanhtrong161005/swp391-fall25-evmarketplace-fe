@@ -1,21 +1,32 @@
 import React, { lazy } from "react";
-import  RoleBasedRoute  from "@components/RoleBasedRoute/index";
+import RoleBasedRoute from "@components/RoleBasedRoute/index";
 import LayoutDefault from "@layouts/LayoutDefault";
+import GoogleCallback from "../pages/Auth/GoogleCallback";
 
 const HomeWrapper = lazy(() => import("@pages/Member/HomeWrapper/HomeWrapper"));
 const Vehicle = lazy(() => import("@pages/Member/Vehicle"));
 const Battery = lazy(() => import("@pages/Member/Battery"));
-const ProductDetail = lazy(() => import("@pages/Member/ProductDetail/ProductDetail"));
+const ProductDetail = lazy(() =>
+  import("@pages/Member/ProductDetail/ProductDetail")
+);
 const ListingCreate = lazy(() => import("@pages/Member/ListingCreate"));
 const ListingEdit = lazy(() => import("@pages/Member/ListingEdit"));
 const ManagerListing = lazy(() => import("@pages/Member/ManagerListing"));
-const MyFavoritesPage = lazy(() => import("@pages/Member/MyFavoritesPage/MyFavoritesPage"));
+const MyFavoritesPage = lazy(() =>
+  import("@pages/Member/MyFavoritesPage/MyFavoritesPage")
+);
 const MyOrder = lazy(() => import("@pages/Member/MyOrder"));
 const VnpReturnPage = lazy(() => import("@pages/Payment"));
-const MemberConsignment = lazy(() => import("@pages/Member/MemberConsignment/MemberConsignment"));
-const ConsignmentForm = lazy(() => import("@pages/Member/ConsignmentCreate/ConsignmentCreate"));
+const MemberConsignment = lazy(() =>
+  import("@pages/Member/MemberConsignment/MemberConsignment")
+);
+const ConsignmentForm = lazy(() =>
+  import("@pages/Member/ConsignmentCreate/ConsignmentCreate")
+);
 const InspectionAvailabilityPage = lazy(() =>
-  import("@pages/Member/MemberConsignment/InpectionAvailabilityPage/InspectionAvailabilityPage")
+  import(
+    "@pages/Member/MemberConsignment/InpectionAvailabilityPage/InspectionAvailabilityPage"
+  )
 );
 const InfoUser = lazy(() => import("@pages/Member/InfoUser"));
 
@@ -28,8 +39,10 @@ export default [
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
       { path: "detail/:id", element: <ProductDetail /> },
+      { path: "auth/google/callback", element: <GoogleCallback /> },
+
       {
-        element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} />,
+        element: <RoleBasedRoute allowedRoles={["member", "staff", "admin", "moderator", "manager"]} />,
         children: [
           { path: "info-user", element: <InfoUser /> },
           { path: "listing/new", element: <ListingCreate /> },

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Table, Tag, Space, Button, Tooltip, Typography } from "antd";
-import { CONSIGNMENT_STATUS_COLOR, CONSIGNMENT_STATUS_LABELS, DURATION_LABEL } from "../../../../utils/constants";
-
-
+import {
+  CONSIGNMENT_STATUS_COLOR,
+  CONSIGNMENT_STATUS_LABELS,
+  DURATION_LABEL,
+} from "../../../../utils/constants";
 
 const { Paragraph } = Typography;
 
@@ -12,14 +14,22 @@ const ManagerAgreementsTable = ({
   pagination,
   onChange,
   onViewAgreement,
+  onViewSettlement, // ✅ thêm
+  onSetPayout, // ✅ thêm
 }) => {
-  const [selectedAgreement, setSelectedAgreement] = useState(null);
-
   const columns = [
     {
       title: "Chủ sở hữu",
       dataIndex: "ownerName",
       key: "ownerName",
+      align: "left",
+      width: 180,
+      render: (v) => v || "-",
+    },
+     {
+      title: "Số Điện Thoại",
+      dataIndex: "phone",
+      key: "phone",
       align: "left",
       width: 180,
       render: (v) => v || "-",
@@ -79,8 +89,8 @@ const ManagerAgreementsTable = ({
     {
       title: "Thao tác",
       key: "actions",
-      align: "center",
-      width: 140,
+      align: "left",
+      width: 200,
       render: (_, record) => (
         <Space>
           <Button
@@ -93,6 +103,31 @@ const ManagerAgreementsTable = ({
           >
             Hợp đồng
           </Button>
+
+          {record.status === "FINISHED" && (
+            <Button
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewSettlement?.(record);
+              }}
+            >
+              Sao kê
+            </Button>
+          )}
+
+          {record.status === "SIGNED" && (
+            <Button
+              size="small"
+              danger
+              onClick={(e) => {
+                e.stopPropagation();
+                onSetPayout?.(record);
+              }}
+            >
+              Thanh toán
+            </Button>
+          )}
         </Space>
       ),
     },
