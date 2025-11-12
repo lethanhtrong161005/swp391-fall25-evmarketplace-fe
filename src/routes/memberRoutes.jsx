@@ -15,6 +15,8 @@ const ManagerListing = lazy(() => import("@pages/Member/ManagerListing"));
 const MyFavoritesPage = lazy(() =>
   import("@pages/Member/MyFavoritesPage/MyFavoritesPage")
 );
+const AllListings = lazy(() => import("@pages/Member/AllListings/AllListings"));
+const SearchResults = lazy(() => import("@pages/Member/SearchResults"));
 const MyOrder = lazy(() => import("@pages/Member/MyOrder"));
 const VnpReturnPage = lazy(() => import("@pages/Payment"));
 const MemberConsignment = lazy(() =>
@@ -39,10 +41,16 @@ export default [
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
       { path: "detail/:id", element: <ProductDetail /> },
+      { path: "listings", element: <AllListings /> },
+      { path: "search-results", element: <SearchResults /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
 
       {
-        element: <RoleBasedRoute allowedRoles={["member", "staff", "admin", "moderator", "manager"]} />,
+        element: (
+          <RoleBasedRoute
+            allowedRoles={["member", "staff", "admin", "moderator", "manager"]}
+          />
+        ),
         children: [
           { path: "info-user", element: <InfoUser /> },
           { path: "listing/new", element: <ListingCreate /> },
