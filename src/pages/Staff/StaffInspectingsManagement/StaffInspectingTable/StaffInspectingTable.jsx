@@ -12,6 +12,18 @@ const StaffInspectingTable = ({
 }) => {
   const columns = [
     {
+      title: "Số điện thoại",
+      dataIndex: "accountPhone",
+      key: "accountPhone",
+      align: "left",
+    },
+    {
+      title: "Khách hàng",
+      dataIndex: "accountName",
+      key: "accountName",
+      align: "left",
+    },
+    {
       title: "Loại",
       dataIndex: "itemType",
       key: "itemType",
@@ -28,12 +40,6 @@ const StaffInspectingTable = ({
       dataIndex: "year",
       key: "year",
       align: "center",
-    },
-    {
-      title: "Chi nhánh ưu tiên",
-      dataIndex: "preferredBranchName",
-      key: "preferredBranchName",
-      align: "left",
     },
     {
       title: "Trạng thái",
@@ -58,7 +64,8 @@ const StaffInspectingTable = ({
       align: "center",
       render: (_, record) => (
         <Space size="middle">
-          {(record.status === "INSPECTING" || record.status === "INSPECTED_FAIL") && (
+          {(record.status === "INSPECTING" ||
+            record.status === "INSPECTED_FAIL") && (
             <Button
               type="primary"
               onClick={(e) => {
