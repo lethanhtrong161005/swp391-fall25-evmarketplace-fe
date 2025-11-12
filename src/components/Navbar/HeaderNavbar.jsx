@@ -16,6 +16,7 @@ const items = [
   { key: "home", label: "Trang chủ", path: "/" },
   { key: "vehicle", label: "Phương tiện", path: "/vehicle" },
   { key: "battery", label: "Pin", path: "/battery" },
+  { key: "consignment", label: "Tin Ký gửi", path: "/consignment-listings" },
 ];
 
 const { useBreakpoint } = Grid;

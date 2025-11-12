@@ -76,8 +76,8 @@ const HeaderAction = () => {
         </div>
       ),
       disabled: true,
-      style: { 
-        cursor: "default", 
+      style: {
+        cursor: "default",
         padding: 0,
         backgroundColor: "transparent",
       },
@@ -161,22 +161,9 @@ const HeaderAction = () => {
               Đăng tin
             </Button>
 
-            {/* Quản lý tin và Ký gửi - Chỉ hiện khi đã đăng nhập */}
+            {/* Ký gửi - Chỉ hiện khi đã đăng nhập */}
             {isLoggedIn && (
               <>
-                <Button
-                  type="text"
-                  className="header-text-button"
-                  onClick={() =>
-                    handleLoginRequire(
-                      MANAGE_LISTINGS_PATH,
-                      "Vui lòng đăng nhập để quản lý tin"
-                    )
-                  }
-                >
-                  Quản lý tin
-                </Button>
-
                 <Button
                   type="text"
                   className="header-text-button"

@@ -57,8 +57,8 @@ const DefaultHeader = () => {
           xs={2}
           sm={2}
           md={2}
-          lg={{ span: 14, offset: 6 }}
-          xl={{ span: 14, offset: 6 }}
+          lg={{ span: 15, offset: 5 }}
+          xl={{ span: 15, offset: 5 }}
           style={{
             display: "flex",
             justifyContent: "space-between",

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import cookieUtils from "@utils/cookieUtils";
 import { loginPhone } from "@services/authService";
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "./AuthContext.js";
 
 function getRoleFromPayload(payload) {
   let raw =

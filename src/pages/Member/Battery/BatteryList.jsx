@@ -3,7 +3,7 @@ import React from "react";
 import { Empty } from "antd";
 import { useNavigate } from "react-router-dom";
 import styles from "../Home/LatestListingsSection.module.scss";
-import ProductCard from "@components/ProductCard/ProductCard";
+import CardListing from "@components/CardListing";
 
 const BatteryList = ({ listings, onClick }) => {
   const navigate = useNavigate();
@@ -30,11 +30,9 @@ const BatteryList = ({ listings, onClick }) => {
         <div className={styles.grid5x}>
           {currentData.map((listing) => (
             <div key={listing.id} className={styles.gridItem}>
-              <ProductCard
+              <CardListing
                 listing={listing}
                 onClick={() => handleClick(listing)}
-                style={{ height: "100%" }}
-                showVerifiedTag={false}
               />
             </div>
           ))}

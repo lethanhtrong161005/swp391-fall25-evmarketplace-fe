@@ -20,7 +20,6 @@ export default function Sidebar({
   onMenuClick,
   onProfileClick,
   onLogout,
-  onOpenNotification,
   className,
   style,
   children,
@@ -53,10 +52,7 @@ export default function Sidebar({
           {children}
         </div>
       </div>
-      <SidebarBottomActions
-        onOpenNoti={onOpenNotification}
-        onLogout={onLogout}
-      />
+      <SidebarBottomActions onLogout={onLogout} />
     </Sider>
   );
 }

@@ -4,7 +4,6 @@ import { Outlet } from "react-router-dom";
 import s from "./styles.module.scss";
 import { useModeratorLayout } from "./logic.jsx";
 import Sidebar from "@components/Sidebar";
-import NotificationDrawer from "@components/Sidebar/NotificationDrawer";
 
 const { Content } = Layout;
 
@@ -20,7 +19,6 @@ export default function LayoutModerator() {
         onMenuClick={sidebarProps.handleMenuClick}
         onProfileClick={sidebarProps.handleProfileClick}
         onLogout={sidebarProps.handleLogout}
-        onOpenNotification={sidebarProps.openNotification}
       />
 
       <Content
@@ -31,12 +29,6 @@ export default function LayoutModerator() {
           <Outlet />
         </div>
       </Content>
-
-      <NotificationDrawer
-        open={sidebarProps.notiOpen}
-        onClose={sidebarProps.closeNotification}
-        data={sidebarProps.notifications}
-      />
     </Layout>
   );
 }

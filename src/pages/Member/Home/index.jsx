@@ -35,7 +35,7 @@ const Home = () => {
   const handleConsignVehicle = () => {};
 
   return (
-    <div style={{ minHeight: "100vh", background: token.colorBgLayout }}>
+    <div style={{ minHeight: "100vh" }}>
       <main style={{ padding: "24px 40px 40px", maxWidth, margin: "0 auto" }}>
         <HeroHeader />
 
@@ -55,10 +55,7 @@ const Home = () => {
           onItemClick={handleItemClick}
         />
 
-        <CTABanner
-          onStartBuying={handleStartBuying}
-          onConsignVehicle={handleConsignVehicle}
-        />
+        <CTABanner />
       </main>
     </div>
   );

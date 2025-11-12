@@ -8,7 +8,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 
-import ProductCard from "@/components/ProductCard/ProductCard";
+import CardListing from "@components/CardListing";
 import styles from "./LatestListingsSection.module.scss";
 import ViewAllLink from "@components/ViewAllLinkButton/ViewAllLink";
 
@@ -55,11 +55,7 @@ export default function FeaturedProductSection({
           <div className={styles.grid5x}>
             {boostedTop.map((item) => (
               <div key={item.id} className={styles.gridItem}>
-                <ProductCard
-                  listing={item}
-                  onClick={onItemClick}
-                  size="default"
-                />
+                <CardListing listing={item} onClick={onItemClick} />
               </div>
             ))}
           </div>

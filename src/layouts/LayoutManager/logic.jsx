@@ -1,10 +1,12 @@
 import {
-  DashboardOutlined,
   TeamOutlined,
   FileTextOutlined,
   CheckCircleOutlined,
   BarChartOutlined,
   FileDoneOutlined,
+  LineChartOutlined,
+  DollarOutlined,
+  ShopOutlined,
 } from "@ant-design/icons";
 import { useSidebar } from "@hooks/useSidebar";
 
@@ -12,9 +14,29 @@ export function useLayoutManager() {
   const menuItems = [
     {
       key: "dashboard",
-      icon: <DashboardOutlined />,
+      icon: <BarChartOutlined />,
       label: "Dashboard",
       path: "/manager",
+      children: [
+        {
+          key: "dashboard/transaction",
+          icon: <LineChartOutlined />,
+          label: "Báo cáo Giao Dịch",
+          path: "/manager/dashboard/transaction",
+        },
+        {
+          key: "dashboard/revenue",
+          icon: <DollarOutlined />,
+          label: "Báo cáo Doanh Thu",
+          path: "/manager/dashboard/revenue",
+        },
+        {
+          key: "dashboard/market",
+          icon: <ShopOutlined />,
+          label: "Báo cáo Thị Trường",
+          path: "/manager/dashboard/market",
+        },
+      ],
     },
     {
       key: "staff-management",
@@ -52,22 +74,10 @@ export function useLayoutManager() {
       label: "Danh sách hợp đồng",
       path: "/manager/agreement/management",
     },
-    {
-      key: "reports",
-      icon: <BarChartOutlined />,
-      label: "Báo cáo",
-      path: "/manager/reports",
-    },
-  ];
-
-  const notifications = [
-    { id: 1, title: "Có tin đăng mới cần duyệt", time: "10:35 hôm nay" },
-    { id: 2, title: "Báo cáo tháng đã sẵn sàng", time: "Hôm qua" },
   ];
 
   const sidebarConfig = {
     menuItems,
-    notifications,
     profilePath: "/info-user",
     homePath: "/",
   };

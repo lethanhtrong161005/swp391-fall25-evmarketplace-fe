@@ -62,17 +62,10 @@ export default function ListingCreate() {
   return (
     <div style={{ paddingBottom: "80px" }}>
       {contextHolder}
-<<<<<<< HEAD
-      <div style={{ maxWidth: PAGE_WIDTH, margin: "16px auto", padding: "0 16px" }}>
-        <DynamicBreadcrumb />
-      </div>
-      <Card style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }} variant="bordered">
-=======
       <Card
         style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }}
         variant="bordered"
       >
->>>>>>> main
         <Form form={form} layout="vertical" onValuesChange={onValuesChange}>
           <Row gutter={16}>
             <Col xs={24} md={8}>

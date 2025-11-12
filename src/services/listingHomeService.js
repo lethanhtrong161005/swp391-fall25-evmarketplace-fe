@@ -40,14 +40,25 @@ export const getLatestListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
-      size: limit,
+      size: limit * 2, // Lấy nhiều hơn để filter
       // Backend chấp nhận sort theo "createdAt"
       sort: "createdAt",
       dir: "desc",
     });
 
+    console.log("🔍 API Response - Latest Listings:", response);
+    console.log("📊 Items count:", response?.data?.items?.length);
+    console.log("📦 First item:", response?.data?.items?.[0]);
+
     if (response?.success && response?.data?.items) {
-      return response.data.items.map(transformListingData);
+      // Loại bỏ tin ký gửi (isConsigned = true)
+      const nonConsignedItems = response.data.items
+        .filter((item) => !item.isConsigned)
+        .slice(0, limit);
+
+      console.log("✅ Non-consigned items:", nonConsignedItems.length);
+
+      return nonConsignedItems.map(transformListingData);
     }
 
     return [];
@@ -68,6 +79,9 @@ export const getFeaturedListings = async (limit = 10) => {
       dir: "desc",
     });
 
+    console.log("🌟 API Response - Featured Listings (Raw):", response);
+    console.log("📊 Total items fetched:", response?.data?.items?.length);
+
     if (response?.success && response?.data?.items) {
       // Chỉ lấy tin BOOSTED, sắp xếp mới nhất
       const featuredItems = response.data.items
@@ -76,6 +90,12 @@ export const getFeaturedListings = async (limit = 10) => {
         )
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, limit);
+
+      console.log(
+        "✨ Featured items after filter (ACTIVE + BOOSTED):",
+        featuredItems.length
+      );
+      console.log("🎯 First featured item:", featuredItems[0]);
 
       return featuredItems.map(transformListingData);
     }
@@ -197,6 +217,66 @@ export const getBatteryListings = async ({
     };
   } catch (error) {
     console.error("Error fetching battery listings:", error);
+    return {
+      items: [],
+      totalElements: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrevious: false,
+      page: 0,
+      size,
+    };
+  }
+};
+
+// Lấy danh sách tin đăng ký gửi (isConsigned = true)
+export const getConsignmentListings = async ({
+  page = 0,
+  size = 20,
+  sort = "createdAt",
+  dir = "desc",
+} = {}) => {
+  try {
+    // Lấy nhiều hơn để filter
+    const response = await getAllListings({
+      page,
+      size: size * 2,
+      sort,
+      dir,
+    });
+
+    console.log("🚗 API Response - Consignment Listings:", response);
+
+    if (response?.success && response?.data) {
+      // Filter chỉ lấy tin ký gửi
+      const consignedItems = response.data.items.filter(
+        (item) => item.isConsigned === true && item.status === "ACTIVE"
+      );
+
+      console.log("✅ Consigned items filtered:", consignedItems.length);
+
+      return {
+        items: consignedItems.slice(0, size).map(transformListingData),
+        totalElements: consignedItems.length,
+        totalPages: Math.ceil(consignedItems.length / size),
+        hasNext: consignedItems.length > size,
+        hasPrevious: page > 0,
+        page: page,
+        size: size,
+      };
+    }
+
+    return {
+      items: [],
+      totalElements: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrevious: false,
+      page: 0,
+      size,
+    };
+  } catch (error) {
+    console.error("Error fetching consignment listings:", error);
     return {
       items: [],
       totalElements: 0,
