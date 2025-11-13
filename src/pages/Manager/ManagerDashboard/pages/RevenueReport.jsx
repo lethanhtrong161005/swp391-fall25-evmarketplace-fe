@@ -13,10 +13,6 @@ import { ReloadOutlined, DownloadOutlined } from "@ant-design/icons";
 import { Column } from "@ant-design/plots";
 import { useResponsive } from "@/utils/responsive";
 
-/**
- * Revenue Report Page - Báo cáo Doanh Thu
- * Phân tích sâu dữ liệu từ API revenue
- */
 const RevenueReport = ({
   state,
   onRetry,
@@ -78,7 +74,6 @@ const RevenueReport = ({
   const consignmentListingRevenueRate = data.consignmentListingRevenueRate || 0;
   const revenueBySource = data.revenueBySource || {};
 
-  // Prepare data for Column Chart - Always show both types
   const columnData = [
     {
       type: "Đăng tin",
@@ -90,25 +85,13 @@ const RevenueReport = ({
     },
   ];
 
-  // Debug: Log data to check values
-  console.log("Revenue By Source Data:", revenueBySource);
-  console.log("Column Data for Chart:", columnData);
   const columnConfig = {
     data: columnData,
     xField: "type",
     yField: "value",
+    maxColumnWidth: 60,
     label: {
       position: "top",
-      formatter: (datum) => {
-        const val = datum?.value || 0;
-        if (val >= 1000000) {
-          return `${(val / 1000000).toFixed(1)}M`;
-        }
-        if (val >= 1000) {
-          return `${(val / 1000).toFixed(0)}K`;
-        }
-        return String(Math.round(val));
-      },
       style: {
         fill: "#000",
         opacity: 0.6,
@@ -122,26 +105,6 @@ const RevenueReport = ({
       radius: [8, 8, 0, 0],
     },
     legend: false,
-    tooltip: {
-      customContent: (title, items) => {
-        if (!items || items.length === 0) return "";
-
-        const item = items[0];
-        const typeName = item?.data?.type || title || "";
-        const revenue = item?.data?.value || 0;
-        const formattedRevenue = formatCurrency(revenue, currency);
-
-        return `
-          <div style="padding: 12px 16px; background: white; border-radius: 6px; box-shadow: 0 3px 12px rgba(0,0,0,0.18); min-width: 200px; border: 1px solid #e8e8e8;">
-            <div style="font-weight: 600; margin-bottom: 10px; color: #262626; font-size: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px;">${typeName}</div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span style="color: #8c8c8c; font-size: 13px;">Doanh thu:</span>
-              <strong style="color: #1890ff; font-size: 16px; margin-left: 12px; font-weight: 600;">${formattedRevenue}</strong>
-            </div>
-          </div>
-        `;
-      },
-    },
     yAxis: {
       label: {
         formatter: (v) => {
@@ -184,7 +147,7 @@ const RevenueReport = ({
         <Row gutter={[16, 16]}>
           <Col xs={24}>
             <Card
-              bordered={false}
+              variant="borderless"
               style={{
                 background:
                   "linear-gradient(135deg, #52c41a15 0%, #52c41a05 100%)",
@@ -207,7 +170,7 @@ const RevenueReport = ({
         {/* Row 2: Average Statistics - Small Cards */}
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={8} md={8} lg={8}>
-            <Card bordered={false}>
+            <Card variant="borderless">
               <Statistic
                 title="Trung Bình / Ngày"
                 value={formatCurrency(averagePerDay, currency)}
@@ -216,7 +179,7 @@ const RevenueReport = ({
             </Card>
           </Col>
           <Col xs={24} sm={8} md={8} lg={8}>
-            <Card bordered={false}>
+            <Card variant="borderless">
               <Statistic
                 title="TB / Người Dùng"
                 value={formatCurrency(averagePerPayingUser, currency)}
@@ -225,7 +188,7 @@ const RevenueReport = ({
             </Card>
           </Col>
           <Col xs={24} sm={8} md={8} lg={8}>
-            <Card bordered={false}>
+            <Card variant="borderless">
               <Statistic
                 title="TB / Giao Dịch"
                 value={formatCurrency(averageTransactionValue, currency)}
@@ -238,13 +201,13 @@ const RevenueReport = ({
         {/* Row 3: Revenue by Source - Column Chart */}
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={24} md={16} lg={16}>
-            <Card title="Doanh Thu Theo Nguồn" bordered={false}>
+            <Card title="Doanh Thu Theo Nguồn" variant="borderless">
               {columnData.length > 0 ? (
-                <Column {...columnConfig} height={350} />
+                <Column {...columnConfig} height={450} />
               ) : (
                 <div
                   style={{
-                    height: 350,
+                    height: 450,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -257,7 +220,7 @@ const RevenueReport = ({
             </Card>
           </Col>
           <Col xs={24} sm={24} md={8} lg={8}>
-            <Card title="Tỷ Lệ Ký Gửi" bordered={false}>
+            <Card title="Tỷ Lệ Ký Gửi" variant="borderless">
               <div style={{ padding: "20px 0" }}>
                 <Statistic
                   value={formatPercent(consignmentListingRevenueRate)}

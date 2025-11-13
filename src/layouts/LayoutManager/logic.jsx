@@ -39,12 +39,6 @@ export function useLayoutManager() {
       ],
     },
     {
-      key: "staff-management",
-      icon: <TeamOutlined />,
-      label: "Quản lý nhân viên",
-      path: "/manager/staff",
-    },
-    {
       key: "listing-management",
       icon: <FileTextOutlined />,
       label: "Quản lý tin đăng",

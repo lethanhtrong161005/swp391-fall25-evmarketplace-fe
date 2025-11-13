@@ -64,11 +64,53 @@
     top: 48px !important;
   }
 
-  &__favorite {
+  &__listing-type-badge {
     position: absolute;
     top: 12px;
     right: 12px;
     z-index: 2;
+    border-radius: 6px;
+    padding: 4px 12px;
+    backdrop-filter: blur(4px);
+
+    &--featured {
+      background: rgba(250, 173, 20, 0.9); // Gold color for featured
+      
+      span {
+        color: #fff;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+    }
+
+    &--consignment {
+      background: rgba(19, 194, 194, 0.9); // Cyan color for consignment
+      
+      span {
+        color: #fff;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  &__favorite {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transform: scale(1.05);
+    }
   }
 
   &__content {
@@ -206,8 +248,21 @@
       top: 40px !important;
     }
 
-    &__favorite {
+    &__listing-type-badge {
       top: 8px;
+      right: 8px;
+      padding: 3px 10px;
+
+      &--featured,
+      &--consignment {
+        span {
+          font-size: 12px;
+        }
+      }
+    }
+
+    &__favorite {
+      bottom: 8px;
       right: 8px;
 
       .favorite-button {

@@ -53,6 +53,32 @@
   z-index: 2;
 }
 
+.featuredBadge,
+.consignmentBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  border-radius: 6px;
+  padding: 4px 12px;
+  backdrop-filter: blur(4px);
+
+  span {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+}
+
+.featuredBadge {
+  background: rgba(250, 173, 20, 0.9); // Gold color for featured
+}
+
+.consignmentBadge {
+  background: rgba(19, 194, 194, 0.9); // Cyan color for consignment
+}
+
 .content {
   flex: 1;
   display: flex;

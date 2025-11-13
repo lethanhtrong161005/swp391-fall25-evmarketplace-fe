@@ -66,36 +66,19 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
 
   const data = state.data;
 
-  // 🔍 DEBUG LOGGING
-  console.log("=== TransactionReport DEBUG ===");
-  console.log("Raw API Data:", data);
-
   const totalTransactions = data.totalTransactions || 0;
   const successfulTransactions = data.successfulTransactions || 0;
   const failedOrCancelledTransactions = data.failedOrCancelledTransactions || 0;
   const successRate = Number.isFinite(data.successRate) ? data.successRate : 0;
   const transactionTypeBreakdown = data.transactionTypeBreakdown || {};
 
-  console.log("Parsed Values:", {
-    totalTransactions,
-    successfulTransactions,
-    failedOrCancelledTransactions,
-    successRate,
-    transactionTypeBreakdown,
-  });
-
   // Prepare data for Donut Chart
   const postCount = transactionTypeBreakdown.POST || 0;
   const consignmentCount = transactionTypeBreakdown.CONSIGNMENT || 0;
   const otherCount = transactionTypeBreakdown.OTHER || 0;
 
-  console.log("Donut Calculation:", {
-    postCount,
-    consignmentCount,
-    otherCount,
-  });
-
-  const donutData = [
+  // Always create full data array for consistent coloring
+  const allDonutData = [
     {
       type: "Đăng tin",
       value: postCount,
@@ -104,20 +87,14 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
       type: "Ký gửi",
       value: consignmentCount,
     },
-  ];
-
-  // Only add "Other" if it exists in API and > 0
-  if (otherCount > 0) {
-    donutData.push({
+    {
       type: "Khác",
       value: otherCount,
-    });
-  }
+    },
+  ];
 
-  const filteredDonutData = donutData.filter((item) => item.value > 0);
-
-  console.log("Final Donut Data:", filteredDonutData);
-  console.log("===============================");
+  // Filter out zero values for display
+  const filteredDonutData = allDonutData.filter((item) => item.value > 0);
 
   // Calculate total from breakdown (should equal totalTransactions now)
   const breakdownTotal = filteredDonutData.reduce(
@@ -131,43 +108,77 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
     colorField: "type",
     innerRadius: 0.6,
     label: {
-      type: "inner",
-      offset: "-50%",
-      content: "{value}",
+      text: "value",
       style: {
-        textAlign: "center",
-        fontSize: 14,
-        fill: "#fff",
-      },
-    },
-    interactions: [{ type: "element-selected" }, { type: "element-active" }],
-    statistic: {
-      title: {
-        content: "Tổng",
-        style: {
-          fontSize: 14,
-        },
-      },
-      content: {
-        content: String(breakdownTotal),
-        style: {
-          fontSize: 24,
-          fontWeight: 600,
-        },
+        fontWeight: "bold",
       },
     },
     legend: {
-      position: "bottom",
-    },
-    tooltip: {
-      formatter: (datum) => {
-        return {
-          name: datum.type,
-          value: datum.value,
-        };
+      color: {
+        title: false,
+        position: "bottom",
+        rowPadding: 5,
       },
     },
-    color: ["#1677ff", "#52c41a", "#8c8c8c"],
+    tooltip: ({ type, value }) => {
+      return { type, value };
+    },
+    interaction: {
+      tooltip: {
+        render: (e, { items }) => {
+          return (
+            <React.Fragment>
+              {items.map((item) => {
+                const { type, value, color } = item;
+                return (
+                  <div
+                    key={type}
+                    style={{
+                      margin: 0,
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          backgroundColor: color,
+                          marginRight: 6,
+                        }}
+                      ></span>
+                      <span>{type}</span>
+                    </div>
+                    <b>{value}</b>
+                  </div>
+                );
+              })}
+            </React.Fragment>
+          );
+        },
+      },
+    },
+    annotations: [
+      {
+        type: "text",
+        style: {
+          text: `Tổng\n${breakdownTotal}`,
+          x: "50%",
+          y: "50%",
+          textAlign: "center",
+          fontSize: 24,
+          fontStyle: "bold",
+        },
+      },
+    ],
+    color: ({ type }) => {
+      if (type === "Đăng tin") return "#1677ff";
+      if (type === "Ký gửi") return "#52c41a";
+      return "#8c8c8c";
+    },
   };
 
   // Calculate success rate display values
@@ -200,7 +211,7 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
         {/* Row 1: Statistics Cards */}
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={8} md={8} lg={8}>
-            <Card bordered={false}>
+            <Card variant="borderless">
               <Statistic
                 title="Tổng Giao Dịch"
                 value={totalTransactions}
@@ -209,7 +220,7 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
             </Card>
           </Col>
           <Col xs={24} sm={8} md={8} lg={8}>
-            <Card bordered={false}>
+            <Card variant="borderless">
               <Statistic
                 title="Thành Công"
                 value={successfulTransactions}
@@ -218,7 +229,7 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
             </Card>
           </Col>
           <Col xs={24} sm={8} md={8} lg={8}>
-            <Card bordered={false}>
+            <Card variant="borderless">
               <Statistic
                 title="Thất Bại / Huỷ"
                 value={failedOrCancelledTransactions}
@@ -231,7 +242,7 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
         {/* Row 2: Charts */}
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={24} md={12} lg={12}>
-            <Card title="Phân Loại Giao Dịch" bordered={false}>
+            <Card title="Phân Loại Giao Dịch" variant="borderless">
               {filteredDonutData.length > 0 ? (
                 <Pie {...donutConfig} height={300} />
               ) : (
@@ -250,7 +261,7 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
             </Card>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12}>
-            <Card title="Tỷ Lệ Thành Công" bordered={false}>
+            <Card title="Tỷ Lệ Thành Công" variant="borderless">
               <div style={{ padding: "20px 0" }}>
                 <Statistic
                   value={successRatePercent}

@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/vi";
 import FavoriteButton from "@components/FavoriteButton/FavoriteButton";
+import LoginModal from "@components/Modal/LoginModal";
 import "./CardListing.styles.scss";
 
 dayjs.extend(relativeTime);
@@ -42,11 +43,11 @@ function getProductType(listing) {
 
 function getProductTypeTag(productType) {
   const tags = {
-    BATTERY: { text: "Pin", color: "purple" },
-    EV_CAR: { text: "Ô tô điện", color: "blue" },
-    E_MOTORBIKE: { text: "Xe máy điện", color: "green" },
-    E_BIKE: { text: "Xe đạp điện", color: "orange" },
-    UNKNOWN: { text: "Sản phẩm", color: "default" },
+    BATTERY: "Pin",
+    EV_CAR: "Ô tô điện",
+    E_MOTORBIKE: "Xe máy điện",
+    E_BIKE: "Xe đạp điện",
+    UNKNOWN: "Sản phẩm",
   };
   return tags[productType] || tags.UNKNOWN;
 }
@@ -92,107 +93,118 @@ function getTimeAgo(listing) {
 
 export default function CardListing({ listing, onClick }) {
   const [imgError, setImgError] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const productType = getProductType(listing);
   const productTypeTag = getProductTypeTag(productType);
-  const isBattery = productType === "BATTERY";
 
   const thumbnail = getThumbnail(listing);
   const title = getTitle(listing);
   const location = getLocation(listing);
   const price = formatPrice(listing?.price);
   const timeAgo = getTimeAgo(listing);
-  const isVerified = !!listing?.verified;
+
+  const isFeatured = listing?.visibility === "BOOSTED";
+  const isConsignment = listing?.isConsigned === true;
 
   const year = listing?.year;
-  const mileage = listing?.mileageKm ?? listing?.mileage_km;
-  const soh = listing?.sohPercent ?? listing?.soh_percent;
-
-  const chemistry = listing?.chemistry || listing?.batteryChemistry;
-  const capacityKwh =
-    listing?.batteryCapacityKwh ??
-    listing?.capacityKwh ??
-    listing?.capacity_kwh;
-  const weightKg = listing?.weightKg ?? listing?.weight_kg;
 
   const handleCardClick = () => {
     onClick?.(listing);
   };
 
+  const handleShowLoginModal = () => {
+    setShowLoginModal(true);
+  };
+
+  const handleCloseLoginModal = () => {
+    setShowLoginModal(false);
+  };
+
   return (
-    <Card
-      className="card-listing"
-      hoverable
-      onClick={handleCardClick}
-      cover={
-        <div className="card-listing__image-wrapper">
-          <div className="card-listing__product-type-badge">
-            <span>{productTypeTag.text}</span>
-          </div>
+    <>
+      <Card
+        className="card-listing"
+        hoverable
+        onClick={handleCardClick}
+        cover={
+          <div className="card-listing__image-wrapper">
+            <div className="card-listing__product-type-badge">
+              <span>{productTypeTag}</span>
+            </div>
 
-          {isVerified && (
-            <div className="card-listing__badge card-listing__badge--verified">
-              <Tag color="red">Đã thẩm định</Tag>
+            {isFeatured && (
+              <div className="card-listing__listing-type-badge card-listing__listing-type-badge--featured">
+                <span>Tin nổi bật</span>
+              </div>
+            )}
+            {!isFeatured && isConsignment && (
+              <div className="card-listing__listing-type-badge card-listing__listing-type-badge--consignment">
+                <span>Tin ký gửi</span>
+              </div>
+            )}
+
+            {thumbnail && !imgError ? (
+              <img
+                src={thumbnail}
+                alt={title}
+                className="card-listing__image"
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <div className="card-listing__image-placeholder">
+                <Text type="secondary">Không có hình ảnh</Text>
+              </div>
+            )}
+
+            <div
+              className="card-listing__favorite"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <FavoriteButton
+                listingId={listing?.id}
+                size="small"
+                showText={false}
+                onShowLoginModal={handleShowLoginModal}
+              />
+            </div>
+          </div>
+        }
+      >
+        <div className="card-listing__content">
+          <h3 className="card-listing__title">{title}</h3>
+
+          {location && (
+            <div className="card-listing__location">
+              <EnvironmentOutlined />
+              <Text type="secondary">{location}</Text>
             </div>
           )}
 
-          <div
-            className="card-listing__favorite"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <FavoriteButton
-              listingId={listing?.id}
-              size="small"
-              showText={false}
-            />
-          </div>
-
-          {thumbnail && !imgError ? (
-            <img
-              src={thumbnail}
-              alt={title}
-              className="card-listing__image"
-              onError={() => setImgError(true)}
-            />
-          ) : (
-            <div className="card-listing__image-placeholder">
-              <Text type="secondary">Không có hình ảnh</Text>
+          {timeAgo && (
+            <div className="card-listing__time">
+              <ClockCircleOutlined />
+              <Text type="secondary">{timeAgo}</Text>
             </div>
           )}
-        </div>
-      }
-    >
-      <div className="card-listing__content">
-        <h3 className="card-listing__title">{title}</h3>
 
-        {location && (
-          <div className="card-listing__location">
-            <EnvironmentOutlined />
-            <Text type="secondary">{location}</Text>
-          </div>
-        )}
-
-        {timeAgo && (
-          <div className="card-listing__time">
-            <ClockCircleOutlined />
-            <Text type="secondary">{timeAgo}</Text>
-          </div>
-        )}
-
-        {year && (
-          <div className="card-listing__year">
-            <CalendarOutlined />
-            <Text type="secondary">Năm {year}</Text>
-          </div>
-        )}
-
-        <div className="card-listing__price">
-          {price.value}
-          {price.unit && (
-            <sup className="card-listing__price-unit">{price.unit}</sup>
+          {year && (
+            <div className="card-listing__year">
+              <CalendarOutlined />
+              <Text type="secondary">Năm {year}</Text>
+            </div>
           )}
+
+          <div className="card-listing__price">
+            {price.value}
+            {price.unit && (
+              <sup className="card-listing__price-unit">{price.unit}</sup>
+            )}
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+
+      <LoginModal open={showLoginModal} onClose={handleCloseLoginModal} />
+    </>
   );
 }
