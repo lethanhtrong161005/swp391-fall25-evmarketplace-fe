@@ -10,53 +10,6 @@
     margin-bottom: 24px;
   }
 
-  /* ===== Filter Section ===== */
-  .filter-section {
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    margin-bottom: 32px; 
-
-    .filter-title {
-      font-weight: 600;
-      font-size: 16px;
-      margin-bottom: 16px;
-      color: #333;
-    }
-
-    .consignment-filter-cards {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 0;
-    }
-
-    .filter-card-item {
-      flex: 1;
-      min-width: 160px;
-      border: 1.5px solid #d9d9d9 !important;
-      border-radius: 10px !important;
-      background: #fff !important;
-      color: #333 !important;
-      font-weight: 500;
-      padding: 14px 0;
-      text-align: center;
-      transition: all 0.25s ease;
-      cursor: pointer;
-
-      &:hover {
-        border-color: #1677ff !important;
-        box-shadow: 0 0 8px rgba(22, 119, 255, 0.25);
-      }
-
-      &.active {
-        border-color: #1677ff !important;
-        background: #f0f7ff !important;
-        color: #1677ff !important;
-      }
-    }
-  }
-
   /* ===== List Section ===== */
   .list-section {
     background: #fff;

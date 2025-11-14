@@ -6,13 +6,17 @@ import config from "@config";
  * This will create a new conversation in DB if it doesn't exist,
  * or return existing conversation if it already exists.
  * @param {number|string} otherId - ID of the other user
+ * @param {number|string|null} listingId - Optional listing ID for context
  * @returns {Promise} Conversation object with id
  */
-export const openConversation = async (otherId) => {
-  // API: POST /api/chat/open?otherId={otherId}
-  // This matches chatapp_frontend implementation
-  console.log("Opening conversation with otherId:", otherId);
-  const result = await post(`/api/chat/open`, {}, { otherId });
+export const openConversation = async (otherId, listingId = null) => {
+  // API: POST /api/chat/open?otherId={otherId}&listingId={listingId}
+  console.log("Opening conversation with otherId:", otherId, "listingId:", listingId);
+  const params = { otherId };
+  if (listingId != null) {
+    params.listingId = listingId;
+  }
+  const result = await post(`/api/chat/open`, {}, params);
   console.log("Open conversation response:", result);
   return result;
 };
@@ -103,6 +107,39 @@ export const loadMessages = async (conversationId, page = 0, size = 20) => {
  */
 export const markSeen = async (conversationId) => {
   return post(`/api/chat/${conversationId}/seen`);
+};
+
+/**
+ * Get unread message count across all conversations
+ * @returns {Promise<number>} Total unread count
+ */
+export const getUnreadCount = async () => {
+  console.log("[chatService] getUnreadCount");
+  try {
+    const result = await get(`/api/chat/unread-count`);
+    console.log("[chatService] getUnreadCount response:", result);
+    
+    // API returns a number directly
+    if (typeof result === 'number') {
+      return result;
+    }
+    
+    // Handle wrapped response format
+    if (result?.success !== undefined && result?.data !== undefined) {
+      return typeof result.data === 'number' ? result.data : 0;
+    }
+    
+    // Handle direct object with count field
+    if (result?.count !== undefined) {
+      return typeof result.count === 'number' ? result.count : 0;
+    }
+    
+    console.warn("[chatService] getUnreadCount: unknown response format", result);
+    return 0;
+  } catch (error) {
+    console.error("[chatService] getUnreadCount error:", error);
+    return 0;
+  }
 };
 
 /**

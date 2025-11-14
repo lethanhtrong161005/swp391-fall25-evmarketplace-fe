@@ -4,13 +4,32 @@ import { loginPhone } from "@services/authService";
 import { AuthContext } from "./AuthContext";
 
 function getRoleFromPayload(payload) {
-  const raw =
+  let raw =
     payload?.role ||
     payload?.roles?.[0] ||
     payload?.authorities?.[0] ||
     payload?.scope ||
     "";
-  return String(raw).toLowerCase();
+  // return String(raw).toLowerCase();
+  if (raw && typeof raw === "object") {
+    // If it's an array-like object, pick first element
+    if (Array.isArray(raw) && raw.length > 0) raw = raw[0];
+
+    // Common fields that may contain the role string
+    const candidates = ["name", "role", "authority", "code", "id", "value"];
+    for (const key of candidates) {
+      if (raw[key]) {
+        raw = raw[key];
+        break;
+      }
+    }
+
+    if (raw && typeof raw === "object") raw = String(raw);
+  }
+
+  let roleStr = String(raw || "").toLowerCase();
+  roleStr = roleStr.replace(/^role[_-]?/i, "");
+  return roleStr;
 }
 
 export function AuthProvider({ children }) {

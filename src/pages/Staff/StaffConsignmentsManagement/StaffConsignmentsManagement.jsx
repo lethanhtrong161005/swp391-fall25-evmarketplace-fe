@@ -1,16 +1,25 @@
+import React, { useMemo, useState } from "react";
 import ConsignmentDetailModal from "../../Member/MemberConsignment/ConsigmentDetailModal/ConsignmentDetailModal";
 import StaffConsManageTable from "./StaffConsManageTable/StaffConsManageTable";
 import useStaffConsignmentsManagement from "./useStaffCosignmentsManagement";
-import "./StaffConsignmentsManagement.scss";
-import { useMemo, useState } from "react";
-import ConsignmentFilterCard from "../../../components/ConsignmentFilterCard/ConsignmentFilterCard";
+import ConsignmentSearch from "../../../components/ConsignmentSearch/ConsignmentSearch"; // ✅ thay cho FilterCard
+import { message } from "antd";
 import {
-  ClockCircleOutlined,
-  StopOutlined,
-  CheckCircleOutlined,
-  CalendarOutlined,
-} from "@ant-design/icons";
+  CONSIGNMENT_STATUS_LABELS,
+  CONSIGNMENT_STATUS_COLOR,
+  CATEGORIES,
+  ITEM_TYPE,
+} from "../../../utils/constants";
+import "./StaffConsignmentsManagement.scss";
+import { searchConsignmentByPhone } from "../../../services/consigmentService";
 
+const excludedStatuses = [
+  "SUBMITTED",
+  "INSPECTED_PASS",
+  "INSPECTED_FAIL",
+  "SIGNED",
+  "EXPIRED",
+];
 const StaffConsignmentsManagement = () => {
   const {
     loading,
@@ -19,54 +28,60 @@ const StaffConsignmentsManagement = () => {
     selectedItem,
     onCloseDetail,
     onViewDetail,
+    fetchStaffConsignments, // ✅ nếu có trong hook, dùng cho reset
   } = useStaffConsignmentsManagement();
 
-  const [statusFilter, setStatusFilter] = useState("SCHEDULING");
+  const [filteredData, setFilteredData] = useState(consignments || []);
 
-  const statusOptions = [
-    {
-      value: "SCHEDULING_GROUP",
-      label: "Lên lịch",
-      icon: <CalendarOutlined style={{ color: "#1677ff", fontSize: 20 }} />,
-    },
-    {
-      value: "REQUEST_REJECTED",
-      label: "Đã từ chối",
-      icon: <StopOutlined style={{ color: "volcano", fontSize: 20 }} />,
-    },
-    {
-      value: "FINISHED",
-      label: "Hoàn thành",
-      icon: <CheckCircleOutlined style={{ color: "green", fontSize: 20 }} />,
-    },
-    {
-      value: "EXPIRED",
-      label: "Hết hạn",
-      icon: <ClockCircleOutlined style={{ color: "gray", fontSize: 20 }} />,
-    },
-  ];
-
-  const filteredData = useMemo(() => {
-    if (!Array.isArray(consignments)) return [];
-    if (statusFilter === "SCHEDULING_GROUP") {
-      return consignments.filter(
-        (item) => item.status === "SCHEDULING" || item.status === "RESCHEDULED"
-      );
+  useMemo(() => {
+    if (Array.isArray(consignments)) {
+      setFilteredData(consignments);
     }
-    return consignments.filter((item) => item.status === statusFilter);
-  }, [consignments, statusFilter]);
+  }, [consignments]);
+
+  // 🔍 Tìm kiếm theo số điện thoại
+  const handleSearch = async (phone) => {
+    if (!phone?.trim()) {
+      message.warning("Vui lòng nhập số điện thoại để tìm kiếm");
+      return;
+    }
+
+    try {
+      const res = await searchConsignmentByPhone(phone.trim());
+      const mapped = (res || [])
+        .map((item) => ({
+          ...item,
+          category: CATEGORIES[item.category] || item.category,
+          itemType: ITEM_TYPE[item.itemType] || item.itemType,
+          statusLabel: CONSIGNMENT_STATUS_LABELS[item.status] || item.status,
+          statusColor: CONSIGNMENT_STATUS_COLOR[item.status] || "default",
+        }))
+        .filter((item) => !excludedStatuses.includes(item.status));
+
+      if (mapped.length === 0) {
+        message.info("Không tìm thấy yêu cầu ký gửi nào với số điện thoại này");
+      }
+
+      setFilteredData(mapped);
+    } catch (err) {
+      console.error(err);
+      message.error("Không thể tìm kiếm yêu cầu ký gửi.");
+    }
+  };
+
+  // 🔁 Làm mới (tải lại danh sách mặc định)
+  const handleReset = async () => {
+    if (fetchStaffConsignments) {
+      await fetchStaffConsignments();
+    }
+  };
 
   return (
     <div className="staff-management-page">
       <h2 className="page-title">Danh sách ký gửi</h2>
 
-      <div className="filter-section">
-        <ConsignmentFilterCard
-          title="Lọc theo trạng thái"
-          options={statusOptions}
-          selectedValue={statusFilter}
-          onChange={setStatusFilter}
-        />
+      <div>
+        <ConsignmentSearch onSearch={handleSearch} onReset={handleReset} />
       </div>
 
       <div className="list-section">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { List, Avatar, Empty, Spin } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -6,7 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/vi";
 import { getConversations } from "@services/chatService";
 import { useAuth } from "@contexts/AuthContext";
-import { getAccountDbId, normalizeUserId } from "@utils/chatUtils";
+import { getAccountDbId, normalizeUserId, getOtherParticipant } from "@utils/chatUtils";
 import s from "./ConversationList.module.scss";
 
 dayjs.extend(relativeTime);
@@ -27,6 +27,7 @@ const ConversationList = ({
   const [allConversations, setAllConversations] = useState([]);
   const [loadingConversations, setLoadingConversations] = useState(false);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const loadConversationsRef = useRef(null);
 
   const loadConversations = useCallback(async (retryCount = 0) => {
     if (!user && retryCount < 4) {
@@ -71,7 +72,7 @@ const ConversationList = ({
       if (searchQuery && searchQuery.length >= 3) {
         const query = searchQuery.toLowerCase();
         filteredItems = filteredItems.filter((conv) => {
-          const otherParticipant = conv?.otherParticipant || {};
+          const otherParticipant = getOtherParticipant(conv, currentUserId) || {};
           const name = (otherParticipant.name || otherParticipant.fullName || "").toLowerCase();
           const lastMessage = (conv?.lastMessage?.textContent || "").toLowerCase();
           return name.includes(query) || lastMessage.includes(query);
@@ -87,14 +88,15 @@ const ConversationList = ({
       
       if (filteredItems.length > 0) {
         filteredItems.forEach((conv, idx) => {
+          const otherParticipant = getOtherParticipant(conv, currentUserId);
           console.log(`[ConversationList] Conversation ${idx}:`, {
             id: conv.id,
-            userAId: conv.userAId,
-            userBId: conv.userBId,
-            otherParticipant: conv.otherParticipant ? {
-              id: conv.otherParticipant.id,
-              name: conv.otherParticipant.name,
-              fullName: conv.otherParticipant.fullName,
+            userAId: conv.userA?.id || conv.userAId,
+            userBId: conv.userB?.id || conv.userBId,
+            otherParticipant: otherParticipant ? {
+              id: otherParticipant.id,
+              name: otherParticipant.name,
+              fullName: otherParticipant.fullName,
             } : null,
             lastMessage: conv.lastMessage?.textContent,
           });
@@ -126,6 +128,11 @@ const ConversationList = ({
     }
   }, [user, currentUserId, searchQuery, filterUnread]);
 
+  // Keep ref updated with latest loadConversations function
+  useEffect(() => {
+    loadConversationsRef.current = loadConversations;
+  }, [loadConversations]);
+
   useEffect(() => {
     console.log("[ConversationList] Component mounted or user changed, loading conversations...", {
       hasUser: !!user,
@@ -133,32 +140,34 @@ const ConversationList = ({
       hasLoadedOnce,
     });
     
-    if (!hasLoadedOnce) {
+    // Only load once when user is available and hasn't loaded yet
+    if (!hasLoadedOnce && user && currentUserId) {
+      console.log("[ConversationList] Initial load triggered");
       loadConversations();
       setHasLoadedOnce(true);
     }
-  }, [user, hasLoadedOnce, loadConversations]);
+  }, [user, currentUserId, hasLoadedOnce]); // Added currentUserId to ensure we have valid user ID
 
   useEffect(() => {
     if (refreshTrigger !== null && refreshTrigger > 0 && user) {
       console.log("[ConversationList] Refresh triggered:", refreshTrigger);
       loadConversations();
     }
-  }, [refreshTrigger, user, loadConversations]);
+  }, [refreshTrigger, user]); // Removed loadConversations from deps
   
   useEffect(() => {
-    if (allConversations.length > 0) {
-      let filteredItems = [...allConversations];
-      
-      if (searchQuery && searchQuery.length >= 3) {
-        const query = searchQuery.toLowerCase();
-        filteredItems = filteredItems.filter((conv) => {
-          const otherParticipant = conv?.otherParticipant || {};
-          const name = (otherParticipant.name || otherParticipant.fullName || "").toLowerCase();
-          const lastMessage = (conv?.lastMessage?.textContent || "").toLowerCase();
-          return name.includes(query) || lastMessage.includes(query);
-        });
-      }
+      if (allConversations.length > 0) {
+        let filteredItems = [...allConversations];
+        
+        if (searchQuery && searchQuery.length >= 3) {
+          const query = searchQuery.toLowerCase();
+          filteredItems = filteredItems.filter((conv) => {
+            const otherParticipant = getOtherParticipant(conv, currentUserId) || {};
+            const name = (otherParticipant.name || otherParticipant.fullName || "").toLowerCase();
+            const lastMessage = (conv?.lastMessage?.textContent || "").toLowerCase();
+            return name.includes(query) || lastMessage.includes(query);
+          });
+        }
       
       if (filterUnread) {
         filteredItems = filteredItems.filter((conv) => {
@@ -178,11 +187,13 @@ const ConversationList = ({
     
     const interval = setInterval(() => {
       console.log("[ConversationList] Auto-refreshing conversation list...");
-      loadConversations();
+      if (loadConversationsRef.current) {
+        loadConversationsRef.current();
+      }
     }, 30000);
 
     return () => clearInterval(interval);
-  }, [user, currentUserId, loadConversations]);
+  }, [user, currentUserId]); // Removed loadConversations from deps
 
   useEffect(() => {
     if (!user) return;
@@ -193,7 +204,9 @@ const ConversationList = ({
       console.log("[ConversationList] Chat message received event:", event.detail);
       if (refreshTimeout) clearTimeout(refreshTimeout);
       refreshTimeout = setTimeout(() => {
-        loadConversations();
+        if (loadConversationsRef.current) {
+          loadConversationsRef.current();
+        }
       }, 500);
     };
 
@@ -201,7 +214,9 @@ const ConversationList = ({
       console.log("[ConversationList] Chat message sent event:", event.detail);
       if (refreshTimeout) clearTimeout(refreshTimeout);
       refreshTimeout = setTimeout(() => {
-        loadConversations();
+        if (loadConversationsRef.current) {
+          loadConversationsRef.current();
+        }
       }, 300);
     };
 
@@ -212,7 +227,7 @@ const ConversationList = ({
       window.removeEventListener('chat-message-received', handleMessageReceived);
       window.removeEventListener('chat-message-sent', handleMessageSent);
     };
-  }, [user, loadConversations]);
+  }, [user]); // Removed loadConversations from deps - use closure to access latest function
 
   const formatTime = (timestamp) => {
     if (!timestamp) return "";
@@ -279,29 +294,26 @@ const ConversationList = ({
     <div className={s.conversationList}>
       <List
         dataSource={conversations}
-        renderItem={(conversation) => {
-          const otherParticipant = conversation?.otherParticipant || {};
-          let recipientId = normalizeUserId(otherParticipant?.id);
-          if (!recipientId && conversation?.userAId && conversation?.userBId) {
-            const convUserA = normalizeUserId(conversation.userAId);
-            const convUserB = normalizeUserId(conversation.userBId);
-            if (currentUserId != null) {
-              recipientId = convUserA === currentUserId ? convUserB : convUserA;
-            }
-          }
-          const recipientName = otherParticipant?.name || otherParticipant?.fullName || (recipientId ? `User ${recipientId}` : "Người dùng");
-          const recipientAvatar = getAvatarUrl(otherParticipant?.avatarFilename);
+        renderItem={(conversation, index) => {
+          const otherParticipant = getOtherParticipant(conversation, currentUserId) || {};
+          const recipientId = normalizeUserId(otherParticipant?.id);
+          const recipientName = otherParticipant?.fullName || otherParticipant?.name || (recipientId ? `User ${recipientId}` : "Người dùng");
+          // Use avatarUrl directly if available, otherwise try to extract from avatarFilename
+          const recipientAvatar = otherParticipant?.avatarUrl || getAvatarUrl(otherParticipant?.avatarFilename);
           const unreadCount = conversation?.unreadCount || 0;
           const isSelected = conversation?.id === selectedConversationId;
           const lastMessageTime = conversation?.lastMessage?.createdAt 
             || conversation?.lastMessageAt 
             || conversation?.updatedAt 
             || conversation?.createdAt;
+          // Use conversation.id as primary key, with fallback to ensure uniqueness
+          const itemKey = conversation?.id ? `conv-${conversation.id}` : `conv-fallback-${recipientId || 'unknown'}-${index}`;
 
           return (
             <List.Item
+              key={itemKey}
               className={`${s.conversationItem} ${isSelected ? s.selected : ""}`}
-              onClick={() => onSelectConversation?.(conversation.id, recipientId)}
+              onClick={() => onSelectConversation?.(conversation.id, recipientId, otherParticipant)}
             >
               <List.Item.Meta
                 avatar={

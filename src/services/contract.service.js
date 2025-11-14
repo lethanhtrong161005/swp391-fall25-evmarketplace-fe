@@ -114,10 +114,28 @@ export const updateContract = async (id, data = {}, file) => {
     form.append("payload", new Blob([JSON.stringify(payload)], { type: "application/json" }));
     if (file) form.append("file", file);
 
-    console.log(payload);
-
     const { data: res } = await api.put(`${BASE}/${id}`, form, {
             headers: { "Content-Type": "multipart/form-data" },
         });
     return res;
 };
+
+
+export async function activeContract({ contractId, buyerId }) {
+  try {
+    const { data } = await api.put("/api/contract/active", {
+      contractId,
+      buyerId,
+    });
+    return data;
+  } catch (e) {
+    const msg =
+      e?.response?.data?.message ||
+      e?.response?.data ||
+      e?.message ||
+      "Kích hoạt hợp đồng thất bại";
+    const err = new Error(msg);
+    err.raw = e;
+    throw err;
+  }
+}

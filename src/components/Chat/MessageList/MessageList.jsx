@@ -58,10 +58,16 @@ const MessageList = ({
       <div className={s.messagesContainer}>
         {messages.map((message, index) => {
           const isOwnMessage = isMessageFromCurrentUser(message, currentUserId);
+          // Use conversationId + message.id for unique key, fallback to index if needed
+          const uniqueKey = message?.conversationId && message?.id 
+            ? `conv-${message.conversationId}-msg-${message.id}` 
+            : message?.id 
+            ? `msg-${message.id}-${index}` 
+            : `msg-index-${index}`;
           
           return (
             <MessageItem
-              key={message?.id || index}
+              key={uniqueKey}
               message={message}
               isOwnMessage={isOwnMessage}
               senderInfo={isOwnMessage ? { id: currentUserId } : recipientInfo}

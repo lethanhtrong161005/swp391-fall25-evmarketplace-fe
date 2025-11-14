@@ -4,6 +4,7 @@ import s from "./styles.module.scss";
 import useManagerListing from "./useManagerListing";
 import ManagerListingTable from "./ManagerListingTable/ManagerListingTable";
 import ManagerListingFilter from "./ListingFilter/ListingFilter";
+import ChangeStatusModal from "./ChangeStatusModal/ChangeStatusModal";
 
 export default function ManagerListingManagement() {
   const {
@@ -17,6 +18,14 @@ export default function ManagerListingManagement() {
     handleTableChange,
     handleSearch,
     handleStatusFilter,
+    // modal + status
+    modalOpen,
+    selectedListing,
+    selectedStatus,
+    confirmLoading,
+    openStatusModal,
+    confirmStatusChange,
+    closeModal,
   } = useManagerListing();
 
   return (
@@ -42,9 +51,20 @@ export default function ManagerListingManagement() {
             pageSize={pageSize}
             total={total}
             onChange={handleTableChange}
+            onStatusChange={openStatusModal} // 🔗 thêm callback mở modal
           />
         </Card>
       </Space>
+
+      {/* Modal xác nhận đổi trạng thái */}
+      <ChangeStatusModal
+        open={modalOpen}
+        record={selectedListing}
+        newStatus={selectedStatus}
+        onCancel={closeModal}
+        onConfirm={confirmStatusChange}
+        confirmLoading={confirmLoading}
+      />
     </div>
   );
 }

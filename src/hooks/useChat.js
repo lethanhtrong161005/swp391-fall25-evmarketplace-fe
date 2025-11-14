@@ -170,13 +170,13 @@ export const useChat = (conversationId = null, recipientId = null) => {
   }, []);
 
   // Open conversation
-  const openConversationWithUser = useCallback(async (otherId) => {
+  const openConversationWithUser = useCallback(async (otherId, listingId = null) => {
     if (!otherId) {
       setError("Thiếu thông tin người nhận");
       return null;
     }
 
-    console.log("[useChat] openConversationWithUser called:", { otherId });
+    console.log("[useChat] openConversationWithUser called:", { otherId, listingId });
 
     try {
       setLoading(true);
@@ -188,8 +188,18 @@ export const useChat = (conversationId = null, recipientId = null) => {
         throw new Error("Invalid otherId: " + otherId);
       }
       
-      console.log("[useChat] Calling openConversation API with normalized otherId:", normalizedOtherId);
-      const res = await openConversation(normalizedOtherId);
+      // Normalize listingId if provided
+      let normalizedListingId = null;
+      if (listingId != null) {
+        normalizedListingId = typeof listingId === 'number' ? listingId : parseInt(listingId);
+        if (isNaN(normalizedListingId)) {
+          console.warn("[useChat] Invalid listingId provided, ignoring:", listingId);
+          normalizedListingId = null;
+        }
+      }
+      
+      console.log("[useChat] Calling openConversation API with normalized otherId:", normalizedOtherId, "listingId:", normalizedListingId);
+      const res = await openConversation(normalizedOtherId, normalizedListingId);
       
       // Handle different response formats:
       // 1. { success: true, data: { id: ... } } - wrapped response

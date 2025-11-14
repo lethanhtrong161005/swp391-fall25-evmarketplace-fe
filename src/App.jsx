@@ -1,7 +1,8 @@
+import React, { Suspense } from "react";
 import { useRoutes } from "react-router-dom";
-import { App as AntApp } from "antd";
-import { routes } from "@routes";
-import ScrollToTop from "./components/ScrollTop/ScrollTop";
+import { App as AntApp, Spin } from "antd";
+import ScrollToTop from "@components/ScrollTop/ScrollTop";
+import { routes } from "./routes";
 
 const App = () => {
   const element = useRoutes(routes());
@@ -9,7 +10,23 @@ const App = () => {
   return (
     <AntApp>
       <ScrollToTop />
-      {element}
+      <Suspense
+        fallback={
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+              width: "100vw",
+            }}
+          >
+            <Spin size="large" />
+          </div>
+        }
+      >
+        {element}
+      </Suspense>
     </AntApp>
   );
 };

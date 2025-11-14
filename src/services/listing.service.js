@@ -251,3 +251,26 @@ export const managerUpdateListing = async ({id, status}) => {
   const res = await api.put(`/api/manager/listing/${id}`, {params});
   return res.data;
 }
+
+export const managerUpdateListingStatus = async ({ id, status }) => {
+  try {
+    const res = await api.put(`/api/manager/listing/${id}`, null, {
+      params: { status },
+      validateStatus: () => true,
+    });
+
+    const ok =
+      res?.status >= 200 &&
+      res?.status < 300 &&
+      res?.data?.success !== false;
+
+    if (!ok) {
+      throw new Error(res?.data?.message || `Failed to update status (${res?.status})`);
+    }
+
+    return res.data;
+  } catch (error) {
+    console.error("managerUpdateListingStatus error:", error);
+    throw error;
+  }
+};

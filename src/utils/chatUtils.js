@@ -66,3 +66,51 @@ export const isMessageFromCurrentUser = (message, currentUserId) => {
   return senderId === currentUserId;
 };
 
+/**
+ * Get the other participant from a conversation (userA or userB that is not the current user)
+ * @param {object} conversation - Conversation object with userA and userB
+ * @param {number|null} currentUserId - Current user's database ID (normalized number)
+ * @returns {object|null} The other participant user object with profile info, or null if not found
+ */
+export const getOtherParticipant = (conversation, currentUserId) => {
+  if (!conversation || currentUserId == null) {
+    // Fallback: if conversation has otherParticipant field, use it
+    return conversation?.otherParticipant || null;
+  }
+  
+  const userAId = normalizeUserId(conversation.userA?.id || conversation.userAId);
+  const userBId = normalizeUserId(conversation.userB?.id || conversation.userBId);
+  
+  // Determine which user is the "other" participant
+  if (userAId === currentUserId && conversation.userB) {
+    // Current user is userA, return userB
+    return {
+      id: conversation.userB.id,
+      name: conversation.userB.profile?.fullName || conversation.userB.profile?.name,
+      fullName: conversation.userB.profile?.fullName,
+      avatarUrl: conversation.userB.profile?.avatarUrl,
+      avatarFilename: conversation.userB.profile?.avatarUrl ? 
+        conversation.userB.profile.avatarUrl.split('/').pop() : null,
+      email: conversation.userB.email,
+      phoneNumber: conversation.userB.phoneNumber,
+      profile: conversation.userB.profile,
+    };
+  } else if (userBId === currentUserId && conversation.userA) {
+    // Current user is userB, return userA
+    return {
+      id: conversation.userA.id,
+      name: conversation.userA.profile?.fullName || conversation.userA.profile?.name,
+      fullName: conversation.userA.profile?.fullName,
+      avatarUrl: conversation.userA.profile?.avatarUrl,
+      avatarFilename: conversation.userA.profile?.avatarUrl ? 
+        conversation.userA.profile.avatarUrl.split('/').pop() : null,
+      email: conversation.userA.email,
+      phoneNumber: conversation.userA.phoneNumber,
+      profile: conversation.userA.profile,
+    };
+  }
+  
+  // Fallback: if conversation has otherParticipant field, use it
+  return conversation?.otherParticipant || null;
+};
+

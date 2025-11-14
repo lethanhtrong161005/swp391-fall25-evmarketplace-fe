@@ -68,7 +68,12 @@ export const checkInInspectionSchedule = async (id) => {
   return res.data;
 };
 
-export const addInspection = async (requestId, inspectionSummary, suggestedPrice, result) => {
+export const addInspection = async (
+  requestId,
+  inspectionSummary,
+  suggestedPrice,
+  result
+) => {
   const endpoint = `/api/inspections/add`;
   const body = {
     requestId,
@@ -96,8 +101,15 @@ export const inactivateInspection = async (inspectionId) => {
 export const getStaffInspections = async () => {
   const res = await api.get(`/api/inspections/staff/all`);
   return res.data;
-}
+};
 
+export const searchStaffInspectionByPhone = async (phone) => {
+  if (!phone) throw new Error("Số điện thoại không được để trống");
+  const res = await api.get(`/api/inspections/staff/search`, {
+    params: { phone },
+  });
+  return res.data;
+};
 //Agreement
 // /services/staff/staffConsignmentService.js
 export const addAgreement = async (payload, file) => {
@@ -115,7 +127,9 @@ export const addAgreement = async (payload, file) => {
 
 export async function staffCreateListing(payload, images = [], videos = []) {
   const fd = new FormData();
-  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(payload)], {
+    type: "application/json",
+  });
   fd.append("payload", blob);
   (images || []).forEach((f) => fd.append("images", f));
   (videos || []).forEach((f) => fd.append("videos", f));
@@ -123,10 +137,14 @@ export async function staffCreateListing(payload, images = [], videos = []) {
   const res = await api.post("/api/listing/consignment", fd, {
     validateStatus: () => true,
     withCredentials: true,
-    headers: { /* để browser tự set boundary */ },
+    headers: {
+      /* để browser tự set boundary */
+    },
   });
-  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
-  if (!ok) throw new Error(res?.data?.message || `Create failed (${res?.status})`);
+  const ok =
+    res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok)
+    throw new Error(res?.data?.message || `Create failed (${res?.status})`);
   return res.data;
 }
 
@@ -138,7 +156,9 @@ export async function updateConsignmentListing(
   keepMediaIds = null
 ) {
   const fd = new FormData();
-  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(payload)], {
+    type: "application/json",
+  });
   fd.append("payload", blob);
 
   (images || []).forEach((f) => fd.append("images", f));
@@ -151,13 +171,16 @@ export async function updateConsignmentListing(
   const res = await api.put(`/api/listing/consignment/${listingId}`, fd, {
     validateStatus: () => true,
     withCredentials: true,
-    headers: { /* để browser tự set boundary */ },
+    headers: {
+      /* để browser tự set boundary */
+    },
   });
-  const ok = res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
-  if (!ok) throw new Error(res?.data?.message || `Update failed (${res?.status})`);
+  const ok =
+    res?.status >= 200 && res?.status < 300 && res?.data?.success !== false;
+  if (!ok)
+    throw new Error(res?.data?.message || `Update failed (${res?.status})`);
   return res.data;
 }
-
 
 //Sale order
 export const createOrder = async (listingId, buyerPhoneNumber) => {

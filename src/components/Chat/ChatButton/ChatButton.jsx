@@ -3,7 +3,7 @@ import { Button, Badge, Tooltip } from "antd";
 import { MessageOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@contexts/AuthContext";
-import { getConversations } from "@services/chatService";
+import { getUnreadCount } from "@services/chatService";
 
 const ChatButton = ({ iconSize = "18px", buttonSize = "40px" }) => {
   const navigate = useNavigate();
@@ -18,16 +18,11 @@ const ChatButton = ({ iconSize = "18px", buttonSize = "40px" }) => {
 
     const loadUnreadCount = async () => {
       try {
-        const res = await getConversations(0, 100);
-        if (res?.success && res?.data) {
-          const conversations = res.data.content || res.data.items || [];
-          const totalUnread = conversations.reduce((sum, conv) => {
-            return sum + (conv.unreadCount || 0);
-          }, 0);
-          setUnreadCount(totalUnread);
-        }
+        const count = await getUnreadCount();
+        setUnreadCount(count || 0);
       } catch (e) {
         console.error("Load unread count error:", e);
+        setUnreadCount(0);
       }
     };
 
@@ -35,7 +30,24 @@ const ChatButton = ({ iconSize = "18px", buttonSize = "40px" }) => {
     
     const interval = setInterval(loadUnreadCount, 30000);
     
-    return () => clearInterval(interval);
+    // Listen for chat events to update count immediately
+    const handleMessageReceived = () => {
+      loadUnreadCount();
+    };
+    
+    const handleMessageSent = () => {
+      // Small delay to allow backend to process
+      setTimeout(loadUnreadCount, 500);
+    };
+    
+    window.addEventListener('chat-message-received', handleMessageReceived);
+    window.addEventListener('chat-message-sent', handleMessageSent);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('chat-message-received', handleMessageReceived);
+      window.removeEventListener('chat-message-sent', handleMessageSent);
+    };
   }, [isLoggedIn]);
 
   const handleClick = () => {
