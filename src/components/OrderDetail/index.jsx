@@ -17,7 +17,7 @@ export default function OrderDetail({ open, orderId, onClose, onOpenPaymentHisto
                 onCancel={onClose}
                 footer={<Button onClick={onClose}>Đóng</Button>}
                 width={920}
-                destroyOnClose
+                destroyOnHidden
             >
                 {loading ? (
                     <Skeleton active />
@@ -47,7 +47,7 @@ export default function OrderDetail({ open, orderId, onClose, onOpenPaymentHisto
                 width={980}
                 style={{ top: 24 }}
                 bodyStyle={{ padding: 0, height: "80vh" }}
-                destroyOnClose
+                destroyOnHidden
             >
                 {actions.contract.url ? (
                     <iframe title="contract" src={actions.contract.url} style={{ width: "100%", height: "100%", border: 0 }} />

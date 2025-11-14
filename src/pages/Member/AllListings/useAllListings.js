@@ -1,7 +1,7 @@
 // src/pages/Member/AllListings/useAllListings.js
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getAllListings, searchListings } from "@/services/listingHomeService";
+import { getAllListings, searchListings, transformListingData } from "@/services/listingHomeService";
 
 export const CATEGORIES = [
   { id: "all", code: null, label: "Tất cả" },
@@ -107,7 +107,10 @@ export default function useAllListings() {
         const items = response.data.items || [];
         const total = response.data.totalElements || 0;
 
-        setListings(items);
+        // Transform dữ liệu để đảm bảo có category_id và category đúng format
+        const transformedItems = items.map(transformListingData);
+
+        setListings(transformedItems);
         setPagination((prev) => ({
           ...prev,
           total: total,

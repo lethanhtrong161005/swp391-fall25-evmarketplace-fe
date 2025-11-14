@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Drawer, Form, Input, Button, Space, Typography } from "antd";
+import { Drawer, Form, Input, Button, Space, Typography, Select } from "antd";
 import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { useCreateAccountForm } from "./useCreateAccountForm.js";
 
 const { Text } = Typography;
+const { Option } = Select;
 
 // Regex validation giống RegisterModal
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,32}$/;
@@ -152,6 +153,22 @@ export default function CreateAccountForm({ open, onClose, onFinish }) {
           ]}
         >
           <Input.Password placeholder="Nhập lại mật khẩu" size="large" />
+        </Form.Item>
+
+        <Form.Item
+          name="role"
+          label="Vai trò"
+          rules={[{ required: true, message: "Vui lòng chọn vai trò!" }]}
+          initialValue="MEMBER"
+        >
+          <Select placeholder="Chọn vai trò" size="large">
+            <Option value="MEMBER">Thành viên</Option>
+            <Option value="STAFF">Nhân viên</Option>
+            <Option value="MANAGER">Quản lý</Option>
+            <Option value="INSPECTOR">Kiểm định viên</Option>
+            <Option value="MODERATOR">Kiểm duyệt viên</Option>
+            <Option value="ADMIN">Quản trị viên</Option>
+          </Select>
         </Form.Item>
       </Form>
     </Drawer>

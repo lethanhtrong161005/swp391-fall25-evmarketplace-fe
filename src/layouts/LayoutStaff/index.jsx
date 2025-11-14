@@ -4,7 +4,6 @@ import { Outlet } from "react-router-dom";
 import s from "./styles.module.scss";
 import { useStaffLayout } from "./logic.jsx";
 import Sidebar from "@components/Sidebar";
-import NotificationDrawer from "@components/Sidebar/NotificationDrawer";
 
 const { Content } = Layout;
 
@@ -21,7 +20,6 @@ export default function LayoutStaff() {
         onMenuClick={sidebarProps.handleMenuClick}
         onProfileClick={sidebarProps.handleProfileClick}
         onLogout={sidebarProps.handleLogout}
-        onOpenNotification={sidebarProps.openNotification}
       />
 
       <Content
@@ -32,12 +30,6 @@ export default function LayoutStaff() {
           <Outlet />
         </div>
       </Content>
-
-      <NotificationDrawer
-        open={sidebarProps.notiOpen}
-        onClose={sidebarProps.closeNotification}
-        data={sidebarProps.notifications}
-      />
     </Layout>
   );
 }

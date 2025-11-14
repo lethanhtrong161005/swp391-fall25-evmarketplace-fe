@@ -1,0 +1,53 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .sortLabel {
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .sortSelect {
+    font-weight: 500;
+    min-width: 160px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .toolbar {
+    .sortSelect {
+      width: 160px !important;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    padding: 12px 16px;
+    
+    > :global(.ant-space) {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .sortSelect {
+      width: 100% !important;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    padding: 10px 12px;
+  }
+}

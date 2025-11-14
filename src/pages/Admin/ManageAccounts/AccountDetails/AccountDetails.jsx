@@ -107,6 +107,32 @@ export default function AccountDetails({
             {account.profile?.addressLine || account.addressLine || "—"}
           </Descriptions.Item>
         </Descriptions>
+
+        {/* Thông tin chi nhánh - chỉ hiển thị cho Staff và Manager */}
+        {(account.role === "STAFF" || account.role === "MANAGER") && account.branch && (
+          <Descriptions
+            title="Thông tin chi nhánh"
+            bordered
+            column={1}
+            className={s.descriptions}
+          >
+            <Descriptions.Item label="Tên chi nhánh">
+              {account.branch.name || "—"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Tỉnh/Thành phố">
+              {account.branch.province || "—"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Địa chỉ">
+              {account.branch.address || "—"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Số điện thoại">
+              {account.branch.phone || "—"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Trạng thái">
+              {getStatusTag(account.branch.status)}
+            </Descriptions.Item>
+          </Descriptions>
+        )}
         {logs && logs.length > 0 && (
           <div className={s.logsSection}>
             <Title level={5}>

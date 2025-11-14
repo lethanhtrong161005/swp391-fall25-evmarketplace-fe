@@ -1,0 +1,200 @@
+/* Notification Component Styles - Scoped to avoid global conflicts */
+
+/* Keyframes - Shared animations for notification components */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(100%) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Notification Bell Container - Scoped badge count animation only */
+/* Note: .notification-bell-container base styles are in NotificationCenter.style.scss */
+.notification-bell-container {
+  /* Scoped badge count animation - only for notification bell */
+  :global(.ant-badge-count) {
+    animation: pulse 2s infinite;
+    box-shadow: 0 2px 8px rgba(255, 77, 79, 0.3);
+  }
+}
+
+/* Focus state for accessibility */
+.notification-bell-container:focus {
+  outline: 2px solid rgba(24, 144, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Notification Panel - Scoped to notification popover */
+.notification-panel {
+  animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+/* Notification Item Hover Effect - Scoped to notification items */
+.notification-item {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Toast Notification Animation - Scoped to notification toast */
+.rev-toast,
+:global(.ant-notification) {
+  animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Bell Icon Animation - Scoped to notification bell button */
+.notification-bell-container :global(.ant-btn:hover .anticon) {
+  animation: bounce 0.6s ease-in-out;
+}
+
+/* Modern Scrollbar - Scoped to notification panel */
+.notification-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-panel::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.notification-panel::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.notification-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Notification Item Animations */
+.notification-item {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .notification-panel {
+    width: 320px !important;
+    max-height: 400px !important;
+  }
+  
+  .notification-item {
+    padding: 12px !important;
+    margin-bottom: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-panel {
+    width: 280px !important;
+    max-height: 350px !important;
+  }
+  
+  .notification-bell-container {
+    :global(.ant-btn) {
+      width: 36px !important;
+      height: 36px !important;
+    }
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .notification-panel {
+    background: #1f1f1f !important;
+    border-color: #333 !important;
+    color: #fff !important;
+  }
+  
+  .notification-item {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .notification-item {
+    border-width: 2px !important;
+  }
+  
+  .notification-bell-container :global(.ant-badge-count) {
+    border: 2px solid #fff !important;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .notification-item,
+  .notification-panel,
+  .notification-bell-container :global(.ant-badge-count),
+  .rev-toast,
+  :global(.ant-notification) {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+

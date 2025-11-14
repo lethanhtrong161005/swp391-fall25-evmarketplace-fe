@@ -43,7 +43,12 @@ const SettlementDetailModal = ({ open, onClose, settlement }) => {
 
     const isPdf = settlement.mediaUrl.toLowerCase().endsWith(".pdf");
     if (fileLoading) {
-      return <Spin tip="Đang tải tệp sao kê..." />;
+      return (
+        <div style={{ textAlign: "center", padding: 40 }}>
+          <Spin size="large" />
+          <div style={{ marginTop: 16 }}>Đang tải tệp sao kê...</div>
+        </div>
+      );
     }
 
     if (!fileBlobUrl) {

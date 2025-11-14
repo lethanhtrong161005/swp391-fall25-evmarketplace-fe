@@ -18,7 +18,9 @@ export const batterySOHRule = [
             const n = Number(v);
             if (Number.isNaN(n) || n <= 0 || n > 100)
                 return Promise.reject("SOH phải trong khoảng (0; 100]");
-            // Nếu cần loại tin rác: if (n < 70) return Promise.reject("SOH quá thấp (<70%)");
+            if (n < 50) {
+                return Promise.reject("SOH quá thấp (tối thiểu 50%). Pin có SOH < 50% không phù hợp để bán.");
+            }
             return Promise.resolve();
         },
     },
@@ -41,7 +43,7 @@ export const chemistryOptionalRule = [
     {
         validator: (_, v) => {
             if (!v) return Promise.resolve();
-            if (String(v).length > 20) return Promise.reject("Hóa học pin tối đa 20 ký tự");
+            if (String(v).length > 40) return Promise.reject("Hóa học pin tối đa 40 ký tự");
             return Promise.resolve();
         },
     },

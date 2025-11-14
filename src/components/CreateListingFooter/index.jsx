@@ -1,4 +1,4 @@
-import { Affix, Row, Col, Button } from "antd";
+import { Button, Affix, Row, Col } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import styles from "./index.module.scss";
 
@@ -6,7 +6,7 @@ const CreateListingFooter = ({
   currentPostType,
   currentMode,
   onChoosePostType,
-  onPreview,
+  onPreview, // eslint-disable-line no-unused-vars
   onDraft,
   onSubmit,
   submitting,
@@ -37,7 +37,8 @@ const CreateListingFooter = ({
     }
   };
 
-  const showDraftButton = !isEdit && mode !== "agreement" && mode !== "agreement-update";
+  const showDraftButton =
+    !isEdit && mode !== "agreement" && mode !== "agreement-update";
 
   return (
     <Affix offsetBottom={0}>

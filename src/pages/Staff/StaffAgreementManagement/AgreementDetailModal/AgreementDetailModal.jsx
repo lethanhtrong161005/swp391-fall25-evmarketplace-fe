@@ -54,7 +54,12 @@ const AgreementDetailModal = ({
 
     const isPdf = agreement.medialUrl.toLowerCase().endsWith(".pdf");
     if (fileLoading) {
-      return <Spin tip="Đang tải hợp đồng..." />;
+      return (
+        <div style={{ textAlign: "center", padding: 40 }}>
+          <Spin size="large" />
+          <div style={{ marginTop: 16 }}>Đang tải hợp đồng...</div>
+        </div>
+      );
     }
 
     if (!fileBlobUrl) {

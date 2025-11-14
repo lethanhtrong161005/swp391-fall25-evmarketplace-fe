@@ -1,0 +1,211 @@
+.categoryFilter {
+  background: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin-bottom: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+  z-index: 1;
+  
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  > :global(.ant-space) {
+    min-width: max-content;
+  }
+
+  .filterBtn {
+    font-weight: 500;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
+  }
+
+  .categoryBtn {
+    border-radius: 20px;
+    height: 36px;
+    padding: 0 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
+.priceFilterDropdown {
+  width: 340px;
+  max-width: calc(100vw - 32px);
+}
+
+.priceFilter {
+  padding: 16px;
+
+  .priceFilterTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #262626;
+    margin-bottom: 12px;
+  }
+
+  .priceInputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .priceInput {
+    flex: 1;
+    width: 100%;
+    
+    :global(.ant-input-number-input) {
+      font-size: 14px;
+    }
+  }
+
+  .priceSeparator {
+    color: #8c8c8c;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .filterActions {
+    display: flex;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .resetBtn {
+    flex: 1;
+    height: 36px;
+    border-radius: 6px;
+  }
+
+  .applyBtn {
+    flex: 1;
+    height: 36px;
+    border-radius: 6px;
+  }
+}
+
+:global {
+  .price-filter-popover {
+    .ant-popover-inner {
+      padding: 0;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .ant-popover-arrow {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .categoryFilter {
+    padding: 12px 16px;
+    
+    :global(.ant-space) {
+      width: max-content;
+    }
+    
+    .filterBtn {
+      font-size: 13px;
+      height: 32px;
+      padding: 0 12px;
+      
+      :global(.anticon) {
+        font-size: 12px;
+      }
+    }
+
+    .categoryBtn {
+      font-size: 13px;
+      height: 32px;
+      padding: 0 12px;
+      
+      :global(.anticon) {
+        font-size: 12px;
+      }
+    }
+  }
+  
+  .priceFilterDropdown {
+    width: 300px;
+  }
+  
+  .priceFilter {
+    padding: 14px;
+    
+    .priceFilterTitle {
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .priceInputs {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .priceSeparator {
+      display: none;
+    }
+
+    .priceInput {
+      width: 100%;
+    }
+
+    .filterActions {
+      padding-top: 10px;
+      gap: 6px;
+    }
+
+    .resetBtn,
+    .applyBtn {
+      height: 34px;
+      font-size: 13px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .categoryFilter {
+    padding: 10px 12px;
+    
+    .filterBtn,
+    .categoryBtn {
+      font-size: 12px;
+      height: 30px;
+      padding: 0 10px;
+    }
+  }
+  
+  .priceFilterDropdown {
+    width: calc(100vw - 24px);
+    max-width: 280px;
+  }
+
+  .priceFilter {
+    padding: 12px;
+    
+    .priceFilterTitle {
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .filterActions {
+      padding-top: 8px;
+    }
+
+    .resetBtn,
+    .applyBtn {
+      height: 32px;
+      font-size: 12px;
+    }
+  }
+}

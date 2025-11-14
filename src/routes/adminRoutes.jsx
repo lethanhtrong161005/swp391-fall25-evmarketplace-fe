@@ -1,8 +1,8 @@
 import React, { lazy } from "react";
+import { Navigate } from "react-router-dom";
 import RoleBasedRoute from "@components/RoleBasedRoute";
 import LayoutAdmin from "@layouts/LayoutAdmin";
 
-const AdminDashboard = lazy(() => import("@pages/Admin/AdminDashboard"));
 const ManageAccounts = lazy(() => import("@pages/Admin/ManageAccounts"));
 const CategoryManagement = lazy(() => import("@pages/Admin/CategoryManagement/CategoryManagement"));
 const BrandManagement = lazy(() => import("@pages/Admin/BrandManagement/BrandManagement"));
@@ -19,7 +19,7 @@ export default [
       </RoleBasedRoute>
     ),
     children: [
-      { index: true, element: <AdminDashboard /> },
+      { index: true, element: <Navigate to="/admin/accounts" replace /> },
       { path: "accounts", element: <ManageAccounts /> },
       { path: "product/category", element: <CategoryManagement /> },
       { path: "product/brand", element: <BrandManagement /> },

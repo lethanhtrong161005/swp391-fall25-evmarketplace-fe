@@ -26,7 +26,7 @@ const AcceptModal = ({ record, handleAccept, onClose }) => {
       cancelText="Hủy"
       onOk={handleOk}
       onCancel={handleCancel}
-      destroyOnClose
+      destroyOnHidden
     >
       <div>
         Model: <strong>{record.model}</strong>

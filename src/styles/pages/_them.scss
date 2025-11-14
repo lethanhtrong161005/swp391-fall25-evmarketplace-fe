@@ -1,4 +1,10 @@
 //Cấu hình các biến dùng chung ở đây
+// Color Palette: https://coolors.co/1b2a41-e9f2ff-d7e1f0-ffffff-000000
 $theme-colors: (
-    "main": #ffff //ex
+    "primary": #1B2A41,        // Oxford Blue
+    "alice-blue": #E9F2FF,      // Alice Blue
+    "lavender": #D7E1F0,        // Lavender (web)
+    "white": #FFFFFF,           // White
+    "black": #000000,           // Black
+    "main": #1B2A41             // Keep for backward compatibility
 );

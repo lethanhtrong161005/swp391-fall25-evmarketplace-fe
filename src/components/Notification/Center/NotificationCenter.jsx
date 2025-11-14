@@ -8,6 +8,7 @@ import {
   getNotificationIcon,
   getNotificationColor,
 } from "../notificationUtils";
+import "../notification.scss";
 import "./NotificationCenter.style.scss";
 
 const NotificationCenter = () => {

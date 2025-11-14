@@ -14,11 +14,44 @@ export default defineConfig({
         target: "http://localhost:8089",
         changeOrigin: true,
         secure: false,
+        ws: true, // Enable WebSocket for /api if needed
+        configure: (proxy, _options) => {
+          proxy.on("error", (err, _req, _res) => {
+            // Log proxy errors but don't crash (ignore common connection reset errors)
+            if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
+              console.log("[proxy error]", err.message);
+            }
+          });
+          proxy.on("proxyReqWs", (proxyReq, _req, _socket) => {
+            // Handle WebSocket proxy request errors
+            proxyReq.on("error", (err) => {
+              // Ignore WebSocket connection errors (common when server restarts or connection drops)
+              if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
+                console.log("[ws proxy error]", err.message);
+              }
+            });
+            // Handle WebSocket socket errors
+            _socket.on("error", (err) => {
+              // Suppress common WebSocket connection errors
+              if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
+                console.log("[ws socket error]", err.message);
+              }
+            });
+          });
+        },
       },
       "/ws": {
         target: "ws://localhost:8089",
         ws: true,
         changeOrigin: true,
+        configure: (proxy, _options) => {
+          proxy.on("error", (err, _req, _res) => {
+            // Log proxy errors but don't crash (ignore common connection reset errors)
+            if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
+              console.log("[ws proxy error]", err.message);
+            }
+          });
+        },
       },
     },
   },

@@ -11,11 +11,36 @@
   color: #1890ff !important;
 }
 
-/* Profile Popover Container */
-.profile-popover-container {
-  width: 280px;
-  max-width: 320px;
-  overflow: hidden;
+/* Profile Dropdown Container */
+.profile-dropdown-overlay {
+  z-index: 1060 !important; // Đảm bảo dropdown luôn hiển thị trên Drawer (z-index: 1000) và các element khác
+
+  .ant-dropdown-menu {
+    padding: 0;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border: 1px solid #e6f4ff;
+    overflow: hidden;
+    min-width: 280px;
+    max-width: 320px;
+  }
+
+  // Đảm bảo disabled item (header) không có hover effect và hiển thị đúng
+  .ant-dropdown-menu-item-disabled {
+    cursor: default;
+    opacity: 1;
+    background-color: transparent !important;
+  }
+
+  .ant-dropdown-menu-item-disabled:hover {
+    background-color: transparent !important;
+    cursor: default;
+  }
+
+  // Đảm bảo disabled item không có padding mặc định
+  .ant-dropdown-menu-item-disabled.profile-dropdown-header-item {
+    padding: 0 !important;
+  }
 }
 
 /* Profile Header */
@@ -23,6 +48,7 @@
   padding: 20px;
   background: linear-gradient(135deg, #f6f8ff 0%, #ffffff 100%);
   text-align: center;
+  width: 100%;
 }
 
 .profile-dropdown-avatar {
@@ -150,4 +176,93 @@
 
 .header-avatar-container:hover::after {
   opacity: 1;
+}
+
+/* Responsive styling cho dropdown */
+// Tablet và màn hình trung bình (md: 768px - 992px)
+@media (min-width: 768px) and (max-width: 991px) {
+  .profile-dropdown-overlay {
+    .ant-dropdown-menu {
+      min-width: 260px;
+      max-width: 300px;
+    }
+  }
+
+  .profile-dropdown-header {
+    padding: 16px;
+  }
+
+  .profile-menu-item {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+
+// Màn hình nhỏ (sm: 576px - 768px)
+@media (min-width: 576px) and (max-width: 767px) {
+  .profile-dropdown-overlay {
+    z-index: 1060 !important; // Đảm bảo luôn trên Drawer
+    
+    .ant-dropdown-menu {
+      min-width: 240px;
+      max-width: 280px;
+    }
+  }
+
+  .profile-dropdown-header {
+    padding: 14px;
+  }
+
+  .profile-dropdown-name {
+    font-size: 15px;
+  }
+
+  .profile-menu-item {
+    padding: 10px 14px;
+    font-size: 13px;
+    gap: 10px;
+  }
+
+  .profile-menu-icon {
+    font-size: 14px;
+  }
+}
+
+// Màn hình rất nhỏ (xs: < 576px)
+@media (max-width: 575px) {
+  .profile-dropdown-overlay {
+    z-index: 1060 !important; // Đảm bảo luôn trên Drawer
+    
+    .ant-dropdown-menu {
+      min-width: 220px;
+      max-width: 260px;
+    }
+  }
+
+  .profile-dropdown-header {
+    padding: 12px;
+  }
+
+  .profile-dropdown-avatar {
+    margin-bottom: 8px;
+    
+    .ant-avatar {
+      width: 40px !important;
+      height: 40px !important;
+    }
+  }
+
+  .profile-dropdown-name {
+    font-size: 14px;
+  }
+
+  .profile-menu-item {
+    padding: 10px 12px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .profile-menu-icon {
+    font-size: 14px;
+  }
 }

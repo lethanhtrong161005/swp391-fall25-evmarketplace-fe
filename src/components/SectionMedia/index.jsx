@@ -8,13 +8,10 @@ import {
   MAX_VIDEO_MB,
 } from "@hooks/useSectionMedia";
 
-export default function SectionMedia({
-  messageApi,
-  images = [],
-  setImages,
-  videos = [],
-  setVideos,
-}) {
+export default function SectionMedia({ messageApi }) {
+  const form = Form.useFormInstance();
+  const images = Form.useWatch("images", form);
+
   const {
     beforeUploadImage,
     normImages,
@@ -25,12 +22,10 @@ export default function SectionMedia({
     onDrop,
   } = useSectionMedia(messageApi);
 
-  const handleImageChange = ({ fileList }) => {
-    setImages?.(fileList || []);
-  };
-
-  const handleVideoChange = ({ fileList }) => {
-    setVideos?.(fileList || []);
+  // Kiểm tra xem file có phải là ảnh đầu tiên không
+  const isFirstImage = (file) => {
+    const imageList = images || [];
+    return imageList.length > 0 && imageList[0]?.uid === file?.uid;
   };
 
   return (
@@ -74,19 +69,25 @@ export default function SectionMedia({
             maxCount={MAX_IMAGES}
             showUploadList={{ showPreviewIcon: false }}
             beforeUpload={beforeUploadImage}
-            fileList={images}
-            onChange={handleImageChange}
-            itemRender={(originNode, file) => (
-              <div
-                className={styles.draggable}
-                draggable
-                onDragStart={(e) => onDragStart(e, file)}
-                onDragOver={onDragOver}
-                onDrop={(e) => onDrop(e, file)}
-              >
-                {originNode}
-              </div>
-            )}
+            itemRender={(originNode, file) => {
+              const isCover = isFirstImage(file);
+              return (
+                <div
+                  className={styles.draggable}
+                  draggable
+                  onDragStart={(e) => onDragStart(e, file)}
+                  onDragOver={onDragOver}
+                  onDrop={(e) => onDrop(e, file)}
+                >
+                  {originNode}
+                  {isCover && (
+                    <div className={styles.coverBadge}>
+                      <span className={styles.coverText}>Hình bìa</span>
+                    </div>
+                  )}
+                </div>
+              );
+            }}
           >
             <div className={styles.addCard}>
               <PlusOutlined />
@@ -117,8 +118,6 @@ export default function SectionMedia({
             multiple
             maxCount={MAX_VIDEOS}
             beforeUpload={beforeUploadVideo}
-            fileList={videos}
-            onChange={handleVideoChange}
           >
             <div className={styles.addCard}>
               <VideoCameraAddOutlined />

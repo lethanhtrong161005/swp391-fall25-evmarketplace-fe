@@ -1,91 +1,13 @@
 // src/pages/Member/SearchResults/index.jsx
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Typography, Row, Col, Empty, Button, Spin, message } from "antd";
+import { Typography, Empty, Button, Spin, message } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import ProductCard from "@/components/ProductCard/ProductCard";
-import { searchListings } from "@/services/listingHomeService";
+import CardListing from "@components/CardListing";
+import { searchListings, transformListingData } from "@/services/listingHomeService";
+import styles from "../Home/LatestListingsSection.module.scss";
 
 const { Title, Text } = Typography;
-
-// Transform function để convert API data về format phù hợp với ProductCard
-const transformListingData = (apiItem) => {
-  // Xử lý thumbnailUrl từ API response mới
-  const getThumbnailUrl = (thumbnailUrl) => {
-    if (!thumbnailUrl) return "";
-
-    // Đảm bảo URL hợp lệ
-    if (typeof thumbnailUrl === "string" && thumbnailUrl.startsWith("http")) {
-      return thumbnailUrl.trim();
-    }
-
-    return "";
-  };
-
-  return {
-    id: apiItem.id?.toString() || "",
-    title: apiItem.title || "",
-    category: determineCategory(apiItem.brand, apiItem.model),
-    brand: apiItem.brand || "",
-    model: apiItem.model || "",
-    year: apiItem.year || null,
-    batteryCapacityKwh: apiItem.batteryCapacityKwh || null,
-    sohPercent: apiItem.sohPercent || null,
-    mileageKm: apiItem.mileageKm ? parseInt(apiItem.mileageKm) : null,
-    powerKw: null, // API không có field này, có thể tính từ batteryCapacityKwh
-    price: apiItem.price || 0,
-    province: apiItem.province || "",
-    city: "", // API không có field city riêng
-    status: apiItem.status || "ACTIVE",
-    visibility: apiItem.visibility || "NORMAL",
-    verified: apiItem.isConsigned || false, // Sử dụng isConsigned làm verified
-    isConsigned: apiItem.isConsigned || false,
-    branchId: null, // API không có field này
-    thumbnailUrl: getThumbnailUrl(apiItem.thumbnailUrl),
-    images: [], // Không còn sử dụng images array cho search results
-    createdAt: apiItem.createdAt || new Date().toISOString(),
-    sellerName: apiItem.sellerName || "",
-  };
-};
-
-// Xác định category dựa trên brand và model
-const determineCategory = (brand, model) => {
-  const brandLower = (brand || "").toLowerCase();
-  const modelLower = (model || "").toLowerCase();
-
-  // Logic xác định category dựa trên brand/model
-  if (
-    brandLower.includes("tesla") ||
-    brandLower.includes("vinfast") ||
-    brandLower.includes("byd") ||
-    brandLower.includes("nissan")
-  ) {
-    return "EV_CAR";
-  }
-
-  if (
-    brandLower.includes("yamaha") ||
-    brandLower.includes("honda") ||
-    brandLower.includes("dat bike")
-  ) {
-    return "E_MOTORBIKE";
-  }
-
-  if (brandLower.includes("giant") || brandLower.includes("trek")) {
-    return "E_BIKE";
-  }
-
-  if (
-    modelLower.includes("battery") ||
-    modelLower.includes("pin") ||
-    modelLower.includes("pack")
-  ) {
-    return "BATTERY";
-  }
-
-  return "EV_CAR"; // Default
-};
-
 const SearchResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -99,11 +21,8 @@ const SearchResults = () => {
     // Lấy dữ liệu từ state khi navigate từ SearchBar
     if (location.state) {
       const { searchResults, searchTerm, hasNext } = location.state;
-      // Transform dữ liệu từ API về format phù hợp với ProductCard
-      const transformedResults = (searchResults || []).map(
-        transformListingData
-      );
-      setSearchResults(transformedResults);
+      // CardListing tự xử lý data format, không cần transform
+      setSearchResults(searchResults || []);
       setSearchTerm(searchTerm || "");
       setHasNext(hasNext || false);
     } else {
@@ -140,7 +59,9 @@ const SearchResults = () => {
   };
 
   const handleProductClick = (product) => {
-    // TODO: Navigate to product detail page
+    if (product?.id) {
+      navigate(`/detail/${product.id}`);
+    }
   };
 
   const handleBackToHome = () => {
@@ -168,17 +89,16 @@ const SearchResults = () => {
         {/* Results */}
         {searchResults.length > 0 ? (
           <>
-            <Row gutter={[16, 16]}>
+            <div className={styles.grid5x}>
               {searchResults.map((item) => (
-                <Col key={item.id} xs={24} sm={12} md={8} lg={6}>
-                  <ProductCard
+                <div key={item.id} className={styles.gridItem}>
+                  <CardListing
                     listing={item}
                     onClick={handleProductClick}
-                    size="default"
                   />
-                </Col>
+                </div>
               ))}
-            </Row>
+            </div>
 
             {/* Load More Button */}
             {hasNext && (

@@ -9,6 +9,7 @@ import {
   HistoryOutlined,
   LogoutOutlined,
   DashboardOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 
 export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
@@ -76,7 +77,7 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
         ),
         path: "/info-user",
       },
-       {
+      {
         key: "order",
         label: (
           <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -87,6 +88,16 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
         path: "/my-order",
       },
       {
+        key: "my-ads",
+        label: (
+          <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <AppstoreOutlined />
+            Quản lý tin
+          </span>
+        ),
+        path: "/my-ads",
+      },
+      {
         key: "favorites",
         label: (
           <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -95,16 +106,6 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
           </span>
         ),
         path: "/my-favorites",
-      },
-      {
-        key: "history-transaction",
-        label: (
-          <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <HistoryOutlined />
-            Lịch sử giao dịch
-          </span>
-        ),
-        path: "/history/transactions",
       }
     );
 
@@ -129,15 +130,17 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
       if (path) navigate(path);
     } else if (key === "profile") {
       navigate("/info-user");
+    } else if (key === "my-ads") {
+      navigate("/my-ads");
     } else if (key === "favorites") {
       navigate("/my-favorites");
     } else if (key === "history-transaction") {
       navigate("/history/transactions");
-    } else if (key== "order") {
-       navigate("/my-order")
+    } else if (key == "order") {
+      navigate("/my-order");
     } else if (key === "logout") {
       await logout();
-    } 
+    }
   };
 
   return {
