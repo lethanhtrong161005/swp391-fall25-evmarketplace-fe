@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { message } from "antd";
 import { getConsignmentsManagement } from "../../../services/consigmentService";
-import { useCallback } from "react";
 import {
   CATEGORIES,
   CONSIGNMENT_STATUS_COLOR,
@@ -16,7 +15,7 @@ const useManagerConsignmentsManagement = () => {
   const { branchId, loading: branchLoading } = useBranchId();
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const fetchData = useCallback(
+  const fetchManagerConsignments = useCallback(
     async (page = 1, size = 10, sort = "createdAt", dir = "desc") => {
       if (!branchId) return;
       setLoading(true);
@@ -29,17 +28,19 @@ const useManagerConsignmentsManagement = () => {
           dir
         );
 
-        if (res.success) {
-          const items = (res.data?.items || []).map((item) => ({
+        if (res?.success) {
+          const items = (res.data?.items || res.data || []).map((item) => ({
             ...item,
             category: CATEGORIES[item.category] || item.category,
             itemType: ITEM_TYPE[item.itemType] || item.itemType,
-            statusLabel: CONSIGNMENT_STATUS_LABELS[item.status] || item.status,
-            statusColor: CONSIGNMENT_STATUS_COLOR[item.status] || "default",
+            statusLabel:
+              CONSIGNMENT_STATUS_LABELS[item.status] || item.status,
+            statusColor:
+              CONSIGNMENT_STATUS_COLOR[item.status] || "default",
           }));
           setConsignmentsManagement(items);
         } else {
-          message.error(res.message || "Không lấy được danh sách ký gửi");
+          message.error(res?.message || "Không lấy được danh sách ký gửi");
         }
       } catch (err) {
         console.error("Lỗi khi tải danh sách ký gửi:", err);
@@ -51,12 +52,15 @@ const useManagerConsignmentsManagement = () => {
     [branchId]
   );
 
+  // ⏱️ Auto fetch khi có branchId
   useEffect(() => {
-    if (branchId) fetchData();
-  }, [fetchData, branchId]);
+    if (branchId) fetchManagerConsignments();
+  }, [fetchManagerConsignments, branchId]);
 
+  // 📄 Modal actions
   const onViewDetail = (item) => setSelectedItem(item);
   const onCloseDetail = () => setSelectedItem(null);
+
   return {
     consignmentsManagement,
     loading: loading || branchLoading,
@@ -64,6 +68,9 @@ const useManagerConsignmentsManagement = () => {
     selectedItem,
     onViewDetail,
     onCloseDetail,
+
+    fetchManagerConsignments,
+    setConsignmentsManagement,
   };
 };
 

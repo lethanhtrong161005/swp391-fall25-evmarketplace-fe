@@ -46,17 +46,11 @@ export const getLatestListings = async (limit = 10) => {
       dir: "desc",
     });
 
-    console.log("🔍 API Response - Latest Listings:", response);
-    console.log("📊 Items count:", response?.data?.items?.length);
-    console.log("📦 First item:", response?.data?.items?.[0]);
-
     if (response?.success && response?.data?.items) {
       // Loại bỏ tin ký gửi (isConsigned = true)
       const nonConsignedItems = response.data.items
         .filter((item) => !item.isConsigned)
         .slice(0, limit);
-
-      console.log("✅ Non-consigned items:", nonConsignedItems.length);
 
       return nonConsignedItems.map(transformListingData);
     }
@@ -73,29 +67,17 @@ export const getFeaturedListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
-      // Lấy một trang lớn để tránh bị thiếu BOOSTED do filter phía client
-      size: 200,
+      size: limit,
       sort: "createdAt",
       dir: "desc",
+      isBoosted: true,
     });
 
-    console.log("🌟 API Response - Featured Listings (Raw):", response);
-    console.log("📊 Total items fetched:", response?.data?.items?.length);
-
     if (response?.success && response?.data?.items) {
-      // Chỉ lấy tin BOOSTED, sắp xếp mới nhất
+      // Lọc chỉ lấy ACTIVE và đã được sắp xếp từ API
       const featuredItems = response.data.items
-        .filter(
-          (item) => item.status === "ACTIVE" && item.visibility === "BOOSTED"
-        )
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .filter((item) => item.status === "ACTIVE")
         .slice(0, limit);
-
-      console.log(
-        "✨ Featured items after filter (ACTIVE + BOOSTED):",
-        featuredItems.length
-      );
-      console.log("🎯 First featured item:", featuredItems[0]);
 
       return featuredItems.map(transformListingData);
     }
@@ -245,15 +227,11 @@ export const getConsignmentListings = async ({
       dir,
     });
 
-    console.log("🚗 API Response - Consignment Listings:", response);
-
     if (response?.success && response?.data) {
       // Filter chỉ lấy tin ký gửi
       const consignedItems = response.data.items.filter(
         (item) => item.isConsigned === true && item.status === "ACTIVE"
       );
-
-      console.log("✅ Consigned items filtered:", consignedItems.length);
 
       return {
         items: consignedItems.slice(0, size).map(transformListingData),
@@ -305,7 +283,7 @@ export const getListingDetail = async (id) => {
 };
 
 // Transform dữ liệu từ API về format phù hợp với component
-const transformListingData = (apiItem) => {
+export const transformListingData = (apiItem) => {
   // Xử lý thumbnailUrl từ API response mới
   const getThumbnailUrl = (thumbnailUrl) => {
     if (!thumbnailUrl) return "";

@@ -45,8 +45,12 @@ export default function EditAccountForm({ open, onClose, account, onFinish }) {
 
         <Form.Item name="role" label="Vai trò">
           <Select placeholder="Chọn vai trò" allowClear>
-            <Option value="STAFF">Nhân viên</Option>
             <Option value="MEMBER">Thành viên</Option>
+            <Option value="STAFF">Nhân viên</Option>
+            <Option value="MANAGER">Quản lý</Option>
+            <Option value="INSPECTOR">Kiểm định viên</Option>
+            <Option value="MODERATOR">Kiểm duyệt viên</Option>
+            <Option value="ADMIN">Quản trị viên</Option>
           </Select>
         </Form.Item>
 

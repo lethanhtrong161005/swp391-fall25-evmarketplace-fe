@@ -186,7 +186,13 @@ export function useManageAccounts() {
         phoneNumber: String(values.phone).trim(),
         password: String(values.password).trim(),
         fullName: String(values.fullName).trim(),
+        role: values.role || "MEMBER",
       };
+
+      // Set branchId = 1 cho Staff và Manager
+      if (values.role === "STAFF" || values.role === "MANAGER") {
+        payload.branchId = 1;
+      }
 
       // Gọi API thông qua service (đã có validation)
       await createAccount(payload);

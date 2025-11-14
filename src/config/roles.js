@@ -13,7 +13,6 @@ export const ROLE_LABELS = {
   [ROLES.MEMBER]: "Thành viên",
   [ROLES.STAFF]: "Nhân viên",
   [ROLES.MODERATOR]: "Kiểm duyệt viên",
-  [ROLES.INSPECTOR]: "Kỹ thuật viên",
   [ROLES.MANAGER]: "Quản lý",
   [ROLES.ADMIN]: "Quản trị viên",
 };

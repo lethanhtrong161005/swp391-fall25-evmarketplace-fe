@@ -12,31 +12,32 @@ export default function SidebarBrand({ borderColor }) {
   const { brandText, brandColor, userRole } = useSidebarBrand();
 
   const handleBrandClick = () => {
-    // Navigate to appropriate home page based on role
-    if (userRole === "ADMIN") {
-      navigate("/admin");
-    } else if (userRole === "STAFF") {
-      navigate("/staff");
-    } else if (userRole === "MODERATOR") {
-      navigate("/moderator");
-    } else {
-      navigate("/");
-    }
+    // // Navigate to appropriate home page based on role
+    // if (userRole === "ADMIN") {
+    //   navigate("/admin");
+    // } else if (userRole === "STAFF") {
+    //   navigate("/staff");
+    // } else if (userRole === "MODERATOR") {
+    //   navigate("/moderator");
+    // } else {
+    //   navigate("/");
+    // }
+    navigate("/");
   };
 
   // Get icon based on role
-  const getBrandIcon = () => {
-    switch (userRole) {
-      case "ADMIN":
-        return <CrownOutlined className={s.icon} />;
-      case "STAFF":
-        return <TeamOutlined className={s.icon} />;
-      case "MODERATOR":
-        return <TeamOutlined className={s.icon} />;
-      default:
-        return null;
-    }
-  };
+  // const getBrandIcon = () => {
+  //   switch (userRole) {
+  //     case "ADMIN":
+  //       return <CrownOutlined className={s.icon} />;
+  //     case "STAFF":
+  //       return <TeamOutlined className={s.icon} />;
+  //     case "MODERATOR":
+  //       return <TeamOutlined className={s.icon} />;
+  //     default:
+  //       return null;
+  //   }
+  // };
 
   return (
     <div
@@ -49,7 +50,7 @@ export default function SidebarBrand({ borderColor }) {
         style={{ cursor: "pointer" }}
         onClick={handleBrandClick}
       >
-        <span style={{ color: brandColor }}>{getBrandIcon()}</span>
+        {/* <span style={{ color: brandColor }}>{getBrandIcon()}</span> */}
         <Text strong className={s.brandText} style={{ color: brandColor }}>
           {brandText}
         </Text>

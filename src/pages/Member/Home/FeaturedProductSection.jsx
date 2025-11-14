@@ -1,22 +1,21 @@
 // src/pages/Member/Home/FeaturedProductSection.jsx
 import React, { useMemo } from "react";
-import { Typography, Row, Col, Empty, Space, Button } from "antd";
+import { Typography, Empty, Button } from "antd";
 import {
-  ArrowRightOutlined,
   TrophyOutlined,
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
 
 import CardListing from "@components/CardListing";
+import ViewMoreButton from "@/components/ViewMoreButton";
 import styles from "./LatestListingsSection.module.scss";
-import ViewAllLink from "@components/ViewAllLinkButton/ViewAllLink";
 
 const { Title } = Typography;
 
 export default function FeaturedProductSection({
   items = [],
-  // totalCount,
+  totalCount,
   onViewMore,
   onItemClick,
   loading = false,
@@ -33,8 +32,8 @@ export default function FeaturedProductSection({
     [items, maxItems]
   );
 
-  // Tính tổng số listing
-  // const total = typeof totalCount === "number" ? totalCount : boostedTop.length;
+  // Tính tổng số tin nổi bật
+  const total = typeof totalCount === "number" ? totalCount : boostedTop.length;
 
   return (
     <section style={{ margin: "48px 0" }}>
@@ -79,11 +78,11 @@ export default function FeaturedProductSection({
         />
       )}
 
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
-        <Button type="link" onClick={onViewMore} icon={<ArrowRightOutlined />}>
-          Xem thêm
-        </Button>
-      </div>
+      <ViewMoreButton 
+        count={total} 
+        onClick={onViewMore} 
+        loading={loading} 
+      />
     </section>
   );
 }

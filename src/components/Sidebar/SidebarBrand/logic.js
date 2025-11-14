@@ -10,14 +10,15 @@ export function useSidebarBrand() {
 
   // Simple brand text - Admin, Staff, or Moderator
   const getBrandText = () => {
-    switch (role) {
-      case "ADMIN":
-        return "ReEV Admin";
-      case "MODERATOR":
-        return "ReEV Moderator";
-      default:
-        return "ReEV Staff";
-    }
+    // switch (role) {
+    //   case "ADMIN":
+    //     return "ReEV Admin";
+    //   case "MODERATOR":
+    //     return "ReEV Moderator";
+    //   default:
+    //     return "ReEV Staff";
+    // }
+    return "ReEV"
   };
 
   // Simple color scheme - Red for Admin, Primary Blue for Staff

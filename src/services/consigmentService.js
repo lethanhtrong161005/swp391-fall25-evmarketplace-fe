@@ -138,3 +138,12 @@ export const assignStaffToConsignment = async (requestId, staffId) => {
   );
   return res.data;
 };
+
+
+export const searchConsignmentByPhone = async (phone) => {
+  if (!phone) throw new Error("Số điện thoại là bắt buộc để tìm kiếm.");
+  const res = await api.get(`/api/consignments_request/search`, {
+    params: { phone },
+  });
+  return res.data?.data || [];
+};

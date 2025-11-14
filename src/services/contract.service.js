@@ -114,8 +114,6 @@ export const updateContract = async (id, data = {}, file) => {
     form.append("payload", new Blob([JSON.stringify(payload)], { type: "application/json" }));
     if (file) form.append("file", file);
 
-    console.log(payload);
-
     const { data: res } = await api.put(`${BASE}/${id}`, form, {
             headers: { "Content-Type": "multipart/form-data" },
         });

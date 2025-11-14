@@ -26,7 +26,7 @@ export default function PaymentModal({ open, onCancel, order, onSubmit }) {
             okText="Xác nhận thanh toán"
             onOk={() => form.submit()}
             okButtonProps={{ disabled }}
-            destroyOnClose
+            destroyOnHidden
         >
             <div className={s.root}>
                 <Space direction="vertical" size="small" className={s.stack}>

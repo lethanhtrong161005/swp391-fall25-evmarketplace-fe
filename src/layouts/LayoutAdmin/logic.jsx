@@ -1,5 +1,4 @@
 import {
-  DashboardOutlined,
   TeamOutlined,
   AppstoreOutlined,
   CarOutlined,
@@ -13,12 +12,6 @@ import { useSidebar } from "@hooks/useSidebar";
 export function useLayoutAdmin() {
   // Menu items configuration
   const menuItems = [
-    {
-      key: "dashboard",
-      icon: <DashboardOutlined />,
-      label: "Dashboard",
-      path: "/admin",
-    },
     {
       key: "accounts",
       icon: <TeamOutlined />,

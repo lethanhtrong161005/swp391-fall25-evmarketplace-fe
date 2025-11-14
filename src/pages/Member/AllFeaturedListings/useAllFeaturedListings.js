@@ -1,7 +1,7 @@
-// src/pages/Member/AllListings/useAllListings.js
+// src/pages/Member/AllFeaturedListings/useAllFeaturedListings.js
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getAllListings, searchListings, transformListingData } from "@/services/listingHomeService";
+import { getAllListings, searchListings } from "@/services/listingHomeService";
 
 export const CATEGORIES = [
   { id: "all", code: null, label: "Tất cả" },
@@ -22,7 +22,7 @@ export const SORT_OPTIONS = [
 
 const DEFAULT_MAX_PRICE = 10000000000; // 10 tỷ
 
-export default function useAllListings() {
+export default function useAllFeaturedListings() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -70,7 +70,7 @@ export default function useAllListings() {
     setViewMode(view);
   }, [searchParams]);
 
-  // Fetch listings từ API
+  // Fetch listings từ API với isBoosted=true
   const fetchListings = async () => {
     try {
       setLoading(true);
@@ -81,6 +81,7 @@ export default function useAllListings() {
         size: pagination.pageSize,
         sort: sortField,
         dir: sortDir,
+        isBoosted: true, // Chỉ lấy tin nổi bật
       };
 
       // Thêm price range (dùng appliedPriceRange - giá đã apply)
@@ -94,23 +95,21 @@ export default function useAllListings() {
 
       let response;
 
-      // Nếu có categoryCode: dùng getAllListings (hỗ trợ categoryCode)
+      // Nếu có categoryCode: dùng getAllListings (hỗ trợ categoryCode và isBoosted)
       if (selectedCategory !== "all") {
         params.categoryCode = selectedCategory; // EV_CAR, E_MOTORBIKE, E_BIKE, BATTERY
         response = await getAllListings(params);
       } else {
         // Nếu "all": dùng searchListings (hỗ trợ priceMin/priceMax tốt hơn)
-        response = await searchListings(params);
+        // Note: searchListings có thể không hỗ trợ isBoosted, nên dùng getAllListings
+        response = await getAllListings(params);
       }
 
       if (response?.success && response?.data) {
         const items = response.data.items || [];
         const total = response.data.totalElements || 0;
 
-        // Transform dữ liệu để đảm bảo có category_id và category đúng format
-        const transformedItems = items.map(transformListingData);
-
-        setListings(transformedItems);
+        setListings(items);
         setPagination((prev) => ({
           ...prev,
           total: total,
@@ -225,3 +224,4 @@ export default function useAllListings() {
     DEFAULT_MAX_PRICE,
   };
 }
+

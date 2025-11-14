@@ -1,11 +1,11 @@
 import React, { lazy } from "react";
 import RoleBasedRoute from "@components/RoleBasedRoute/index";
 import LayoutDefault from "@layouts/LayoutDefault";
-
 const HomeWrapper = lazy(() => import("@pages/Member/HomeWrapper/HomeWrapper"));
 const Vehicle = lazy(() => import("@pages/Member/Vehicle"));
 const Battery = lazy(() => import("@pages/Member/Battery"));
 const AllListings = lazy(() => import("@pages/Member/AllListings/AllListings"));
+const AllFeaturedListings = lazy(() => import("@pages/Member/AllFeaturedListings/AllFeaturedListings"));
 const ProductDetail = lazy(() =>
   import("@pages/Member/ProductDetail/ProductDetail")
 );
@@ -33,6 +33,7 @@ const GoogleCallback = lazy(() => import("@pages/Auth/GoogleCallback"));
 const ConsignmentListings = lazy(() =>
   import("@pages/Member/ConsignmentListings")
 );
+const SearchResults = lazy(() => import("@pages/Member/SearchResults"));
 
 export default [
   {
@@ -43,11 +44,17 @@ export default [
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
       { path: "listings", element: <AllListings /> },
+      { path: "featured-listings", element: <AllFeaturedListings /> },
       { path: "consignment-listings", element: <ConsignmentListings /> },
+      { path: "search-results", element: <SearchResults /> },
       { path: "detail/:id", element: <ProductDetail /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
       {
-        element: <RoleBasedRoute allowedRoles={["member", "staff", "admin"]} />,
+        element: (
+          <RoleBasedRoute
+            allowedRoles={["member", "staff", "admin", "moderator", "manager"]}
+          />
+        ),
         children: [
           { path: "info-user", element: <InfoUser /> },
           { path: "listing/new", element: <ListingCreate /> },

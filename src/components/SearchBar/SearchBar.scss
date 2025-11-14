@@ -5,16 +5,13 @@
   border-radius: 9999px; // bo tròn full
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   padding: 8px 16px;
-  max-width: 800px;
+  max-width: 1200px;
+  width: 100%;
   margin-top: 16px;
   margin-bottom: 0px;
   margin-left: auto;
   margin-right: auto;
   gap: 12px;
-
-  .search-select {
-    width: 150px;
-  }
 
   .search-input {
     flex: 1;

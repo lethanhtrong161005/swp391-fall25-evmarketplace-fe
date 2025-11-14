@@ -1,12 +1,4 @@
-/**
- * Utility functions for normalizing user data from different API responses
- * Handles both snake_case (database) and camelCase (frontend) formats
- */
 
-/**
- * Normalize user data to have both snake_case and camelCase versions
- * This ensures compatibility with different API response formats
- */
 export function normalizeUserData(userData) {
   if (!userData || typeof userData !== "object") {
     return userData;

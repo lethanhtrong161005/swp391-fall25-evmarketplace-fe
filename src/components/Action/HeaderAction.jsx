@@ -28,6 +28,7 @@ const MANAGE_LISTINGS_PATH = "/my-ads";
 const MANAGE_CONSIGNMENTS_PATH = "/consignment";
 const CREATE_LISTING_PATH = "/listing/new";
 
+// ...
 const HeaderAction = () => {
   const { auth, otp, register, reset, handleOtpSuccess, handleOtpStart } =
     useHeaderAction();
@@ -50,8 +51,9 @@ const HeaderAction = () => {
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
 
   // Avatar logic
-  const avatarSrc = user?.avatar || user?.avatarUrl;
-  const avatarName = displayName;
+  const avatarSrc =
+    user?.profile?.avatarUrl || user?.avatarUrl || user?.avatar || null;
+  const avatarName = displayName?.charAt(0)?.toUpperCase();
 
   // Chuyển đổi menuItems thành format của Dropdown với header
   const dropdownItems = [
@@ -147,13 +149,12 @@ const HeaderAction = () => {
               gap: "8px",
             }}
           >
-            {/* Nút Đăng tin - Luôn hiển thị */}
             <Button
               type="text"
               className="header-text-button"
               onClick={() =>
                 handleLoginRequire(
-                  CREATE_LISTING_PATH,
+                  "/listing/new",
                   "Vui lòng đăng nhập để đăng tin"
                 )
               }
@@ -170,6 +171,20 @@ const HeaderAction = () => {
                   onClick={() =>
                     handleLoginRequire(
                       MANAGE_CONSIGNMENTS_PATH,
+                      "/my-ads",
+                      "Vui lòng đăng nhập để quản lý tin"
+                    )
+                  }
+                >
+                  Quản lý tin
+                </Button>
+
+                <Button
+                  type="text"
+                  className="header-text-button"
+                  onClick={() =>
+                    handleLoginRequire(
+                      "/consignment",
                       "Vui lòng đăng nhập để ký gửi"
                     )
                   }
@@ -181,9 +196,8 @@ const HeaderAction = () => {
           </div>
         )}
 
-        {/* Nhóm Icon với kiểu mới */}
+        {/* Nhóm Icon */}
         <Space size={8}>
-          {/* Icon Favorited - Heart */}
           {isLoggedIn ? (
             <FavoritesDropdown />
           ) : (
@@ -192,15 +206,11 @@ const HeaderAction = () => {
             />
           )}
 
-          {/* Icon Chat - Message */}
           {isLoggedIn ? (
             <Tooltip title="Chat">
               <Button
                 type="text"
                 icon={<MessageOutlined style={{ fontSize: "18px" }} />}
-                onClick={() => {
-                  // TODO: Navigate to chat page when implemented
-                }}
                 style={{
                   borderRadius: "50%",
                   width: "40px",
@@ -217,7 +227,6 @@ const HeaderAction = () => {
             />
           )}
 
-          {/* Icon Notification - Bell */}
           {isLoggedIn ? (
             <NotificationCenter />
           ) : (
@@ -227,7 +236,6 @@ const HeaderAction = () => {
           )}
         </Space>
 
-        {/* Khối Người dùng */}
         {isLoggedIn ? (
           <Dropdown
             menu={{
@@ -236,12 +244,13 @@ const HeaderAction = () => {
             trigger={["click"]}
             placement={getDropdownPlacement()}
             overlayClassName="profile-dropdown-overlay"
-            getPopupContainer={(trigger) => {
+            getPopupContainer={() => {
               // Luôn dùng document.body để tránh vấn đề với overflow/transform của parent
               return document.body;
             }}
             destroyOnHidden={false}
           >
+            {/* Avatar hiển thị ở góc phải header */}
             <div className="header-avatar-container">
               <Avatar
                 src={avatarSrc}
@@ -250,9 +259,16 @@ const HeaderAction = () => {
                 style={{
                   backgroundColor: avatarSrc ? "transparent" : "#1890ff",
                   cursor: "pointer",
+                  transition: "all 0.25s ease",
                 }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.07)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
               >
-                {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
+                {!avatarSrc && avatarName}
               </Avatar>
             </div>
           </Dropdown>
@@ -271,6 +287,7 @@ const HeaderAction = () => {
           </Button>
         )}
 
+        {/* Các modal login/register/otp */}
         <LoginModal
           open={auth.openLogin}
           onClose={() => auth.setOpenLogin(false)}

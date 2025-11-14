@@ -4,13 +4,16 @@ import { normalizeAuthError } from "@utils/authErrorMapper";
 // ===== USER PROFILE APIs =====
 // Get user profile
 export const getUserProfile = async () => {
-  // Use axios instance directly to force sending cookies
-  const res = await api.get("/api/accounts/current", {
-    withCredentials: true,
-    validateStatus: () => true,
-  });
-  // Kiểm tra res không null trước khi truy cập .data
-  return res?.data || null;
+  try {
+    const res = await api.get("/api/accounts/current", {
+      withCredentials: true,
+      validateStatus: (status) => status < 500,
+    });
+    return res.data; // giữ nguyên structure { success, data, message }
+  } catch (err) {
+    console.error("Error in getUserProfile:", err);
+    throw err;
+  }
 };
 
 // Update user profile
@@ -271,4 +274,75 @@ export const getAccountActivityLogs = async (accountId, params = {}) => {
 export const getStaffOfBranch = async () => {
   const res = await api.get(`/api/manager/accounts/staff`);
   return res.data;
+};
+
+// ===== EMAIL UPDATE APIs =====
+
+// Gửi OTP đến email mới
+export const requestEmailOtp = async (email) => {
+  try {
+    const res = await api.post(
+      "/api/accounts/email/request-otp",
+      { email },
+      {
+        withCredentials: true,
+        validateStatus: () => true,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    if (res?.status >= 200 && res?.status < 300) {
+      return res.data;
+    }
+
+    throw new Error(res.data?.message || "Không thể gửi mã OTP đến email.");
+  } catch (err) {
+    console.error("Error in requestEmailOtp:", err);
+    throw err;
+  }
+};
+
+// Cập nhật email sau khi xác thực OTP
+export const updateEmailWithOtp = async ({ newEmail, otp }) => {
+  const token = localStorage.getItem("accessToken");
+
+  try {
+    const res = await api.put(
+      `/api/accounts/update-email?newEmail=${encodeURIComponent(
+        newEmail
+      )}&otp=${encodeURIComponent(otp)}`,
+      null,
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        validateStatus: () => true,
+      }
+    );
+
+    if (res?.status >= 200 && res?.status < 300) {
+      return res.data;
+    }
+
+    // Tạo error object đúng format để getAxiosErrorMessage xử lý
+    const error = new Error(res?.data?.message || "Không thể cập nhật email.");
+    error.response = {
+      status: res?.status || 500,
+      data: res?.data || { message: "Lỗi server nội bộ" },
+    };
+    throw error;
+  } catch (err) {
+    // Nếu đã là error object có response, throw lại
+    if (err?.response) {
+      throw err;
+    }
+    // Nếu là lỗi khác (network, etc.), wrap lại với format đúng
+    const error = new Error(err?.message || "Không thể cập nhật email.");
+    error.response = {
+      status: 500,
+      data: { message: error.message },
+    };
+    throw error;
+  }
 };

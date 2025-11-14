@@ -1,10 +1,11 @@
 // src/pages/Member/SearchResults/index.jsx
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Typography, Row, Col, Empty, Button, Spin, message } from "antd";
+import { Typography, Empty, Button, Spin, message } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import CardListing from "@components/CardListing";
-import { searchListings } from "@/services/listingHomeService";
+import { searchListings, transformListingData } from "@/services/listingHomeService";
+import styles from "../Home/LatestListingsSection.module.scss";
 
 const { Title, Text } = Typography;
 const SearchResults = () => {
@@ -58,7 +59,9 @@ const SearchResults = () => {
   };
 
   const handleProductClick = (product) => {
-    // TODO: Navigate to product detail page
+    if (product?.id) {
+      navigate(`/detail/${product.id}`);
+    }
   };
 
   const handleBackToHome = () => {
@@ -86,16 +89,16 @@ const SearchResults = () => {
         {/* Results */}
         {searchResults.length > 0 ? (
           <>
-            <Row gutter={[16, 16]}>
+            <div className={styles.grid5x}>
               {searchResults.map((item) => (
-                <Col key={item.id} xs={24} sm={12} md={8} lg={6}>
+                <div key={item.id} className={styles.gridItem}>
                   <CardListing
                     listing={item}
                     onClick={handleProductClick}
                   />
-                </Col>
+                </div>
               ))}
-            </Row>
+            </div>
 
             {/* Load More Button */}
             {hasNext && (

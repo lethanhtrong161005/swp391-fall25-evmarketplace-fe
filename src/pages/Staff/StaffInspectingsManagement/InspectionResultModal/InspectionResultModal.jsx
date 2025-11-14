@@ -23,7 +23,7 @@ const InspectionResultModal = ({
       cancelText="Đóng"
       onOk={() => form.submit()}
       confirmLoading={loading}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form form={form} layout="vertical" onFinish={handleFinish}>
         <Form.Item

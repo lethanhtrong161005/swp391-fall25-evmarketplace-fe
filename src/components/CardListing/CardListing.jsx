@@ -18,7 +18,8 @@ dayjs.locale("vi");
 const { Text } = Typography;
 
 function getProductType(listing) {
-  const categoryId = listing?.category_id;
+  // Kiểm tra cả category_id (snake_case) và categoryId (camelCase)
+  const categoryId = listing?.category_id ?? listing?.categoryId;
   const category = listing?.category?.toUpperCase();
 
   if (categoryId === 4) return "BATTERY";

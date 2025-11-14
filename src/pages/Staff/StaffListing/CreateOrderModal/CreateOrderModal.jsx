@@ -31,7 +31,7 @@ export default function CreateOrderModal({
       onCancel={onCancel}
       okText="Xác nhận"
       cancelText="Hủy"
-      destroyOnClose
+      destroyOnHidden
     >
       <div style={{ marginBottom: 8 }}>
         <Text strong>Xe: </Text> {listing?.title || "(Không có tiêu đề)"}

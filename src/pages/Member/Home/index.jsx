@@ -19,13 +19,14 @@ const Home = () => {
     loadingLatest,
     loadingFeatured,
     totalProducts,
+    totalFeatured,
   } = useHomeData();
 
   const handleViewMoreListings = () => {
     navigate("/listings");
   };
   const handleViewMoreFeatured = () => {
-    // TODO: điều hướng tới trang danh sách sản phẩm nổi bật (nếu có)
+    navigate("/featured-listings");
   };
   const handleItemClick = (item) => {
     if (!item) return;
@@ -49,7 +50,7 @@ const Home = () => {
 
         <FeaturedProductSection
           items={featuredItems}
-          totalCount={featuredItems.length}
+          totalCount={totalFeatured}
           loading={loadingFeatured}
           onViewMore={handleViewMoreFeatured}
           onItemClick={handleItemClick}
