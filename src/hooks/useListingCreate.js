@@ -179,7 +179,20 @@ export function useListingCreate({ userId = null, currentListingId = null } = {}
 
           res = await StaffCreateListing(payload, imgs, vids);
         } else {
-          res = await createUserListing(payload, images, videos);
+          // Get images and videos from form fields, not state
+          // SectionMedia stores files in form fields "images" and "videos"
+          const formImages = allValues.images || [];
+          const formVideos = allValues.videos || [];
+          
+          // Extract File objects from form fileList
+          const imageFiles = formImages
+            .map((f) => f?.originFileObj || f)
+            .filter((f) => f instanceof File);
+          const videoFiles = formVideos
+            .map((f) => f?.originFileObj || f)
+            .filter((f) => f instanceof File);
+          
+          res = await createUserListing(payload, imageFiles, videoFiles);
         }
 
         if (res?.success !== false) {

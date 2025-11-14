@@ -3,7 +3,7 @@ import notificationService from "@services/notificationService";
 import { useAuth } from "./AuthContext";
 import cookieUtils from "@utils/cookieUtils";
 import FEATURE_FLAGS from "@config/featureFlags";
-import { NotificationContext } from "./NotificationContext";
+import { NotificationContext } from "./NotificationContext.js";
 
 function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);

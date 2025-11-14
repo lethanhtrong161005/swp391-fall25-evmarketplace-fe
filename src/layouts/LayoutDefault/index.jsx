@@ -10,7 +10,9 @@ const { Content, Header, Footer } = Layout;
 
 const LayoutDefault = () => {
   const location = useLocation();
-  const hideFooter = location.pathname.startsWith("/listing/new") || location.pathname.startsWith("/listing/edit");
+  const hideFooter =
+    location.pathname.startsWith("/listing/new") ||
+    location.pathname.startsWith("/listing/edit");
   return (
     <>
       <Layout
@@ -37,7 +39,7 @@ const LayoutDefault = () => {
         <Content
           style={{
             padding: "16px 40px",
-            background: "#f0f2f5",
+            background: "#E9F2FF",
             flex: 1,
             display: "flex",
             flexDirection: "column",

@@ -41,7 +41,9 @@ export default function ListingEdit() {
     return (
       <div style={{ padding: 40, textAlign: "center" }}>
         {contextHolder}
-        <Spin tip="Đang tải dữ liệu..." />
+        <Spin size="large">
+          <div style={{ padding: 50 }}>Đang tải dữ liệu...</div>
+        </Spin>
       </div>
     );
   }

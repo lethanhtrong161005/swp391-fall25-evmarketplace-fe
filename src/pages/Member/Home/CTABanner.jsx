@@ -1,70 +1,47 @@
 import React from "react";
-import { Typography, Card, Button, Space, theme, Row, Col } from "antd";
-import { ThunderboltOutlined, SendOutlined } from "@ant-design/icons";
+import { Typography, Button } from "antd";
+import { useNavigate } from "react-router-dom";
+import styles from "./CTABanner.module.scss";
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph } = Typography;
 
-export default function CTABanner({
-  onStartBuying,
-  onConsignVehicle,
-  title = "Sẵn sàng tìm chiếc EV/phụ kiện pin phù hợp?",
-  description = "Khám phá sản phẩm đã thẩm định hoặc boost nổi bật. Ký gửi nhanh – bán đúng giá.",
-  buyText = "Bắt đầu mua",
-  consignText = "Ký gửi ngay",
-}) {
-  const { token } = theme.useToken();
+export default function CTABanner() {
+  const navigate = useNavigate();
+
+  const handleStartSelling = () => {
+    navigate("/consignment/new");
+  };
 
   return (
-    <section style={{ margin: "48px 0" }}>
-      <Card
-        style={{
-          background: `linear-gradient(90deg, ${token.colorPrimary} 0%, ${token.colorPrimaryHover} 100%)`,
-          color: "#fff",
-          overflow: "hidden",
-          borderRadius: 16,
-          border: "none",
-          boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
-        }}
-        styles={{ body: { padding: 24 } }}
-      >
-        <Row gutter={[24, 24]} align="middle" justify="space-between">
-          <Col xs={24} md={16}>
-            <Title level={2} style={{ color: "#fff", margin: 0 }}>
-              {title}
+    <section className={styles.ctaBanner}>
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.textSection}>
+            <Title level={2} className={styles.title}>
+              Sẵn sàng bán xe điện của bạn?
             </Title>
-            <Paragraph style={{ color: "rgba(255,255,255,0.9)", marginTop: 8 }}>
-              {description}
+            <Paragraph className={styles.description}>
+              Ký gửi với chúng tôi để tiếp cận hàng ngàn người mua tiềm năng một
+              cách dễ dàng và nhanh chóng.
             </Paragraph>
-
-            <Space wrap>
-              <Button
-                size="large"
-                type="default"
-                icon={<ThunderboltOutlined />}
-                onClick={onStartBuying}
-              >
-                {buyText}
-              </Button>
-              <Button
-                size="large"
-                ghost
-                style={{ color: "#fff", borderColor: "#fff" }}
-                icon={<SendOutlined />}
-                onClick={onConsignVehicle}
-              >
-                {consignText}
-              </Button>
-            </Space>
-          </Col>
-
-          <Col xs={24} md={8} style={{ textAlign: "right" }}>
-            <Text style={{ color: "rgba(255,255,255,0.85)" }}>
-              <strong>Miễn phí</strong> đăng tin • <strong>3%</strong> hoa hồng
-              ký gửi • VNPay
-            </Text>
-          </Col>
-        </Row>
-      </Card>
+            <Button
+              type="primary"
+              size="large"
+              className={styles.ctaButton}
+              onClick={handleStartSelling}
+            >
+              Bắt đầu ký gửi
+            </Button>
+          </div>
+          <div className={styles.imageSection}>
+            <img
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBicow53OdbrVQT5OyvZfo9osMHxax2PIi0s1yOg5RMJwuStZlsBDGjFjTxx3x8PpSb7i5vQ6GRCN_DLQ9CRvjf6FnETTenakrHttfenXXzPdX4YAY_6ePFhFe6Yux1ZJA1FPg6B_EQmYLPc1gGvmV89t45ovo3r56DrFz1GWfTO8bRuhI0P-Tj5vu5jC6uqKNBU_O91p6CsiU6OoZu_8dLygBUs57DVkNFf4FhOxfTHrj0q9lRBNeNLqy8k9qjyrEYV1WxYTliTPJS"
+              alt="Car key"
+              className={styles.keyImage}
+            />
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

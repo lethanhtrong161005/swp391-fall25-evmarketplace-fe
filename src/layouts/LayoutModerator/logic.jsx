@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  DashboardOutlined,
   FileTextOutlined,
   HistoryOutlined,
 } from "@ant-design/icons";
@@ -9,12 +8,6 @@ import { useSidebar } from "@hooks/useSidebar";
 export function useModeratorLayout() {
   // Cấu hình menu cho moderator
   const menuItems = [
-    {
-      key: "dashboard",
-      icon: <DashboardOutlined />,
-      label: "Dashboard",
-      path: "/moderator",
-    },
     {
       key: "approval",
       icon: <FileTextOutlined />,

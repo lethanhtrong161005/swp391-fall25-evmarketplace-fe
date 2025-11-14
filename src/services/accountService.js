@@ -276,7 +276,6 @@ export const getStaffOfBranch = async () => {
   return res.data;
 };
 
-
 // ===== EMAIL UPDATE APIs =====
 
 // Gửi OTP đến email mới
@@ -307,20 +306,43 @@ export const requestEmailOtp = async (email) => {
 export const updateEmailWithOtp = async ({ newEmail, otp }) => {
   const token = localStorage.getItem("accessToken");
 
-  const res = await api.put(
-    `/api/accounts/update-email?newEmail=${encodeURIComponent(newEmail)}&otp=${encodeURIComponent(otp)}`,
-    null, 
-    {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      validateStatus: () => true,
-    }
-  );
+  try {
+    const res = await api.put(
+      `/api/accounts/update-email?newEmail=${encodeURIComponent(
+        newEmail
+      )}&otp=${encodeURIComponent(otp)}`,
+      null,
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        validateStatus: () => true,
+      }
+    );
 
-  if (res?.status >= 200 && res?.status < 300) {
-    return res.data;
+    if (res?.status >= 200 && res?.status < 300) {
+      return res.data;
+    }
+
+    // Tạo error object đúng format để getAxiosErrorMessage xử lý
+    const error = new Error(res?.data?.message || "Không thể cập nhật email.");
+    error.response = {
+      status: res?.status || 500,
+      data: res?.data || { message: "Lỗi server nội bộ" },
+    };
+    throw error;
+  } catch (err) {
+    // Nếu đã là error object có response, throw lại
+    if (err?.response) {
+      throw err;
+    }
+    // Nếu là lỗi khác (network, etc.), wrap lại với format đúng
+    const error = new Error(err?.message || "Không thể cập nhật email.");
+    error.response = {
+      status: 500,
+      data: { message: error.message },
+    };
+    throw error;
   }
-  throw new Error(res.data?.message || "Không thể cập nhật email.");
 };

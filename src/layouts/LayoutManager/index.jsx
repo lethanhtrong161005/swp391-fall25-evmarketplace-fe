@@ -14,11 +14,9 @@ const LayoutManager = () => {
     menuItems,
     selectedKeys,
     defaultOpenKeys,
-    // notifications,
     handleMenuClick,
     handleProfileClick,
     handleLogout,
-    handleOpenNotification,
   } = useLayoutManager();
 
   if (user?.role !== ROLES.MANAGER) {
@@ -39,7 +37,6 @@ const LayoutManager = () => {
           onMenuClick={handleMenuClick}
           onProfileClick={handleProfileClick}
           onLogout={handleLogout}
-          onOpenNotification={handleOpenNotification}
         />
       </aside>
 

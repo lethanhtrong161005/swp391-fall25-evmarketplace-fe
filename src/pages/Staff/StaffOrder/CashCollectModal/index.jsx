@@ -25,7 +25,7 @@ export default function CashCollectModal({ open, onCancel, order, onSubmit }) {
             okText="Xác nhận thu"
             onOk={() => form.submit()}
             okButtonProps={{ disabled }}
-            destroyOnClose
+            destroyOnHidden
         >
             <div className={s.root}>
                 <Space direction="vertical" size="small" className={s.stack}>

@@ -104,22 +104,9 @@ const MobileHeaderAction = ({
             Đăng tin
           </Button>
 
-          {/* Quản lý tin và Ký gửi - Chỉ hiện khi đã đăng nhập */}
+          {/* Ký gửi - Chỉ hiện khi đã đăng nhập */}
           {isLoggedIn && (
             <>
-              <Button
-                block
-                type="text"
-                onClick={() =>
-                  handleLoginRequire(
-                    MANAGE_LISTINGS_PATH,
-                    "Vui lòng đăng nhập để quản lý tin"
-                  )
-                }
-              >
-                Quản lý tin
-              </Button>
-
               <Button
                 block
                 type="text"

@@ -16,13 +16,22 @@ const ChatButton = ({ iconSize = "18px", buttonSize = "40px" }) => {
       return;
     }
 
+    let loadingRef = false;
+    let timeoutRef = null;
+
     const loadUnreadCount = async () => {
+      // Prevent concurrent calls
+      if (loadingRef) return;
+      loadingRef = true;
+      
       try {
         const count = await getUnreadCount();
         setUnreadCount(count || 0);
       } catch (e) {
         console.error("Load unread count error:", e);
         setUnreadCount(0);
+      } finally {
+        loadingRef = false;
       }
     };
 
@@ -30,14 +39,19 @@ const ChatButton = ({ iconSize = "18px", buttonSize = "40px" }) => {
     
     const interval = setInterval(loadUnreadCount, 30000);
     
-    // Listen for chat events to update count immediately
+    // Debounced event handlers to prevent spam
     const handleMessageReceived = () => {
-      loadUnreadCount();
+      if (timeoutRef) clearTimeout(timeoutRef);
+      timeoutRef = setTimeout(() => {
+        loadUnreadCount();
+      }, 1000);
     };
     
     const handleMessageSent = () => {
-      // Small delay to allow backend to process
-      setTimeout(loadUnreadCount, 500);
+      if (timeoutRef) clearTimeout(timeoutRef);
+      timeoutRef = setTimeout(() => {
+        loadUnreadCount();
+      }, 1000);
     };
     
     window.addEventListener('chat-message-received', handleMessageReceived);
@@ -45,6 +59,7 @@ const ChatButton = ({ iconSize = "18px", buttonSize = "40px" }) => {
     
     return () => {
       clearInterval(interval);
+      if (timeoutRef) clearTimeout(timeoutRef);
       window.removeEventListener('chat-message-received', handleMessageReceived);
       window.removeEventListener('chat-message-sent', handleMessageSent);
     };

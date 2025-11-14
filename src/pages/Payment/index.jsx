@@ -37,7 +37,9 @@ const VnpReturnPage = () => {
   if (status === "loading") {
     return (
       <div style={{ textAlign: "center", marginTop: 100 }}>
-        <Spin tip="Đang xác thực thanh toán..." />
+        <Spin size="large">
+          <div style={{ padding: 50 }}>Đang xác thực thanh toán...</div>
+        </Spin>
       </div>
     );
   }

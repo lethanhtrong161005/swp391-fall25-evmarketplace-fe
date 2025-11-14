@@ -123,7 +123,7 @@ export default function AgreementListingCreate({
       width={PAGE_WIDTH + 100}
       footer={null}
       centered
-      destroyOnClose
+      destroyOnHidden
     >
       {contextHolder}
       {loading ? (

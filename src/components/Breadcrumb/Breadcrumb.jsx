@@ -23,6 +23,7 @@ export default function DynamicBreadcrumb() {
     "info-user": "Thông tin cá nhân",
     listing: "Tin đăng",
     listings: "Tất cả tin đăng",
+    "featured-listings": "Tất cả tin nổi bật",
     edit: "Chỉnh sửa tin đăng",
     member: "Thành viên",
     availability: "Lên lịch",

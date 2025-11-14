@@ -79,7 +79,10 @@ const SectionDetailBattery = ({ mode = "listing" }) => {
                 name="chemistry"
                 rules={chemistryOptionalRule}
               >
-                <Input className={styles.input} placeholder="VD: LFP, NMC, LFP (LiFePO4)…" />
+                <Input
+                  className={styles.input}
+                  placeholder="VD: LFP, NMC, LFP (LiFePO4)…"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -109,7 +112,10 @@ const SectionDetailBattery = ({ mode = "listing" }) => {
                 name="dimension"
                 rules={dimensionOptionalRule}
               >
-                <Input className={styles.input} placeholder="VD: 1700x1200x180" />
+                <Input
+                  className={styles.input}
+                  placeholder="VD: 1700x1200x180"
+                />
               </Form.Item>
             </Col>
           </Row>

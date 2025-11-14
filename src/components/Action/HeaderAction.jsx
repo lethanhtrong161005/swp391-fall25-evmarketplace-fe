@@ -56,6 +56,7 @@ const HeaderAction = () => {
   const avatarSrc =
     user?.profile?.avatarUrl || user?.avatarUrl || user?.avatar || null;
   const avatarName = displayName?.charAt(0)?.toUpperCase();
+
   // Chuyển đổi menuItems thành format của Dropdown với header
   const dropdownItems = [
     // Header với Avatar và Tên - Custom dropdown header (disabled item)
@@ -163,34 +164,20 @@ const HeaderAction = () => {
               Đăng tin
             </Button>
 
+            {/* Ký gửi - Chỉ hiện khi đã đăng nhập */}
             {isLoggedIn && (
-              <>
-                <Button
-                  type="text"
-                  className="header-text-button"
-                  onClick={() =>
-                    handleLoginRequire(
-                      "/my-ads",
-                      "Vui lòng đăng nhập để quản lý tin"
-                    )
-                  }
-                >
-                  Quản lý tin
-                </Button>
-
-                <Button
-                  type="text"
-                  className="header-text-button"
-                  onClick={() =>
-                    handleLoginRequire(
-                      "/consignment",
-                      "Vui lòng đăng nhập để ký gửi"
-                    )
-                  }
-                >
-                  Ký gửi
-                </Button>
-              </>
+              <Button
+                type="text"
+                className="header-text-button"
+                onClick={() =>
+                  handleLoginRequire(
+                    "/consignment",
+                    "Vui lòng đăng nhập để ký gửi"
+                  )
+                }
+              >
+                Ký gửi
+              </Button>
             )}
           </div>
         )}

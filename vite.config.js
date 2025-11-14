@@ -17,15 +17,24 @@ export default defineConfig({
         ws: true, // Enable WebSocket for /api if needed
         configure: (proxy, _options) => {
           proxy.on("error", (err, _req, _res) => {
-            // Log proxy errors but don't crash
-            console.log("[proxy error]", err.message);
+            // Log proxy errors but don't crash (ignore common connection reset errors)
+            if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
+              console.log("[proxy error]", err.message);
+            }
           });
           proxy.on("proxyReqWs", (proxyReq, _req, _socket) => {
-            // Handle WebSocket proxy requests
+            // Handle WebSocket proxy request errors
             proxyReq.on("error", (err) => {
-              // Ignore WebSocket connection errors (common when server restarts)
-              if (err.code !== "ECONNRESET") {
+              // Ignore WebSocket connection errors (common when server restarts or connection drops)
+              if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
                 console.log("[ws proxy error]", err.message);
+              }
+            });
+            // Handle WebSocket socket errors
+            _socket.on("error", (err) => {
+              // Suppress common WebSocket connection errors
+              if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
+                console.log("[ws socket error]", err.message);
               }
             });
           });
@@ -37,8 +46,8 @@ export default defineConfig({
         changeOrigin: true,
         configure: (proxy, _options) => {
           proxy.on("error", (err, _req, _res) => {
-            // Log proxy errors but don't crash
-            if (err.code !== "ECONNRESET") {
+            // Log proxy errors but don't crash (ignore common connection reset errors)
+            if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
               console.log("[ws proxy error]", err.message);
             }
           });

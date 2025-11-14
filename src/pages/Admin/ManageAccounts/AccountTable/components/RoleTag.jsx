@@ -6,8 +6,9 @@ const RoleTag = ({ role }) => {
   const roleLabels = {
     ADMIN: "Quản trị viên",
     MANAGER: "Quản lý",
-    INSPECTOR: "Kỹ thuật viên",
+    INSPECTOR: "Kiểm định viên",
     STAFF: "Nhân viên",
+    MODERATOR: "Kiểm duyệt viên",
     MEMBER: "Thành viên",
   };
 
@@ -16,6 +17,7 @@ const RoleTag = ({ role }) => {
     MANAGER: "blue",
     INSPECTOR: "orange",
     STAFF: "green",
+    MODERATOR: "purple",
     MEMBER: "cyan",
   };
 

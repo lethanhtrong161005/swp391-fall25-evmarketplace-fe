@@ -17,7 +17,7 @@ const HistoryPaymentModal = ({ open, orderId, onClose }) => {
             open={open}
             onCancel={onClose}
             width={860}
-            destroyOnClose
+            destroyOnHidden
             footer={null}
         >
             <div className={s.headerRow}>

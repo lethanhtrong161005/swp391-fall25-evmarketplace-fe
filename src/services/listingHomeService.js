@@ -40,14 +40,19 @@ export const getLatestListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
-      size: limit,
+      size: limit * 2, // Lấy nhiều hơn để filter
       // Backend chấp nhận sort theo "createdAt"
       sort: "createdAt",
       dir: "desc",
     });
 
     if (response?.success && response?.data?.items) {
-      return response.data.items.map(transformListingData);
+      // Loại bỏ tin ký gửi (isConsigned = true)
+      const nonConsignedItems = response.data.items
+        .filter((item) => !item.isConsigned)
+        .slice(0, limit);
+
+      return nonConsignedItems.map(transformListingData);
     }
 
     return [];
@@ -62,19 +67,16 @@ export const getFeaturedListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
-      // Lấy một trang lớn để tránh bị thiếu BOOSTED do filter phía client
-      size: 200,
+      size: limit,
       sort: "createdAt",
       dir: "desc",
+      isBoosted: true,
     });
 
     if (response?.success && response?.data?.items) {
-      // Chỉ lấy tin BOOSTED, sắp xếp mới nhất
+      // Lọc chỉ lấy ACTIVE và đã được sắp xếp từ API
       const featuredItems = response.data.items
-        .filter(
-          (item) => item.status === "ACTIVE" && item.visibility === "BOOSTED"
-        )
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .filter((item) => item.status === "ACTIVE")
         .slice(0, limit);
 
       return featuredItems.map(transformListingData);
@@ -209,6 +211,62 @@ export const getBatteryListings = async ({
   }
 };
 
+// Lấy danh sách tin đăng ký gửi (isConsigned = true)
+export const getConsignmentListings = async ({
+  page = 0,
+  size = 20,
+  sort = "createdAt",
+  dir = "desc",
+} = {}) => {
+  try {
+    // Lấy nhiều hơn để filter
+    const response = await getAllListings({
+      page,
+      size: size * 2,
+      sort,
+      dir,
+    });
+
+    if (response?.success && response?.data) {
+      // Filter chỉ lấy tin ký gửi
+      const consignedItems = response.data.items.filter(
+        (item) => item.isConsigned === true && item.status === "ACTIVE"
+      );
+
+      return {
+        items: consignedItems.slice(0, size).map(transformListingData),
+        totalElements: consignedItems.length,
+        totalPages: Math.ceil(consignedItems.length / size),
+        hasNext: consignedItems.length > size,
+        hasPrevious: page > 0,
+        page: page,
+        size: size,
+      };
+    }
+
+    return {
+      items: [],
+      totalElements: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrevious: false,
+      page: 0,
+      size,
+    };
+  } catch (error) {
+    console.error("Error fetching consignment listings:", error);
+    return {
+      items: [],
+      totalElements: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrevious: false,
+      page: 0,
+      size,
+    };
+  }
+};
+
 // Lấy chi tiết listing công khai ở trang Home/Detail
 export const getListingDetail = async (id) => {
   if (id == null) return null;
@@ -225,7 +283,7 @@ export const getListingDetail = async (id) => {
 };
 
 // Transform dữ liệu từ API về format phù hợp với component
-const transformListingData = (apiItem) => {
+export const transformListingData = (apiItem) => {
   // Xử lý thumbnailUrl từ API response mới
   const getThumbnailUrl = (thumbnailUrl) => {
     if (!thumbnailUrl) return "";

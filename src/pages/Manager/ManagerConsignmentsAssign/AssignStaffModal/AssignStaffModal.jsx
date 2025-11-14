@@ -19,7 +19,7 @@ const AssignStaffModal = ({ branchId, visible, onClose, onAssign }) => {
       open={visible}
       onCancel={onClose}
       footer={null}
-      destroyOnClose
+      destroyOnHidden
     >
       <Space direction="vertical" style={{ width: "100%" }}>
         <Select
