@@ -74,7 +74,10 @@ export default function useAllFeaturedListings() {
   const fetchListings = async () => {
     try {
       setLoading(true);
-      const [sortField, sortDir] = sortBy.split(",");
+      // Split sortBy và đảm bảo có giá trị mặc định
+      const sortParts = (sortBy || "createdAt,desc").split(",");
+      const sortField = sortParts[0]?.trim() || "createdAt";
+      const sortDir = sortParts[1]?.trim() || "desc";
 
       const params = {
         page: pagination.current - 1,

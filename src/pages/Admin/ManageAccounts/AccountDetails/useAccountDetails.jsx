@@ -16,7 +16,9 @@ export function useAccountDetails() {
       MEMBER: { color: "cyan", text: "Thành viên" },
     };
     
-    const config = roleConfig[role] || { color: "default", text: role };
+    // Normalize role về uppercase để match với keys
+    const normalizedRole = role ? String(role).toUpperCase() : null;
+    const config = normalizedRole ? (roleConfig[normalizedRole] || { color: "default", text: role }) : { color: "default", text: role };
     return <Tag color={config.color}>{config.text}</Tag>;
   };
 

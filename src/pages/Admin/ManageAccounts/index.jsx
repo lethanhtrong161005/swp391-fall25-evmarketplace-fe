@@ -69,6 +69,7 @@ export default function ManageAccounts() {
               disabled={
                 !query.role && !query.status && query.verified === undefined
               }
+              className={s.clearFilterButton}
             >
               Xóa bộ lọc
             </Button>

@@ -64,6 +64,12 @@ export const SPECIFICATION_LABELS = {
   DC_CHARGING: "Sạc DC",
   AC_CONNECTOR: "Cổng AC",
   DC_CONNECTOR: "Cổng DC",
+  
+  // Bike specific
+  MOTOR_LOCATION: "Vị trí động cơ",
+  WHEEL_SIZE: "Kích thước bánh xe",
+  BRAKE_TYPE: "Loại phanh",
+  BIKE_WEIGHT: "Khối lượng xe",
 
   // Location
   ADDRESS: "Địa chỉ",

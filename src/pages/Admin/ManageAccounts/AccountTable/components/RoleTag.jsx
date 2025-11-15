@@ -21,8 +21,10 @@ const RoleTag = ({ role }) => {
     MEMBER: "cyan",
   };
 
-  const label = roleLabels[role] || role;
-  const color = roleColors[role] || "default";
+  // Normalize role về uppercase để match với keys
+  const normalizedRole = role ? String(role).toUpperCase() : null;
+  const label = normalizedRole ? (roleLabels[normalizedRole] || role) : role;
+  const color = normalizedRole ? (roleColors[normalizedRole] || "default") : "default";
 
   return (
     <Tag color={color} className={s.roleTag}>

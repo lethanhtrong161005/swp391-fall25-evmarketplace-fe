@@ -44,7 +44,14 @@ export default function useListingPage(fetchFunction) {
   const fetchListings = async () => {
     try {
       setLoading(true);
-      const [sortField, sortDir] = sortBy.split(",");
+      console.log("🟢 [SORT DEBUG] useListingPage - fetchListings called, sortBy:", sortBy);
+      
+      // Split sortBy và đảm bảo có giá trị mặc định
+      const sortParts = (sortBy || "createdAt,desc").split(",");
+      const sortField = sortParts[0]?.trim() || "createdAt";
+      const sortDir = sortParts[1]?.trim() || "desc";
+
+      console.log("🟢 [SORT DEBUG] useListingPage - After split - sortField:", sortField, "sortDir:", sortDir);
 
       const params = {
         page: pagination.current - 1,
@@ -53,7 +60,14 @@ export default function useListingPage(fetchFunction) {
         dir: sortDir,
       };
 
+      console.log("🟢 [SORT DEBUG] useListingPage - Params before API call:", JSON.stringify(params, null, 2));
+
       const response = await fetchFunction(params);
+
+      console.log("🟢 [SORT DEBUG] useListingPage - Response received:", {
+        itemsCount: response?.items?.length,
+        totalElements: response?.totalElements,
+      });
 
       if (response?.items) {
         setListings(response.items);
@@ -97,9 +111,11 @@ export default function useListingPage(fetchFunction) {
 
   // Handlers
   const handleSortChange = (value) => {
+    console.log("🔵 [SORT DEBUG] useListingPage - handleSortChange called with value:", value);
     setSortBy(value);
     setPagination((prev) => ({ ...prev, current: 1 }));
     updateURLParams({ sort: value, page: 1 });
+    console.log("🔵 [SORT DEBUG] useListingPage - Updated sortBy state to:", value);
   };
 
   const handleViewModeChange = (mode) => {

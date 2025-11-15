@@ -98,14 +98,32 @@
     gap: 8px;
 
     &--chat {
-      background: #f0f0f0;
-      border-color: #d9d9d9;
-      color: #333;
+      background: #1B2A41;
+      border-color: #1B2A41;
+      color: #fff;
 
       &:hover {
-        background: #e6e6e6;
-        border-color: #bfbfbf;
-        color: #333;
+        background: #2d4a6b;
+        border-color: #2d4a6b;
+        color: #fff;
+      }
+
+      &:active {
+        background: #15202e;
+        border-color: #15202e;
+      }
+
+      &:disabled {
+        background: #f0f0f0;
+        border-color: #d9d9d9;
+        color: #8c8c8c;
+        cursor: not-allowed;
+
+        &:hover {
+          background: #f0f0f0;
+          border-color: #d9d9d9;
+          color: #8c8c8c;
+        }
       }
     }
 

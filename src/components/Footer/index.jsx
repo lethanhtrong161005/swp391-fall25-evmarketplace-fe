@@ -7,7 +7,7 @@ import {
   InstagramOutlined,
 } from "@ant-design/icons";
 import styles from "./Footer.module.scss";
-import logoImage from "@/assets/images/logo/Logo_Brand.png";
+import Logo from "@components/Logo/Logo";
 
 const { Footer } = Layout;
 const { Title, Text } = Typography;
@@ -26,16 +26,7 @@ export default function SiteFooter() {
               size={16}
               className={styles.brandSection}
             >
-              <div className={styles.logoWrapper}>
-                <img
-                  src={logoImage}
-                  alt="ReEV Logo"
-                  className={styles.logoImage}
-                />
-                <Title level={3} className={styles.brandName}>
-                  ReEV
-                </Title>
-              </div>
+              <Logo variant="footer" onClick={null} />
               <Text className={styles.brandDescription}>
                 Thị trường đáng tin cậy của bạn cho xe điện và pin đã qua sử
                 dụng.

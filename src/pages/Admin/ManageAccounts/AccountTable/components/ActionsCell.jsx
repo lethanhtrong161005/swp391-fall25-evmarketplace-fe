@@ -2,7 +2,6 @@ import React from "react";
 import { Space, Tooltip, Popconfirm, Dropdown } from "antd";
 import {
   EyeOutlined,
-  EditOutlined,
   LockOutlined,
   UnlockOutlined,
   MoreOutlined,
@@ -10,7 +9,6 @@ import {
 } from "@ant-design/icons";
 import ActionButton from "@components/ActionButton";
 import {
-  canEditAccount,
   canLockAccount,
   getActionTooltip,
 } from "@utils/accountPermissions";
@@ -26,11 +24,9 @@ const ActionsCell = ({
 }) => {
   const isActive = record.status === "ACTIVE";
   const isAdmin = record.role === "ADMIN";
-  const canEdit = canEditAccount(user, record);
   const canLock = canLockAccount(user, record);
 
   const handleDetailClick = () => onShowDetail?.(record);
-  const handleEditClick = () => onShowEdit?.(record);
   const handleToggleLock = () => onToggleLock?.(record);
   const handleChangeRole = (role) => onChangeRole?.(record, role);
 
@@ -50,20 +46,6 @@ const ActionsCell = ({
             </ActionButton>
           </Tooltip>
 
-          <Tooltip
-            title={getActionTooltip("edit", user, record)}
-            placement="top"
-          >
-            <ActionButton
-              variant="secondary"
-              size="medium"
-              icon={<EditOutlined />}
-              onClick={handleEditClick}
-              disabled={!canEdit}
-            >
-              <span className={s.btnLabel}>Sửa</span>
-            </ActionButton>
-          </Tooltip>
         </Space>
       </div>
     );
@@ -83,17 +65,6 @@ const ActionsCell = ({
         </ActionButton>
       </Tooltip>
 
-      <Tooltip title={getActionTooltip("edit", user, record)} placement="top">
-        <ActionButton
-          variant="secondary"
-          size="medium"
-          icon={<EditOutlined />}
-          onClick={handleEditClick}
-          disabled={!canEdit}
-        >
-          <span className={s.btnLabel}>Sửa</span>
-        </ActionButton>
-      </Tooltip>
     </Space>
   );
 
@@ -113,7 +84,7 @@ const ActionsCell = ({
     >
       <Tooltip title={getActionTooltip("lock", user, record)}>
         <ActionButton
-          variant={isActive ? "danger" : "success"}
+          variant={isActive ? "danger" : "primary"}
           size="medium"
           icon={isActive ? <LockOutlined /> : <UnlockOutlined />}
         >
@@ -124,7 +95,7 @@ const ActionsCell = ({
   ) : (
     <Tooltip title={getActionTooltip("lock", user, record)}>
       <ActionButton
-        variant={isActive ? "danger" : "success"}
+        variant={isActive ? "danger" : "primary"}
         size="medium"
         icon={isActive ? <LockOutlined /> : <UnlockOutlined />}
         disabled={true}
@@ -152,12 +123,6 @@ const ActionsCell = ({
                 label: "Chi tiết",
                 icon: <EyeOutlined />,
                 onClick: handleDetailClick,
-              },
-              {
-                key: "edit",
-                label: "Sửa",
-                icon: <EditOutlined />,
-                onClick: handleEditClick,
               },
               {
                 key: "changeRole",

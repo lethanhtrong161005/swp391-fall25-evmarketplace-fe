@@ -181,16 +181,25 @@ export function useManageAccounts() {
     }
 
     try {
+      const role = values.role;
+      
+      // Validate role - chỉ cho phép STAFF hoặc MODERATOR
+      if (role !== "STAFF" && role !== "MODERATOR") {
+        msg.error("Chỉ có thể tạo tài khoản Staff hoặc Moderator");
+        return;
+      }
+      
       // Tạo payload với validation
       const payload = {
         phoneNumber: String(values.phone).trim(),
         password: String(values.password).trim(),
         fullName: String(values.fullName).trim(),
-        role: values.role || "MEMBER",
+        role: role,
       };
 
-      // Set branchId = 1 cho Staff và Manager
-      if (values.role === "STAFF" || values.role === "MANAGER") {
+      // Chỉ STAFF mới cần branchId, MODERATOR không cần
+      // BranchID mặc định cho Staff là 1
+      if (role === "STAFF") {
         payload.branchId = 1;
       }
 

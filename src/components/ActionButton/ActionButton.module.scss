@@ -56,18 +56,19 @@
 
 // Color Variants
 .primary {
-  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+  background: #1B2A41;
   border: none;
   color: white;
-  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(27, 42, 65, 0.3);
   
   &:hover {
-    background: linear-gradient(135deg, #40a9ff 0%, #69c0ff 100%);
-    box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+    background: #2d4a6b;
+    box-shadow: 0 4px 12px rgba(27, 42, 65, 0.4);
   }
   
   &:active {
-    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+    background: #15202e;
+    box-shadow: 0 2px 8px rgba(27, 42, 65, 0.3);
   }
   
   &:disabled {
@@ -84,8 +85,8 @@
   
   &:hover {
     background: #f8f9fa;
-    border-color: #1890ff;
-    color: #1890ff;
+    border-color: #1B2A41;
+    color: #1B2A41;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   

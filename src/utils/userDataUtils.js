@@ -115,11 +115,18 @@ export function getDisplayContact(user) {
 export function getAvatarUrl(user) {
   if (!user) return null;
 
+  // Kiểm tra nhiều nguồn với thứ tự ưu tiên
   return (
+    // Root level
     user.avatar_url ||
     user.avatarUrl ||
-    user.profile?.avatar_url ||
+    user.avatar ||
+    // Profile level (nested)
+    user.profile?.profile?.avatarUrl ||
+    user.profile?.profile?.avatar_url ||
     user.profile?.avatarUrl ||
+    user.profile?.avatar_url ||
+    user.profile?.avatar ||
     null
   );
 }

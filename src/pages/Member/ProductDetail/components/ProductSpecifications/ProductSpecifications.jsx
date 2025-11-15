@@ -86,36 +86,66 @@ export default function ProductSpecifications({ product, isBattery }) {
         });
       }
 
-      // Thông số xe - chỉ hiển thị khi có productVehicle
-      if (product.productVehicle) {
-        if (product.productVehicle.rangeKm != null) {
+      // Thông số xe - từ productVehicle hoặc root level
+      const vehicle = product.productVehicle || product;
+      
+      if (vehicle.rangeKm != null) {
+        specs.push({
+          label: SPECIFICATION_LABELS.RANGE,
+          value: `${vehicle.rangeKm} km`,
+        });
+      }
+      if (vehicle.acChargingKw != null) {
+        specs.push({
+          label: SPECIFICATION_LABELS.AC_CHARGING,
+          value: `${vehicle.acChargingKw} kW`,
+        });
+      }
+      if (vehicle.dcChargingKw != null) {
+        specs.push({
+          label: SPECIFICATION_LABELS.DC_CHARGING,
+          value: `${vehicle.dcChargingKw} kW`,
+        });
+      }
+      if (vehicle.acConnector) {
+        specs.push({
+          label: SPECIFICATION_LABELS.AC_CONNECTOR,
+          value: vehicle.acConnector,
+        });
+      }
+      if (vehicle.dcConnector) {
+        specs.push({
+          label: SPECIFICATION_LABELS.DC_CONNECTOR,
+          value: vehicle.dcConnector,
+        });
+      }
+
+      // Thông số bike - từ product.bike hoặc product.productVehicle.bike
+      const bike = product.bike || product.productVehicle?.bike || product.productVehicle?.bikeDetail;
+      
+      if (bike) {
+        if (bike.motorLocation) {
           specs.push({
-            label: SPECIFICATION_LABELS.RANGE,
-            value: `${product.productVehicle.rangeKm} km`,
+            label: SPECIFICATION_LABELS.MOTOR_LOCATION,
+            value: bike.motorLocation,
           });
         }
-        if (product.productVehicle.acChargingKw != null) {
+        if (bike.wheelSize) {
           specs.push({
-            label: SPECIFICATION_LABELS.AC_CHARGING,
-            value: `${product.productVehicle.acChargingKw} kW`,
+            label: SPECIFICATION_LABELS.WHEEL_SIZE,
+            value: bike.wheelSize,
           });
         }
-        if (product.productVehicle.dcChargingKw != null) {
+        if (bike.brakeType) {
           specs.push({
-            label: SPECIFICATION_LABELS.DC_CHARGING,
-            value: `${product.productVehicle.dcChargingKw} kW`,
+            label: SPECIFICATION_LABELS.BRAKE_TYPE,
+            value: bike.brakeType,
           });
         }
-        if (product.productVehicle.acConnector) {
+        if (bike.weightKg != null) {
           specs.push({
-            label: SPECIFICATION_LABELS.AC_CONNECTOR,
-            value: product.productVehicle.acConnector,
-          });
-        }
-        if (product.productVehicle.dcConnector) {
-          specs.push({
-            label: SPECIFICATION_LABELS.DC_CONNECTOR,
-            value: product.productVehicle.dcConnector,
+            label: SPECIFICATION_LABELS.BIKE_WEIGHT,
+            value: `${bike.weightKg} kg`,
           });
         }
       }

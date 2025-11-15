@@ -4,11 +4,15 @@ import { ROLES, ROLE_LABELS } from "@config/roles";
 
 // Component hiển thị tên role bằng tiếng Việt
 const RoleLabel = ({ role, color, size = "default", className }) => {
-  const roleLabel = ROLE_LABELS[role] || role;
+  // Normalize role về lowercase để match với ROLE_LABELS
+  const normalizedRole = role ? String(role).toLowerCase() : null;
+  const roleLabel = normalizedRole ? (ROLE_LABELS[normalizedRole] || role) : role;
 
   // Màu mặc định theo role
   const getDefaultColor = (role) => {
-    switch (role) {
+    if (!role) return "default";
+    const normalized = String(role).toLowerCase();
+    switch (normalized) {
       case ROLES.ADMIN:
         return "red";
       case ROLES.MANAGER:
@@ -17,6 +21,8 @@ const RoleLabel = ({ role, color, size = "default", className }) => {
         return "orange";
       case ROLES.STAFF:
         return "green";
+      case ROLES.MODERATOR:
+        return "purple";
       case ROLES.MEMBER:
         return "cyan";
       default:
