@@ -151,7 +151,6 @@ export default function UpdateProfileModal({
                   </Space>
                 }
                 rules={[
-                  { required: true, message: "Nhập email" },
                   { type: "email", message: "Email không hợp lệ" },
                 ]}
               >

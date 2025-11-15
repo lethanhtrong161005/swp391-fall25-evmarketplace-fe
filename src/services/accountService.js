@@ -52,10 +52,11 @@ export const updateUserAvatar = async (avatarFile) => {
   return { status: res?.status, data: payload };
 };
 
-export const requestPhoneOpt = async (phoneNumber) => {
+export const requestPhoneOpt = async ( phoneNumber, type ) => {
+  console.log("API requestPhoneOpt called with type:", type, phoneNumber);
   const res = await api.post(
     "/api/accounts/request-otp",
-    { phoneNumber },
+    { phoneNumber: phoneNumber, type: type },
     {
       withCredentials: true,
       validateStatus: () => true,

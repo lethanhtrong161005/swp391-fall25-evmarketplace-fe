@@ -6,7 +6,7 @@ const CreateListingFooter = ({
   currentPostType,
   currentMode,
   onChoosePostType,
-  onPreview,
+  // onPreview,
   onDraft,
   onSubmit,
   submitting,
