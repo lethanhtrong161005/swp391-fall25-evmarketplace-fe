@@ -42,7 +42,7 @@ export default function SidebarBrand({ borderColor }) {
   return (
     <div
       className={s.brand}
-      style={{ borderBottom: `1px solid ${borderColor}` }}
+      style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }} // Border trắng mờ trên nền primary
     >
       <Space
         size={8}
@@ -51,7 +51,7 @@ export default function SidebarBrand({ borderColor }) {
         onClick={handleBrandClick}
       >
         {/* <span style={{ color: brandColor }}>{getBrandIcon()}</span> */}
-        <Text strong className={s.brandText} style={{ color: brandColor }}>
+        <Text strong className={s.brandText}>
           {brandText}
         </Text>
       </Space>

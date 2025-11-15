@@ -5,10 +5,9 @@
   bottom: 0;
   height: 60px; // Fixed height
   padding: 12px 16px;
-  background: #ffffff;
+  // Background sẽ được set từ style prop (màu Primary) để đồng bộ với sidebar
   z-index: 10;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-  border-top: 1px solid rgba(5, 5, 5, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.1); // Border trắng mờ để tách biệt với phần trên
   display: flex;
   align-items: center;
 }
@@ -31,12 +30,27 @@
 }
 
 .logoutButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   transition: all 0.3s ease;
   border-radius: 6px;
+  color: rgba(255, 255, 255, 0.85) !important; // Màu trắng mờ cho text và icon trên nền primary
   
   &:hover {
-    background-color: #fff2f0;
-    border-color: #ff4d4f;
+    background-color: rgba(255, 255, 255, 0.1) !important; // Hover effect nhẹ
+    color: #ffffff !important;
     transform: translateY(-1px);
+  }
+  
+  // Đảm bảo icon có màu trắng
+  :global(.anticon) {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+  
+  // Khi hover, icon cũng sáng lên
+  &:hover :global(.anticon) {
+    color: #ffffff !important;
   }
 }

@@ -17,6 +17,22 @@ export default function ProductSpecifications({ product, isBattery }) {
       { label: SPECIFICATION_LABELS.MODEL, value: product.model },
     ];
 
+    // Thêm danh mục nếu có
+    if (product.categoryName) {
+      specs.push({
+        label: SPECIFICATION_LABELS.CATEGORY,
+        value: product.categoryName,
+      });
+    }
+
+    // Thêm màu sắc nếu có
+    if (product.color) {
+      specs.push({
+        label: SPECIFICATION_LABELS.COLOR,
+        value: product.color,
+      });
+    }
+
     if (isBattery) {
       // Thông số pin
       if (product.productBattery?.capacityKwh != null) {
@@ -41,6 +57,15 @@ export default function ProductSpecifications({ product, isBattery }) {
         specs.push({
           label: SPECIFICATION_LABELS.DIMENSION,
           value: product.productBattery.dimension,
+        });
+      }
+      // Hóa học pin - ưu tiên từ productBattery, sau đó từ listing
+      const chemistry =
+        product.productBattery?.chemistry || product.batteryChemistry;
+      if (chemistry) {
+        specs.push({
+          label: SPECIFICATION_LABELS.CHEMISTRY,
+          value: chemistry,
         });
       }
     } else {

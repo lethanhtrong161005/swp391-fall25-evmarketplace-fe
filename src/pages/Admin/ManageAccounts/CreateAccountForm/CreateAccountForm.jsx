@@ -165,7 +165,6 @@ export default function CreateAccountForm({ open, onClose, onFinish }) {
             <Option value="MEMBER">Thành viên</Option>
             <Option value="STAFF">Nhân viên</Option>
             <Option value="MANAGER">Quản lý</Option>
-            <Option value="INSPECTOR">Kiểm định viên</Option>
             <Option value="MODERATOR">Kiểm duyệt viên</Option>
             <Option value="ADMIN">Quản trị viên</Option>
           </Select>

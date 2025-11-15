@@ -5,6 +5,19 @@ import s from "./ChatInput.module.scss";
 
 const { TextArea } = Input;
 
+// Giới hạn dung lượng file
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
+
+// Hàm format dung lượng file
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+};
+
 const ChatInput = ({
   onSendText,
   onSendMedia,
@@ -41,9 +54,11 @@ const ChatInput = ({
       return;
     }
 
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      antMessage.error("Kích thước ảnh không được vượt quá 10MB");
+    // Validate file size
+    if (file.size > MAX_IMAGE_SIZE) {
+      antMessage.error(
+        `Kích thước ảnh không được vượt quá ${formatFileSize(MAX_IMAGE_SIZE)}. File của bạn: ${formatFileSize(file.size)}`
+      );
       return;
     }
 
@@ -66,9 +81,15 @@ const ChatInput = ({
       return;
     }
 
-    // Validate file size (max 50MB)
-    if (file.size > 50 * 1024 * 1024) {
-      antMessage.error("Kích thước video không được vượt quá 50MB");
+    // Validate file size
+    if (file.size > MAX_VIDEO_SIZE) {
+      antMessage.error(
+        `Dung lượng video không được vượt quá ${formatFileSize(MAX_VIDEO_SIZE)}. File của bạn: ${formatFileSize(file.size)}`
+      );
+      // Clear input để người dùng có thể chọn file khác
+      if (videoInputRef.current) {
+        videoInputRef.current.value = "";
+      }
       return;
     }
 
@@ -85,6 +106,16 @@ const ChatInput = ({
 
   const handleSendVideo = () => {
     if (!previewFile || disabled) return;
+    
+    // Kiểm tra lại dung lượng trước khi gửi (double check)
+    if (previewFile.size > MAX_VIDEO_SIZE) {
+      antMessage.error(
+        `Dung lượng video không được vượt quá ${formatFileSize(MAX_VIDEO_SIZE)}. File của bạn: ${formatFileSize(previewFile.size)}`
+      );
+      clearPreview();
+      return;
+    }
+    
     onSendMedia?.(previewFile, "VIDEO");
     clearPreview();
   };
@@ -109,7 +140,16 @@ const ChatInput = ({
   };
 
   const videoUploadProps = {
-    beforeUpload: () => false, // Prevent auto upload
+    beforeUpload: (file) => {
+      // Validate file size trước khi xử lý
+      if (file.size > MAX_VIDEO_SIZE) {
+        antMessage.error(
+          `Dung lượng video không được vượt quá ${formatFileSize(MAX_VIDEO_SIZE)}. File của bạn: ${formatFileSize(file.size)}`
+        );
+        return Upload.LIST_IGNORE; // Prevent file from being added
+      }
+      return false; // Prevent auto upload
+    },
     showUploadList: false,
     accept: "video/*",
     onChange: handleVideoChange,

@@ -3,7 +3,7 @@ import { Breadcrumb } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import "./Breadcrumb.scss";
 
-export default function DynamicBreadcrumb() {
+export default function DynamicBreadcrumb({ customTitle }) {
   const location = useLocation();
   const pathSnippets = location.pathname.split("/").filter(Boolean);
 
@@ -24,6 +24,7 @@ export default function DynamicBreadcrumb() {
     listing: "Tin đăng",
     listings: "Tất cả tin đăng",
     "featured-listings": "Tất cả tin nổi bật",
+    detail: "Chi tiết sản phẩm",
     edit: "Chỉnh sửa tin đăng",
     member: "Thành viên",
     availability: "Lên lịch",
@@ -36,6 +37,10 @@ export default function DynamicBreadcrumb() {
     if (segment === "listing" && segments[index + 1] && (segments[index + 1] === "new" || segments[index + 1] === "edit")) {
       return "/my-ads";
     }
+    // Nếu đang ở /detail/:id, thì "detail" link đến /all-listings
+    if (segment === "detail") {
+      return "/all-listings";
+    }
     // Trường hợp khác, tạo URL bình thường
     return "/" + segments.slice(0, index + 1).join("/");
   };
@@ -47,7 +52,8 @@ export default function DynamicBreadcrumb() {
   const breadcrumbItems = filteredSnippets.map((_, index) => {
     const url = getCustomUrl(filteredSnippets[index], filteredSnippets, index);
     const isLast = index === filteredSnippets.length - 1;
-    const label = nameMap[filteredSnippets[index]] || filteredSnippets[index];
+    // Sử dụng customTitle nếu có và đây là item cuối cùng
+    const label = isLast && customTitle ? customTitle : (nameMap[filteredSnippets[index]] || filteredSnippets[index]);
 
     return {
       title: isLast ? (

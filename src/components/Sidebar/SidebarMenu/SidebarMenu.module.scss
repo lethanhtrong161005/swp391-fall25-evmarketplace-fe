@@ -1,0 +1,83 @@
+.sidebarMenu {
+  // Đảm bảo text và icon nổi bật hơn
+  :global(.ant-menu-item) {
+    font-weight: 500 !important; // Tăng độ đậm
+    color: #ffffff !important;
+    
+    // Icon
+    .anticon {
+      font-size: 18px !important;
+      color: #ffffff !important;
+    }
+    
+    // Hover state
+    &:hover {
+      color: #ffffff !important;
+      background-color: rgba(255, 255, 255, 0.2) !important;
+      
+      .anticon {
+        color: #ffffff !important;
+      }
+    }
+    
+    // Selected state
+    &.ant-menu-item-selected {
+      background-color: rgba(255, 255, 255, 0.3) !important;
+      color: #ffffff !important;
+      font-weight: 600 !important; // Đậm hơn khi selected
+      
+      .anticon {
+        color: #ffffff !important;
+      }
+    }
+  }
+  
+  // Submenu items
+  :global(.ant-menu-submenu) {
+    .ant-menu-submenu-title {
+      font-weight: 500 !important;
+      color: rgba(255, 255, 255, 0.85) !important; // Hơi mờ hơn cho submenu parent
+      
+      .anticon {
+        font-size: 18px !important;
+        color: rgba(255, 255, 255, 0.85) !important;
+      }
+      
+      &:hover {
+        color: #ffffff !important;
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        
+        .anticon {
+          color: #ffffff !important;
+        }
+      }
+    }
+    
+    .ant-menu-submenu-arrow {
+      color: rgba(255, 255, 255, 0.85) !important;
+    }
+  }
+  
+  // Submenu items (children)
+  :global(.ant-menu-submenu-inline) {
+    .ant-menu-item {
+      font-weight: 500 !important;
+      color: #ffffff !important;
+      
+      .anticon {
+        font-size: 16px !important;
+        color: #ffffff !important;
+      }
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.15) !important;
+      }
+      
+      &.ant-menu-item-selected {
+        background-color: rgba(255, 255, 255, 0.3) !important;
+        font-weight: 600 !important;
+      }
+    }
+  }
+}
+

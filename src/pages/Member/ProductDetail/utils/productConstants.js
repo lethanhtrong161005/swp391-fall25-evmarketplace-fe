@@ -44,12 +44,15 @@ export const SPECIFICATION_LABELS = {
   BRAND: "Thương hiệu",
   MODEL: "Model",
   SOH: "SOH",
+  COLOR: "Màu sắc",
+  CATEGORY: "Danh mục",
 
   // Battery specific
   CAPACITY: "Dung lượng",
   VOLTAGE: "Điện áp",
   WEIGHT: "Khối lượng",
   DIMENSION: "Kích thước",
+  CHEMISTRY: "Hóa học pin",
 
   // Vehicle specific
   YEAR: "Năm sản xuất",
@@ -61,4 +64,15 @@ export const SPECIFICATION_LABELS = {
   DC_CHARGING: "Sạc DC",
   AC_CONNECTOR: "Cổng AC",
   DC_CONNECTOR: "Cổng DC",
+
+  // Location
+  ADDRESS: "Địa chỉ",
+  DISTRICT: "Quận/Huyện",
+  WARD: "Phường/Xã",
+  PROVINCE: "Tỉnh/Thành phố",
+
+  // Listing info
+  EXPIRES_AT: "Ngày hết hạn",
+  STATUS: "Trạng thái",
+  VISIBILITY: "Hiển thị",
 };
