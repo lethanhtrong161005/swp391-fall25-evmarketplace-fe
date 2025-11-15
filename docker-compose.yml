@@ -1,0 +1,10 @@
+services:
+  evmarketplace-frontend:
+    build:
+      context: .          
+      dockerfile: Dockerfile
+    image: evmarketplace-frontend:latest
+    container_name: evmarketplace-fe
+    restart: always
+    ports:
+      - "5173:80"         
