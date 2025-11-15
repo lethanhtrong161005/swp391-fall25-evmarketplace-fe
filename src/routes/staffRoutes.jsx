@@ -1,8 +1,8 @@
 import React, { lazy } from "react";
+import { Navigate } from "react-router-dom";
 import RoleBasedRoute from "@components/RoleBasedRoute";
 import LayoutStaff from "@layouts/LayoutStaff";
 
-const StaffDashboard = lazy(() => import("@pages/Staff/StaffDashboard"));
 const StaffConsignmentsManagement = lazy(() => import("@pages/Staff/StaffConsignmentsManagement/StaffConsignmentsManagement"));
 const StaffConsignmentsConsider = lazy(() => import("@pages/Staff/StaffConsignmentsConsider/StaffConsignmentsConsider"));
 const StaffInspectionSchedule = lazy(() => import("@pages/Staff/StaffInspectionSchedule/StaffInspectionSchedule"));
@@ -21,7 +21,7 @@ export default [
       </RoleBasedRoute>
     ),
     children: [
-      { index: true, element: <StaffDashboard /> },
+      { index: true, element: <Navigate to="/staff/listings" replace /> },
       { path: "consignment/management", element: <StaffConsignmentsManagement /> },
       { path: "consignment/consider", element: <StaffConsignmentsConsider /> },
       { path: "consignment/inspection-schedule", element: <StaffInspectionSchedule /> },
