@@ -25,6 +25,16 @@ export default function ListingTable({
       REJECTED: "red",
     }[st] || "default");
 
+  const statusLabel = (st) =>
+    ({
+      PENDING: "Chờ duyệt",
+      ACTIVE: "Đang hiển thị",
+      SOLD: "Đã bán",
+      HIDDEN: "Đã ẩn",
+      EXPIRED: "Hết hạn",
+      REJECTED: "Bị từ chối",
+    }[st] || st);
+
   const columns = useMemo(
     () => [
       {
@@ -86,7 +96,7 @@ export default function ListingTable({
         title: "Trạng thái",
         dataIndex: "status",
         sorter: true,
-        render: (s) => <Tag color={statusColor(s)}>{s}</Tag>,
+        render: (s) => <Tag color={statusColor(s)}>{statusLabel(s)}</Tag>,
         width: 120,
       },
       {

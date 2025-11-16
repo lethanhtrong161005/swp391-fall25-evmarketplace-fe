@@ -11,13 +11,11 @@ import config from "@config";
  */
 export const openConversation = async (otherId, listingId = null) => {
   // API: POST /api/chat/open?otherId={otherId}&listingId={listingId}
-  console.log("Opening conversation with otherId:", otherId, "listingId:", listingId);
   const params = { otherId };
   if (listingId != null) {
     params.listingId = listingId;
   }
   const result = await post(`/api/chat/open`, {}, params);
-  console.log("Open conversation response:", result);
   return result;
 };
 
@@ -29,13 +27,11 @@ export const openConversation = async (otherId, listingId = null) => {
  * @returns {Promise}
  */
 export const sendText = async (conversationId, recipientId, text) => {
-  console.log("[chatService] sendText:", { conversationId, recipientId, text });
   const result = await post(
     `/api/chat/${conversationId}/text`,
     { text },
     { recipientId }
   );
-  console.log("[chatService] sendText response:", result);
   return result;
 };
 
@@ -66,33 +62,8 @@ export const sendMedia = async (conversationId, recipientId, file, type) => {
  * @returns {Promise} Page object with messages
  */
 export const loadMessages = async (conversationId, page = 0, size = 20) => {
-  console.log("[chatService] loadMessages:", { conversationId, page, size });
   try {
     const result = await get(`/api/chat/${conversationId}/messages`, { page, size });
-    console.log("[chatService] loadMessages response:", JSON.stringify(result, null, 2));
-    console.log("[chatService] loadMessages response type:", typeof result);
-    console.log("[chatService] loadMessages response keys:", result ? Object.keys(result) : "null");
-    
-    if (result?.success && result?.data) {
-      const items = result.data.content || result.data.items || [];
-      console.log("[chatService] loadMessages items count:", items.length);
-      items.forEach((msg, idx) => {
-        console.log(`[chatService] Message ${idx}:`, {
-          id: msg.id,
-          senderId: msg.senderId || msg.sender?.id,
-          recipientId: msg.recipientId || msg.recipient?.id,
-          textContent: msg.textContent || msg.content,
-          type: msg.type,
-          createdAt: msg.createdAt,
-        });
-      });
-    } else if (Array.isArray(result)) {
-      console.log("[chatService] loadMessages: response is array, count:", result.length);
-    } else if (result?.content || result?.items) {
-      const items = result.content || result.items || [];
-      console.log("[chatService] loadMessages: response has content/items at root, count:", items.length);
-    }
-    
     return result;
   } catch (error) {
     console.error("[chatService] loadMessages error:", error);
@@ -114,10 +85,8 @@ export const markSeen = async (conversationId) => {
  * @returns {Promise<number>} Total unread count
  */
 export const getUnreadCount = async () => {
-  console.log("[chatService] getUnreadCount");
   try {
     const result = await get(`/api/chat/unread-count`);
-    console.log("[chatService] getUnreadCount response:", result);
     
     // API returns a number directly
     if (typeof result === 'number') {
@@ -149,12 +118,8 @@ export const getUnreadCount = async () => {
  * @returns {Promise} Page object with conversations
  */
 export const getConversations = async (page = 0, size = 20) => {
-  console.log("[chatService] getConversations:", { page, size });
   try {
     const result = await get(`/api/chat/conversations`, { page, size });
-    console.log("[chatService] getConversations response:", JSON.stringify(result, null, 2));
-    console.log("[chatService] getConversations response type:", typeof result);
-    console.log("[chatService] getConversations response keys:", result ? Object.keys(result) : "null");
     
     // Handle different response formats
     if (!result) {
@@ -165,8 +130,6 @@ export const getConversations = async (page = 0, size = 20) => {
     // Check if result has success field
     if (result.success !== undefined) {
       if (result.success && result.data) {
-        const items = result.data.content || result.data.items || result.data || [];
-        console.log("[chatService] getConversations items count:", items.length);
         return result;
       } else {
         console.warn("[chatService] getConversations: success is false or no data", result);
@@ -176,13 +139,11 @@ export const getConversations = async (page = 0, size = 20) => {
     
     // Handle direct array response
     if (Array.isArray(result)) {
-      console.log("[chatService] getConversations: response is array, count:", result.length);
       return { success: true, data: { content: result, items: result } };
     }
     
     // Handle response with content/items at root
     if (result.content || result.items) {
-      console.log("[chatService] getConversations: response has content/items at root");
       return { success: true, data: { content: result.content || [], items: result.items || [] } };
     }
     

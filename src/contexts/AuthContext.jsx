@@ -66,13 +66,21 @@ export function AuthProvider({ children }) {
     }
 
     if (access) {
-      cookieUtils.setToken(access, refresh);
+      cookieUtils.setToken(access);
+      if (refresh) {
+        cookieUtils.setRefreshToken(refresh);
+      }
 
       const payload = cookieUtils.decodeJwt(access);
 
+      if (!payload) {
+        console.error("Failed to decode JWT token");
+        return null;
+      }
+
       const role = getRoleFromPayload(payload);
 
-      const newUser = payload ? { ...payload, role } : null;
+      const newUser = { ...payload, role };
 
       setUser(newUser);
 

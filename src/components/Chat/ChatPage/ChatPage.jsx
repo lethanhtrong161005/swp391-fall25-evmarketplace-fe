@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Avatar, Typography, Drawer, Button, Badge, App, Input, Tabs } from "antd";
+import { Avatar, Typography, Drawer, Button, Badge, App, Input, Tabs, Layout } from "antd";
 import { UserOutlined, MenuOutlined, MessageOutlined, SearchOutlined } from "@ant-design/icons";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useChat } from "@hooks/useChat";
@@ -12,6 +12,7 @@ import { getAccountDbId, normalizeUserId, getOtherParticipant } from "@utils/cha
 import s from "./ChatPage.module.scss";
 
 const { Text } = Typography;
+const { Sider, Content } = Layout;
 
 const ChatPage = () => {
   const { conversationId: urlConversationId } = useParams();
@@ -21,9 +22,6 @@ const ChatPage = () => {
   const { message: messageApi } = App.useApp();
   const [selectedConversationId, setSelectedConversationId] = useState(() => {
     const cid = urlConversationId ? parseInt(urlConversationId) : null;
-    if (cid && !isNaN(cid)) {
-      console.log("[ChatPage] Initializing selectedConversationId from URL:", cid);
-    }
     return cid;
   });
   const [recipientId, setRecipientId] = useState(location.state?.recipientId || null);
@@ -98,11 +96,9 @@ const ChatPage = () => {
   const handleSelectConversation = useCallback(async (conversationId, otherUserId, recipientInfoFromList = null) => {
     // Prevent duplicate calls for the same conversation
     if (selectedConversationId === conversationId && recipientId === otherUserId) {
-      console.log("[ChatPage] handleSelectConversation: skipping duplicate call for same conversation");
       return;
     }
     
-    console.log("[ChatPage] handleSelectConversation called:", { conversationId, otherUserId });
     setSelectedConversationId(conversationId);
     setRecipientId(otherUserId);
     setCurrentConversationId(conversationId);
@@ -116,9 +112,7 @@ const ChatPage = () => {
     }
     
     try {
-      console.log("[ChatPage] Loading message history for conversation:", conversationId);
       await loadMessageHistory(conversationId);
-      console.log("[ChatPage] Messages loaded for conversation:", conversationId);
     } catch (error) {
       console.error("[ChatPage] Error loading messages:", error);
       messageApi.error("Không thể tải tin nhắn");
@@ -130,8 +124,6 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (!selectedConversationId && !urlConversationId && !recipientId && chatConnected && currentUserId) {
-      console.log("[ChatPage] Auto-selecting first conversation...");
-      
       const loadAndSelectFirst = async () => {
         try {
           const res = await getConversations(0, 10);
@@ -152,7 +144,6 @@ const ChatPage = () => {
             const otherUserId = normalizeUserId(otherParticipant?.id);
             
             if (convId && otherUserId) {
-              console.log("[ChatPage] Auto-selecting conversation:", convId, "with user:", otherUserId);
               handleSelectConversation(convId, otherUserId, otherParticipant);
             }
           }
@@ -173,7 +164,6 @@ const ChatPage = () => {
       const normalizedCurrentId = normalizeUserId(recipientId);
       
       if (normalizedStateId && normalizedStateId !== normalizedCurrentId) {
-        console.log("Setting recipientId from location state:", normalizedStateId);
         setRecipientId(normalizedStateId);
         loadRecipientInfo(normalizedStateId);
         openingConversationRef.current = false;
@@ -183,7 +173,6 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (openingConversationRef.current) {
-      console.log("Skipping duplicate openConversation call");
       return;
     }
     
@@ -193,7 +182,6 @@ const ChatPage = () => {
     }
     
     if (chatConnected && recipientId && !selectedConversationId) {
-      console.log("Opening conversation - connected:", chatConnected, "recipientId:", recipientId);
       openingConversationRef.current = true;
       
       openConversationWithUser(recipientId).then(async (result) => {
@@ -201,14 +189,10 @@ const ChatPage = () => {
         
         if (result) {
           const cid = typeof result === 'number' ? result : (result.id || result);
-          console.log("Conversation opened successfully, id:", cid);
           
           setSelectedConversationId(cid);
           setCurrentConversationId(cid);
           
-          console.log("Conversation setup complete, WebSocket will auto-subscribe");
-          
-          console.log("Loading message history for conversation:", cid);
           await loadMessageHistory(cid);
           
           markConversationSeen(cid);
@@ -248,7 +232,6 @@ const ChatPage = () => {
               const normalizedCurrentId = normalizeUserId(recipientId);
               
               if (normalizedNewId && normalizedNewId !== normalizedCurrentId) {
-                console.log("Setting recipientId from conversation:", normalizedNewId);
                 setRecipientId(normalizedNewId);
               }
             } else if (!recipientId && result.userAId && result.userBId) {
@@ -259,7 +242,6 @@ const ChatPage = () => {
                 ? resultUserB 
                 : resultUserA;
               if (fallbackRecipientId) {
-                console.log("Setting recipientId from conversation (fallback):", fallbackRecipientId);
                 setRecipientId(fallbackRecipientId);
               }
             }
@@ -309,12 +291,10 @@ const ChatPage = () => {
     
     // Only navigate if there's a real change and we're not already in the middle of loading from URL
     if (selectedId && selectedId !== currentUrlId && selectedId !== latestSelectedConversationIdRef.current) {
-      console.log("[ChatPage] Syncing selectedConversationId to URL:", selectedId);
       navigate(`/chat/${selectedId}`, { replace: true });
     } else if (!selectedId && currentUrlId) {
       // Only clear URL if we explicitly cleared the selection (not during initial load)
       if (latestSelectedConversationIdRef.current === null) {
-        console.log("[ChatPage] Clearing URL - no conversation selected");
         navigate("/chat", { replace: true });
       }
     }
@@ -324,13 +304,10 @@ const ChatPage = () => {
     if (urlConversationId) {
       const cid = parseInt(urlConversationId);
       if (!isNaN(cid) && cid !== latestSelectedConversationIdRef.current) {
-        console.log("[ChatPage] Loading conversation from URL:", cid, "WebSocket connected:", chatConnected);
         setSelectedConversationId(cid);
         setCurrentConversationId(cid);
         
-        loadMessageHistory(cid).then(() => {
-          console.log("[ChatPage] Messages loaded for conversation:", cid);
-        }).catch((error) => {
+        loadMessageHistory(cid).catch((error) => {
           console.error("[ChatPage] Error loading messages:", error);
           messageApi.error("Không thể tải tin nhắn");
         });
@@ -408,6 +385,35 @@ const ChatPage = () => {
       messageApi.warning("Không tìm thấy người nhận");
       return;
     }
+    
+    // Validate file size trước khi gửi (additional check)
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+    const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
+    
+    const formatFileSize = (bytes) => {
+      if (bytes === 0) return "0 Bytes";
+      const k = 1024;
+      const sizes = ["Bytes", "KB", "MB", "GB"];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+    };
+    
+    if (type === "IMAGE" && file.size > MAX_IMAGE_SIZE) {
+      messageApi.error({
+        content: `Kích thước ảnh không được vượt quá ${formatFileSize(MAX_IMAGE_SIZE)}. File của bạn: ${formatFileSize(file.size)}`,
+        duration: 5,
+      });
+      return;
+    }
+    
+    if (type === "VIDEO" && file.size > MAX_VIDEO_SIZE) {
+      messageApi.error({
+        content: `Dung lượng video không được vượt quá ${formatFileSize(MAX_VIDEO_SIZE)}. File của bạn: ${formatFileSize(file.size)}`,
+        duration: 5,
+      });
+      return;
+    }
+    
     sendMedia(file, type, selectedConversationId, recipientId);
     setTimeout(() => {
       setConversationListRefresh((prev) => prev + 1);
@@ -464,8 +470,14 @@ const ChatPage = () => {
 
   return (
     <div className={s.pageWrapper}>
-      <div className={s.chatShell}>
-        <aside className={s.sidebar}>
+      <Layout className={s.chatShell}>
+        <Sider 
+          width={420} 
+          className={s.sidebar}
+          theme="light"
+          breakpoint="lg"
+          collapsedWidth="0"
+        >
           <div className={s.sidebarHeader}>
             <Text strong className={s.sidebarTitle}>
               Chat
@@ -499,67 +511,70 @@ const ChatPage = () => {
               filterUnread={activeTab === "unread"}
             />
           </div>
-        </aside>
+        </Sider>
 
-        <section className={s.mainPanel}>
-          <div className={s.mainHeader}>
-            <Button
-              type="text"
-              icon={<MenuOutlined />}
-              className={s.mobileMenuButton}
-              onClick={() => setMobileDrawerVisible(true)}
-            />
-            {renderHeaderContent()}
-            {selectedConversationId && !chatConnected && (
-              <Badge status="error" text="Đang kết nối..." className={s.connectionBadge} />
-            )}
-          </div>
-
-          {selectedConversationId ? (
-            <>
-              <div className={s.mainBody}>
-                <MessageList
-                  messages={chatMessages}
-                  loading={chatLoading}
-                  messagesEndRef={messagesEndRef}
-                  recipientInfo={recipientInfo}
-                  currentUserId={currentUserId}
-                />
-              </div>
-              {chatMessages.length === 0 && (
-                <div className={s.quickReplies}>
-                  {quickReplies.map((reply, index) => (
-                    <Button
-                      key={`quick-reply-${index}-${reply.substring(0, 10)}`}
-                      size="small"
-                      className={s.quickReplyButton}
-                      onClick={() => handleQuickReply(reply)}
-                    >
-                      {reply}
-                    </Button>
-                  ))}
-                </div>
+        <Layout className={s.mainLayout}>
+          <Content className={s.mainPanel}>
+            <div className={s.mainHeader}>
+              <Button
+                type="text"
+                icon={<MenuOutlined />}
+                className={s.mobileMenuButton}
+                onClick={() => setMobileDrawerVisible(true)}
+              />
+              {renderHeaderContent()}
+              {selectedConversationId && !chatConnected && (
+                <Badge status="error" text="Đang kết nối..." className={s.connectionBadge} />
               )}
-              <div className={s.mainComposer}>
-                <ChatInput
-                  onSendText={handleSendText}
-                  onSendMedia={handleSendMedia}
-                  disabled={!chatConnected || !selectedConversationId}
-                />
-              </div>
-            </>
-          ) : (
-            <div className={s.emptyState}>
-              <div className={s.emptyCard}>
-                <MessageOutlined style={{ fontSize: 56, color: "#d9d9d9" }} />
-                <Text type="secondary" className={s.emptyTitle}>
-                  Chọn một cuộc trò chuyện để xem tin nhắn
-                </Text>
-              </div>
             </div>
-          )}
-        </section>
-      </div>
+
+            {selectedConversationId ? (
+              <>
+                <div className={s.mainBody}>
+                  <MessageList
+                    messages={chatMessages}
+                    loading={chatLoading}
+                    messagesEndRef={messagesEndRef}
+                    recipientInfo={recipientInfo}
+                    currentUserId={currentUserId}
+                    conversationId={selectedConversationId}
+                  />
+                </div>
+                {chatMessages.length === 0 && (
+                  <div className={s.quickReplies}>
+                    {quickReplies.map((reply, index) => (
+                      <Button
+                        key={`quick-reply-${index}-${reply.substring(0, 10)}`}
+                        size="small"
+                        className={s.quickReplyButton}
+                        onClick={() => handleQuickReply(reply)}
+                      >
+                        {reply}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+                <div className={s.mainComposer}>
+                  <ChatInput
+                    onSendText={handleSendText}
+                    onSendMedia={handleSendMedia}
+                    disabled={!chatConnected || !selectedConversationId}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className={s.emptyState}>
+                <div className={s.emptyCard}>
+                  <MessageOutlined style={{ fontSize: 56, color: "#d9d9d9" }} />
+                  <Text type="secondary" className={s.emptyTitle}>
+                    Chọn một cuộc trò chuyện để xem tin nhắn
+                  </Text>
+                </div>
+              </div>
+            )}
+          </Content>
+        </Layout>
+      </Layout>
 
       <Drawer
         title="Tin nhắn"

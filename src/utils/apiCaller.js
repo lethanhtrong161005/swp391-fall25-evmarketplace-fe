@@ -44,26 +44,6 @@ const request = async (
   endpoint,
   { params = {}, body = {}, headers = {} } = {}
 ) => {
-  // Log cho sort debug
-  if (endpoint.includes("/api/listing") && params.sort) {
-    console.log("🔴 [SORT DEBUG] apiCaller - Request:", {
-      method,
-      endpoint,
-      params: JSON.stringify(params, null, 2),
-      sortParam: params.sort,
-      dirParam: params.dir,
-    });
-
-    // Tạo query string để xem params thực tế
-    const queryString = Object.keys(params)
-      .map(
-        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
-      )
-      .join("&");
-    console.log("🔴 [SORT DEBUG] apiCaller - Query string:", queryString);
-    console.log("🔴 [SORT DEBUG] apiCaller - Base URL:", api.defaults.baseURL);
-  }
-
   try {
     const res = await api({
       url: endpoint,
@@ -73,17 +53,6 @@ const request = async (
       headers,
     });
 
-    // Log response URL để xem URL thực tế được gọi
-    if (endpoint.includes("/api/listing") && params.sort) {
-      console.log(
-        "🔴 [SORT DEBUG] apiCaller - Response config URL:",
-        res.config?.url
-      );
-      console.log(
-        "🔴 [SORT DEBUG] apiCaller - Response config params:",
-        res.config?.params
-      );
-    }
     // Kiểm tra res không null trước khi truy cập .data
     if (!res) {
       console.warn("[apiCaller] Response is null for:", endpoint);

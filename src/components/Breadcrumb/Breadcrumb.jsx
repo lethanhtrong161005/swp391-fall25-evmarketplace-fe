@@ -13,12 +13,13 @@ export default function DynamicBreadcrumb({ customTitle }) {
     category: "Danh mục",
     brand: "Thương hiệu",
     model: "Model",
-    vehicle: "Xe điện",
+    vehicle: "Phương Tiện",
     battery: "Pin",
     staff: "Nhân viên",
     manager: "Quản lý",
     inspector: "Kiểm định viên",
     consignment: "Quản lý ký gửi",
+    "consignment-listings": "Tin ký gửi",
     new: "Tạo tin đăng",
     "info-user": "Thông tin cá nhân",
     listing: "Tin đăng",
@@ -29,6 +30,7 @@ export default function DynamicBreadcrumb({ customTitle }) {
     member: "Thành viên",
     availability: "Lên lịch",
     "my-ads": "Quản lý tin",
+    chat: "Tin nhắn",
   };
 
   // Custom URL mapping cho các route đặc biệt

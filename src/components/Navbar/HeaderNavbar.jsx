@@ -38,7 +38,7 @@ const HeaderNavbar = () => {
     handleOtpStart,
     handleLoginSubmit,
   } = useHeaderAction();
-  const { isLoggedIn, user, handleLoginRequire } = auth;
+  const { isLoggedIn, user, handleLoginRequire, getMenuItems, handleMenuClick } = auth;
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
 
   const MANAGE_LISTINGS_PATH = "/my-ads";
@@ -104,11 +104,22 @@ const HeaderNavbar = () => {
                 isLoggedIn={isLoggedIn}
                 user={user}
                 isMember={isMember}
-                handleLoginRequire={handleLoginRequire}
-                onLoginClick={() => auth.setOpenLogin?.(true)}
+                handleLoginRequire={(path, message) => {
+                  handleLoginRequire(path, message);
+                  setOpen(false);
+                }}
+                onLoginClick={() => {
+                  auth.setOpenLogin?.(true);
+                  setOpen(false);
+                }}
                 MANAGE_LISTINGS_PATH={MANAGE_LISTINGS_PATH}
                 MANAGE_CONSIGNMENTS_PATH={MANAGE_CONSIGNMENTS_PATH}
                 CREATE_LISTING_PATH={CREATE_LISTING_PATH}
+                getMenuItems={getMenuItems}
+                handleMenuClick={(params) => {
+                  handleMenuClick(params);
+                  setOpen(false);
+                }}
               />
             </div>
           </Drawer>

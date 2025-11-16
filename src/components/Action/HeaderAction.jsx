@@ -64,20 +64,6 @@ const HeaderAction = () => {
   const avatarSrc = getAvatarUrl(user);
   const avatarName = displayName?.charAt(0)?.toUpperCase();
 
-  // Debug: Log avatar info
-  React.useEffect(() => {
-    if (isLoggedIn && user) {
-      console.log("🔍 HeaderAction Avatar Debug:", {
-        avatarSrc,
-        hasEnhancedUser: !!enhancedUser,
-        userKeys: Object.keys(user || {}),
-        profileKeys: Object.keys(user?.profile || {}),
-        userProfile: user?.profile,
-        getAvatarUrlResult: getAvatarUrl(user),
-      });
-    }
-  }, [isLoggedIn, user, avatarSrc, enhancedUser]);
-
   // Chuyển đổi menuItems thành format của Dropdown với header
   const dropdownItems = [
     // Header với Avatar và Tên - Custom dropdown header (disabled item)
@@ -136,12 +122,8 @@ const HeaderAction = () => {
 
   // Xác định placement responsive dựa trên breakpoint
   const getDropdownPlacement = () => {
-    // Trên màn hình rất nhỏ (xs), đặt menu ở bottomLeft để tránh bị cắt
-    if (screens.xs) {
-      return "bottomLeft";
-    }
-    // Trên màn hình nhỏ (sm), đặt ở bottomLeft hoặc bottom
-    if (screens.sm && !screens.md) {
+    // Trên màn hình rất nhỏ (xs) hoặc nhỏ (sm), đặt menu ở bottomLeft để tránh bị cắt
+    if (screens.xs || (screens.sm && !screens.md)) {
       return "bottomLeft";
     }
     // Trên màn hình trung bình (md), đặt ở bottomRight nhưng có thể điều chỉnh

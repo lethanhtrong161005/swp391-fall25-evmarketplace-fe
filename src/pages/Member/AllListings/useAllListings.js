@@ -40,7 +40,7 @@ export default function useAllListings() {
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState(() => ({
     current: parseInt(searchParams.get("page") || "1"),
-    pageSize: 12,
+    pageSize: 10,
     total: 0,
   }));
 
@@ -74,14 +74,11 @@ export default function useAllListings() {
   const fetchListings = async () => {
     try {
       setLoading(true);
-      console.log("🟢 [SORT DEBUG] fetchListings called, sortBy:", sortBy);
       
       // Split sortBy và đảm bảo có giá trị mặc định
       const sortParts = (sortBy || "createdAt,desc").split(",");
       const sortField = sortParts[0]?.trim() || "createdAt";
       const sortDir = sortParts[1]?.trim() || "desc";
-
-      console.log("🟢 [SORT DEBUG] After split - sortField:", sortField, "sortDir:", sortDir);
 
       const params = {
         page: pagination.current - 1,
@@ -99,45 +96,17 @@ export default function useAllListings() {
         params.priceMax = maxPrice;
       }
 
-      console.log("🟢 [SORT DEBUG] Params before API call:", JSON.stringify(params, null, 2));
-
       let response;
 
       // Dùng getAllListings cho tất cả trường hợp (hỗ trợ sort tốt hơn)
       // Nếu có categoryCode: truyền vào params
       if (selectedCategory !== "all") {
         params.categoryCode = selectedCategory; // EV_CAR, E_MOTORBIKE, E_BIKE, BATTERY
-        console.log("🟢 [SORT DEBUG] Calling getAllListings with categoryCode:", selectedCategory);
-      } else {
-        console.log("🟢 [SORT DEBUG] Calling getAllListings (category: all, no categoryCode)");
       }
       
       // Luôn dùng getAllListings để đảm bảo sort hoạt động
       // getAllListings hỗ trợ cả priceMin/priceMax nếu cần
       response = await getAllListings(params);
-
-      // Log chi tiết về items để kiểm tra sort
-      const items = response?.data?.items || [];
-      const prices = items.map(item => item.price).filter(p => p != null);
-      console.log("🟢 [SORT DEBUG] API Response:", {
-        success: response?.success,
-        totalElements: response?.data?.totalElements,
-        itemsCount: items.length,
-        firstItemPrice: items[0]?.price,
-        lastItemPrice: items[items.length - 1]?.price,
-        allPrices: prices,
-        pricesSorted: [...prices].sort((a, b) => a - b),
-        pricesSortedDesc: [...prices].sort((a, b) => b - a),
-        expectedOrder: sortDir === "desc" ? "descending (high to low)" : "ascending (low to high)",
-      });
-      
-      // Log từng item để xem thứ tự
-      console.log("🟢 [SORT DEBUG] Items order:", items.map((item, idx) => ({
-        index: idx,
-        id: item.id,
-        price: item.price,
-        title: item.title?.substring(0, 30),
-      })));
 
       if (response?.success && response?.data) {
         const items = response.data.items || [];
@@ -192,11 +161,9 @@ export default function useAllListings() {
   };
 
   const handleSortChange = (value) => {
-    console.log("🔵 [SORT DEBUG] handleSortChange called with value:", value);
     setSortBy(value);
     setPagination((prev) => ({ ...prev, current: 1 }));
     updateURLParams({ sort: value, page: 1 });
-    console.log("🔵 [SORT DEBUG] Updated sortBy state to:", value);
   };
 
   const handleViewModeChange = (mode) => {

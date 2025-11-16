@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Avatar, Space, Tooltip } from "antd";
+import { Button, Avatar, Space, Tooltip, Divider } from "antd";
 import {
   UserOutlined,
   HeartOutlined,
@@ -23,6 +23,8 @@ const MobileHeaderAction = ({
   MANAGE_LISTINGS_PATH,
   MANAGE_CONSIGNMENTS_PATH,
   CREATE_LISTING_PATH,
+  getMenuItems,
+  handleMenuClick,
 }) => {
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
   const avatarSrc = user?.avatar || user?.avatarUrl;
@@ -129,33 +131,80 @@ const MobileHeaderAction = ({
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            gap: 12,
-            padding: "12px 16px",
-            borderRadius: "12px",
-            backgroundColor: "#f5f5f5",
-            border: "1px solid #d9d9d9",
+            flexDirection: "column",
+            gap: "12px",
           }}
         >
-          <Avatar
-            src={avatarSrc}
-            icon={<UserOutlined />}
-            size={40}
+          {/* User info */}
+          <div
             style={{
-              backgroundColor: avatarSrc ? "transparent" : "#1890ff",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              padding: "12px 16px",
+              borderRadius: "12px",
+              backgroundColor: "#f5f5f5",
+              border: "1px solid #d9d9d9",
             }}
           >
-            {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
-          </Avatar>
-          <span
-            style={{
-              fontSize: "16px",
-              color: "#262626",
-              fontWeight: "500",
-            }}
-          >
-            {displayName}
-          </span>
+            <Avatar
+              src={avatarSrc}
+              icon={<UserOutlined />}
+              size={40}
+              style={{
+                backgroundColor: avatarSrc ? "transparent" : "#1890ff",
+              }}
+            >
+              {!avatarSrc ? avatarName?.charAt(0)?.toUpperCase() : null}
+            </Avatar>
+            <span
+              style={{
+                fontSize: "16px",
+                color: "#262626",
+                fontWeight: "500",
+              }}
+            >
+              {displayName}
+            </span>
+          </div>
+
+          {/* Menu items */}
+          {getMenuItems && handleMenuClick && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "4px",
+                padding: "8px 0",
+              }}
+            >
+              {getMenuItems().map((item) => {
+                if (item.type === "divider") {
+                  return <Divider key={Math.random()} style={{ margin: "8px 0" }} />;
+                }
+
+                return (
+                  <Button
+                    key={item.key}
+                    block
+                    type="text"
+                    danger={item.danger}
+                    onClick={() => handleMenuClick({ key: item.key })}
+                    style={{
+                      textAlign: "left",
+                      height: "40px",
+                      padding: "0 16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                );
+              })}
+            </div>
+          )}
         </div>
       ) : (
         <Button

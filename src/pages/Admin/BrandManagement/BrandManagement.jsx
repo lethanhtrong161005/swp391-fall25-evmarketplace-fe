@@ -10,7 +10,9 @@ import {
   Col,
   Card,
   Tag,
+  Space,
 } from "antd";
+import { EditOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useBrandManagementLogic } from "./useBrandManagementLogic";
 import "./BrandManagement.scss";
 import CategoryFilter from "@components/CategoryFilter/CategoryFilter";
@@ -71,19 +73,25 @@ const BrandManagement = () => {
     {
       title: "Hành động",
       render: (_, record) => (
-        <>
-          <Button type="link" onClick={() => handleOpenModal(record)}>
+        <Space size="small">
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => handleOpenModal(record)}
+            size="small"
+          >
             Chỉnh sửa
           </Button>
           <Button
             danger
-            type="link"
+            icon={<EyeInvisibleOutlined />}
             onClick={() => setDeleteId(record.id)}
             disabled={record.status === "HIDDEN"}
+            size="small"
           >
             Ẩn
           </Button>
-        </>
+        </Space>
       ),
     },
   ];

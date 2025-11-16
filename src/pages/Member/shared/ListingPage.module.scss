@@ -1,3 +1,4 @@
+// Legacy container class (kept for backward compatibility)
 .container {
   max-width: 1440px;
   margin: 0 auto;
@@ -9,6 +10,79 @@
   position: relative;
 }
 
+// New Layout Container
+.layoutContainer {
+  max-width: 1440px;
+  margin: 0 auto;
+  background: #fff;
+  min-height: calc(100vh - 138px);
+  height: calc(100vh - 138px);
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  position: relative;
+  isolation: isolate;
+}
+
+// Page Header (Ant Design Layout.Header)
+.pageHeader {
+  background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+  padding: 32px 40px 24px 40px;
+  border-bottom: 1px solid #e8f4fd;
+  margin-bottom: 0;
+  position: relative !important;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  clear: both;
+
+  :global(.ant-layout-header) {
+    background: transparent !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: auto !important;
+    line-height: normal !important;
+    width: 100% !important;
+    position: relative !important;
+    display: block !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  .title {
+    margin: 0 0 12px 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1b2a41;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    clear: both;
+    position: relative;
+    z-index: 1;
+  }
+
+  .description {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+    width: 100%;
+    display: block;
+    clear: both;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// Legacy header class (kept for backward compatibility)
 .header {
   margin-bottom: 24px;
 
@@ -26,6 +100,106 @@
     font-size: 16px;
     color: #666;
     margin: 12px 0 0 0;
+  }
+}
+
+// Breadcrumb Section
+.breadcrumbSection {
+  padding: 16px 40px 0 40px;
+  background: #fff;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  clear: both;
+}
+
+// Page Title Section
+.pageTitleSection {
+  padding: 16px 40px 16px 40px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  clear: both;
+
+  .pageTitle {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1b2a41;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+}
+
+// Toolbar Wrapper
+.toolbarWrapper {
+  padding: 16px 40px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative !important;
+  z-index: 0;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0;
+  display: block;
+  clear: both;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+
+  :global(.toolbar) {
+    margin-bottom: 0;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+  }
+}
+
+// Content Section (Ant Design Layout.Content)
+.content {
+  flex: 1 1 0;
+  padding: 24px 40px;
+  background: #fafafa;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // Prevent content from causing page scroll
+
+  :global(.ant-layout-content) {
+    padding: 0;
+    background: transparent;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  // Special styling for ChatPage
+  :global(.pageWrapper) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    position: relative;
   }
 }
 
@@ -88,6 +262,34 @@
   min-height: 500px;
 }
 
+// Page Footer (Ant Design Layout.Footer)
+.pageFooter {
+  background: #fff;
+  padding: 24px 40px;
+  border-top: 1px solid #f0f0f0;
+  border-radius: 0 0 8px 8px;
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 0;
+
+  :global(.ant-layout-footer) {
+    padding: 0;
+    background: transparent;
+  }
+
+  :global(.ant-pagination) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+// Legacy pagination class (kept for backward compatibility)
 .pagination {
   display: flex;
   justify-content: center;
@@ -106,11 +308,87 @@
   .container {
     padding: 16px 24px;
   }
+
+  .layoutContainer {
+    border-radius: 0;
+  }
+
+  .breadcrumbSection {
+    padding: 12px 24px 0 24px;
+  }
+
+  .pageTitleSection {
+    padding: 12px 24px 12px 24px;
+
+    .pageTitle {
+      font-size: 22px;
+    }
+  }
+
+  .pageHeader {
+    padding: 24px 24px 20px 24px;
+  }
+
+  .toolbarWrapper {
+    padding: 12px 24px;
+  }
+
+  .content {
+    padding: 20px 24px;
+  }
+
+  .pageFooter {
+    padding: 20px 24px;
+  }
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 12px 16px;
+  }
+
+  .layoutContainer {
+    border-radius: 0;
+  }
+
+  .breadcrumbSection {
+    padding: 10px 16px 0 16px;
+  }
+
+  .pageTitleSection {
+    padding: 12px 16px 12px 16px;
+
+    .pageTitle {
+      font-size: 20px;
+    }
+  }
+
+  .pageHeader {
+    padding: 20px 16px 16px 16px;
+
+    .title {
+      font-size: 22px;
+    }
+
+    .description {
+      font-size: 14px;
+    }
+  }
+
+  .toolbarWrapper {
+    padding: 12px 16px;
+  }
+
+  .content {
+    padding: 16px 16px;
+  }
+
+  .pageFooter {
+    padding: 16px 16px;
+
+    :global(.ant-pagination) {
+      font-size: 13px;
+    }
   }
 
   .header {
@@ -148,6 +426,46 @@
 @media (max-width: 480px) {
   .container {
     padding: 8px 12px;
+  }
+
+  .layoutContainer {
+    border-radius: 0;
+  }
+
+  .breadcrumbSection {
+    padding: 8px 12px 0 12px;
+  }
+
+  .pageTitleSection {
+    padding: 10px 12px 10px 12px;
+
+    .pageTitle {
+      font-size: 18px;
+    }
+  }
+
+  .pageHeader {
+    padding: 16px 12px 12px 12px;
+
+    .title {
+      font-size: 20px;
+    }
+
+    .description {
+      font-size: 13px;
+    }
+  }
+
+  .toolbarWrapper {
+    padding: 10px 12px;
+  }
+
+  .content {
+    padding: 12px 12px;
+  }
+
+  .pageFooter {
+    padding: 12px 12px;
   }
 
   .header {

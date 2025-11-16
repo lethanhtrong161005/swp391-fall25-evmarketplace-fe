@@ -11,7 +11,9 @@ import {
   Tag,
   Row,
   Col,
+  Space,
 } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import { useProductBatteryManagementLogic } from "./useProductBatteryManagementLogic";
 import "./ProductBatteryManagement.scss";
 import ProductBatteryModal from "@components/Modal/ProductBatteryModal/ProductBatteryModal";
@@ -96,9 +98,16 @@ const ProductBatteryManagement = () => {
       align: "center",
       width: 120,
       render: (_, record) => (
-        <Button type="link" onClick={() => handleOpenModal(record)}>
-          Chỉnh sửa
-        </Button>
+        <Space size="small">
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => handleOpenModal(record)}
+            size="small"
+          >
+            Chỉnh sửa
+          </Button>
+        </Space>
       ),
     },
   ];

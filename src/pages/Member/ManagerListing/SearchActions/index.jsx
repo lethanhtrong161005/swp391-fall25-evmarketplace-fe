@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import styles from "./SearchActions.module.scss";
 
-const SearchActions = ({ query, onChangeQuery, onCreate, onRefresh }) => {
+const SearchActions = ({ query, onChangeQuery, onCreate, onRefresh, createButtonText = "Đăng tin" }) => {
   return (
     <div className={styles.container}>
       <Space>
@@ -27,7 +27,7 @@ const SearchActions = ({ query, onChangeQuery, onCreate, onRefresh }) => {
           </Button>
         </Tooltip>
         <Button type="primary" icon={<PlusOutlined />} onClick={onCreate}>
-          Đăng tin
+          {createButtonText}
         </Button>
       </Space>
     </div>

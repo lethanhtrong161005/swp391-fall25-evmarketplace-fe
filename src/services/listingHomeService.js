@@ -25,11 +25,6 @@ const validateSortDirection = (dir) => {
 
 // Lấy danh sách tất cả listing với phân trang
 export const getAllListings = async (params = {}) => {
-  console.log(
-    "🟡 [SORT DEBUG] getAllListings - Input params:",
-    JSON.stringify(params, null, 2)
-  );
-
   const defaultParams = {
     page: 0,
     size: 10,
@@ -38,46 +33,17 @@ export const getAllListings = async (params = {}) => {
     ...params,
   };
 
-  console.log(
-    "🟡 [SORT DEBUG] getAllListings - After merge defaults:",
-    JSON.stringify(defaultParams, null, 2)
-  );
-
   // Validate sort field và direction trước khi gửi
-  const originalSort = defaultParams.sort;
-  const originalDir = defaultParams.dir;
   defaultParams.sort = validateSortField(defaultParams.sort);
   defaultParams.dir = validateSortDirection(defaultParams.dir);
 
-  console.log("🟡 [SORT DEBUG] getAllListings - Validation:", {
-    originalSort,
-    validatedSort: defaultParams.sort,
-    originalDir,
-    validatedDir: defaultParams.dir,
-  });
-
-  console.log(
-    "🟡 [SORT DEBUG] getAllListings - Final params to send:",
-    JSON.stringify(defaultParams, null, 2)
-  );
-
   const response = await get("/api/listing/", defaultParams);
-
-  console.log("🟡 [SORT DEBUG] getAllListings - Response received:", {
-    success: response?.success,
-    totalElements: response?.data?.totalElements,
-  });
 
   return response;
 };
 
 // Tìm kiếm listing với đầy đủ filters
 export const searchListings = async (params = {}) => {
-  console.log(
-    "🟠 [SORT DEBUG] searchListings - Input params:",
-    JSON.stringify(params, null, 2)
-  );
-
   const defaultParams = {
     page: 0,
     size: 10,
@@ -86,23 +52,9 @@ export const searchListings = async (params = {}) => {
     ...params,
   };
 
-  console.log(
-    "🟠 [SORT DEBUG] searchListings - After merge defaults:",
-    JSON.stringify(defaultParams, null, 2)
-  );
-
   // Validate sort field và direction trước khi gửi (luôn validate, không điều kiện)
-  const originalSort = defaultParams.sort;
-  const originalDir = defaultParams.dir;
   defaultParams.sort = validateSortField(defaultParams.sort);
   defaultParams.dir = validateSortDirection(defaultParams.dir);
-
-  console.log("🟠 [SORT DEBUG] searchListings - Validation:", {
-    originalSort,
-    validatedSort: defaultParams.sort,
-    originalDir,
-    validatedDir: defaultParams.dir,
-  });
 
   // Chỉ gửi các params có giá trị
   const queryParams = {};
@@ -113,17 +65,7 @@ export const searchListings = async (params = {}) => {
     }
   });
 
-  console.log(
-    "🟠 [SORT DEBUG] searchListings - Final queryParams to send:",
-    JSON.stringify(queryParams, null, 2)
-  );
-
   const response = await get("/api/listing/search", queryParams);
-
-  console.log("🟠 [SORT DEBUG] searchListings - Response received:", {
-    success: response?.success,
-    totalElements: response?.data?.totalElements,
-  });
 
   return response;
 };
