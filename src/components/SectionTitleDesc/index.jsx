@@ -18,13 +18,13 @@ export default function SectionTitleDesc() {
                 name="title"
                 rules={[
                     { required: true, message: "Vui lòng nhập tiêu đề" },
-                    { max: 50, message: "Tối đa 50 ký tự" },
+                    { max: 70, message: "Tối đa 70 ký tự" },
                 ]}
             >
                 <Input
                     className={styles.input}
                     showCount
-                    maxLength={50}
+                    maxLength={70}
                     placeholder="VD: VinFast VF e34 2022 – Đen - 15.000 km"
                     onFocus={onTitleFocus}
                     onBlur={onTitleBlur}

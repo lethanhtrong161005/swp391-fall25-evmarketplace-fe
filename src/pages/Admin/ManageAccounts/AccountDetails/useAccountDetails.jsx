@@ -9,8 +9,11 @@ export function useAccountDetails() {
   const getRoleTag = (role) => {
     const roleConfig = {
       ADMIN: { color: "red", text: "Quản trị viên" },
-      STAFF: { color: "blue", text: "Nhân viên" },
-      MEMBER: { color: "green", text: "Thành viên" },
+      MANAGER: { color: "blue", text: "Quản lý" },
+      STAFF: { color: "green", text: "Nhân viên" },
+      INSPECTOR: { color: "orange", text: "Kiểm định viên" },
+      MODERATOR: { color: "purple", text: "Kiểm duyệt viên" },
+      MEMBER: { color: "cyan", text: "Thành viên" },
     };
     
     const config = roleConfig[role] || { color: "default", text: role };

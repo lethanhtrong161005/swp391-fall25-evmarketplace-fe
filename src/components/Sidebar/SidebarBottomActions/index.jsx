@@ -1,12 +1,10 @@
 import React from "react";
-import { Space, Button, Badge, theme, Tooltip } from "antd";
-import { BellOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Button, theme, Tooltip } from "antd";
+import { LogoutOutlined } from "@ant-design/icons";
 import s from "./SidebarBottomActions.module.scss";
-import { useSidebarBottomActions } from "./logic";
 
-export default function SidebarBottomActions({ onOpenNoti, onLogout }) {
+export default function SidebarBottomActions({ onLogout }) {
   const { token } = theme.useToken();
-  const { notificationCount } = useSidebarBottomActions();
 
   return (
     <div
@@ -17,19 +15,6 @@ export default function SidebarBottomActions({ onOpenNoti, onLogout }) {
       }}
     >
       <div className={s.actionsContainer}>
-        <Tooltip title="Thông báo" placement="top">
-          <Badge count={notificationCount} size="small">
-            <Button
-              type="text"
-              size="large"
-              shape="circle"
-              icon={<BellOutlined style={{ fontSize: "16px" }} />}
-              onClick={onOpenNoti}
-              className={s.actionButton}
-            />
-          </Badge>
-        </Tooltip>
-
         <Tooltip title="Đăng xuất" placement="top">
           <Button
             type="text"

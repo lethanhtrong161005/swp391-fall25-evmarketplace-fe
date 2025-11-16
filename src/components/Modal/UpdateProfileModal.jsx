@@ -89,7 +89,7 @@ export default function UpdateProfileModal({
         open={isOpen}
         onCancel={onClose}
         footer={null}
-        destroyOnClose
+        destroyOnHidden
         width={720}
         style={{ top: 40 }}
       >

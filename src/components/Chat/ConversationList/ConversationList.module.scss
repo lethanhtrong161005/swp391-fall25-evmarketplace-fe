@@ -1,0 +1,117 @@
+.conversationList {
+  height: 100%;
+  overflow-y: auto;
+  background: #ffffff;
+  padding: 8px 0;
+
+  :global(.ant-list-item-meta) {
+    align-items: center;
+  }
+
+  :global(.ant-list-item-meta-avatar) {
+    margin-right: 12px;
+  }
+
+  :global(.ant-list-item-meta-content) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
+  }
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.conversationItem {
+  padding: 12px 16px;
+  margin: 2px 12px;
+  cursor: pointer;
+  border-bottom: none;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  position: relative;
+  background: transparent;
+
+  &:hover {
+    background-color: #f5f7fa;
+  }
+
+  &.selected {
+    background: linear-gradient(90deg, rgba(24, 144, 255, 0.08) 0%, rgba(24, 144, 255, 0.04) 100%);
+    margin-left: 8px;
+    margin-right: 4px;
+    box-shadow: 0 1px 3px rgba(24, 144, 255, 0.1);
+
+    .recipientName {
+      color: #1890ff;
+      font-weight: 600;
+    }
+  }
+
+  &:active {
+    background-color: #d4edff;
+  }
+}
+
+.conversationTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  gap: 8px;
+}
+
+.recipientName {
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 15px;
+  transition: color 0.2s;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.time {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.conversationDescription {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.lastMessage {
+  font-size: 13px;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  line-height: 1.4;
+}
+

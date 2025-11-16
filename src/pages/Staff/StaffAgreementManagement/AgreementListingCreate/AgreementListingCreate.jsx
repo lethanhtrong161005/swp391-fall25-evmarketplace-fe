@@ -1,4 +1,4 @@
-import { Modal, Spin, Card, Form, Row, Col, Divider } from "antd";
+import { Modal, Spin, Card, Form, Row, Col, Divider, message } from "antd";
 import SectionMedia from "@components/SectionMedia";
 import SectionDetailVehicle from "@components/SectionDetailVehicle";
 import SectionDetailBattery from "@components/SectionDetailBattery";
@@ -20,6 +20,7 @@ export default function AgreementListingCreate({
   onClose,
   consignmentData = null,
   mode = "agreement", // "agreement" (create) hoặc "agreement-update" (update)
+  onSuccess,
 }) {
   const { user } = useAuth();
   const userId = Number(user?.uid) || null;
@@ -123,7 +124,7 @@ export default function AgreementListingCreate({
       width={PAGE_WIDTH + 100}
       footer={null}
       centered
-      destroyOnClose
+      destroyOnHidden
     >
       {contextHolder}
       {loading ? (
@@ -181,7 +182,22 @@ export default function AgreementListingCreate({
             currentMode={visibility}
             onPreview={handlePreview}
             onDraft={handleDraft}
-            onSubmit={(extra) => handleSubmit(mode, extra)}
+            onSubmit={(extra) =>
+              handleSubmit(mode, {
+                ...extra,
+                noNavigate: true,
+                onSuccess: (res) => {
+                  // close modal, show standard success message and notify parent to refresh
+                  try {
+                    onClose?.();
+                    message.success("Đăng tin thành công");
+                    if (typeof onSuccess === "function") onSuccess(res);
+                  } catch (e) {
+                    console.error(e);
+                  }
+                },
+              })
+            }
             submitting={submitting}
           />
         </>

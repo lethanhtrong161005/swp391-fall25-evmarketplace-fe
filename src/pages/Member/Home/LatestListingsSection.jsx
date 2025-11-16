@@ -7,7 +7,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 
-import ProductCard from "@/components/ProductCard/ProductCard";
+import CardListing from "@components/CardListing";
 import ViewMoreButton from "@/components/ViewMoreButton";
 import styles from "./LatestListingsSection.module.scss";
 
@@ -74,11 +74,7 @@ export default function LatestListingsSection({
             <div className={`${styles.grid5x} ${styles.fadeIn}`}>
               {pagedItems.map((item) => (
                 <div key={item.id} className={styles.gridItem}>
-                  <ProductCard
-                    listing={item}
-                    onClick={handleClick}
-                    size="default"
-                  />
+                  <CardListing listing={item} onClick={handleClick} />
                 </div>
               ))}
             </div>

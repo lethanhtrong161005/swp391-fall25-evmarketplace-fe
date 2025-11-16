@@ -175,6 +175,7 @@ const StaffAgreementManagement = () => {
         onClose={() => setIsPostModalOpen(false)}
         consignmentData={selectedConsignmentForPost}
         mode="agreement"
+        onSuccess={() => fetchData()}
       />
     </div>
   );

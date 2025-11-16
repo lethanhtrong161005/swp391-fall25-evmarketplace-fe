@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, message } from "antd";
+import { message } from "antd";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { useAuth } from "@hooks/useAuth";
 import {
@@ -101,16 +101,42 @@ const FavoriteButton = ({
   return (
     <>
       {contextHolder}
-      <Button
-        className={`favorite-button ${className}`}
-        icon={isFavorited ? <HeartFilled /> : <HeartOutlined />}
+      <button
         onClick={handleToggle}
-        loading={loading}
-        type={isFavorited ? "primary" : "default"}
-        size={size}
+        disabled={loading}
+        className={`favorite-button ${className}`}
+        style={{
+          padding: "8px",
+          borderRadius: "50%",
+          backgroundColor: "white",
+          border: "none",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+          cursor: loading ? "not-allowed" : "pointer",
+          transition: "all 0.3s ease",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "40px",
+          height: "40px",
+          opacity: loading ? 0.6 : 1,
+        }}
+        onMouseEnter={(e) => {
+          if (!loading) {
+            e.currentTarget.style.backgroundColor = "#f5f5f5";
+            e.currentTarget.style.transform = "scale(1.05)";
+          }
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = "white";
+          e.currentTarget.style.transform = "scale(1)";
+        }}
       >
-        {showText && (isFavorited ? "Đã lưu" : "Lưu")}
-      </Button>
+        {isFavorited ? (
+          <HeartFilled style={{ fontSize: "20px", color: "#ff4d4f" }} />
+        ) : (
+          <HeartOutlined style={{ fontSize: "20px", color: "#8c8c8c" }} />
+        )}
+      </button>
     </>
   );
 };

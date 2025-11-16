@@ -23,7 +23,7 @@ export default function ContractCreateModal({ open, onCancel, order, staffId, on
             okText="Tạo hợp đồng"
             onOk={onOk}
             okButtonProps={{ disabled }}
-            destroyOnClose
+            destroyOnHidden
             width={screens.lg ? 860 : screens.md ? 720 : 520} // responsive width
             className={s.modalWrap} // tinh chỉnh body/padding nếu cần
         >

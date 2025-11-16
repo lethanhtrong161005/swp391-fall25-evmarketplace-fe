@@ -1,11 +1,11 @@
 import React, { lazy } from "react";
 import RoleBasedRoute from "@components/RoleBasedRoute/index";
 import LayoutDefault from "@layouts/LayoutDefault";
-import GoogleCallback from "../pages/Auth/GoogleCallback";
-
 const HomeWrapper = lazy(() => import("@pages/Member/HomeWrapper/HomeWrapper"));
 const Vehicle = lazy(() => import("@pages/Member/Vehicle"));
 const Battery = lazy(() => import("@pages/Member/Battery"));
+const AllListings = lazy(() => import("@pages/Member/AllListings/AllListings"));
+const AllFeaturedListings = lazy(() => import("@pages/Member/AllFeaturedListings/AllFeaturedListings"));
 const ProductDetail = lazy(() =>
   import("@pages/Member/ProductDetail/ProductDetail")
 );
@@ -15,8 +15,6 @@ const ManagerListing = lazy(() => import("@pages/Member/ManagerListing"));
 const MyFavoritesPage = lazy(() =>
   import("@pages/Member/MyFavoritesPage/MyFavoritesPage")
 );
-const AllListings = lazy(() => import("@pages/Member/AllListings/AllListings"));
-const SearchResults = lazy(() => import("@pages/Member/SearchResults"));
 const MyOrder = lazy(() => import("@pages/Member/MyOrder"));
 const VnpReturnPage = lazy(() => import("@pages/Payment"));
 const MemberConsignment = lazy(() =>
@@ -31,6 +29,12 @@ const InspectionAvailabilityPage = lazy(() =>
   )
 );
 const InfoUser = lazy(() => import("@pages/Member/InfoUser"));
+const Chat = lazy(() => import("@pages/Member/Chat"));
+const GoogleCallback = lazy(() => import("@pages/Auth/GoogleCallback"));
+const ConsignmentListings = lazy(() =>
+  import("@pages/Member/ConsignmentListings")
+);
+const SearchResults = lazy(() => import("@pages/Member/SearchResults"));
 
 export default [
   {
@@ -40,11 +44,14 @@ export default [
       { index: true, element: <HomeWrapper /> },
       { path: "vehicle", element: <Vehicle /> },
       { path: "battery", element: <Battery /> },
+      { path: "listings", element: <AllListings /> },
+      { path: "featured-listings", element: <AllFeaturedListings /> },
+      { path: "consignment-listings", element: <ConsignmentListings /> },
+      { path: "search-results", element: <SearchResults /> },
       { path: "detail/:id", element: <ProductDetail /> },
       { path: "listings", element: <AllListings /> },
       { path: "search-results", element: <SearchResults /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
-
       {
         element: (
           <RoleBasedRoute
@@ -58,6 +65,8 @@ export default [
           { path: "my-ads", element: <ManagerListing /> },
           { path: "my-favorites", element: <MyFavoritesPage /> },
           { path: "my-order", element: <MyOrder /> },
+          { path: "chat", element: <Chat /> },
+          { path: "chat/:conversationId", element: <Chat /> },
           { path: "payment/vnpay/call_back", element: <VnpReturnPage /> },
           {
             path: "consignment",

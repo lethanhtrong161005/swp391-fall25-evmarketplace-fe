@@ -11,6 +11,7 @@ import YearColorFields from "@components/YearColorFields";
 import CreateListingFooter from "@components/CreateListingFooter";
 import PostTypeModal from "@components/PostTypeModal";
 import RejectedReasonModal from "@pages/Member/ListingEdit/RejectedReasonModal";
+import DynamicBreadcrumb from "@components/Breadcrumb/Breadcrumb";
 import React, { useState } from "react";
 
 
@@ -40,14 +41,19 @@ export default function ListingEdit() {
     return (
       <div style={{ padding: 40, textAlign: "center" }}>
         {contextHolder}
-        <Spin tip="Đang tải dữ liệu..." />
+        <Spin size="large">
+          <div style={{ padding: 50 }}>Đang tải dữ liệu...</div>
+        </Spin>
       </div>
     );
   }
 
   return (
-    <>
+    <div style={{ paddingBottom: "80px" }}>
       {contextHolder}
+      <div style={{ maxWidth: PAGE_WIDTH, margin: "16px auto", padding: "0 16px" }}>
+        <DynamicBreadcrumb />
+      </div>
 
       <Card
         style={{ maxWidth: PAGE_WIDTH, margin: "10px auto" }}
@@ -117,6 +123,6 @@ export default function ListingEdit() {
         />
       )}
 
-    </>
+    </div>
   );
 }

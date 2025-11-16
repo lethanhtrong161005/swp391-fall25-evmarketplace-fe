@@ -10,6 +10,7 @@ import CategoryBrandModel from "@components/CategoryBrandModel";
 import YearColorFields from "@components/YearColorFields";
 import CreateListingFooter from "@components/CreateListingFooter";
 import PostTypeModal from "@components/PostTypeModal";
+import DynamicBreadcrumb from "@components/Breadcrumb/Breadcrumb";
 
 import { useListingCreate } from "@hooks/useListingCreate";
 import { useAuth } from "@contexts/AuthContext";
@@ -59,12 +60,12 @@ export default function ListingCreate() {
   }
 
   return (
-    <>
+    <div style={{ paddingBottom: "80px" }}>
       {contextHolder}
-      <Card
-        style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }}
-        variant="bordered"
-      >
+      <div style={{ maxWidth: PAGE_WIDTH, margin: "16px auto", padding: "0 16px" }}>
+        <DynamicBreadcrumb />
+      </div>
+      <Card style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }} variant="bordered">
         <Form form={form} layout="vertical" onValuesChange={onValuesChange}>
           <Row gutter={16}>
             <Col xs={24} md={8}>
@@ -111,6 +112,6 @@ export default function ListingCreate() {
         onCancel={() => setPostTypeOpen(false)}
         onOk={() => setPostTypeOpen(false)}
       />
-    </>
+    </div>
   );
 }

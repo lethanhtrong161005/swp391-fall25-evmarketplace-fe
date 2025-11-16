@@ -19,13 +19,14 @@ const Home = () => {
     loadingLatest,
     loadingFeatured,
     totalProducts,
+    totalFeatured,
   } = useHomeData();
 
   const handleViewMoreListings = () => {
     navigate("/listings");
   };
   const handleViewMoreFeatured = () => {
-    // TODO: điều hướng tới trang danh sách sản phẩm nổi bật (nếu có)
+    navigate("/featured-listings");
   };
   const handleItemClick = (item) => {
     if (!item) return;
@@ -35,7 +36,7 @@ const Home = () => {
   const handleConsignVehicle = () => {};
 
   return (
-    <div style={{ minHeight: "100vh", background: token.colorBgLayout }}>
+    <div style={{ minHeight: "100vh" }}>
       <main style={{ padding: "24px 40px 40px", maxWidth, margin: "0 auto" }}>
         <HeroHeader />
 
@@ -49,16 +50,13 @@ const Home = () => {
 
         <FeaturedProductSection
           items={featuredItems}
-          totalCount={featuredItems.length}
+          totalCount={totalFeatured}
           loading={loadingFeatured}
           onViewMore={handleViewMoreFeatured}
           onItemClick={handleItemClick}
         />
 
-        <CTABanner
-          onStartBuying={handleStartBuying}
-          onConsignVehicle={handleConsignVehicle}
-        />
+        <CTABanner />
       </main>
     </div>
   );

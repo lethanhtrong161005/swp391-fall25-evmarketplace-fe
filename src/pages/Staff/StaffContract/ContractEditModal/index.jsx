@@ -31,7 +31,7 @@ const ContractEditModal = ({
             centered
             width={720}
             className={s.centerModal}
-            destroyOnClose
+            destroyOnHidden
             footer={null}
             styles={{ body: { paddingTop: 8 } }}
             afterOpenChange={(opened) => {

@@ -70,6 +70,7 @@ export default function StaffListing() {
         onClose={() => setIsModalOpen(false)}
         consignmentData={editingItem}
         mode="agreement-update"
+        onSuccess={() => refresh()}
       />
 
       <CreateOrderModal

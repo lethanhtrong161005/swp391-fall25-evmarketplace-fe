@@ -87,7 +87,7 @@ const EmailOtpVerifyModal = forwardRef(function EmailOtpVerifyModal(
         },
         body: { padding: 0 },
       }}
-      destroyOnClose
+      destroyOnHidden
     >
       {contextHolder}
       <Title level={3} style={{ textAlign: "center", marginBottom: 4 }}>

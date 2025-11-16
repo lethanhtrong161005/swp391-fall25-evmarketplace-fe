@@ -10,25 +10,20 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// Gắn token
 api.interceptors.request.use((req) => {
   const token = cookieUtils.getToken();
   if (token) {
     req.headers.Authorization = `Bearer ${token}`;
   }
 
-  // Nếu là FormData → gỡ Content-Type để browser tự set boundary
   if (req.data instanceof FormData) {
-    // Axios có thể đã set từ nơi khác -> xóa chắc ăn
     delete req.headers["Content-Type"];
   } else {
-    // Còn lại mặc định gửi JSON
     req.headers["Content-Type"] = "application/json";
   }
   return req;
 });
 
-// Response interceptor
 api.interceptors.response.use(
   (response) => {
     return response;
@@ -38,7 +33,6 @@ api.interceptors.response.use(
   }
 );
 
-// Hàm gọi API chung
 const request = async (
   method,
   endpoint,
@@ -52,13 +46,20 @@ const request = async (
       data: body,
       headers,
     });
+    if (!res) {
+      console.warn("[apiCaller] Response is null for:", endpoint);
+      return null;
+    }
     return res.data;
   } catch (err) {
-    throw err.response?.data || err;
+    console.error("[apiCaller] Request error for:", endpoint, err);
+    if (err.response) {
+      throw err.response.data || { success: false, message: err.message };
+    }
+    throw { success: false, message: err.message || "Network error" };
   }
 };
 
-// CRUD methods
 export const get = (endpoint, params = {}, headers = {}) =>
   request("GET", endpoint, { params, headers });
 

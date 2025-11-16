@@ -1,0 +1,266 @@
+.pageWrapper {
+  background: #f0f2f5;
+  padding: 0;
+  min-height: calc(100vh - 80px);
+  box-sizing: border-box;
+}
+
+.chatShell {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  overflow: hidden;
+  min-height: calc(100vh - 80px);
+  max-height: calc(100vh - 80px);
+  height: calc(100vh - 80px);
+  gap: 0;
+}
+
+.sidebar {
+  width: 420px;
+  min-width: 380px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e4e9f2;
+  background: #ffffff;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+  flex-shrink: 0;
+}
+
+.sidebarHeader {
+  padding: 16px;
+  border-bottom: 1px solid #e4e9f2;
+  border-radius: 0;
+  background: #ffffff;
+}
+
+.sidebarTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.searchContainer {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.searchInput {
+  flex: 1;
+}
+
+.searchMenuButton {
+  flex-shrink: 0;
+}
+
+.sidebarTabs {
+  :global(.ant-tabs-nav) {
+    margin: 0;
+  }
+  
+  :global(.ant-tabs-tab) {
+    padding: 8px 12px;
+  }
+}
+
+.sidebarBody {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+}
+
+.mainPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f0f2f5;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mainHeader {
+  height: 64px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border-bottom: 1px solid #e4e9f2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-radius: 0;
+}
+
+.mobileMenuButton {
+  display: none;
+  margin-right: 8px;
+}
+
+.headerMain {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.headerMenuButton {
+  margin-left: auto;
+}
+
+.headerPlaceholder {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.headerTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.headerSubtitle {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.recipientMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.connectionBadge {
+  margin-left: auto;
+}
+
+.mainBody {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.quickReplies {
+  padding: 12px 20px;
+  background: #ffffff;
+  border-top: 1px solid #e4e9f2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.quickReplyButton {
+  border-radius: 16px;
+  font-size: 13px;
+  height: auto;
+  padding: 4px 12px;
+  border-color: #e4e9f2;
+  color: #595959;
+  
+  &:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+}
+
+.mainComposer {
+  background: #ffffff;
+  border-top: 1px solid #e4e9f2;
+  border-radius: 0;
+}
+
+.emptyState {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 16px;
+}
+
+.emptyCard {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 48px 56px;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.emptyTitle {
+  font-size: 16px;
+}
+
+@media (max-width: 1200px) {
+  .chatShell {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 992px) {
+  .pageWrapper {
+    padding: 24px 12px 60px;
+    min-height: calc(100vh - 100px);
+  }
+
+  .chatShell {
+    flex-direction: column;
+    border-radius: 24px;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .mainHeader {
+    padding: 0 20px;
+    height: 72px;
+  }
+
+  .mobileMenuButton {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 576px) {
+  .pageWrapper {
+    padding: 16px 8px 48px;
+  }
+
+  .mainHeader {
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  .headerTitle {
+    font-size: 18px;
+  }
+
+  .emptyCard {
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+}
+

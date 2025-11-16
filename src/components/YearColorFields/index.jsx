@@ -23,7 +23,7 @@ export default function YearColorFields({ isBattery, mode = "listing" }) {
         >
           <Select
             className={styles.select}
-            popupClassName={styles.dropdown}
+            classNames={{ popup: { root: styles.dropdown } }}
             showSearch
             placeholder="Chọn năm"
             options={YEARS_EXTENDED}
@@ -64,7 +64,7 @@ export default function YearColorFields({ isBattery, mode = "listing" }) {
             >
               <AutoComplete
                 className={styles.autoComplete}
-                popupClassName={styles.dropdown}
+                classNames={{ popup: { root: styles.dropdown } }}
                 allowClear
                 options={[
                   { value: "Trắng", label: "Trắng" },

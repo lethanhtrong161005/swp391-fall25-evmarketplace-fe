@@ -78,10 +78,16 @@ const AddressField = ({ form: externalForm }) => {
                 onCancel={() => setOpen(false)}
                 initialAddress={address}
                 onOk={(addrObj, displayText) => {
-                    form?.setFieldsValue({ address: addrObj });
+                    // Ensure address object is properly formatted for form
+                    if (addrObj && form) {
+                        form.setFieldsValue({ address: addrObj });
+                    }
                     setDisplay(displayText);
                     setOpen(false);
-                    form?.validateFields?.(["address"]).catch(() => { });
+                    // Validate after a small delay to ensure form state is updated
+                    setTimeout(() => {
+                        form?.validateFields?.(["address"]).catch(() => { });
+                    }, 0);
                 }}
             />
         </>

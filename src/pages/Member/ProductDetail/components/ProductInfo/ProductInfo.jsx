@@ -28,25 +28,55 @@ import {
   CATEGORY_TAG_COLORS,
 } from "../../utils/productConstants";
 import FavoriteButton from "@components/FavoriteButton/FavoriteButton";
+import { useAuth } from "@hooks/useAuth";
+import UnauthenticatedChatButton from "@components/Chat/UnauthenticatedChatButton/index";
+import { getAccountDbId, normalizeUserId } from "@utils/chatUtils";
+import { useNavigate } from "react-router-dom";
 import "./ProductInfo.styles.scss";
 
 const { Title, Text, Paragraph } = Typography;
 
 export default function ProductInfo({ product, onShowLoginModal }) {
+  const navigate = useNavigate();
   const [showContactModal, setShowContactModal] = useState(false);
   const [isPhoneRevealed, setIsPhoneRevealed] = useState(false);
   const [isEmailRevealed, setIsEmailRevealed] = useState(false);
-
-  // Không cần hook nữa vì đã sử dụng FavoriteButton component
+  const { isLoggedIn, user } = useAuth();
 
   if (!product) return null;
 
   const seller = product.seller;
+  // Get seller ID - handle both id and accountId, ensure it's a number
+  const sellerId = seller?.id || seller?.accountId;
+  const sellerIdNum = sellerId ? (typeof sellerId === "number" ? sellerId : parseInt(sellerId, 10)) : null;
+  const normalizedSellerId = normalizeUserId(sellerIdNum);
+  const currentUserId = getAccountDbId(user);
+  const normalizedCurrentUserId = normalizeUserId(currentUserId);
+  const isOwner =
+    isLoggedIn &&
+    normalizedSellerId !== null &&
+    normalizedCurrentUserId !== null &&
+    normalizedSellerId === normalizedCurrentUserId;
 
   // Lấy số điện thoại từ seller
   const phoneNumber = seller?.phone || seller?.phoneNumber;
 
   // Removed unused getCategory function
+
+  // Navigate to chat page with seller
+  const handleChatClick = () => {
+    if (isOwner) {
+      message.info("Đây là tin đăng của bạn");
+      return;
+    }
+
+    if (sellerIdNum) {
+      console.log("Navigating to chat with seller ID:", sellerIdNum);
+      navigate("/chat", { state: { recipientId: sellerIdNum } });
+    } else {
+      message.error("Không tìm thấy thông tin người bán");
+    }
+  };
 
   // Hiển thị thông tin liên hệ khi user click
   const handleShowContact = () => {
@@ -94,11 +124,17 @@ export default function ProductInfo({ product, onShowLoginModal }) {
         <Title level={2} className="product-info__title">
           {product.title}
         </Title>
-        <FavoriteButton
-          listingId={product.id}
-          onShowLoginModal={onShowLoginModal}
-          className="product-info__save-btn"
-        />
+        {isOwner ? (
+          <Tag color="blue" className="product-info__owner-tag">
+            Tin đăng của bạn
+          </Tag>
+        ) : (
+          <FavoriteButton
+            listingId={product.id}
+            onShowLoginModal={onShowLoginModal}
+            className="product-info__save-btn"
+          />
+        )}
       </div>
 
       {/* Thông tin chi tiết sản phẩm */}
@@ -123,15 +159,27 @@ export default function ProductInfo({ product, onShowLoginModal }) {
 
       {/* Nút liên hệ */}
       <div className="product-info__contact-actions">
-        <Button
-          className="product-info__contact-btn product-info__contact-btn--chat"
-          icon={<PhoneOutlined />}
-          onClick={() => {
-            /* TODO: Implement chat */
-          }}
-        >
-          Chat
-        </Button>
+        {isLoggedIn ? (
+          isOwner ? (
+            <Button
+              className="product-info__contact-btn product-info__contact-btn--chat"
+              icon={<PhoneOutlined />}
+              disabled
+            >
+              Bạn đã đăng tin này
+            </Button>
+          ) : (
+            <Button
+              className="product-info__contact-btn product-info__contact-btn--chat"
+              icon={<PhoneOutlined />}
+              onClick={handleChatClick}
+            >
+              Chat
+            </Button>
+          )
+        ) : (
+          <UnauthenticatedChatButton onLoginClick={onShowLoginModal} />
+        )}
 
         {!isPhoneRevealed && !isEmailRevealed ? (
           <Button
@@ -227,17 +275,19 @@ export default function ProductInfo({ product, onShowLoginModal }) {
       </div>
 
       {/* Chat nhanh */}
-      <div className="product-info__quick-chat">
-        <Text className="product-info__quick-chat-label">Chat nhanh:</Text>
-        <div className="product-info__quick-chat-buttons">
-          <Button size="small" className="product-info__quick-chat-btn">
-            Xe này còn không ạ?
-          </Button>
-          <Button size="small" className="product-info__quick-chat-btn">
-            Xe chính chủ hay đư...
-          </Button>
+      {!isOwner && (
+        <div className="product-info__quick-chat">
+          <Text className="product-info__quick-chat-label">Chat nhanh:</Text>
+          <div className="product-info__quick-chat-buttons">
+            <Button size="small" className="product-info__quick-chat-btn">
+              Xe này còn không ạ?
+            </Button>
+            <Button size="small" className="product-info__quick-chat-btn">
+              Xe chính chủ hay đư...
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Modal hiển thị khi không có thông tin liên hệ */}
       <Modal

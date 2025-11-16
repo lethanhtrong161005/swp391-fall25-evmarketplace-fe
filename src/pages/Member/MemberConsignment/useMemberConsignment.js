@@ -202,7 +202,9 @@ const useManagerConsignment = (tabs) => {
       setLoading(true);
       const res = await getAgreementByRequestId(requestId);
       if (res?.success && res?.data) {
-        setAgreementDetail(res.data);
+        const wrapper = res.data;
+        const item = wrapper?.item ?? wrapper;
+        setAgreementDetail(item);
         setIsAgreementModalOpen(true);
       } else {
         message.warning("Không tìm thấy hợp đồng ký gửi.");

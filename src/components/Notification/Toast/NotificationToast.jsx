@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { App, Typography, Tag, Space, theme } from "antd";
+import "../notification.scss";
 import "./NotificationToast.scss";
 import {
   CheckCircleOutlined,

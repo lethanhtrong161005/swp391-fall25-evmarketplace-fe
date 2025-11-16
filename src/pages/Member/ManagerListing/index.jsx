@@ -79,7 +79,7 @@ const ManagerListing = () => {
             isTrash={activeTab === "SOFT_DELETED"}
           />
         ) : (
-          <EmptyState onCreate={goCreateListing} />
+          <EmptyState onCreate={goCreateListing} queryButtonText="Đăng tin" />
         )}
       </Card>
     </div>

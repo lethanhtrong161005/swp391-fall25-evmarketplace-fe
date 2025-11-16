@@ -19,7 +19,7 @@ const StaffConsiderModal = ({
       }}
       okText="Xác nhận"
       cancelText="Hủy"
-      destroyOnClose 
+      destroyOnHidden 
     >
       <Input.TextArea
         rows={4}

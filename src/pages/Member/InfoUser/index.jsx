@@ -119,7 +119,7 @@ export default function InfoUser() {
 
         {/* Thông tin chi tiết */}
         <Row justify="center">
-          <Col xs={24} sm={20} md={16}>
+          <Col xs={24} sm={24} md={22} lg={20} xl={18} xxl={16} className={s.infoCol}>
             <div className={s.infoBox}>
               <div className={s.infoItem}>
                 <MailOutlined className={s.icon} />

@@ -10,7 +10,8 @@ import FavoritesDropdown from "@components/FavoritesDropdown/FavoritesDropdown";
 import UnauthenticatedFavoritesDropdown from "@components/FavoritesDropdown/UnauthenticatedFavoritesDropdown";
 import NotificationCenter from "@components/Notification/Center/NotificationCenter";
 import UnauthenticatedNotificationCenter from "@components/Notification/UnauthenticatedCenter/UnauthenticatedNotificationCenter";
-import UnauthenticatedChatButton from "@components/Chat/UnauthenticatedChatButton";
+import UnauthenticatedChatButton from "@components/Chat/UnauthenticatedChatButton/index";
+import ChatButton from "@components/Chat/ChatButton/index";
 import "./MobileHeaderAction.scss";
 
 const MobileHeaderAction = ({
@@ -59,23 +60,9 @@ const MobileHeaderAction = ({
 
         {/* Message Icon */}
         {isLoggedIn ? (
-          <Tooltip title="Chat">
-            <Button
-              type="text"
-              icon={<MessageOutlined style={{ fontSize: "20px" }} />}
-              onClick={() => {
-                // TODO: Navigate to chat page when implemented
-              }}
-              style={{
-                borderRadius: "50%",
-                width: "48px",
-                height: "48px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
-          </Tooltip>
+          <div className="mobile-icon-wrapper">
+            <ChatButton iconSize="20px" buttonSize="48px" />
+          </div>
         ) : (
           <div className="mobile-icon-wrapper">
             <UnauthenticatedChatButton onLoginClick={onLoginClick} />
@@ -117,22 +104,9 @@ const MobileHeaderAction = ({
             Đăng tin
           </Button>
 
-          {/* Quản lý tin và Ký gửi - Chỉ hiện khi đã đăng nhập */}
+          {/* Ký gửi - Chỉ hiện khi đã đăng nhập */}
           {isLoggedIn && (
             <>
-              <Button
-                block
-                type="text"
-                onClick={() =>
-                  handleLoginRequire(
-                    MANAGE_LISTINGS_PATH,
-                    "Vui lòng đăng nhập để quản lý tin"
-                  )
-                }
-              >
-                Quản lý tin
-              </Button>
-
               <Button
                 block
                 type="text"
