@@ -49,6 +49,8 @@ export default [
       { path: "consignment-listings", element: <ConsignmentListings /> },
       { path: "search-results", element: <SearchResults /> },
       { path: "detail/:id", element: <ProductDetail /> },
+      { path: "listings", element: <AllListings /> },
+      { path: "search-results", element: <SearchResults /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
       {
         element: (

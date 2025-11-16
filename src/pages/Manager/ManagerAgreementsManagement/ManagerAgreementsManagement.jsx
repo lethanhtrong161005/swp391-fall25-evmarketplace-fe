@@ -30,7 +30,6 @@ const ManagerAgreementsManagement = () => {
     fetchManagerAgreements();
   }, [fetchManagerAgreements]);
 
-  // 🔍 Search handler
   const handleSearch = async () => {
     if (!phone.trim()) {
       message.warning("Vui lòng nhập số điện thoại!");

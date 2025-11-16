@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   fetchConsignmentListings,
   getListingDetailById,
@@ -19,6 +20,7 @@ function useDebounce(value, delay = 400) {
 }
 
 export default function useStaffListing() {
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     q: "",
     itemType: undefined,
@@ -91,7 +93,6 @@ export default function useStaffListing() {
         filters: { ...filters, q: debouncedQ },
       });
 
-      // 🔹 Lấy chi tiết từng listing
       const itemsWithDetail = await Promise.all(
         items.map(async (it) => {
           try {
@@ -99,15 +100,12 @@ export default function useStaffListing() {
             const detail = detailRes?.data || detailRes;
             const l = detail?.listing || {};
 
-            // ✅ Map media (ảnh/video)
             const media = Array.isArray(detail?.media) ? detail.media : [];
             const mediaUrls = media.map((m) => m.mediaUrl);
 
-            // ✅ Gộp thông tin listing chi tiết
             return {
               ...it,
               ...l,
-              // Bổ sung thủ công các field mà FE cần:
               id: l.id,
               title: l.title,
               price: l.price,
@@ -133,19 +131,17 @@ export default function useStaffListing() {
               status: l.status,
               description: l.description,
 
-              // Gộp thông tin tham chiếu
               seller: detail?.sellerId,
               branch: detail?.branch,
               productVehicle: detail?.productVehicle,
               productBattery: detail?.productBattery,
 
-              // Media
               media,
               mediaUrls,
             };
           } catch (err) {
             console.warn(
-              `❌ Không thể fetch chi tiết cho listing ${it.id}`,
+              `Could not fetch details for listing ${it.id}`,
               err
             );
             return it;
@@ -167,7 +163,6 @@ export default function useStaffListing() {
     fetchData();
   }, [fetchData]);
 
-  // 🔹 Khi click "Chỉnh sửa"
   const handleEditListing = useCallback((record) => {
     const listingId = record?.id || record?.listingId;
     if (!listingId) {
@@ -197,7 +192,6 @@ export default function useStaffListing() {
     setIsModalOpen(true);
   }, []);
 
-  // 🔹 Cập nhật listing sau khi chỉnh sửa
   const handleUpdateListing = useCallback(
     async (id, payload, images = [], videos = [], keepMediaIds = []) => {
       try {
@@ -238,12 +232,13 @@ export default function useStaffListing() {
         message.success("Tạo đơn hàng thành công!");
         setIsOrderModalOpen(false);
         setOrderListing(null);
+        setTimeout(() => navigate("/staff/order"), 500);
       } catch (err) {
         console.error(err);
         message.error(err?.message || "Tạo đơn hàng thất bại!");
       }
     },
-    []
+    [navigate]
   );
   return {
     loading,

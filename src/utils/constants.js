@@ -22,7 +22,6 @@ export const BRANDS_BY_CATEGORY = {
   ],
 };
 
-// Năm: từ hiện tại → 1980, thêm dòng “trước 1980” nếu cần
 const now = new Date().getFullYear();
 export const YEARS_EXTENDED = [
   ...Array.from({ length: now - 1980 + 1 }, (_, i) => {

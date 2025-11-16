@@ -196,11 +196,14 @@ export function useListingCreate({ userId = null, currentListingId = null } = {}
         }
 
         if (res?.success !== false) {
-          msg.success(
-            mode === "agreement-update"
-              ? "Cập nhật tin đăng thành công!"
-              : "Đăng tin thành công!"
-          );
+          // show internal/localized success message unless caller chose to handle it
+          if (!extra || !extra.noNavigate) {
+            msg.success(
+              mode === "agreement-update"
+                ? "Cập nhật tin đăng thành công!"
+                : "Đăng tin thành công!"
+            );
+          }
 
           if (draftId) {
             listingDrafts.remove(draftId, userId);
@@ -211,10 +214,22 @@ export function useListingCreate({ userId = null, currentListingId = null } = {}
           setImages([]);
           setVideos([]);
 
-          if (mode === "agreement") {
-            setTimeout(() => navigate("/staff/consignment/agreement"), 800);
-          } else if (mode !== "agreement-update") {
-            setTimeout(() => navigate("/my-ads"), 1000);
+          // call optional onSuccess callback passed via `extra`
+          try {
+            if (extra && typeof extra.onSuccess === "function") {
+              extra.onSuccess(res);
+            }
+          } catch (err) {
+            console.error("onSuccess callback error", err);
+          }
+
+          // perform navigation only when caller didn't ask to skip it
+          if (!extra || !extra.noNavigate) {
+            if (mode === "agreement") {
+              setTimeout(() => navigate("/staff/consignment/agreement"), 800);
+            } else if (mode !== "agreement-update") {
+              setTimeout(() => navigate("/my-ads"), 1000);
+            }
           }
         } else {
           msg.error(res?.message || "Thao tác thất bại!");
