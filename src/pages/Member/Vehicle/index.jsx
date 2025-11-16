@@ -114,7 +114,7 @@ const Vehicle = () => {
             onChange={handlePageChange}
             showSizeChanger
             showTotal={(total) => `Tổng ${total} tin đăng`}
-            pageSizeOptions={["10", "20", "40", "60"]}
+            pageSizeOptions={["12", "20", "40", "60"]}
           />
         </PageFooter>
       )}

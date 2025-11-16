@@ -28,7 +28,7 @@ const Chat = () => {
       </div>
 
       {/* Main Content */}
-      <Content className={styles.content}>
+      <Content className={`${styles.content} ${styles.chatContent}`}>
         <ChatPage />
       </Content>
     </Layout>

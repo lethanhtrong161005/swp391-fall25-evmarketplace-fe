@@ -181,7 +181,13 @@ const ChatInput = ({
         <div className={s.previewContainer}>
           {imagePreview && (
             <div className={s.imagePreview}>
-              <Image src={imagePreview} alt="Preview" className={s.previewImage} />
+              <Image 
+                src={imagePreview} 
+                alt="Preview" 
+                className={s.previewImage}
+                preview={false}
+                style={{ maxHeight: '200px', width: 'auto' }}
+              />
               <div className={s.previewActions}>
                 <Button
                   type="primary"
@@ -203,7 +209,12 @@ const ChatInput = ({
           )}
           {videoPreview && (
             <div className={s.videoPreview}>
-              <video src={videoPreview} controls className={s.previewVideo} />
+              <video 
+                src={videoPreview} 
+                controls 
+                className={s.previewVideo}
+                style={{ maxHeight: '200px', width: '100%' }}
+              />
               <div className={s.previewActions}>
                 <Button
                   type="primary"

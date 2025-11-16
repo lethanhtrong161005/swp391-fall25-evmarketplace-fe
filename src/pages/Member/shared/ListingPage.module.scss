@@ -24,6 +24,12 @@
   border-radius: 8px;
   position: relative;
   isolation: isolate;
+  
+  // For chat page, ensure proper height
+  &:has(.chatContent) {
+    height: calc(100vh - 138px);
+    min-height: calc(100vh - 138px);
+  }
 }
 
 // Page Header (Ant Design Layout.Header)
@@ -188,14 +194,40 @@
 
   // Special styling for ChatPage
   :global(.pageWrapper) {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    height: 100%;
-    max-height: 100%;
-    overflow: hidden;
-    position: relative;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+    width: 100% !important;
+  }
+}
+
+// Chat page specific styles - remove padding to allow full height
+// Use higher specificity to override default .content styles
+.content.chatContent {
+  padding: 0 !important;
+  background: transparent !important;
+  min-height: 600px !important;
+  height: auto !important;
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+  
+  // Ensure nested content also works correctly
+  :global(.ant-layout-content) {
+    padding: 0 !important;
+    background: transparent !important;
+    height: 100% !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
   }
 }
 
@@ -210,37 +242,37 @@
   margin-bottom: 24px;
   min-height: 500px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   width: 100%;
 
-  /* Large desktop */
+  /* Large desktop - vẫn giữ 4 cột */
   @media (min-width: 1600px) {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
-  /* Desktop */
+  /* Desktop - 4 cột */
   @media (min-width: 1200px) and (max-width: 1599.98px) {
     grid-template-columns: repeat(4, 1fr);
   }
 
-  /* Tablet */
+  /* Tablet - 3 cột */
   @media (min-width: 992px) and (max-width: 1199.98px) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  /* Small tablet */
+  /* Small tablet - 2 cột */
   @media (min-width: 768px) and (max-width: 991.98px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Mobile */
+  /* Mobile - 2 cột */
   @media (max-width: 767.98px) {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 
-  /* Mobile portrait */
+  /* Mobile portrait - 1 cột */
   @media (max-width: 575.98px) {
     grid-template-columns: 1fr;
   }
@@ -334,6 +366,12 @@
   .content {
     padding: 20px 24px;
   }
+  
+  .content.chatContent {
+    padding: 0 !important;
+    min-height: 500px !important;
+    height: auto !important;
+  }
 
   .pageFooter {
     padding: 20px 24px;
@@ -379,6 +417,12 @@
 
   .content {
     padding: 16px 16px;
+  }
+  
+  .content.chatContent {
+    padding: 0 !important;
+    min-height: 400px !important;
+    height: auto !important;
   }
 
   .pageFooter {
@@ -460,6 +504,11 @@
 
   .content {
     padding: 12px 12px;
+  }
+  
+  .content.chatContent {
+    padding: 0;
+    min-height: 400px;
   }
 
   .pageFooter {

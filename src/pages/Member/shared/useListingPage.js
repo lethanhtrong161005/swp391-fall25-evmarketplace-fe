@@ -25,7 +25,7 @@ export default function useListingPage(fetchFunction) {
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState(() => ({
     current: parseInt(searchParams.get("page") || "1"),
-    pageSize: 10,
+    pageSize: 12,
     total: 0,
   }));
 
