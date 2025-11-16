@@ -10,8 +10,10 @@ import { NotificationProvider } from "@contexts/NotificationContext.jsx";
 import NotificationToast from "@components/Notification/Toast/NotificationToast";
 
 message.config({
-  duration: 3, // hiển thị 3 giây (sweet spot)
+  duration: 3, // hiển thị 3 giây
   maxCount: 3, // tối đa 3 toast cùng lúc
+  top: 24, // Khoảng cách từ top
+  rtl: false, // Left to right
 });
 
 const theme = {

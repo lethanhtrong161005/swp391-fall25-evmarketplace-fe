@@ -292,7 +292,7 @@ export default function ModeratorApprovalListings() {
               Quản lý duyệt bài
             </Title>
             <Text type="secondary">
-              Duyệt các tin đăng có trạng thái PENDING
+              Duyệt các tin đăng có trạng thái Chờ duyệt
             </Text>
           </Col>
           <Col>

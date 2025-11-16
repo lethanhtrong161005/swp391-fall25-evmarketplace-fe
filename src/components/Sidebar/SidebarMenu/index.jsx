@@ -1,6 +1,7 @@
 import React from "react";
 import { Menu, ConfigProvider } from "antd";
 import { useSidebarMenu } from "./logic";
+import s from "./SidebarMenu.module.scss";
 
 export default function SidebarMenu({
   menuItems = [],
@@ -26,6 +27,7 @@ export default function SidebarMenu({
         selectedKeys={selectedKeys}
         defaultOpenKeys={defaultOpenKeys}
         onClick={onClick}
+        className={s.sidebarMenu}
         style={{ background: "transparent", borderInlineEnd: 0, padding: 8 }}
         items={buildMenuItems(menuItems)}
       />

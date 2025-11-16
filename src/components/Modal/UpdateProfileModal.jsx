@@ -150,9 +150,7 @@ export default function UpdateProfileModal({
                     )}
                   </Space>
                 }
-                rules={[
-                  { type: "email", message: "Email không hợp lệ" },
-                ]}
+                rules={[{ type: "email", message: "Email không hợp lệ" }]}
               >
                 <Input
                   placeholder="example@email.com"

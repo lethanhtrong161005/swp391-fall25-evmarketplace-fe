@@ -87,7 +87,6 @@ export const useChat = (conversationId = null, recipientId = null) => {
     // Unsubscribe from previous conversation
     if (subscriptionRef.current) {
       try {
-        console.log("[useChat] Unsubscribing from previous conversation");
         subscriptionRef.current.unsubscribe();
       } catch (e) {
         // Ignore unsubscribe errors
@@ -96,45 +95,23 @@ export const useChat = (conversationId = null, recipientId = null) => {
     }
 
     const queueDest = `/user/queue/chat/${cid}`;
-    console.log("[useChat] Subscribing to conversation:", { cid, queueDest });
     
     subscriptionRef.current = clientToUse.subscribe(queueDest, (frame) => {
       try {
-        console.log("[useChat] Received WebSocket message:", frame);
         const data = JSON.parse(frame.body);
-        console.log("[useChat] Parsed message data:", data);
-        
-        // Log message details for debugging
-        console.log("[useChat] Message details:", {
-          id: data?.id,
-          senderId: data?.senderId || data?.sender?.id,
-          recipientId: data?.recipientId || data?.recipient?.id,
-          conversationId: data?.conversationId,
-          textContent: data?.textContent || data?.content,
-          type: data?.type,
-        });
         
         setMessages((prev) => {
           // Check if message already exists to avoid duplicates
           const exists = prev.some((msg) => msg.id === data.id);
           if (exists) {
-            console.log("[useChat] Message already exists, skipping duplicate:", data.id);
             return prev;
           }
-          const newMessages = [...prev, data];
-          console.log("[useChat] Updated messages count:", newMessages.length);
-          return newMessages;
+          return [...prev, data];
         });
-        
-        // Auto-scroll to bottom
-        setTimeout(() => {
-          if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-          }
-        }, 100);
         
         // Emit custom event to notify ConversationList to refresh
         // This ensures conversation list updates when receiving messages
+        // MessageList component will handle auto-scroll based on user's scroll position
         window.dispatchEvent(new CustomEvent('chat-message-received', {
           detail: { conversationId: cid, message: data }
         }));
@@ -142,8 +119,6 @@ export const useChat = (conversationId = null, recipientId = null) => {
         console.error("[useChat] Parse message error:", e, frame);
       }
     });
-    
-    console.log("[useChat] Subscription successful for conversation:", cid);
   }, []);
 
   // Disconnect WebSocket
@@ -176,8 +151,6 @@ export const useChat = (conversationId = null, recipientId = null) => {
       return null;
     }
 
-    console.log("[useChat] openConversationWithUser called:", { otherId, listingId });
-
     try {
       setLoading(true);
       setError(null);
@@ -198,7 +171,6 @@ export const useChat = (conversationId = null, recipientId = null) => {
         }
       }
       
-      console.log("[useChat] Calling openConversation API with normalized otherId:", normalizedOtherId, "listingId:", normalizedListingId);
       const res = await openConversation(normalizedOtherId, normalizedListingId);
       
       // Handle different response formats:
@@ -254,9 +226,7 @@ export const useChat = (conversationId = null, recipientId = null) => {
 
     try {
       setLoading(true);
-      console.log("[useChat] loadMessageHistory called:", { cid, page, size });
       const res = await loadMessagesAPI(cid, page, size);
-      console.log("[useChat] loadMessageHistory response:", JSON.stringify(res, null, 2));
       
       let items = [];
       
@@ -275,44 +245,18 @@ export const useChat = (conversationId = null, recipientId = null) => {
         items = Array.isArray(res.data) ? res.data : (res.data.content || res.data.items || []);
       }
       
-      console.log("[useChat] loadMessageHistory parsed items count:", items.length);
-      
       if (items.length > 0) {
-        // Log first few messages for debugging
-        items.slice(0, 3).forEach((msg, idx) => {
-          console.log(`[useChat] Message ${idx}:`, {
-            id: msg.id,
-            senderId: msg.senderId || msg.sender?.id,
-            recipientId: msg.recipientId || msg.recipient?.id,
-            textContent: msg.textContent || msg.content,
-            type: msg.type,
-            createdAt: msg.createdAt,
-          });
-        });
-        
         // Reverse to show oldest first, then newest
         const reversed = items.slice().reverse();
         setMessages(reversed);
-        console.log("[useChat] Messages set to state, count:", reversed.length);
         
-        // Scroll to bottom after loading
-        setTimeout(() => {
-          if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "auto" });
-          }
-        }, 100);
+        // Don't auto-scroll here - let MessageList component handle it
+        // This prevents unwanted scroll when page loads
       } else {
-        console.warn("[useChat] No messages found in response:", {
-          hasSuccess: res?.success !== undefined,
-          hasData: !!res?.data,
-          isArray: Array.isArray(res),
-          responseKeys: res ? Object.keys(res) : null,
-        });
         setMessages([]);
       }
     } catch (e) {
       console.error("[useChat] Load messages error:", e);
-      console.error("[useChat] Error stack:", e.stack);
       setError("Không thể tải tin nhắn");
       setMessages([]);
     } finally {
@@ -324,14 +268,6 @@ export const useChat = (conversationId = null, recipientId = null) => {
   const sendText = useCallback(async (text, cid = null, recipientIdParam = null) => {
     const cidToUse = cid || currentConversationId;
     const recipientIdToUse = recipientIdParam || recipientId;
-
-    console.log("[useChat] sendText called:", {
-      text: text?.substring(0, 50),
-      cidToUse,
-      recipientIdToUse,
-      currentConversationId,
-      recipientId,
-    });
 
     if (!cidToUse || !recipientIdToUse || !text?.trim()) {
       const errorMsg = "Thiếu thông tin để gửi tin nhắn";
@@ -354,15 +290,7 @@ export const useChat = (conversationId = null, recipientId = null) => {
         throw new Error("Invalid recipientId: " + recipientIdToUse);
       }
       
-      console.log("[useChat] sendText API call:", {
-        conversationId: cidToUse,
-        recipientId: normalizedRecipientId,
-        text: text.trim(),
-      });
-      
       await sendTextAPI(cidToUse, normalizedRecipientId, text.trim());
-      // Message will arrive via WebSocket
-      console.log("[useChat] sendText API call successful, waiting for WebSocket message...");
       
       // Emit event to refresh conversation list after sending message
       // This ensures the conversation list shows the latest message and updates properly
@@ -381,15 +309,6 @@ export const useChat = (conversationId = null, recipientId = null) => {
     const cidToUse = cid || currentConversationId;
     const recipientIdToUse = recipientIdParam || recipientId;
 
-    console.log("[useChat] sendMedia called:", {
-      type,
-      fileName: file?.name,
-      cidToUse,
-      recipientIdToUse,
-      currentConversationId,
-      recipientId,
-    });
-
     if (!cidToUse || !recipientIdToUse || !file) {
       const errorMsg = "Thiếu thông tin để gửi file";
       setError(errorMsg);
@@ -407,6 +326,42 @@ export const useChat = (conversationId = null, recipientId = null) => {
       return;
     }
 
+    // Validate file size
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+    const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
+    
+    const formatFileSize = (bytes) => {
+      if (bytes === 0) return "0 Bytes";
+      const k = 1024;
+      const sizes = ["Bytes", "KB", "MB", "GB"];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+    };
+
+    if (type === "IMAGE" && file.size > MAX_IMAGE_SIZE) {
+      const errorMsg = `Kích thước ảnh không được vượt quá ${formatFileSize(MAX_IMAGE_SIZE)}. File của bạn: ${formatFileSize(file.size)}`;
+      setError(errorMsg);
+      console.error("[useChat] Image size exceeds limit:", {
+        fileSize: file.size,
+        maxSize: MAX_IMAGE_SIZE,
+        formattedSize: formatFileSize(file.size),
+        maxFormattedSize: formatFileSize(MAX_IMAGE_SIZE),
+      });
+      return;
+    }
+
+    if (type === "VIDEO" && file.size > MAX_VIDEO_SIZE) {
+      const errorMsg = `Dung lượng video không được vượt quá ${formatFileSize(MAX_VIDEO_SIZE)}. File của bạn: ${formatFileSize(file.size)}`;
+      setError(errorMsg);
+      console.error("[useChat] Video size exceeds limit:", {
+        fileSize: file.size,
+        maxSize: MAX_VIDEO_SIZE,
+        formattedSize: formatFileSize(file.size),
+        maxFormattedSize: formatFileSize(MAX_VIDEO_SIZE),
+      });
+      return;
+    }
+
     try {
       // Ensure recipientId is a number for API call
       const normalizedRecipientId = typeof recipientIdToUse === 'number' 
@@ -417,15 +372,7 @@ export const useChat = (conversationId = null, recipientId = null) => {
         throw new Error("Invalid recipientId: " + recipientIdToUse);
       }
       
-      console.log("[useChat] sendMedia API call:", {
-        conversationId: cidToUse,
-        recipientId: normalizedRecipientId,
-        type,
-      });
-      
       await sendMediaAPI(cidToUse, normalizedRecipientId, file, type);
-      // Message will arrive via WebSocket
-      console.log("[useChat] sendMedia API call successful, waiting for WebSocket message...");
     } catch (e) {
       const errorMsg = e?.message || "Không thể gửi file";
       setError(errorMsg);
@@ -459,20 +406,9 @@ export const useChat = (conversationId = null, recipientId = null) => {
   // Subscribe when conversationId changes
   useEffect(() => {
     if (connected && currentConversationId && stompClientRef.current) {
-      console.log("[useChat] Setting up conversation:", {
-        connected,
-        currentConversationId,
-        hasClient: !!stompClientRef.current,
-      });
       subscribeToConversation(currentConversationId, stompClientRef.current);
       loadMessageHistory(currentConversationId);
       markConversationSeen(currentConversationId);
-    } else {
-      console.log("[useChat] Skipping conversation setup:", {
-        connected,
-        currentConversationId,
-        hasClient: !!stompClientRef.current,
-      });
     }
   }, [connected, currentConversationId, subscribeToConversation, loadMessageHistory, markConversationSeen]);
 

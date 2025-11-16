@@ -42,6 +42,7 @@ const MemberConsignment = () => {
     setActiveTab,
     counts,
     goCreateConsignment,
+    fetchData,
     setCancelId,
     handleCancel,
     handleViewSchedule,
@@ -81,6 +82,8 @@ const MemberConsignment = () => {
           query={""}
           onChangeQuery={() => {}}
           onCreate={goCreateConsignment}
+          onRefresh={() => fetchData(pagination.current, pagination.pageSize)}
+          createButtonText="Tạo Ký gửi"
           queryHolder="Tìm sản phẩm ký gửi của bạn..."
           queryButtonText="Tạo ký gửi"
         />

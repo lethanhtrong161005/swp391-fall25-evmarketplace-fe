@@ -1,53 +1,47 @@
-import React, { useState } from "react";
-import { Popover, Button, Tooltip } from "antd";
+import React from "react";
+import { Button, Tooltip } from "antd";
 import { MessageOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import RequireLoginLayout from "../../Notification/RequireLogin/RequireLoginLayout";
 
-const UnauthenticatedChatButton = ({ onLoginClick }) => {
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+const UnauthenticatedChatButton = ({ 
+  onLoginClick, 
+  variant = "header", // "header" or "detail"
+  iconSize = "18px",
+  buttonSize = "40px"
+}) => {
+  const handleClick = () => {
+    onLoginClick?.();
+  };
 
-  const chatContent = (
-    <RequireLoginLayout
-      title="Chat"
-      subtitle="Tin Nhắn"
-      message="Vui lòng đăng nhập để sử dụng tính năng chat"
-      buttonText="Đăng ký / Đăng nhập"
-      onLoginClick={() => {
-        setIsOpen(false);
-        onLoginClick?.();
-      }}
-    />
-  );
-
-  return (
-    <Popover
-      content={chatContent}
-      title={null}
-      trigger="click"
-      open={isOpen}
-      onOpenChange={setIsOpen}
-      placement="bottomRight"
-      arrow={false}
-      overlayClassName="chat-popover"
-    >
+  // Variant cho Header - icon button tròn
+  if (variant === "header") {
+    return (
       <Tooltip title="Chat" placement="bottom">
         <Button
           type="text"
-          icon={<MessageOutlined style={{ fontSize: "18px" }} />}
-          className="unauthenticated-chat-button"
+          icon={<MessageOutlined style={{ fontSize: iconSize }} />}
+          onClick={handleClick}
           style={{
             borderRadius: "50%",
-            width: "40px",
-            height: "40px",
+            width: buttonSize,
+            height: buttonSize,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         />
       </Tooltip>
-    </Popover>
+    );
+  }
+
+  // Variant cho ProductDetail - nút có text
+  return (
+    <Button
+      className="product-info__contact-btn product-info__contact-btn--chat"
+      icon={<MessageOutlined />}
+      onClick={handleClick}
+    >
+      Chat
+    </Button>
   );
 };
 

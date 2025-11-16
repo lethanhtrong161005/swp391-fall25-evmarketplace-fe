@@ -1,50 +1,79 @@
 .pageWrapper {
-  background: #f0f2f5;
+  background: transparent;
   padding: 0;
-  min-height: calc(100vh - 80px);
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
   box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .chatShell {
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
   background: #ffffff;
-  border-radius: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  min-height: calc(100vh - 80px);
-  max-height: calc(100vh - 80px);
-  height: calc(100vh - 80px);
-  gap: 0;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  position: relative;
+  border: 1px solid #f0f0f0;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  
+  :global(.ant-layout) {
+    background: transparent;
+    min-height: 0;
+    height: 100%;
+    flex: 1;
+    display: flex;
+  }
+  
+  :global(.ant-layout-sider) {
+    background: #ffffff;
+  }
 }
 
 .sidebar {
-  width: 420px;
-  min-width: 380px;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #e4e9f2;
+  border-right: 1px solid #e8e8e8;
   background: #ffffff;
   min-height: 0;
   overflow: hidden;
   border-radius: 0;
-  box-shadow: none;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
   flex-shrink: 0;
+  
+  :global(.ant-layout-sider-children) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
 }
 
 .sidebarHeader {
-  padding: 16px;
-  border-bottom: 1px solid #e4e9f2;
+  padding: 20px 18px;
+  border-bottom: 1px solid #f0f0f0;
   border-radius: 0;
-  background: #ffffff;
+  background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .sidebarTitle {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: #1f2937;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  letter-spacing: -0.3px;
 }
 
 .searchContainer {
@@ -80,30 +109,52 @@
   border-radius: 0;
 }
 
+.mainLayout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  
+  :global(.ant-layout-content) {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0;
+  }
+}
+
 .mainPanel {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #f0f2f5;
+  background: #f8f9fa;
   min-height: 0;
+  max-height: 100%;
   overflow: hidden;
   border-radius: 0;
   box-shadow: none;
+  height: 100%;
+  position: relative;
 }
 
 .mainHeader {
-  height: 64px;
-  padding: 0 20px;
+  height: 70px;
+  min-height: 70px;
+  max-height: 70px;
+  padding: 0 24px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #ffffff;
-  border-bottom: 1px solid #e4e9f2;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  gap: 14px;
+  background: linear-gradient(to bottom, #ffffff 0%, #fafafa 100%);
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   position: sticky;
   top: 0;
   z-index: 5;
   border-radius: 0;
+  flex-shrink: 0;
 }
 
 .mobileMenuButton {
@@ -130,9 +181,10 @@
 }
 
 .headerTitle {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 19px;
+  font-weight: 700;
   color: #1f2937;
+  letter-spacing: -0.2px;
 }
 
 .headerSubtitle {
@@ -151,8 +203,9 @@
 }
 
 .mainBody {
-  flex: 1;
+  flex: 1 1 0;
   min-height: 0;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -168,6 +221,7 @@
   gap: 8px;
   max-height: 200px;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .quickReplyButton {
@@ -188,6 +242,11 @@
   background: #ffffff;
   border-top: 1px solid #e4e9f2;
   border-radius: 0;
+  flex-shrink: 0;
+  min-height: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .emptyState {
@@ -221,17 +280,21 @@
 
 @media (max-width: 992px) {
   .pageWrapper {
-    padding: 24px 12px 60px;
-    min-height: calc(100vh - 100px);
+    padding: 0;
+    min-height: 500px;
   }
 
   .chatShell {
-    flex-direction: column;
-    border-radius: 24px;
-  }
-
-  .sidebar {
-    display: none;
+    border-radius: 8px;
+    
+    :global(.ant-layout-sider) {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 1000;
+      height: 100vh;
+    }
   }
 
   .mainHeader {
@@ -246,7 +309,7 @@
 
 @media (max-width: 576px) {
   .pageWrapper {
-    padding: 16px 8px 48px;
+    padding: 0;
   }
 
   .mainHeader {

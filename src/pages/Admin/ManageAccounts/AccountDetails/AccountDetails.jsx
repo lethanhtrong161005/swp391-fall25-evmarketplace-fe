@@ -8,7 +8,7 @@ import {
   Tag,
   Timeline,
 } from "antd";
-import { EditOutlined, HistoryOutlined } from "@ant-design/icons";
+import { HistoryOutlined } from "@ant-design/icons";
 import s from "./AccountDetails.module.scss";
 import { useAccountDetails } from "./useAccountDetails.jsx";
 
@@ -28,18 +28,9 @@ export default function AccountDetails({
   return (
     <Drawer
       title={
-        <Space>
-          <Title level={4} style={{ margin: 0 }}>
-            Chi tiết tài khoản
-          </Title>
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => onEdit(account)}
-          >
-            Chỉnh sửa
-          </Button>
-        </Space>
+        <Title level={4} style={{ margin: 0 }}>
+          Chi tiết tài khoản
+        </Title>
       }
       open={open}
       onClose={onClose}

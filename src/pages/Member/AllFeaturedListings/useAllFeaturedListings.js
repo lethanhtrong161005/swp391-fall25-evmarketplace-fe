@@ -11,13 +11,13 @@ export const CATEGORIES = [
   { id: "BATTERY", code: "BATTERY", label: "Pin" },
 ];
 
+// SORT_OPTIONS phải khớp với các trường được backend hỗ trợ:
+// createdAt, updatedAt, price, expiresAt, promotedUntil, batteryCapacityKwh
 export const SORT_OPTIONS = [
   { value: "createdAt,desc", label: "Tin mới nhất" },
+  { value: "createdAt,asc", label: "Tin cũ nhất" },
   { value: "price,asc", label: "Giá tăng dần" },
   { value: "price,desc", label: "Giá giảm dần" },
-  { value: "batteryCapacityKwh,desc", label: "Dung lượng pin cao nhất" },
-  { value: "mileageKm,asc", label: "Số km ít nhất" },
-  { value: "sohPercent,desc", label: "SOH cao nhất" },
 ];
 
 const DEFAULT_MAX_PRICE = 10000000000; // 10 tỷ
@@ -74,15 +74,24 @@ export default function useAllFeaturedListings() {
   const fetchListings = async () => {
     try {
       setLoading(true);
-      const [sortField, sortDir] = sortBy.split(",");
+      // Split sortBy và đảm bảo có giá trị mặc định
+      const sortParts = (sortBy || "createdAt,desc").split(",");
+      const sortField = sortParts[0]?.trim() || "createdAt";
+      const sortDir = sortParts[1]?.trim() || "desc";
 
+      // Khởi tạo params với isBoosted: true LUÔN được đặt từ đầu
       const params = {
         page: pagination.current - 1,
         size: pagination.pageSize,
         sort: sortField,
         dir: sortDir,
-        isBoosted: true, // Chỉ lấy tin nổi bật
+        isBoosted: true, // Chỉ lấy tin nổi bật - LUÔN truyền vào, KHÔNG BAO GIỜ bị ghi đè
       };
+
+      // Thêm categoryCode nếu có (sau khi đã set isBoosted)
+      if (selectedCategory !== "all") {
+        params.categoryCode = selectedCategory; // EV_CAR, E_MOTORBIKE, E_BIKE, BATTERY
+      }
 
       // Thêm price range (dùng appliedPriceRange - giá đã apply)
       const [minPrice, maxPrice] = appliedPriceRange;
@@ -93,25 +102,29 @@ export default function useAllFeaturedListings() {
         params.priceMax = maxPrice;
       }
 
-      let response;
-
-      // Nếu có categoryCode: dùng getAllListings (hỗ trợ categoryCode và isBoosted)
-      if (selectedCategory !== "all") {
-        params.categoryCode = selectedCategory; // EV_CAR, E_MOTORBIKE, E_BIKE, BATTERY
-        response = await getAllListings(params);
-      } else {
-        // Nếu "all": dùng searchListings (hỗ trợ priceMin/priceMax tốt hơn)
-        // Note: searchListings có thể không hỗ trợ isBoosted, nên dùng getAllListings
-        response = await getAllListings(params);
-      }
+      // Luôn dùng getAllListings để đảm bảo isBoosted được hỗ trợ
+      const response = await getAllListings(params);
 
       if (response?.success && response?.data) {
         const items = response.data.items || [];
         const total = response.data.totalElements || 0;
 
-        setListings(items);
+        // Đảm bảo chỉ lấy tin nổi bật (filter lại ở frontend để chắc chắn)
+        // Backend có thể trả về cả tin không nổi bật nếu có bug khi filter theo category
+        const featuredItems = items.filter((item) => {
+          // Kiểm tra cả visibility === "BOOSTED" và isBoosted === true
+          return (
+            item?.visibility === "BOOSTED" ||
+            item?.isBoosted === true ||
+            item?.boosted === true
+          );
+        });
+
+        setListings(featuredItems);
         setPagination((prev) => ({
           ...prev,
+          // Giữ total từ backend vì backend đã filter với isBoosted=true
+          // Nhưng nếu có items bị filter out, có thể cần điều chỉnh
           total: total,
         }));
       } else {

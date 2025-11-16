@@ -4,8 +4,7 @@ import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import s from "./HeroHeader.module.scss";
 
-const bannerUrl =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuD-h-Apa7Nr4Kkx-mK5NasXoeFg6ayEh_1hapJWhWOgw2ftdsGQzt2edwk4UiCZBKknez0jIo1xYhLSKs5D_KfpY2QQlRC97dfx5hPdVcFyF4XZI3QOTLnKsvMgUyMa1Rh0Z2yau0iF8lFB1vQdl_dM-l9nJTHWeZCoDXt1lpXNaCyFTIxn9-o1dJpeijWEAHYJAu-K-TlNaQ8YoRJ54GJFZP7d92LQtnB70CxVBht2-A-7GG6wiz4qsEI9Rv7r_2G9c0cCukbx2YDr";
+const bannerUrl = "https://idsb.tmgrup.com.tr/ly/uploads/images/2021/09/17/145313.jpg";
 
 export default function HeroHeader() {
   const navigate = useNavigate();

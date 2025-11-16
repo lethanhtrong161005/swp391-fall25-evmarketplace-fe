@@ -3,7 +3,7 @@ import { Breadcrumb } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import "./Breadcrumb.scss";
 
-export default function DynamicBreadcrumb() {
+export default function DynamicBreadcrumb({ customTitle }) {
   const location = useLocation();
   const pathSnippets = location.pathname.split("/").filter(Boolean);
 
@@ -13,21 +13,24 @@ export default function DynamicBreadcrumb() {
     category: "Danh mục",
     brand: "Thương hiệu",
     model: "Model",
-    vehicle: "Xe điện",
+    vehicle: "Phương Tiện",
     battery: "Pin",
     staff: "Nhân viên",
     manager: "Quản lý",
     inspector: "Kiểm định viên",
     consignment: "Quản lý ký gửi",
+    "consignment-listings": "Tin ký gửi",
     new: "Tạo tin đăng",
     "info-user": "Thông tin cá nhân",
     listing: "Tin đăng",
     listings: "Tất cả tin đăng",
     "featured-listings": "Tất cả tin nổi bật",
+    detail: "Chi tiết sản phẩm",
     edit: "Chỉnh sửa tin đăng",
     member: "Thành viên",
     availability: "Lên lịch",
     "my-ads": "Quản lý tin",
+    chat: "Tin nhắn",
   };
 
   // Custom URL mapping cho các route đặc biệt
@@ -35,6 +38,10 @@ export default function DynamicBreadcrumb() {
     // Nếu đang ở /listing/new hoặc /listing/edit, thì "Tin đăng" link đến /my-ads
     if (segment === "listing" && segments[index + 1] && (segments[index + 1] === "new" || segments[index + 1] === "edit")) {
       return "/my-ads";
+    }
+    // Nếu đang ở /detail/:id, thì "detail" link đến /all-listings
+    if (segment === "detail") {
+      return "/all-listings";
     }
     // Trường hợp khác, tạo URL bình thường
     return "/" + segments.slice(0, index + 1).join("/");
@@ -47,7 +54,8 @@ export default function DynamicBreadcrumb() {
   const breadcrumbItems = filteredSnippets.map((_, index) => {
     const url = getCustomUrl(filteredSnippets[index], filteredSnippets, index);
     const isLast = index === filteredSnippets.length - 1;
-    const label = nameMap[filteredSnippets[index]] || filteredSnippets[index];
+    // Sử dụng customTitle nếu có và đây là item cuối cùng
+    const label = isLast && customTitle ? customTitle : (nameMap[filteredSnippets[index]] || filteredSnippets[index]);
 
     return {
       title: isLast ? (

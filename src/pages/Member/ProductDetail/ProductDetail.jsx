@@ -1,13 +1,13 @@
 // src/pages/Member/ProductDetail/ProductDetail.jsx
 import React, { useState } from "react";
 import { Row, Col, Card, Typography, Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useProductDetail } from "./hooks/useProductDetail";
-import ProductHeader from "./components/ProductHeader/ProductHeader";
 import ProductMedia from "./components/ProductMedia/ProductMedia";
 import ProductInfo from "./components/ProductInfo/ProductInfo";
 import LoginModal from "@components/Modal/LoginModal";
 import { useAuth } from "@hooks/useAuth";
+import DynamicBreadcrumb from "@components/Breadcrumb/Breadcrumb";
 
 import ProductDescription from "./components/ProductDescription/ProductDescription";
 import ProductSpecifications from "./components/ProductSpecifications/ProductSpecifications";
@@ -80,8 +80,10 @@ export default function ProductDetail() {
 
   return (
     <div className="product-detail">
-      {/* Header với nút quay lại */}
-      <ProductHeader />
+      {/* Breadcrumb */}
+      <div style={{ padding: "16px 0" }}>
+        <DynamicBreadcrumb customTitle={product?.title || "Chi tiết sản phẩm"} />
+      </div>
 
       {/* Nội dung chính: Media + Thông tin */}
       <Card className="product-detail__section">

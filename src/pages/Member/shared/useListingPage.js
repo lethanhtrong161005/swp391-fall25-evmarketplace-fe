@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+// SORT_OPTIONS phải khớp với các trường được backend hỗ trợ:
+// createdAt, updatedAt, price, expiresAt, promotedUntil, batteryCapacityKwh
 export const SORT_OPTIONS = [
   { value: "createdAt,desc", label: "Tin mới nhất" },
+  { value: "createdAt,asc", label: "Tin cũ nhất" },
   { value: "price,asc", label: "Giá tăng dần" },
   { value: "price,desc", label: "Giá giảm dần" },
-  { value: "batteryCapacityKwh,desc", label: "Dung lượng pin cao nhất" },
-  { value: "mileageKm,asc", label: "Số km ít nhất" },
-  { value: "sohPercent,desc", label: "SOH cao nhất" },
 ];
 
 export default function useListingPage(fetchFunction) {
@@ -25,7 +25,7 @@ export default function useListingPage(fetchFunction) {
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState(() => ({
     current: parseInt(searchParams.get("page") || "1"),
-    pageSize: 20,
+    pageSize: 12,
     total: 0,
   }));
 
@@ -44,7 +44,11 @@ export default function useListingPage(fetchFunction) {
   const fetchListings = async () => {
     try {
       setLoading(true);
-      const [sortField, sortDir] = sortBy.split(",");
+      
+      // Split sortBy và đảm bảo có giá trị mặc định
+      const sortParts = (sortBy || "createdAt,desc").split(",");
+      const sortField = sortParts[0]?.trim() || "createdAt";
+      const sortDir = sortParts[1]?.trim() || "desc";
 
       const params = {
         page: pagination.current - 1,

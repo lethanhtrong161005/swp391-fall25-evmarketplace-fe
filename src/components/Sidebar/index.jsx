@@ -25,7 +25,7 @@ export default function Sidebar({
   children,
 }) {
   const siderStyle = {
-    background: token?.colorBgContainer,
+    background: token?.colorPrimary || "#1B2A41", // Màu Primary cho sidebar
     borderRight: `1px solid ${token?.colorBorderSecondary}`,
     ...style,
   };

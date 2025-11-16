@@ -1,5 +1,28 @@
 import { get } from "@/utils/apiCaller";
 
+// Các trường được phép sort theo backend (ListingController line 92-93)
+export const ALLOWED_SORT_FIELDS = [
+  "createdAt",
+  "updatedAt",
+  "price",
+  "expiresAt",
+  "promotedUntil",
+  "batteryCapacityKwh",
+];
+
+// Validate và normalize sort field
+const validateSortField = (sortField) => {
+  if (!sortField || !ALLOWED_SORT_FIELDS.includes(sortField)) {
+    return "createdAt"; // Fallback về createdAt nếu không hợp lệ
+  }
+  return sortField;
+};
+
+// Validate và normalize sort direction
+const validateSortDirection = (dir) => {
+  return dir === "asc" ? "asc" : "desc"; // Mặc định desc
+};
+
 // Lấy danh sách tất cả listing với phân trang
 export const getAllListings = async (params = {}) => {
   const defaultParams = {
@@ -10,7 +33,13 @@ export const getAllListings = async (params = {}) => {
     ...params,
   };
 
-  return await get("/api/listing/", defaultParams);
+  // Validate sort field và direction trước khi gửi
+  defaultParams.sort = validateSortField(defaultParams.sort);
+  defaultParams.dir = validateSortDirection(defaultParams.dir);
+
+  const response = await get("/api/listing/", defaultParams);
+
+  return response;
 };
 
 // Tìm kiếm listing với đầy đủ filters
@@ -23,6 +52,10 @@ export const searchListings = async (params = {}) => {
     ...params,
   };
 
+  // Validate sort field và direction trước khi gửi (luôn validate, không điều kiện)
+  defaultParams.sort = validateSortField(defaultParams.sort);
+  defaultParams.dir = validateSortDirection(defaultParams.dir);
+
   // Chỉ gửi các params có giá trị
   const queryParams = {};
   Object.keys(defaultParams).forEach((key) => {
@@ -32,27 +65,29 @@ export const searchListings = async (params = {}) => {
     }
   });
 
-  return await get("/api/listing/search", queryParams);
+  const response = await get("/api/listing/search", queryParams);
+
+  return response;
 };
 
 // Lấy danh sách listing mới nhất cho trang chủ
+// Hiển thị tất cả tin ACTIVE (không filter isConsign, không filter isBoosted)
 export const getLatestListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
       page: 0,
-      size: limit * 2, // Lấy nhiều hơn để filter
-      // Backend chấp nhận sort theo "createdAt"
+      size: limit,
       sort: "createdAt",
       dir: "desc",
     });
 
     if (response?.success && response?.data?.items) {
-      // Loại bỏ tin ký gửi (isConsigned = true)
-      const nonConsignedItems = response.data.items
-        .filter((item) => !item.isConsigned)
+      // Chỉ lấy tin có status ACTIVE
+      const activeItems = response.data.items
+        .filter((item) => item.status === "ACTIVE")
         .slice(0, limit);
 
-      return nonConsignedItems.map(transformListingData);
+      return activeItems.map(transformListingData);
     }
 
     return [];
@@ -63,6 +98,7 @@ export const getLatestListings = async (limit = 10) => {
 };
 
 // Lấy danh sách listing nổi bật cho trang chủ
+// Chỉ hiển thị tin có isBoosted = true và status = ACTIVE
 export const getFeaturedListings = async (limit = 10) => {
   try {
     const response = await getAllListings({
@@ -70,11 +106,11 @@ export const getFeaturedListings = async (limit = 10) => {
       size: limit,
       sort: "createdAt",
       dir: "desc",
-      isBoosted: true,
+      isBoosted: true, // Chỉ lấy tin nổi bật
     });
 
     if (response?.success && response?.data?.items) {
-      // Lọc chỉ lấy ACTIVE và đã được sắp xếp từ API
+      // Lọc chỉ lấy ACTIVE (isBoosted đã được filter từ backend)
       const featuredItems = response.data.items
         .filter((item) => item.status === "ACTIVE")
         .slice(0, limit);
@@ -211,7 +247,7 @@ export const getBatteryListings = async ({
   }
 };
 
-// Lấy danh sách tin đăng ký gửi (isConsigned = true)
+// Lấy danh sách tin đăng ký gửi (isConsign = true)
 export const getConsignmentListings = async ({
   page = 0,
   size = 20,
@@ -219,28 +255,24 @@ export const getConsignmentListings = async ({
   dir = "desc",
 } = {}) => {
   try {
-    // Lấy nhiều hơn để filter
+    // Gọi API với parameter isConsign = true để backend filter
     const response = await getAllListings({
       page,
-      size: size * 2,
+      size,
       sort,
       dir,
+      isConsign: true, // Filter tin ký gửi từ backend
     });
 
     if (response?.success && response?.data) {
-      // Filter chỉ lấy tin ký gửi
-      const consignedItems = response.data.items.filter(
-        (item) => item.isConsigned === true && item.status === "ACTIVE"
-      );
-
       return {
-        items: consignedItems.slice(0, size).map(transformListingData),
-        totalElements: consignedItems.length,
-        totalPages: Math.ceil(consignedItems.length / size),
-        hasNext: consignedItems.length > size,
-        hasPrevious: page > 0,
-        page: page,
-        size: size,
+        items: response.data.items.map(transformListingData),
+        totalElements: response.data.totalElements || 0,
+        totalPages: response.data.totalPages || 0,
+        hasNext: response.data.hasNext || false,
+        hasPrevious: response.data.hasPrevious || false,
+        page: response.data.page || page,
+        size: response.data.size || size,
       };
     }
 
@@ -436,11 +468,13 @@ const transformListingDetail = (apiData) => {
       mapCategoryIdToName(listing?.categoryId) ||
       listing?.categoryName ||
       "EV_CAR",
+    categoryName: listing?.categoryName || "",
     category_id:
       typeof listing?.categoryId === "number" ? listing?.categoryId : undefined,
     brand: listing?.brand || "",
     model: listing?.model || "",
     year: listing?.year ?? null,
+    color: listing?.color || null,
     batteryCapacityKwh: listing?.batteryCapacityKwh ?? null,
     sohPercent: listing?.sohPercent ?? null,
     mileageKm: listing?.mileageKm ?? null,
@@ -449,21 +483,32 @@ const transformListingDetail = (apiData) => {
     description:
       typeof listing?.description === "string" ? listing.description : "",
     province: listing?.province || "",
+    district: listing?.district || "",
+    ward: listing?.ward || "",
+    address: listing?.address || "",
     city: listing?.district || "",
     status: listing?.status || "ACTIVE",
     visibility: listing?.visibility || "NORMAL",
     verified: !!listing?.verified,
     isConsigned: !!listing?.isConsigned,
+    expiresAt: listing?.expiresAt || null,
+    // Thông tin pin từ listing (nếu có)
+    voltage: listing?.voltage ?? null,
+    batteryChemistry: listing?.batteryChemistry || null,
+    massKg: listing?.massKg ?? null,
+    dimensions: listing?.dimensions || null,
     images,
     videos,
-    createdAt: listing?.updatedAt || new Date().toISOString(),
+    createdAt:
+      listing?.createdAt || listing?.updatedAt || new Date().toISOString(),
+    updatedAt: listing?.updatedAt || null,
     seller: {
       id: seller?.id,
       fullName: profile?.fullName || "",
       avatarUrl: profile?.avatarUrl || "",
       province: profile?.province || "",
       addressLine: profile?.addressLine || "",
-      phoneNumber: seller?.phoneNumber,
+      phoneNumber: seller?.phoneNumber || listing?.sellerPhone,
       email: seller?.email,
     },
     listingExtra: {
@@ -477,11 +522,21 @@ const transformListingDetail = (apiData) => {
       ...base,
       category: "BATTERY",
       productBattery: {
-        capacityKwh: productBattery?.batteryCapacityKwh,
-        voltage: productBattery?.voltage,
-        weightKg: productBattery?.massKg,
-        dimension: productBattery?.dimensions,
-        chemistry: productBattery?.batteryChemistry,
+        capacityKwh:
+          productBattery?.capacityKwh ||
+          productBattery?.batteryCapacityKwh ||
+          base.batteryCapacityKwh,
+        voltage: productBattery?.voltage || base.voltage,
+        weightKg:
+          productBattery?.weightKg || productBattery?.massKg || base.massKg,
+        dimension:
+          productBattery?.dimension ||
+          productBattery?.dimensions ||
+          base.dimensions,
+        chemistry:
+          productBattery?.chemistry ||
+          productBattery?.batteryChemistry ||
+          base.batteryChemistry,
       },
     };
   }

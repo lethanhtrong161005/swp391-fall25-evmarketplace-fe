@@ -11,7 +11,9 @@ import {
   Tag,
   Row,
   Col,
+  Space,
 } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import { useProductVehicleManagementLogic } from "./useProductVehicleManagementLogic";
 import "./ProductVehicleManagement.scss";
 import ProductVehicleModal from "@components/Modal/ProductVehicleModal/ProductVehicleModal";
@@ -92,11 +94,16 @@ const ProductVehicleManagement = () => {
       title: "Hành động",
       align: "center",
       render: (_, record) => (
-        <>
-          <Button type="link" onClick={() => handleOpenModal(record)}>
+        <Space size="small">
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => handleOpenModal(record)}
+            size="small"
+          >
             Chỉnh sửa
           </Button>
-        </>
+        </Space>
       ),
     },
   ];

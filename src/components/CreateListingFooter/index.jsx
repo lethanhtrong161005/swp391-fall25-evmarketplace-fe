@@ -1,6 +1,8 @@
-import { Button, Affix, Row, Col } from "antd";
+import { Button, Layout, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import styles from "./index.module.scss";
+
+const { Footer } = Layout;
 
 const CreateListingFooter = ({
   currentPostType,
@@ -41,62 +43,44 @@ const CreateListingFooter = ({
     !isEdit && mode !== "agreement" && mode !== "agreement-update";
 
   return (
-    <Affix offsetBottom={0}>
-      <div className={styles.bar}>
-        <div className={styles.inner} style={{ "--max-w": `${maxWidth}px` }}>
-          <Row
-            align="middle"
-            justify="space-between"
-            gutter={12}
-            wrap
-            className={styles.layoutRow}
-          >
-            {onChoosePostType && (
-              <Col flex="1 1 auto">
-                <Button
-                  onClick={onChoosePostType}
-                  size="large"
-                  className={styles.postTypeBtn}
-                >
-                  {label} <DownOutlined />
-                </Button>
-              </Col>
+    <Footer className={styles.footer} style={{ "--max-w": `${maxWidth}px` }}>
+      <div className={styles.footerContent}>
+        <Space size="middle" wrap className={styles.footerActions}>
+          {onChoosePostType && (
+            <Button
+              onClick={onChoosePostType}
+              size="large"
+              className={styles.postTypeBtn}
+            >
+              {label} <DownOutlined />
+            </Button>
+          )}
+          <Space size="small">
+            {showDraftButton && (
+              <Button
+                size="large"
+                onClick={handleDraftClick}
+                disabled={submitting}
+              >
+                Lưu nháp
+              </Button>
             )}
-            <Col style={{ marginLeft: "auto" }}>
-              <Row gutter={8} wrap={false} className={styles.actionsRow}>
-                {showDraftButton && (
-                  <Col>
-                    <Button
-                      size="large"
-                      className={styles.actionBtn}
-                      onClick={handleDraftClick}
-                      disabled={submitting}
-                    >
-                      Lưu nháp
-                    </Button>
-                  </Col>
-                )}
-                <Col>
-                  <Button
-                    type="primary"
-                    size="large"
-                    className={styles.actionBtn}
-                    onClick={handleSubmitClick}
-                    loading={submitting}
-                  >
-                    {mode === "agreement-update"
-                      ? "Cập nhật tin"
-                      : isEdit
-                      ? "Cập nhật tin"
-                      : "Đăng tin"}
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </div>
+            <Button
+              type="primary"
+              size="large"
+              onClick={handleSubmitClick}
+              loading={submitting}
+            >
+              {mode === "agreement-update"
+                ? "Cập nhật tin"
+                : isEdit
+                ? "Cập nhật tin"
+                : "Đăng tin"}
+            </Button>
+          </Space>
+        </Space>
       </div>
-    </Affix>
+    </Footer>
   );
 };
 

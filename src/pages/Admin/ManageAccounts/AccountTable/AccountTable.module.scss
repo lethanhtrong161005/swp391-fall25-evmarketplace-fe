@@ -12,6 +12,30 @@
   }
 }
 
+// Search Bar Styles
+.searchCard {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.searchInput {
+  .ant-input-search-button {
+    background: #1B2A41;
+    border-color: #1B2A41;
+    
+    &:hover {
+      background: #2d4a6b !important;
+      border-color: #2d4a6b !important;
+    }
+    
+    &:active {
+      background: #15202e !important;
+      border-color: #15202e !important;
+    }
+  }
+}
+
 .accountTable {
   max-width: 100%;
   overflow-x: auto;
@@ -220,20 +244,21 @@
   
   // Primary button (Chi tiết)
   &.ant-btn-primary {
-    background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+    background: #1B2A41;
     border: none;
     color: white;
-    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(27, 42, 65, 0.3);
     
     &:hover {
-      background: linear-gradient(135deg, #40a9ff 0%, #69c0ff 100%);
+      background: #2d4a6b;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+      box-shadow: 0 4px 12px rgba(27, 42, 65, 0.4);
     }
     
     &:active {
+      background: #15202e;
       transform: translateY(0);
-      box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+      box-shadow: 0 2px 8px rgba(27, 42, 65, 0.3);
     }
   }
   
@@ -245,8 +270,8 @@
     
     &:hover {
       background: #f8f9fa;
-      border-color: #1890ff;
-      color: #1890ff;
+      border-color: #1B2A41;
+      color: #1B2A41;
       transform: translateY(-1px);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }

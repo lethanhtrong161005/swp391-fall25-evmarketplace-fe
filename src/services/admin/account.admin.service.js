@@ -76,6 +76,26 @@ export const createAccount = (payload) => {
     );
   }
 
+  // Validate role - chỉ cho phép STAFF hoặc MODERATOR
+  if (!payload.role) {
+    throw new Error("Vai trò là bắt buộc");
+  }
+
+  const validRoles = ["STAFF", "MODERATOR"];
+  if (!validRoles.includes(payload.role)) {
+    throw new Error("Chỉ có thể tạo tài khoản Staff hoặc Moderator");
+  }
+
+  // Validate branchId - chỉ STAFF mới cần branchId
+  if (payload.role === "STAFF") {
+    if (!payload.branchId || payload.branchId <= 0) {
+      throw new Error("Staff phải có branchId hợp lệ");
+    }
+  } else if (payload.role === "MODERATOR") {
+    // MODERATOR không cần branchId, xóa nếu có
+    delete payload.branchId;
+  }
+
   return post("/api/admin/accounts/register", payload);
 };
 

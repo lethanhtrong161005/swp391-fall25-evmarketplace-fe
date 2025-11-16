@@ -24,6 +24,8 @@ import UnauthenticatedChatButton from "@components/Chat/UnauthenticatedChatButto
 import ChatButton from "@components/Chat/ChatButton/index";
 
 import { useHeaderAction } from "./useHeaderAction";
+import { useUserProfile } from "@hooks/useUserProfile";
+import { getAvatarUrl } from "@utils/userDataUtils";
 import "./HeaderAction.scss";
 
 const MANAGE_LISTINGS_PATH = "/my-ads";
@@ -40,7 +42,7 @@ const HeaderAction = () => {
 
   const {
     isLoggedIn,
-    user,
+    user: authUser,
     contextHolder,
     getMenuItems,
     handleMenuClick,
@@ -48,13 +50,18 @@ const HeaderAction = () => {
     handleLoginSubmit,
   } = auth;
 
+  // Lấy user profile đầy đủ từ API (có avatar)
+  const { user: enhancedUser } = useUserProfile();
+
+  // Sử dụng enhancedUser nếu có, fallback về authUser
+  const user = enhancedUser || authUser;
+
   const displayName = user?.fullName || user?.name || user?.sub || "Hồ sơ";
   const menuItems = getMenuItems();
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
 
-  // Avatar logic
-  const avatarSrc =
-    user?.profile?.avatarUrl || user?.avatarUrl || user?.avatar || null;
+  // Avatar logic - sử dụng getAvatarUrl đã được cải thiện
+  const avatarSrc = getAvatarUrl(user);
   const avatarName = displayName?.charAt(0)?.toUpperCase();
 
   // Chuyển đổi menuItems thành format của Dropdown với header
@@ -115,12 +122,8 @@ const HeaderAction = () => {
 
   // Xác định placement responsive dựa trên breakpoint
   const getDropdownPlacement = () => {
-    // Trên màn hình rất nhỏ (xs), đặt menu ở bottomLeft để tránh bị cắt
-    if (screens.xs) {
-      return "bottomLeft";
-    }
-    // Trên màn hình nhỏ (sm), đặt ở bottomLeft hoặc bottom
-    if (screens.sm && !screens.md) {
+    // Trên màn hình rất nhỏ (xs) hoặc nhỏ (sm), đặt menu ở bottomLeft để tránh bị cắt
+    if (screens.xs || (screens.sm && !screens.md)) {
       return "bottomLeft";
     }
     // Trên màn hình trung bình (md), đặt ở bottomRight nhưng có thể điều chỉnh
@@ -281,6 +284,15 @@ const HeaderAction = () => {
                   backgroundColor: avatarSrc ? "transparent" : "#1890ff",
                   cursor: "pointer",
                   transition: "all 0.25s ease",
+                }}
+                onError={(e) => {
+                  console.error("Avatar load error:", {
+                    avatarSrc,
+                    error: e,
+                    user: user,
+                  });
+                  // Fallback to icon if image fails to load
+                  e.target.style.display = "none";
                 }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.transform = "scale(1.07)")

@@ -1,20 +1,18 @@
 import React from "react";
-import { DashboardOutlined, FileTextOutlined, ReconciliationOutlined, SignatureFilled } from "@ant-design/icons";
+import {
+  FileTextOutlined,
+  ReconciliationOutlined,
+  SignatureFilled,
+} from "@ant-design/icons";
 import { useSidebar } from "@hooks/useSidebar";
 
 export function useStaffLayout() {
   // Menu items configuration for staff
   const menuItems = [
     {
-      key: "dashboard",
-      icon: <DashboardOutlined />,
-      label: "Dashboard",
-      path: "/staff",
-    },
-    {
       key: "listings",
       icon: <FileTextOutlined />,
-      label: "Quản lý tin đăng",
+      label: "Quản lí tin đăng ký gửi",
       path: "/staff/listings",
     },
     {
@@ -42,7 +40,7 @@ export function useStaffLayout() {
           label: "Danh sách kiểm định",
           path: "/staff/consignment/inspecting",
         },
-         {
+        {
           key: "consignment/agreement",
           label: "Hợp đồng ký gửi",
           path: "/staff/consignment/agreement",
@@ -53,14 +51,14 @@ export function useStaffLayout() {
       key: "order",
       icon: <ReconciliationOutlined />,
       label: "Quản lý đơn hàng",
-      path: "/staff/order"
+      path: "/staff/order",
     },
     {
       key: "contract",
       icon: <SignatureFilled />,
       label: "Quản lý hợp đồng",
-      path: "/staff/contract"
-    }
+      path: "/staff/contract",
+    },
   ];
 
   // Mock notifications for staff

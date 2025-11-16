@@ -158,16 +158,24 @@ export default function CreateAccountForm({ open, onClose, onFinish }) {
         <Form.Item
           name="role"
           label="Vai trò"
-          rules={[{ required: true, message: "Vui lòng chọn vai trò!" }]}
-          initialValue="MEMBER"
+          rules={[
+            { required: true, message: "Vui lòng chọn vai trò!" },
+            {
+              validator: (_, value) => {
+                if (!value || (value !== "STAFF" && value !== "MODERATOR")) {
+                  return Promise.reject(
+                    new Error("Chỉ có thể tạo tài khoản Staff hoặc Moderator")
+                  );
+                }
+                return Promise.resolve();
+              },
+            },
+          ]}
+          initialValue="STAFF"
         >
           <Select placeholder="Chọn vai trò" size="large">
-            <Option value="MEMBER">Thành viên</Option>
             <Option value="STAFF">Nhân viên</Option>
-            <Option value="MANAGER">Quản lý</Option>
-            <Option value="INSPECTOR">Kiểm định viên</Option>
             <Option value="MODERATOR">Kiểm duyệt viên</Option>
-            <Option value="ADMIN">Quản trị viên</Option>
           </Select>
         </Form.Item>
       </Form>

@@ -1,3 +1,4 @@
+// Legacy container class (kept for backward compatibility)
 .container {
   max-width: 1440px;
   margin: 0 auto;
@@ -9,6 +10,83 @@
   position: relative;
 }
 
+// New Layout Container
+.layoutContainer {
+  max-width: 1440px;
+  margin: 0 auto;
+  background: #fff;
+  min-height: calc(100vh - 138px);
+  width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  position: relative;
+  isolation: isolate;
+  
+  // For chat page, ensure proper height
+  &:has(.chatContent) {
+    height: calc(100vh - 138px);
+    min-height: calc(100vh - 138px);
+  }
+}
+
+// Page Header (Ant Design Layout.Header)
+.pageHeader {
+  background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+  padding: 32px 40px 24px 40px;
+  border-bottom: 1px solid #e8f4fd;
+  margin-bottom: 0;
+  position: relative !important;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  clear: both;
+
+  :global(.ant-layout-header) {
+    background: transparent !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: auto !important;
+    line-height: normal !important;
+    width: 100% !important;
+    position: relative !important;
+    display: block !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  .title {
+    margin: 0 0 12px 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1b2a41;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    clear: both;
+    position: relative;
+    z-index: 1;
+  }
+
+  .description {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+    width: 100%;
+    display: block;
+    clear: both;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// Legacy header class (kept for backward compatibility)
 .header {
   margin-bottom: 24px;
 
@@ -29,6 +107,130 @@
   }
 }
 
+// Breadcrumb Section
+.breadcrumbSection {
+  padding: 16px 40px 0 40px;
+  background: #fff;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  clear: both;
+}
+
+// Page Title Section
+.pageTitleSection {
+  padding: 16px 40px 16px 40px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  clear: both;
+
+  .pageTitle {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #1b2a41;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+}
+
+// Toolbar Wrapper
+.toolbarWrapper {
+  padding: 16px 40px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative !important;
+  z-index: 0;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0;
+  display: block;
+  clear: both;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+
+  :global(.toolbar) {
+    margin-bottom: 0;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+  }
+}
+
+// Content Section (Ant Design Layout.Content)
+.content {
+  flex: 1 1 auto;
+  padding: 24px 40px;
+  background: #fafafa;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+
+  :global(.ant-layout-content) {
+    padding: 0;
+    background: transparent;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  // Special styling for ChatPage
+  :global(.pageWrapper) {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+    width: 100% !important;
+  }
+}
+
+// Chat page specific styles - remove padding to allow full height
+// Use higher specificity to override default .content styles
+.content.chatContent {
+  padding: 0 !important;
+  background: transparent !important;
+  min-height: 600px !important;
+  height: auto !important;
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+  
+  // Ensure nested content also works correctly
+  :global(.ant-layout-content) {
+    padding: 0 !important;
+    background: transparent !important;
+    height: 100% !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
 .loading {
   display: flex;
   justify-content: center;
@@ -40,36 +242,37 @@
   margin-bottom: 24px;
   min-height: 500px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+  width: 100%;
 
-  /* Large desktop */
+  /* Large desktop - vẫn giữ 4 cột */
   @media (min-width: 1600px) {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
-  /* Desktop */
+  /* Desktop - 4 cột */
   @media (min-width: 1200px) and (max-width: 1599.98px) {
     grid-template-columns: repeat(4, 1fr);
   }
 
-  /* Tablet */
+  /* Tablet - 3 cột */
   @media (min-width: 992px) and (max-width: 1199.98px) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  /* Small tablet */
+  /* Small tablet - 2 cột */
   @media (min-width: 768px) and (max-width: 991.98px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Mobile */
+  /* Mobile - 2 cột */
   @media (max-width: 767.98px) {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 
-  /* Mobile portrait */
+  /* Mobile portrait - 1 cột */
   @media (max-width: 575.98px) {
     grid-template-columns: 1fr;
   }
@@ -86,8 +289,37 @@
   gap: 16px;
   margin-bottom: 24px;
   min-height: 500px;
+  width: 100%;
 }
 
+// Page Footer (Ant Design Layout.Footer)
+.pageFooter {
+  background: #fff;
+  padding: 24px 40px;
+  border-top: 1px solid #f0f0f0;
+  border-radius: 0 0 8px 8px;
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 0;
+
+  :global(.ant-layout-footer) {
+    padding: 0;
+    background: transparent;
+  }
+
+  :global(.ant-pagination) {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+// Legacy pagination class (kept for backward compatibility)
 .pagination {
   display: flex;
   justify-content: center;
@@ -106,11 +338,99 @@
   .container {
     padding: 16px 24px;
   }
+
+  .layoutContainer {
+    border-radius: 0;
+  }
+
+  .breadcrumbSection {
+    padding: 12px 24px 0 24px;
+  }
+
+  .pageTitleSection {
+    padding: 12px 24px 12px 24px;
+
+    .pageTitle {
+      font-size: 22px;
+    }
+  }
+
+  .pageHeader {
+    padding: 24px 24px 20px 24px;
+  }
+
+  .toolbarWrapper {
+    padding: 12px 24px;
+  }
+
+  .content {
+    padding: 20px 24px;
+  }
+  
+  .content.chatContent {
+    padding: 0 !important;
+    min-height: 500px !important;
+    height: auto !important;
+  }
+
+  .pageFooter {
+    padding: 20px 24px;
+  }
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 12px 16px;
+  }
+
+  .layoutContainer {
+    border-radius: 0;
+  }
+
+  .breadcrumbSection {
+    padding: 10px 16px 0 16px;
+  }
+
+  .pageTitleSection {
+    padding: 12px 16px 12px 16px;
+
+    .pageTitle {
+      font-size: 20px;
+    }
+  }
+
+  .pageHeader {
+    padding: 20px 16px 16px 16px;
+
+    .title {
+      font-size: 22px;
+    }
+
+    .description {
+      font-size: 14px;
+    }
+  }
+
+  .toolbarWrapper {
+    padding: 12px 16px;
+  }
+
+  .content {
+    padding: 16px 16px;
+  }
+  
+  .content.chatContent {
+    padding: 0 !important;
+    min-height: 400px !important;
+    height: auto !important;
+  }
+
+  .pageFooter {
+    padding: 16px 16px;
+
+    :global(.ant-pagination) {
+      font-size: 13px;
+    }
   }
 
   .header {
@@ -148,6 +468,51 @@
 @media (max-width: 480px) {
   .container {
     padding: 8px 12px;
+  }
+
+  .layoutContainer {
+    border-radius: 0;
+  }
+
+  .breadcrumbSection {
+    padding: 8px 12px 0 12px;
+  }
+
+  .pageTitleSection {
+    padding: 10px 12px 10px 12px;
+
+    .pageTitle {
+      font-size: 18px;
+    }
+  }
+
+  .pageHeader {
+    padding: 16px 12px 12px 12px;
+
+    .title {
+      font-size: 20px;
+    }
+
+    .description {
+      font-size: 13px;
+    }
+  }
+
+  .toolbarWrapper {
+    padding: 10px 12px;
+  }
+
+  .content {
+    padding: 12px 12px;
+  }
+  
+  .content.chatContent {
+    padding: 0;
+    min-height: 400px;
+  }
+
+  .pageFooter {
+    padding: 12px 12px;
   }
 
   .header {

@@ -1,4 +1,4 @@
-import { Card, Form, Row, Col, Divider, Spin } from "antd";
+import { Card, Form, Row, Col, Divider, Spin, Layout } from "antd";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import SectionMedia from "@components/SectionMedia";
@@ -15,6 +15,7 @@ import DynamicBreadcrumb from "@components/Breadcrumb/Breadcrumb";
 import { useListingCreate } from "@hooks/useListingCreate";
 import { useAuth } from "@contexts/AuthContext";
 
+const { Content } = Layout;
 const PAGE_WIDTH = 1200;
 
 export default function ListingCreate() {
@@ -60,40 +61,42 @@ export default function ListingCreate() {
   }
 
   return (
-    <div style={{ paddingBottom: "80px" }}>
+    <Layout style={{ minHeight: "100vh", background: "#f0f2f5" }}>
       {contextHolder}
-      <div style={{ maxWidth: PAGE_WIDTH, margin: "16px auto", padding: "0 16px" }}>
+      <div style={{ maxWidth: PAGE_WIDTH, margin: "16px auto", padding: "0 16px", width: "100%" }}>
         <DynamicBreadcrumb />
       </div>
-      <Card style={{ maxWidth: PAGE_WIDTH, margin: "16px auto" }} variant="bordered">
-        <Form form={form} layout="vertical" onValuesChange={onValuesChange}>
-          <Row gutter={16}>
-            <Col xs={24} md={8}>
-              <SectionMedia
-                messageApi={msg}
-                images={images}
-                setImages={setImages}
-                videos={videos}
-                setVideos={setVideos}
-              />
-            </Col>
-            <Col xs={24} md={16}>
-              <CategoryBrandModel form={form} tax={tax} />
-              <YearColorFields isBattery={isBattery} />
-              {isBattery ? <SectionDetailBattery /> : <SectionDetailVehicle />}
-            </Col>
-          </Row>
+      <Content style={{ maxWidth: PAGE_WIDTH, margin: "0 auto", padding: "0 16px", paddingBottom: "100px", width: "100%" }}>
+        <Card variant="bordered" style={{ marginBottom: 0 }}>
+          <Form form={form} layout="vertical" onValuesChange={onValuesChange}>
+            <Row gutter={16}>
+              <Col xs={24} md={8}>
+                <SectionMedia
+                  messageApi={msg}
+                  images={images}
+                  setImages={setImages}
+                  videos={videos}
+                  setVideos={setVideos}
+                />
+              </Col>
+              <Col xs={24} md={16}>
+                <CategoryBrandModel form={form} tax={tax} />
+                <YearColorFields isBattery={isBattery} />
+                {isBattery ? <SectionDetailBattery /> : <SectionDetailVehicle />}
+              </Col>
+            </Row>
 
-          <Divider />
-          <SectionTitleDesc />
-          <Divider />
-          <Row>
-            <Col span={24}>
-              <AddressField />
-            </Col>
-          </Row>
-        </Form>
-      </Card>
+            <Divider />
+            <SectionTitleDesc />
+            <Divider />
+            <Row>
+              <Col span={24}>
+                <AddressField />
+              </Col>
+            </Row>
+          </Form>
+        </Card>
+      </Content>
 
       <CreateListingFooter
         currentMode={visibility}
@@ -112,6 +115,6 @@ export default function ListingCreate() {
         onCancel={() => setPostTypeOpen(false)}
         onOk={() => setPostTypeOpen(false)}
       />
-    </div>
+    </Layout>
   );
 }

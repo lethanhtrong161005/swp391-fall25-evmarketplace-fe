@@ -9,15 +9,14 @@ const { Text } = Typography;
 
 export default function SidebarProfile({ user, onClick }) {
   const { displayName, displayEmail, avatarUrl } = useSidebarProfile(user);
-  console.log(avatarUrl);
-  console.log(user);
 
   return (
     <div onClick={onClick} className={s.profile}>
       <Space align="center">
         <Avatar
           size={40}
-          src={user?.avatar}
+          src={avatarUrl}
+          icon={!avatarUrl ? <UserOutlined /> : null}
           style={{
             backgroundColor: avatarUrl ? "transparent" : "#1890ff",
             border: avatarUrl ? "1px solid #d9d9d9" : "none",

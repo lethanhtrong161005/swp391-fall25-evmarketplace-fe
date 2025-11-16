@@ -33,19 +33,52 @@
 }
 
 .createButton {
-  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  background: #1B2A41;
   border: none;
   border-radius: 8px;
   height: 40px;
   padding: 0 20px;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(27, 42, 65, 0.3);
   transition: all 0.3s ease;
   
   &:hover {
-    background: linear-gradient(135deg, #096dd9 0%, #0050b3 100%);
+    background: #2d4a6b;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(27, 42, 65, 0.4);
+  }
+  
+  &:active {
+    background: #15202e;
+  }
+}
+
+.clearFilterButton {
+  background: #1B2A41;
+  border: none;
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 20px;
+  font-weight: 500;
+  color: white;
+  box-shadow: 0 2px 8px rgba(27, 42, 65, 0.3);
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    background: #2d4a6b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(27, 42, 65, 0.4);
+  }
+  
+  &:active:not(:disabled) {
+    background: #15202e;
+  }
+  
+  &:disabled {
+    background: #f5f5f5;
+    color: #bfbfbf;
+    opacity: 0.5;
+    box-shadow: none;
   }
 }
 

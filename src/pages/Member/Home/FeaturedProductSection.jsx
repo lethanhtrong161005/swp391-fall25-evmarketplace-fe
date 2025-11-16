@@ -20,7 +20,7 @@ export default function FeaturedProductSection({
   onItemClick,
   loading = false,
   maxItems = 10,
-  title = "Sản phẩm nổi bật",
+  title = "Tin đăng nổi bật",
 }) {
   // Chỉ lấy BOOSTED và giới hạn 10 item đầu
   const boostedTop = useMemo(
@@ -71,8 +71,8 @@ export default function FeaturedProductSection({
           description={
             <span>
               {loading
-                ? "Đang tải dữ liệu sản phẩm nổi bật..."
-                : "Chưa có sản phẩm nổi bật."}
+                ? "Đang tải dữ liệu tin đăng nổi bật..."
+                : "Chưa có tin đăng nổi bật."}
             </span>
           }
         />

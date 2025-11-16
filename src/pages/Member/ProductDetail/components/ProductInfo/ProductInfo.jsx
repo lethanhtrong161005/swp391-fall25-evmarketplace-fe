@@ -21,6 +21,7 @@ import {
   EyeOutlined,
   CopyOutlined,
   ClockCircleOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import { toVND, formatMileage } from "../../utils/productFormatters";
 import {
@@ -163,7 +164,7 @@ export default function ProductInfo({ product, onShowLoginModal }) {
           isOwner ? (
             <Button
               className="product-info__contact-btn product-info__contact-btn--chat"
-              icon={<PhoneOutlined />}
+              icon={<MessageOutlined />}
               disabled
             >
               Bạn đã đăng tin này
@@ -171,14 +172,17 @@ export default function ProductInfo({ product, onShowLoginModal }) {
           ) : (
             <Button
               className="product-info__contact-btn product-info__contact-btn--chat"
-              icon={<PhoneOutlined />}
+              icon={<MessageOutlined />}
               onClick={handleChatClick}
             >
               Chat
             </Button>
           )
         ) : (
-          <UnauthenticatedChatButton onLoginClick={onShowLoginModal} />
+          <UnauthenticatedChatButton 
+            variant="detail"
+            onLoginClick={onShowLoginModal} 
+          />
         )}
 
         {!isPhoneRevealed && !isEmailRevealed ? (

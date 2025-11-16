@@ -43,7 +43,6 @@ const ProfileBar = () => {
                     <div className={styles.name}>{name}</div>
                     <Space size={8} wrap>
                         <Tag>{roleLabel(role)}</Tag>
-                        <Tag color="processing">Có gì mới</Tag>
                     </Space>
                 </div>
             </div>

@@ -1,26 +1,61 @@
 .ctaBanner {
   margin: 64px 0;
   padding: 0 2rem;
+  position: relative;
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 360px;
+  
+  @media (min-width: 768px) {
+    min-height: 500px;
+  }
+  
+  @media (min-width: 1200px) {
+    min-height: 560px;
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  z-index: 1;
 }
 
 .container {
   max-width: var(--home-max-width, 1920px);
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
 .content {
-  background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
+  background: transparent;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 300px;
+  align-items: flex-end;
+  justify-content: flex-start;
+  min-height: 360px;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  padding: 2rem 0 2rem 0;
   
   @media (min-width: 768px) {
-    min-height: 420px;
+    min-height: 500px;
+    padding: 3rem 0 2.5rem 0;
+  }
+  
+  @media (min-width: 1200px) {
+    min-height: 560px;
+    padding: 3.5rem 0 3rem 0;
   }
 }
 
@@ -28,10 +63,11 @@
   flex: 1;
   padding: 2rem;
   z-index: 2;
-  max-width: 512px;
+  max-width: 600px;
   
   @media (min-width: 768px) {
     padding: 2rem 3rem;
+    max-width: 700px;
   }
 }
 

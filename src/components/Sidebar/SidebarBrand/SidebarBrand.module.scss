@@ -6,11 +6,11 @@
   font-weight: 700;
   font-size: 18px;
   position: relative;
-  background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,1) 100%);
+  background: transparent; // Transparent để hiển thị màu primary của sidebar
   transition: all 0.3s ease;
 
   &:hover {
-    background: linear-gradient(135deg, rgba(248,250,252,1) 0%, rgba(241,245,249,1) 100%);
+    background: rgba(255, 255, 255, 0.1); // Hover effect nhẹ
   }
 }
 
@@ -34,6 +34,7 @@
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.5px;
+  color: #ffffff; // Màu trắng cho text trên nền primary
   transition: all 0.3s ease;
   
   &:hover {

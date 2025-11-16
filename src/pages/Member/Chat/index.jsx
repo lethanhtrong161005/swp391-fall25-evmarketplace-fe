@@ -1,21 +1,37 @@
 import React from "react";
-import { Breadcrumb } from "antd";
+import { Typography, Layout } from "antd";
+import { MessageOutlined } from "@ant-design/icons";
 import ChatPage from "@components/Chat/ChatPage/index";
-import s from "./styles.module.scss";
+import DynamicBreadcrumb from "@/components/Breadcrumb/Breadcrumb";
+import styles from "../shared/ListingPage.module.scss";
+
+const { Title } = Typography;
+const { Content } = Layout;
 
 /**
  * Chat page - Main chat interface page
  */
 const Chat = () => {
   return (
-    <div className={s.wrapper}>
-      <div className={s.breadcrumb}>
-        <Breadcrumb items={[{ title: "ReEV", href: "/" }, { title: "Tin nhắn" }]} />
+    <Layout className={styles.layoutContainer}>
+      {/* Breadcrumb */}
+      <div className={styles.breadcrumbSection}>
+        <DynamicBreadcrumb />
       </div>
-      <div className={s.content}>
+
+      {/* Page Title */}
+      <div className={styles.pageTitleSection}>
+        <Title level={2} className={styles.pageTitle}>
+          <MessageOutlined style={{ color: "#1890ff" }} />
+          Tin nhắn
+        </Title>
+      </div>
+
+      {/* Main Content */}
+      <Content className={`${styles.content} ${styles.chatContent}`}>
         <ChatPage />
-      </div>
-    </div>
+      </Content>
+    </Layout>
   );
 };
 

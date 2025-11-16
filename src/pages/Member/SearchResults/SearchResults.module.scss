@@ -1,0 +1,92 @@
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px 40px;
+  background: #f5f5f5;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.header {
+  margin-bottom: 24px;
+
+  .backButton {
+    margin-bottom: 16px;
+  }
+
+  .title {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1b2a41;
+  }
+
+  .resultCount {
+    font-size: 16px;
+    color: #666;
+  }
+}
+
+.gridView {
+  margin-bottom: 24px;
+  min-height: 500px;
+}
+
+.loadMoreContainer {
+  text-align: center;
+  margin-top: 32px;
+  margin-bottom: 24px;
+}
+
+.emptyState {
+  margin-top: 60px;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 16px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px 16px;
+  }
+
+  .header {
+    margin-bottom: 16px;
+
+    .title {
+      font-size: 22px;
+    }
+
+    .resultCount {
+      font-size: 14px;
+    }
+  }
+
+  .gridView {
+    margin-bottom: 16px;
+    min-height: 400px;
+  }
+
+  .loadMoreContainer {
+    margin-top: 24px;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 8px 12px;
+  }
+
+  .header {
+    .title {
+      font-size: 20px;
+    }
+  }
+}
+

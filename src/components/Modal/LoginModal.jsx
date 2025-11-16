@@ -32,13 +32,15 @@ const LoginModal = ({
 
         setSubmitting(true);
         try {
-
-
-            await onSubmit?.(loginDto);
-
-            messageApi.success("Đăng nhập thành công", 1.2);
-
-            setTimeout(() => onClose?.(), 0);
+            const result = await onSubmit?.(loginDto);
+            
+            // Chỉ hiển thị success message nếu login thực sự thành công
+            if (result) {
+                messageApi.success("Đăng nhập thành công", 1.2);
+                setTimeout(() => onClose?.(), 0);
+            } else {
+                messageApi.error("Đăng nhập thất bại. Vui lòng thử lại.", 1.2);
+            }
 
         } catch (e) {
             mapFieldErrorsToAntd(form, e?.fieldErrors);

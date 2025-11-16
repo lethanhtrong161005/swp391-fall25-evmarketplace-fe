@@ -29,7 +29,7 @@ export default function RejectedReasonModal({
                 type="error"
                 message={
                     <span>
-                        Trạng thái: <Tag color="red">REJECTED</Tag>
+                        Trạng thái: <Tag color="red">Bị từ chối</Tag>
                     </span>
                 }
                 description="Vui lòng xem lý do, chỉnh sửa nội dung và gửi lại."

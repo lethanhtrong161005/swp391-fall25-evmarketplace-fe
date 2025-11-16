@@ -71,17 +71,19 @@ const RevenueReport = ({
   const averagePerDay = data.averagePerDay || 0;
   const averagePerPayingUser = data.averagePerPayingUser || 0;
   const averageTransactionValue = data.averageTransactionValue || 0;
-  const consignmentListingRevenueRate = data.consignmentListingRevenueRate || 0;
+  const consignmentListingRevenueRate = Number.isFinite(data.consignmentListingRevenueRate)
+    ? data.consignmentListingRevenueRate
+    : 0;
   const revenueBySource = data.revenueBySource || {};
 
   const columnData = [
     {
       type: "Đăng tin",
-      value: revenueBySource.POST || 0,
+      value: Number.isFinite(revenueBySource.POST) ? revenueBySource.POST : 0,
     },
     {
       type: "Ký gửi",
-      value: revenueBySource.CONSIGNMENT || 0,
+      value: Number.isFinite(revenueBySource.CONSIGNMENT) ? revenueBySource.CONSIGNMENT : 0,
     },
   ];
 
@@ -89,34 +91,82 @@ const RevenueReport = ({
     data: columnData,
     xField: "type",
     yField: "value",
-    maxColumnWidth: 60,
+    columnWidthRatio: 0.5,
+    minColumnWidth: 40,
+    maxColumnWidth: 120,
+    appendPadding: [20, 20, 40, 20],
     label: {
       position: "top",
+      offsetY: 8,
       style: {
-        fill: "#000",
-        opacity: 0.6,
-        fontSize: 12,
+        fill: "#fff",
+        fontSize: isMobile ? 11 : 13,
+        fontWeight: 600,
+        textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+      },
+      formatter: (datum) => {
+        const val = Number(datum.value);
+        if (!Number.isFinite(val) || val === 0) return "";
+        return `${val.toLocaleString("vi-VN")} VND`;
       },
     },
     color: ({ type }) => {
-      return type === "Đăng tin" ? "#1677ff" : "#52c41a";
+      // Gradient colors - more vibrant and modern
+      return type === "Đăng tin" 
+        ? "l(270) 0:#1890ff 1:#096dd9" // Blue gradient
+        : "l(270) 0:#52c41a 1:#389e0d"; // Green gradient
     },
     columnStyle: {
-      radius: [8, 8, 0, 0],
+      radius: [12, 12, 0, 0],
+      shadowBlur: 8,
+      shadowColor: "rgba(0,0,0,0.15)",
     },
     legend: false,
     yAxis: {
+      grid: {
+        line: {
+          style: {
+            stroke: "#f0f0f0",
+            lineDash: [4, 4],
+          },
+        },
+      },
       label: {
+        style: {
+          fill: "#666",
+          fontSize: isMobile ? 11 : 12,
+        },
         formatter: (v) => {
           const val = Number(v);
-          if (val >= 1000000) {
-            return `${(val / 1000000).toFixed(0)}M`;
+          if (!Number.isFinite(val)) return "0";
+          // Format theo VND, rút gọn nếu quá lớn
+          if (val >= 1_000_000_000) {
+            return `${(val / 1_000_000_000).toFixed(1)} tỷ`;
           }
-          if (val >= 1000) {
-            return `${(val / 1000).toFixed(0)}K`;
+          if (val >= 1_000_000) {
+            return `${(val / 1_000_000).toFixed(1)} triệu`;
           }
-          return String(val);
+          if (val >= 1_000) {
+            return `${(val / 1_000).toFixed(1)} nghìn`;
+          }
+          return val.toLocaleString("vi-VN");
         },
+      },
+    },
+    xAxis: {
+      label: {
+        style: {
+          fill: "#333",
+          fontSize: isMobile ? 12 : 13,
+          fontWeight: 500,
+        },
+      },
+    },
+    interactions: [{ type: "element-active" }],
+    animation: {
+      appear: {
+        animation: "scale-in-y",
+        duration: 800,
       },
     },
   };

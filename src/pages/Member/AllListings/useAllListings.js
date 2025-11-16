@@ -11,13 +11,13 @@ export const CATEGORIES = [
   { id: "BATTERY", code: "BATTERY", label: "Pin" },
 ];
 
+// SORT_OPTIONS phải khớp với các trường được backend hỗ trợ:
+// createdAt, updatedAt, price, expiresAt, promotedUntil, batteryCapacityKwh
 export const SORT_OPTIONS = [
   { value: "createdAt,desc", label: "Tin mới nhất" },
+  { value: "createdAt,asc", label: "Tin cũ nhất" },
   { value: "price,asc", label: "Giá tăng dần" },
   { value: "price,desc", label: "Giá giảm dần" },
-  { value: "batteryCapacityKwh,desc", label: "Dung lượng pin cao nhất" },
-  { value: "mileageKm,asc", label: "Số km ít nhất" },
-  { value: "sohPercent,desc", label: "SOH cao nhất" },
 ];
 
 const DEFAULT_MAX_PRICE = 10000000000; // 10 tỷ
@@ -74,7 +74,11 @@ export default function useAllListings() {
   const fetchListings = async () => {
     try {
       setLoading(true);
-      const [sortField, sortDir] = sortBy.split(",");
+      
+      // Split sortBy và đảm bảo có giá trị mặc định
+      const sortParts = (sortBy || "createdAt,desc").split(",");
+      const sortField = sortParts[0]?.trim() || "createdAt";
+      const sortDir = sortParts[1]?.trim() || "desc";
 
       const params = {
         page: pagination.current - 1,
@@ -94,14 +98,15 @@ export default function useAllListings() {
 
       let response;
 
-      // Nếu có categoryCode: dùng getAllListings (hỗ trợ categoryCode)
+      // Dùng getAllListings cho tất cả trường hợp (hỗ trợ sort tốt hơn)
+      // Nếu có categoryCode: truyền vào params
       if (selectedCategory !== "all") {
         params.categoryCode = selectedCategory; // EV_CAR, E_MOTORBIKE, E_BIKE, BATTERY
-        response = await getAllListings(params);
-      } else {
-        // Nếu "all": dùng searchListings (hỗ trợ priceMin/priceMax tốt hơn)
-        response = await searchListings(params);
       }
+      
+      // Luôn dùng getAllListings để đảm bảo sort hoạt động
+      // getAllListings hỗ trợ cả priceMin/priceMax nếu cần
+      response = await getAllListings(params);
 
       if (response?.success && response?.data) {
         const items = response.data.items || [];

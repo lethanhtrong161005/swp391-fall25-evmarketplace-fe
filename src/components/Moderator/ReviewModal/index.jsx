@@ -50,6 +50,20 @@ const CATEGORY_LABEL = {
   BATTERY: "Pin",
 };
 
+const STATUS_LABEL = {
+  PENDING: "Chờ duyệt",
+  APPROVED: "Đã duyệt",
+  REJECTED: "Bị từ chối",
+  ACTIVE: "Đang hiển thị",
+  HIDDEN: "Đã ẩn",
+  EXPIRED: "Hết hạn",
+  DRAFT: "Bản nháp",
+};
+
+const getStatusLabel = (status) => {
+  return STATUS_LABEL[status] || status;
+};
+
 const fmtVND = (n) =>
   Number(n).toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
@@ -537,8 +551,8 @@ export default function ReviewModal({
                 key: "status",
                 label: "Trạng thái",
                 children: (
-                  <Tag color={listing.status === "PENDING" ? "orange" : "red"}>
-                    {listing.status}
+                  <Tag color={listing.status === "PENDING" ? "orange" : listing.status === "APPROVED" ? "green" : "red"}>
+                    {getStatusLabel(listing.status)}
                   </Tag>
                 ),
               },

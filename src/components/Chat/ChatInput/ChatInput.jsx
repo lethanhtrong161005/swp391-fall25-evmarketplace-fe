@@ -1,9 +1,22 @@
 import React, { useState, useRef } from "react";
-import { Input, Button, Upload, Space, Image, message as antMessage } from "antd";
+import { Input, Button, Upload, Space, Image, App } from "antd";
 import { SendOutlined, PictureOutlined, VideoCameraOutlined, CloseOutlined } from "@ant-design/icons";
 import s from "./ChatInput.module.scss";
 
 const { TextArea } = Input;
+
+// Giới hạn dung lượng file
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
+
+// Hàm format dung lượng file
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+};
 
 const ChatInput = ({
   onSendText,
@@ -11,6 +24,7 @@ const ChatInput = ({
   disabled = false,
   placeholder = "Nhập tin nhắn...",
 }) => {
+  const { message: antMessage } = App.useApp();
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [videoPreview, setVideoPreview] = useState(null);
@@ -41,9 +55,16 @@ const ChatInput = ({
       return;
     }
 
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      antMessage.error("Kích thước ảnh không được vượt quá 10MB");
+    // Validate file size
+    if (file.size > MAX_IMAGE_SIZE) {
+      antMessage.error({
+        content: `Kích thước ảnh không được vượt quá ${formatFileSize(MAX_IMAGE_SIZE)}. File của bạn: ${formatFileSize(file.size)}`,
+        duration: 5,
+      });
+      // Clear input để người dùng có thể chọn file khác
+      if (imageInputRef.current) {
+        imageInputRef.current.value = "";
+      }
       return;
     }
 
@@ -66,9 +87,16 @@ const ChatInput = ({
       return;
     }
 
-    // Validate file size (max 50MB)
-    if (file.size > 50 * 1024 * 1024) {
-      antMessage.error("Kích thước video không được vượt quá 50MB");
+    // Validate file size
+    if (file.size > MAX_VIDEO_SIZE) {
+      antMessage.error({
+        content: `Dung lượng video không được vượt quá ${formatFileSize(MAX_VIDEO_SIZE)}. File của bạn: ${formatFileSize(file.size)}`,
+        duration: 5,
+      });
+      // Clear input để người dùng có thể chọn file khác
+      if (videoInputRef.current) {
+        videoInputRef.current.value = "";
+      }
       return;
     }
 
@@ -79,12 +107,34 @@ const ChatInput = ({
 
   const handleSendImage = () => {
     if (!previewFile || disabled) return;
+    
+    // Kiểm tra lại dung lượng trước khi gửi (double check)
+    if (previewFile.size > MAX_IMAGE_SIZE) {
+      antMessage.error({
+        content: `Kích thước ảnh không được vượt quá ${formatFileSize(MAX_IMAGE_SIZE)}. File của bạn: ${formatFileSize(previewFile.size)}`,
+        duration: 5,
+      });
+      clearPreview();
+      return;
+    }
+    
     onSendMedia?.(previewFile, "IMAGE");
     clearPreview();
   };
 
   const handleSendVideo = () => {
     if (!previewFile || disabled) return;
+    
+    // Kiểm tra lại dung lượng trước khi gửi (double check)
+    if (previewFile.size > MAX_VIDEO_SIZE) {
+      antMessage.error({
+        content: `Dung lượng video không được vượt quá ${formatFileSize(MAX_VIDEO_SIZE)}. File của bạn: ${formatFileSize(previewFile.size)}`,
+        duration: 5,
+      });
+      clearPreview();
+      return;
+    }
+    
     onSendMedia?.(previewFile, "VIDEO");
     clearPreview();
   };
@@ -109,7 +159,17 @@ const ChatInput = ({
   };
 
   const videoUploadProps = {
-    beforeUpload: () => false, // Prevent auto upload
+    beforeUpload: (file) => {
+      // Validate file size trước khi xử lý
+      if (file.size > MAX_VIDEO_SIZE) {
+        antMessage.error({
+          content: `Dung lượng video không được vượt quá ${formatFileSize(MAX_VIDEO_SIZE)}. File của bạn: ${formatFileSize(file.size)}`,
+          duration: 5,
+        });
+        return Upload.LIST_IGNORE; // Prevent file from being added
+      }
+      return false; // Prevent auto upload
+    },
     showUploadList: false,
     accept: "video/*",
     onChange: handleVideoChange,
@@ -121,7 +181,13 @@ const ChatInput = ({
         <div className={s.previewContainer}>
           {imagePreview && (
             <div className={s.imagePreview}>
-              <Image src={imagePreview} alt="Preview" className={s.previewImage} />
+              <Image 
+                src={imagePreview} 
+                alt="Preview" 
+                className={s.previewImage}
+                preview={false}
+                style={{ maxHeight: '200px', width: 'auto' }}
+              />
               <div className={s.previewActions}>
                 <Button
                   type="primary"
@@ -143,7 +209,12 @@ const ChatInput = ({
           )}
           {videoPreview && (
             <div className={s.videoPreview}>
-              <video src={videoPreview} controls className={s.previewVideo} />
+              <video 
+                src={videoPreview} 
+                controls 
+                className={s.previewVideo}
+                style={{ maxHeight: '200px', width: '100%' }}
+              />
               <div className={s.previewActions}>
                 <Button
                   type="primary"
@@ -190,6 +261,7 @@ const ChatInput = ({
             disabled={disabled}
             autoSize={{ minRows: 1, maxRows: 4 }}
             className={s.textInput}
+            style={{ maxHeight: '120px', overflowY: 'auto' }}
           />
           <Button
             type="primary"
