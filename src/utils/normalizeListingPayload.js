@@ -13,20 +13,17 @@ export function normalizeListingPayload(
     status = "PENDING",
     opts = {}
 ) {
-    // 1) Xác định categoryCode + itemType
     let code =
         opts.forcedCategoryCode ??
         (tax?.categoryOptions || []).find((o) => o.value === values.category)?.code ??
-        ""; // EV_CAR | E_MOTORBIKE | E_BIKE | BATTERY
+        "";
 
     let itemType =
         opts.forcedItemType ??
         (code === "BATTERY" ? "BATTERY" : "VEHICLE");
 
-    // 2) Địa chỉ
     const { province, district, ward, address } = normalizeAddressForBE(values.address);
 
-    // 3) Payload chung
     const payload = {
         categoryId: values.category,
         categoryCode: code,
@@ -51,12 +48,11 @@ export function normalizeListingPayload(
 
         province, district, ward, address,
 
-        postType,        // "FREE" | "PAID"
-        visibility,      // "NORMAL" | "BOOSTED"
-        status,          // "PENDING"|...
+        postType,
+        visibility,
+        status,
     };
 
-    // 4) Field riêng cho pin
     if (itemType === "BATTERY") {
         payload.voltageV = values.voltage ?? null;
         payload.batteryChemistry = values.chemistry || null;
@@ -64,7 +60,6 @@ export function normalizeListingPayload(
         payload.dimensionsMm = values.dimension || null;
     }
 
-    // 5) Ép string cho BigDecimal nếu BE parse từ chuỗi
     ["price", "batteryCapacityKwh", "sohPercent", "voltageV", "massKg"].forEach((k) => {
         if (payload[k] != null) payload[k] = String(payload[k]);
     });

@@ -25,7 +25,7 @@ function pickType(m) {
     const isVideo = /\.(mp4|avi|mov|wmv|flv|webm|mkv|m4v)(\?|#|$)/.test(url);
     if (isImage) return "IMAGE";
     if (isVideo) return "VIDEO";
-    return ""; // unknown
+    return "";
 }
 
 export function mapMediaToUploadFormat(mediaArray, type) {

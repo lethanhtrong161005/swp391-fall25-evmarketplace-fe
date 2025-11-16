@@ -139,7 +139,10 @@ export default function useUpdateProfileModal({
           return;
         }
         setOtpSending(true);
-        const res = await requestPhoneOpt(phone);
+        const type = "REGISTER"
+        console.log(type, phone)
+        
+        const res = await requestPhoneOpt(phone, type);
         if (res?.success === false) {
           msgApi?.error(res?.message || "Gửi mã OTP thất bại");
           return;

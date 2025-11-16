@@ -2,7 +2,6 @@ import { Grid } from "antd";
 
 const { useBreakpoint } = Grid;
 
-// Định nghĩa breakpoints theo Ant Design
 export const BREAKPOINTS = {
   xs: 480,
   sm: 576, 
@@ -12,7 +11,6 @@ export const BREAKPOINTS = {
   xxl: 1600, 
 };
 
-// Device types
 export const DEVICE_TYPES = {
   MOBILE: "mobile",
   TABLET: "tablet",
@@ -20,15 +18,14 @@ export const DEVICE_TYPES = {
   DESKTOP: "desktop",
 };
 
-// Hook để sử dụng responsive breakpoints
 export const useResponsive = () => {
   const screens = useBreakpoint();
 
   const getDeviceType = () => {
-    if (!screens.md) return DEVICE_TYPES.MOBILE; // < 768px
-    if (screens.md && !screens.lg) return DEVICE_TYPES.TABLET; // 768px - 991px
-    if (screens.lg && !screens.xl) return DEVICE_TYPES.LAPTOP; // 992px - 1199px
-    return DEVICE_TYPES.DESKTOP; // >= 1200px
+    if (!screens.md) return DEVICE_TYPES.MOBILE;
+    if (screens.md && !screens.lg) return DEVICE_TYPES.TABLET;
+    if (screens.lg && !screens.xl) return DEVICE_TYPES.LAPTOP;
+    return DEVICE_TYPES.DESKTOP;
   };
 
   const deviceType = getDeviceType();
@@ -41,9 +38,9 @@ export const useResponsive = () => {
     isLaptop: deviceType === DEVICE_TYPES.LAPTOP,
     isDesktop: deviceType === DEVICE_TYPES.DESKTOP,
 
-    isMinTablet: screens.md, 
-    isMinLaptop: screens.lg, 
-    isMinDesktop: screens.xl, 
+    isMinTablet: screens.md,
+    isMinLaptop: screens.lg,
+    isMinDesktop: screens.xl,
   };
 };
 
@@ -152,5 +149,4 @@ export const getNavbarColSpans = (deviceType) => {
   }
 };
 
-// Export default hook
 export default useResponsive;

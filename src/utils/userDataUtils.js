@@ -6,7 +6,6 @@ export function normalizeUserData(userData) {
 
   const normalized = { ...userData };
 
-  // Normalize name fields
   if (userData.full_name && !userData.fullName) {
     normalized.fullName = userData.full_name;
   }
@@ -14,7 +13,6 @@ export function normalizeUserData(userData) {
     normalized.full_name = userData.fullName;
   }
 
-  // Normalize phone fields
   if (userData.phone_number && !userData.phoneNumber) {
     normalized.phoneNumber = userData.phone_number;
   }
@@ -22,7 +20,6 @@ export function normalizeUserData(userData) {
     normalized.phone_number = userData.phoneNumber;
   }
 
-  // Normalize avatar fields
   if (userData.avatar_url && !userData.avatarUrl) {
     normalized.avatarUrl = userData.avatar_url;
   }
@@ -30,7 +27,6 @@ export function normalizeUserData(userData) {
     normalized.avatar_url = userData.avatarUrl;
   }
 
-  // Normalize date fields
   if (userData.created_at && !userData.createdAt) {
     normalized.createdAt = userData.created_at;
   }
@@ -48,13 +44,9 @@ export function normalizeUserData(userData) {
   return normalized;
 }
 
-/**
- * Get display name with priority order
- */
 export function getDisplayName(user) {
   if (!user) return "Người dùng";
 
-  // Priority order: full_name > fullName > name > sub (non-phone) > role-based
   const candidates = [
     user.full_name,
     user.fullName,
@@ -68,7 +60,6 @@ export function getDisplayName(user) {
     return candidates[0].trim();
   }
 
-  // Role-based fallback
   const role = user.role?.toUpperCase();
   switch (role) {
     case "ADMIN":
@@ -82,13 +73,9 @@ export function getDisplayName(user) {
   }
 }
 
-/**
- * Get display email/contact with priority order
- */
 export function getDisplayContact(user) {
   if (!user) return "";
 
-  // Priority order: email > phone_number > phoneNumber > role-based
   const candidates = [user.email, user.phone_number, user.phoneNumber].filter(
     (contact) => contact?.trim()
   );
@@ -97,7 +84,6 @@ export function getDisplayContact(user) {
     return candidates[0].trim();
   }
 
-  // Role-based fallback
   const role = user.role?.toUpperCase();
   switch (role) {
     case "ADMIN":
@@ -109,9 +95,6 @@ export function getDisplayContact(user) {
   }
 }
 
-/**
- * Get avatar URL with priority order
- */
 export function getAvatarUrl(user) {
   if (!user) return null;
 
