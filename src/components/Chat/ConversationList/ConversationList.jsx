@@ -255,19 +255,27 @@ const ConversationList = ({
   const getLastMessagePreview = (conversation) => {
     const lastMessage = conversation?.lastMessage;
 
-    if (!lastMessage && conversation?.lastMessageId) {
-      return "Có tin nhắn";
-    }
-
     if (!lastMessage) {
+      // Nếu không có lastMessage object, kiểm tra xem có lastMessageId không
+      if (conversation?.lastMessageId) {
+        // Có ID nhưng không có nội dung - có thể là tin nhắn media chưa load
+        return "Tin nhắn";
+      }
       return "Chưa có tin nhắn";
     }
 
+    // Có lastMessage object, hiển thị nội dung
     const type = lastMessage?.type?.toUpperCase();
     if (type === "IMAGE") return "📷 Ảnh";
     if (type === "VIDEO") return "🎥 Video";
+    
     const text = lastMessage?.textContent || lastMessage?.content || "";
-    return text || "Tin nhắn";
+    if (text) {
+      // Giới hạn độ dài để không làm vỡ layout
+      return text.length > 50 ? text.substring(0, 50) + "..." : text;
+    }
+    
+    return "Tin nhắn";
   };
 
   const getAvatarUrl = (filename) => {

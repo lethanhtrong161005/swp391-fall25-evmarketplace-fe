@@ -778,11 +778,15 @@ export default function ReviewModal({
               key: "status",
               label: "Trạng thái sản phẩm",
               children: (
-                <Tag
-                  color={productVehicle.status === "ACTIVE" ? "green" : "red"}
-                >
-                  {productVehicle.status}
-                </Tag>
+                productVehicle.status ? (
+                  <Tag
+                    color={productVehicle.status === "ACTIVE" ? "green" : "red"}
+                  >
+                    {getStatusLabel(productVehicle.status)}
+                  </Tag>
+                ) : (
+                  "—"
+                )
               ),
             },
           ]}

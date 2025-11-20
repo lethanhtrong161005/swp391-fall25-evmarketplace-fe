@@ -88,7 +88,7 @@ export default function ManageAccounts() {
           rows={rows}
           loading={loading}
           page={query.page}
-          pageSize={query.limit}
+          pageSize={query.size}
           total={data?.pagination?.totalRecords || 0}
           onPageChange={setPage}
           onSearch={handleSearch}

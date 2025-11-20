@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Avatar, Typography, Drawer, Button, Badge, App, Input, Tabs, Layout } from "antd";
+import { Avatar, Typography, Drawer, Button, Badge, App, Input, Layout } from "antd";
 import { UserOutlined, MenuOutlined, MessageOutlined, SearchOutlined } from "@ant-design/icons";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useChat } from "@hooks/useChat";
@@ -29,7 +29,6 @@ const ChatPage = () => {
   const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
   const [conversationListRefresh, setConversationListRefresh] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
   const openingConversationRef = React.useRef(false);
 
   const chat = useChat(selectedConversationId, recipientId);
@@ -491,15 +490,6 @@ const ChatPage = () => {
                 className={s.searchInput}
               />
             </div>
-            <Tabs
-              activeKey={activeTab}
-              onChange={setActiveTab}
-              items={[
-                { key: "all", label: "Tất cả tin nhắn" },
-                { key: "unread", label: "Tin chưa đọc" },
-              ]}
-              className={s.sidebarTabs}
-            />
           </div>
           <div className={s.sidebarBody}>
             <ConversationList
@@ -508,7 +498,6 @@ const ChatPage = () => {
               loading={chatLoading}
               refreshTrigger={conversationListRefresh}
               searchQuery={searchQuery}
-              filterUnread={activeTab === "unread"}
             />
           </div>
         </Sider>

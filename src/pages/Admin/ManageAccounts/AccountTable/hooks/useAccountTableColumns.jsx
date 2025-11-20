@@ -32,6 +32,7 @@ export const useAccountTableColumns = ({
       {
         title: "Vai trò",
         key: "role",
+        dataIndex: "role",
         width: 120,
         align: "center",
         render: (_, record) => <RoleTag role={record.role} />,
@@ -40,6 +41,7 @@ export const useAccountTableColumns = ({
       {
         title: "Trạng thái",
         key: "status",
+        dataIndex: "status",
         width: 110,
         align: "center",
         render: (_, record) => <StatusTag status={record.status} />,
@@ -61,6 +63,7 @@ export const useAccountTableColumns = ({
       {
         title: "Ngày tạo",
         key: "createdAt",
+        dataIndex: "createdAt",
         width: 130,
         align: "center",
         render: (_, record) => <CreatedDateCell record={record} />,

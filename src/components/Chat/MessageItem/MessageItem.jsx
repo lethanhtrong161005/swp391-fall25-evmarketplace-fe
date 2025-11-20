@@ -72,13 +72,6 @@ const MessageItem = ({ message, isOwnMessage = false, senderInfo = null }) => {
           )}
         </div>
       </div>
-      {isOwnMessage && (
-        <Avatar
-          src={senderInfo?.avatarUrl}
-          icon={!senderInfo?.avatarUrl && <UserOutlined />}
-          className={s.avatar}
-        />
-      )}
     </div>
   );
 };

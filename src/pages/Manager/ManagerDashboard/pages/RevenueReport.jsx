@@ -10,7 +10,7 @@ import {
   Space,
 } from "antd";
 import { ReloadOutlined, DownloadOutlined } from "@ant-design/icons";
-import { Column } from "@ant-design/plots";
+import { Bar } from "@ant-design/plots";
 import { useResponsive } from "@/utils/responsive";
 
 const RevenueReport = ({
@@ -71,57 +71,69 @@ const RevenueReport = ({
   const averagePerDay = data.averagePerDay || 0;
   const averagePerPayingUser = data.averagePerPayingUser || 0;
   const averageTransactionValue = data.averageTransactionValue || 0;
-  const consignmentListingRevenueRate = Number.isFinite(data.consignmentListingRevenueRate)
+  const consignmentListingRevenueRate = Number.isFinite(
+    data.consignmentListingRevenueRate
+  )
     ? data.consignmentListingRevenueRate
     : 0;
   const revenueBySource = data.revenueBySource || {};
 
-  const columnData = [
+  const chartColors = {
+    post: "#1B2A41",
+    consignment: "#D7E1F0",
+  };
+
+  const revenueData = [
     {
       type: "Đăng tin",
       value: Number.isFinite(revenueBySource.POST) ? revenueBySource.POST : 0,
     },
     {
       type: "Ký gửi",
-      value: Number.isFinite(revenueBySource.CONSIGNMENT) ? revenueBySource.CONSIGNMENT : 0,
+      value: Number.isFinite(revenueBySource.CONSIGNMENT)
+        ? revenueBySource.CONSIGNMENT
+        : 0,
     },
   ];
 
-  const columnConfig = {
-    data: columnData,
+  const barChartConfig = {
+    data: revenueData,
     xField: "type",
     yField: "value",
-    columnWidthRatio: 0.5,
-    minColumnWidth: 40,
-    maxColumnWidth: 120,
-    appendPadding: [20, 20, 40, 20],
-    label: {
-      position: "top",
-      offsetY: 8,
-      style: {
-        fill: "#fff",
-        fontSize: isMobile ? 11 : 13,
-        fontWeight: 600,
-        textShadow: "0 1px 2px rgba(0,0,0,0.3)",
-      },
-      formatter: (datum) => {
-        const val = Number(datum.value);
-        if (!Number.isFinite(val) || val === 0) return "";
-        return `${val.toLocaleString("vi-VN")} VND`;
+    colorField: "type",
+    scale: {
+      color: {
+        range: [chartColors.post, chartColors.consignment],
       },
     },
-    color: ({ type }) => {
-      // Gradient colors - more vibrant and modern
-      return type === "Đăng tin" 
-        ? "l(270) 0:#1890ff 1:#096dd9" // Blue gradient
-        : "l(270) 0:#52c41a 1:#389e0d"; // Green gradient
-    },
-    columnStyle: {
-      radius: [12, 12, 0, 0],
-      shadowBlur: 8,
-      shadowColor: "rgba(0,0,0,0.15)",
+    barWidthRatio: 0.5,
+    minBarWidth: 40,
+    maxBarWidth: 120,
+    appendPadding: [20, 20, 20, 60],
+    label: false,
+    barStyle: {
+      radius: [0, 12, 12, 0],
     },
     legend: false,
+    xAxis: {
+      grid: false,
+      title: {
+        text: "Loại tin đăng",
+        style: {
+          fill: "#333",
+          fontSize: isMobile ? 12 : 14,
+          fontWeight: 500,
+        },
+        position: "end",
+      },
+      label: {
+        style: {
+          fill: "#333",
+          fontSize: isMobile ? 12 : 13,
+          fontWeight: 500,
+        },
+      },
+    },
     yAxis: {
       grid: {
         line: {
@@ -131,6 +143,15 @@ const RevenueReport = ({
           },
         },
       },
+      title: {
+        text: "Giá tiền",
+        style: {
+          fill: "#333",
+          fontSize: isMobile ? 12 : 14,
+          fontWeight: 500,
+        },
+        position: "start",
+      },
       label: {
         style: {
           fill: "#666",
@@ -138,34 +159,24 @@ const RevenueReport = ({
         },
         formatter: (v) => {
           const val = Number(v);
-          if (!Number.isFinite(val)) return "0";
-          // Format theo VND, rút gọn nếu quá lớn
+          if (!Number.isFinite(val) || val === 0) return "0 ₫";
           if (val >= 1_000_000_000) {
-            return `${(val / 1_000_000_000).toFixed(1)} tỷ`;
+            return `${(val / 1_000_000_000).toFixed(0)} Tỷ ₫`;
           }
           if (val >= 1_000_000) {
-            return `${(val / 1_000_000).toFixed(1)} triệu`;
+            return `${(val / 1_000_000).toFixed(0)} Tr ₫`;
           }
           if (val >= 1_000) {
-            return `${(val / 1_000).toFixed(1)} nghìn`;
+            return `${(val / 1_000).toFixed(0)} K ₫`;
           }
-          return val.toLocaleString("vi-VN");
-        },
-      },
-    },
-    xAxis: {
-      label: {
-        style: {
-          fill: "#333",
-          fontSize: isMobile ? 12 : 13,
-          fontWeight: 500,
+          return `${val.toLocaleString("vi-VN")} ₫`;
         },
       },
     },
     interactions: [{ type: "element-active" }],
     animation: {
       appear: {
-        animation: "scale-in-y",
+        animation: "scale-in-x",
         duration: 800,
       },
     },
@@ -193,7 +204,6 @@ const RevenueReport = ({
       </Space>
 
       <Space direction="vertical" size={16} style={{ width: "100%" }}>
-        {/* Row 1: Total Revenue - Large Card */}
         <Row gutter={[16, 16]}>
           <Col xs={24}>
             <Card
@@ -217,7 +227,6 @@ const RevenueReport = ({
           </Col>
         </Row>
 
-        {/* Row 2: Average Statistics - Small Cards */}
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={8} md={8} lg={8}>
             <Card variant="borderless">
@@ -248,12 +257,11 @@ const RevenueReport = ({
           </Col>
         </Row>
 
-        {/* Row 3: Revenue by Source - Column Chart */}
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={24} md={16} lg={16}>
             <Card title="Doanh Thu Theo Nguồn" variant="borderless">
-              {columnData.length > 0 ? (
-                <Column {...columnConfig} height={450} />
+              {revenueData.length > 0 ? (
+                <Bar {...barChartConfig} height={450} />
               ) : (
                 <div
                   style={{
