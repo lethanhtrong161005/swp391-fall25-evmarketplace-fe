@@ -80,7 +80,7 @@ const RevenueReport = ({
 
   const chartColors = {
     post: "#1B2A41",
-    consignment: "#D7E1F0",
+    consignment: "#808080",
   };
 
   const revenueData = [
