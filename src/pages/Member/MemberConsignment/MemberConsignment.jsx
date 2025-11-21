@@ -7,11 +7,12 @@ import StatusTabs from "../ManagerListing/StatusTabs";
 import ConsignmentTable from "./ConsignmentTable/ConsingmentTable";
 import ConsignmentDetailModal from "./ConsigmentDetailModal/ConsignmentDetailModal";
 import useManagerConsignment from "./useMemberConsignment.js";
-import styles from "../ManagerListing/styles.module.scss";
+// import styles from "../ManagerListing/styles.module.scss";
 import DynamicBreadcrumb from "../../../components/Breadcrumb/Breadcrumb";
 import CancelConsignmentModal from "./ConsignmentCancelModal/ConsignmentCancelModal.jsx";
 import InspectionScheduleModal from "./InspectionScheduleModal/InspectionScheduleModal.jsx";
 import AgreementDetailModal from "../../Staff/StaffAgreementManagement/AgreementDetailModal/AgreementDetailModal.jsx";
+import style from "../shared/ListingPage.module.scss";
 
 const tabs = [
   { key: "SUBMITTED", label: "Đã gửi", statuses: ["SUBMITTED"] },
@@ -23,7 +24,11 @@ const tabs = [
     label: "Kiểm định",
     statuses: ["INSPECTING", "INSPECTED_PASS", "INSPECTED_FAIL", "SIGNED"],
   },
-  { key: "REQUEST_REJECTED", label: "Bị từ chối", statuses: ["REQUEST_REJECTED"] },
+  {
+    key: "REQUEST_REJECTED",
+    label: "Bị từ chối",
+    statuses: ["REQUEST_REJECTED"],
+  },
   { key: "FINISHED", label: "Hoàn thành", statuses: ["FINISHED"] },
   { key: "EXPIRED", label: "Hết hạn", statuses: ["EXPIRED"] },
   { key: "CANCELLED", label: "Đã hủy", statuses: ["CANCELLED"] },
@@ -71,52 +76,58 @@ const MemberConsignment = () => {
   };
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.breadcrumb}>
+    <div className={style.layoutContainer} style={{boxShadow:"none", padding:0}}>
+      <div className={style.breadcrumbSection}>
         <DynamicBreadcrumb />
       </div>
-
-      <Card className={styles.card} variant="borderless">
-        <ProfileBar />
-        <SearchActions
-          query={""}
-          onChangeQuery={() => {}}
-          onCreate={goCreateConsignment}
-          onRefresh={() => fetchData(pagination.current, pagination.pageSize)}
-          createButtonText="Tạo Ký gửi"
-          queryHolder="Tìm sản phẩm ký gửi của bạn..."
-          queryButtonText="Tạo ký gửi"
-        />
-
-        <StatusTabs
-          tabs={tabs}
-          counts={counts}
-          activeKey={activeTab}
-          onChange={setActiveTab}
-        />
-
-        {loading ? (
-          <Skeleton active paragraph={{ rows: 6 }} />
-        ) : consignments.length ? (
-          <ConsignmentTable
-            items={consignments}
-            pagination={pagination}
-            onChange={onChangeTable}
-            loading={loading}
-            onView={onViewDetail}
-            setCancelId={handleOpenCancelModal}
-            onViewSchedule={handleViewSchedule}
-            onOpenSchedule={handleOpenSchedule}
-            onViewAgreement={(requestId) => handleOpenAgreementDetail(requestId)}
-          />
-        ) : (
-          <EmptyState
+      <div
+        className={style.content}
+        style={{ backgroundColor: "#E9F2FF", padding: "0px", marginBottom:0 }}
+      >
+        <Card variant="borderless" style={{ margin: 0, borderTopRightRadius:0, borderTopLeftRadius:0 ,maxWidth:"1440px", width:"100%", borderTop:"1px solid rgb(0,0,0,0.1)"}}>
+          <ProfileBar />
+          <SearchActions
+            query={""}
+            onChangeQuery={() => {}}
             onCreate={goCreateConsignment}
-            queryText="ký gửi"
+            onRefresh={() => fetchData(pagination.current, pagination.pageSize)}
+            createButtonText="Tạo Ký gửi"
+            queryHolder="Tìm sản phẩm ký gửi của bạn..."
             queryButtonText="Tạo ký gửi"
           />
-        )}
-      </Card>
+
+          <StatusTabs
+            tabs={tabs}
+            counts={counts}
+            activeKey={activeTab}
+            onChange={setActiveTab}
+          />
+
+          {loading ? (
+            <Skeleton active paragraph={{ rows: 6 }} />
+          ) : consignments.length ? (
+            <ConsignmentTable
+              items={consignments}
+              pagination={pagination}
+              onChange={onChangeTable}
+              loading={loading}
+              onView={onViewDetail}
+              setCancelId={handleOpenCancelModal}
+              onViewSchedule={handleViewSchedule}
+              onOpenSchedule={handleOpenSchedule}
+              onViewAgreement={(requestId) =>
+                handleOpenAgreementDetail(requestId)
+              }
+            />
+          ) : (
+            <EmptyState
+              onCreate={goCreateConsignment}
+              queryText="ký gửi"
+              queryButtonText="Tạo ký gửi"
+            />
+          )}
+        </Card>
+      </div>
 
       <CancelConsignmentModal
         open={showCancelModal}

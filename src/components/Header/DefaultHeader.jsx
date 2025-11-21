@@ -22,9 +22,9 @@ const DefaultHeader = () => {
           xs={20}
           sm={20}
           md={20}
-          lg={{ span: 4, offset: 0 }}
-          xl={{ span: 4, offset: 0 }}
-          style={{ overflow: "visible" }}
+          lg={{ span: 2, offset: 0 }}
+          xl={{ span: 2, offset: 0 }}
+          style={{ overflow: "visible", borderRight: "1px solid rgba(0, 0, 0, 0.12)" }}
         >
           <Logo variant="header" />
         </Col>
@@ -32,8 +32,8 @@ const DefaultHeader = () => {
           xs={2}
           sm={2}
           md={2}
-          lg={{ span: 15, offset: 5 }}
-          xl={{ span: 15, offset: 5 }}
+          lg={{ span: 22, offset: 0 }}
+          xl={{ span: 22, offset: 0}}
           style={{
             display: "flex",
             justifyContent: "space-between",

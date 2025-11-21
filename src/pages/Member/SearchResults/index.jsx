@@ -4,8 +4,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Typography, Empty, Button, Spin, message, Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import CardListing from "@components/CardListing";
-import { searchListings, transformListingData } from "@/services/listingHomeService";
+import {
+  searchListings,
+  transformListingData,
+} from "@/services/listingHomeService";
 import styles from "./SearchResults.module.scss";
+import style from "../shared/ListingPage.module.scss";
+import DynamicBreadcrumb from "../../../components/Breadcrumb/Breadcrumb";
+import { Card } from "antd";
 
 const { Title, Text } = Typography;
 const SearchResults = () => {
@@ -69,80 +75,91 @@ const SearchResults = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div
+      className={style.layoutContainer}
+      style={{ boxShadow: "none", padding: 0 }}
+    >
       {/* Header */}
-      <div className={styles.header}>
-        <Button
-          icon={<ArrowLeftOutlined />}
-          onClick={handleBackToHome}
-          className={styles.backButton}
-        >
-          Quay lại trang chủ
-        </Button>
-
-        <Title level={2} className={styles.title}>
-          Kết quả tìm kiếm cho: "{searchTerm}"
-        </Title>
-
-        <Text type="secondary" className={styles.resultCount}>
-          Tìm thấy {searchResults.length} kết quả
-        </Text>
+      <div className={style.breadcrumbSection}>
+        <DynamicBreadcrumb />
       </div>
-
-      {/* Results */}
-      {searchResults.length > 0 ? (
-        <>
-          <Row gutter={[16, 16]} className={styles.gridView}>
-            {searchResults.map((item) => (
-              <Col
-                key={item.id}
-                xs={24}
-                sm={12}
-                md={12}
-                lg={8}
-                xl={6}
-                xxl={6}
-              >
-                <CardListing
-                  listing={item}
-                  onClick={handleProductClick}
-                />
-              </Col>
-            ))}
-          </Row>
-
-          {/* Load More Button */}
-          {hasNext && (
-            <div className={styles.loadMoreContainer}>
-              <Button
-                type="primary"
-                size="large"
-                onClick={handleLoadMore}
-                loading={loading}
-              >
-                {loading ? "Đang tải..." : "Tải thêm"}
-              </Button>
-            </div>
-          )}
-        </>
-      ) : (
-        <Empty
-          description={
-            <div>
-              <Text>Không tìm thấy kết quả nào cho "{searchTerm}"</Text>
-              <br />
-              <Text type="secondary">
-                Hãy thử với từ khóa khác hoặc kiểm tra chính tả
-              </Text>
-            </div>
-          }
-          className={styles.emptyState}
+      <div
+        className={style.content}
+        style={{ backgroundColor: "#E9F2FF", padding: "0px" }}
+      >
+        <Card
+          variant="borderless"
+          style={{
+            marginBottom: "16px",
+            borderTopRightRadius: 0,
+            borderTopLeftRadius: 0,
+            width: "100%",
+            borderTop: "1px solid rgb(0,0,0,0.1)",
+          }}
         >
-          <Button type="primary" onClick={handleBackToHome}>
-            Quay lại trang chủ
-          </Button>
-        </Empty>
-      )}
+          <div className={styles.header}>
+            <Title level={2} className={styles.title}>
+              Kết quả tìm kiếm cho: "{searchTerm}"
+            </Title>
+
+            <Text type="secondary" className={styles.resultCount}>
+              Tìm thấy {searchResults.length} kết quả
+            </Text>
+          </div>
+        </Card>
+
+        {/* Results */}
+        {searchResults.length > 0 ? (
+          <>
+            <Row gutter={[16, 16]} className={styles.gridView}>
+              {searchResults.map((item) => (
+                <Col
+                  key={item.id}
+                  xs={24}
+                  sm={12}
+                  md={12}
+                  lg={8}
+                  xl={6}
+                  xxl={6}
+                >
+                  <CardListing listing={item} onClick={handleProductClick} />
+                </Col>
+              ))}
+            </Row>
+
+            {/* Load More Button */}
+            {hasNext && (
+              <div className={styles.loadMoreContainer}>
+                <Button
+                  type="primary"
+                  size="large"
+                  onClick={handleLoadMore}
+                  loading={loading}
+                >
+                  {loading ? "Đang tải..." : "Tải thêm"}
+                </Button>
+              </div>
+            )}
+          </>
+        ) : (
+          <Empty
+            description={
+              <div>
+                <Text>Không tìm thấy kết quả nào cho "{searchTerm}"</Text>
+                <br />
+                <Text type="secondary">
+                  Hãy thử với từ khóa khác hoặc kiểm tra chính tả
+                </Text>
+              </div>
+            }
+            className={styles.emptyState}
+          >
+            <Button type="primary" onClick={handleBackToHome}>
+              Quay lại trang chủ
+            </Button>
+          </Empty>
+        )}
+      </div>
     </div>
   );
 };

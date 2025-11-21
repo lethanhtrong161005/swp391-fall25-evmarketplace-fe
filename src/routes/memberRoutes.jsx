@@ -50,7 +50,7 @@ export default [
       { path: "search-results", element: <SearchResults /> },
       { path: "detail/:id", element: <ProductDetail /> },
       { path: "listings", element: <AllListings /> },
-      { path: "search-results", element: <SearchResults /> },
+      { path: "searchresults", element: <SearchResults /> },
       { path: "auth/google/callback", element: <GoogleCallback /> },
       {
         element: (
@@ -72,7 +72,7 @@ export default [
             path: "consignment",
             children: [
               { index: true, element: <MemberConsignment /> },
-              { path: "new", element: <ConsignmentForm mode="create" /> },
+              { path: "newcons", element: <ConsignmentForm mode="create" /> },
               { path: "edit/:id", element: <ConsignmentForm mode="update" /> },
               { path: "availability", element: <InspectionAvailabilityPage /> },
             ],
