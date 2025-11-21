@@ -10,6 +10,7 @@ import {
   LogoutOutlined,
   DashboardOutlined,
   AppstoreOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 
 export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
@@ -81,7 +82,7 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
         key: "order",
         label: (
           <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <UserOutlined />
+            <ShoppingCartOutlined />
             Đơn hàng
           </span>
         ),

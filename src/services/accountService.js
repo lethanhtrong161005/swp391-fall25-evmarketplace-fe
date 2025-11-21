@@ -65,17 +65,23 @@ export const requestPhoneOpt = async ( phoneNumber, type ) => {
   return res.data;
 };
 
-export const verifyPhoneOtp = async ({ phoneNumber, otp }) => {
+export const verifyPhoneOtp = async ({ phoneNumber, otp, type = "" }) => {
   const res = await api.post(
     "/api/accounts/verify-otp",
-    { phoneNumber, otp },
+    {
+      phoneNumber,
+      otp,
+      type,
+    },
     {
       withCredentials: true,
       validateStatus: () => true,
     }
   );
-  return res.data;
+
+  return res.data; // BaseResponse
 };
+
 
 // Create account
 export const createAccount = async ({ tempToken, fullName, password }) => {

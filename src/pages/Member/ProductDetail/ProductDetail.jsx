@@ -13,6 +13,7 @@ import ProductDescription from "./components/ProductDescription/ProductDescripti
 import ProductSpecifications from "./components/ProductSpecifications/ProductSpecifications";
 import CompatibleModels from "./components/CompatibleModels/CompatibleModels";
 import "./ProductDetail.styles.scss";
+import styles from "../shared/ListingPage.module.scss";
 
 const { Title } = Typography;
 
@@ -81,39 +82,50 @@ export default function ProductDetail() {
   return (
     <div className="product-detail">
       {/* Breadcrumb */}
-      <div style={{ padding: "16px 0" }}>
-        <DynamicBreadcrumb customTitle={product?.title || "Chi tiết sản phẩm"} />
+      <div className={styles.breadcrumbSection}>
+        <DynamicBreadcrumb
+          customTitle={product?.title || "Chi tiết sản phẩm"}
+        />
       </div>
 
       {/* Nội dung chính: Media + Thông tin */}
-      <Card className="product-detail__section">
+      <div
+        className={styles.content}
+        style={{ padding: 0, backgroundColor: "#E9F2FF" }}
+      >
+        <Card
+          variant="borderless"
+          className="product-detail__section"
+          style={{ borderTopRightRadius: 0, borderTopLeftRadius: 0, borderTop:"1px solid rgb(0,0,0,0.1)" }}
+        >
+          <Row gutter={24}>
+            <Col xs={24} md={14}>
+              <ProductMedia product={product} />
+            </Col>
+            <Col xs={24} md={10}>
+              <ProductInfo
+                product={product}
+                onShowLoginModal={handleShowLoginModal}
+              />
+            </Col>
+          </Row>
+        </Card>
+
+        {/* Layout cho các section dưới: Mô tả + Thông số */}
         <Row gutter={24}>
           <Col xs={24} md={14}>
-            <ProductMedia product={product} />
+            {/* Mô tả chi tiết */}
+            <ProductDescription product={product} />
+
+            {/* Thông số kỹ thuật */}
+            <ProductSpecifications product={product} isBattery={isBattery} />
           </Col>
           <Col xs={24} md={10}>
-            <ProductInfo
-              product={product}
-              onShowLoginModal={handleShowLoginModal}
-            />
+            {/* Mẫu xe tương thích (chỉ cho pin) */}
+            <CompatibleModels product={product} isBattery={isBattery} />
           </Col>
         </Row>
-      </Card>
-
-      {/* Layout cho các section dưới: Mô tả + Thông số */}
-      <Row gutter={24}>
-        <Col xs={24} md={14}>
-          {/* Mô tả chi tiết */}
-          <ProductDescription product={product} />
-
-          {/* Thông số kỹ thuật */}
-          <ProductSpecifications product={product} isBattery={isBattery} />
-        </Col>
-        <Col xs={24} md={10}>
-          {/* Mẫu xe tương thích (chỉ cho pin) */}
-          <CompatibleModels product={product} isBattery={isBattery} />
-        </Col>
-      </Row>
+      </div>
 
       {/* Modal đăng nhập */}
       <LoginModal

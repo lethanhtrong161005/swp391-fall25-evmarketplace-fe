@@ -32,7 +32,7 @@ const SearchBar = () => {
         const transformedItems = response.data.items.map(transformListingData);
         
         // Chuyển đến trang kết quả tìm kiếm với dữ liệu
-        navigate("/search-results", {
+        navigate("/searchresults", {
           state: {
             searchResults: transformedItems,
             searchTerm,
@@ -65,18 +65,16 @@ const SearchBar = () => {
         placeholder="Tìm sản phẩm..."
         className="search-input"
         allowClear
-        size="large"
+        // size="small"
       />
 
       <Button
-        type="primary"
-        shape="round"
-        icon={<SearchOutlined />}
+        // type="primary"
+        icon={<SearchOutlined twoToneColor= "primary"/>}
         onClick={handleSearch}
         loading={loading}
-        size="large"
+        size="small"
       >
-        Tìm kiếm
       </Button>
     </div>
   );

@@ -199,7 +199,10 @@ export default function UpdateProfileModal({
                   },
                 ]}
               >
-                <Input placeholder="0987654321" disabled={phoneVerified} />
+                <Input
+                  placeholder="Your phone number"
+                  disabled={phoneVerified}
+                />
               </Form.Item>
 
               {!phoneVerified && (
@@ -223,9 +226,10 @@ export default function UpdateProfileModal({
                       >
                         <Input placeholder="Nhập mã OTP" maxLength={6} />
                       </Form.Item>
+
                       <Button
                         type="primary"
-                        onClick={() => handleVerifyOtp(form)}
+                        onClick={() => handleVerifyOtp(form, "UPDATE_PHONE")}
                         loading={otpVerifying}
                       >
                         Xác thực OTP
