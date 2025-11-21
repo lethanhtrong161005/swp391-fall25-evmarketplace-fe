@@ -74,7 +74,7 @@ const useStaffConsignmentsConsider = () => {
     setLoading(true);
     try {
       const res = await considerRejected(id, rejectedReason);
-      if (res?.success) {
+      if (res?.data.success) {
         message.success("Từ chối yêu cầu ký gửi thành công!");
         fetchData();
       } else {

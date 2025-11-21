@@ -1,26 +1,53 @@
 .search-bar {
   display: flex;
   align-items: center;
-  background: #fff;
-  border-radius: 22px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  padding: 8px 16px;
-  max-width: 1200px;
-  width: 100%;
-  margin-top: 16px;
-  margin-bottom: 0px;
-  margin-left: auto;
-  margin-right: auto;
-  gap: 12px;
+  gap: 6px;
 
-  .search-input {
-    flex: 1;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+
+  /* CHỈ 2px padding theo yêu cầu */
+  padding: 2px 8px;  // <--- chiều cao container quyết định tại đây
+  height: auto;
+  background: #fff;
+
+  width: 320px;
+
+  /* Input wrapper */
+  .ant-input-affix-wrapper {
     border: none !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.12) !important;
+    border-radius: 0 !important;
     box-shadow: none !important;
+    padding: 0 !important;
+
+    height: 28px; /* TUỲ CHỈNH: input nhỏ và gọn */
   }
 
-  // Nếu muốn style riêng cho button
+  /* Input trong wrapper */
+  .ant-input {
+    padding: 0 !important;
+    height: 100% !important;
+    line-height: 28px !important; /* Đồng bộ với wrapper */
+    font-size: 15px;
+  }
+
+  /* Placeholder */
+  .ant-input::placeholder {
+    color: #9ca3af;
+  }
+
+  /* Search button */
   .ant-btn {
-    font-weight: 500;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+
+    height: 28px !important;    /* đồng bộ với input */
+    width: 28px !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

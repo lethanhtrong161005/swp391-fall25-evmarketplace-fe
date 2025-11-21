@@ -13,6 +13,7 @@ import PostTypeModal from "@components/PostTypeModal";
 import RejectedReasonModal from "@pages/Member/ListingEdit/RejectedReasonModal";
 import DynamicBreadcrumb from "@components/Breadcrumb/Breadcrumb";
 import React, { useState } from "react";
+import styles from "../shared/ListingPage.module.scss";
 
 import { useListingEdit } from "./useListingEdit";
 import { useAuth } from "@contexts/AuthContext";
@@ -27,11 +28,23 @@ export default function ListingEdit() {
   const userId = user?.id ?? user?.accountId ?? user?.sub ?? null;
 
   const {
-    form, msg, contextHolder, loading, tax, fetching,
-    visibility, handleChangeVisibility, isBattery,
-    submitting, handleSubmit, onValuesChange,
-    postTypeOpen, setPostTypeOpen,
-    status, rejectedReason, rejectedAt,
+    form,
+    msg,
+    contextHolder,
+    loading,
+    tax,
+    fetching,
+    visibility,
+    handleChangeVisibility,
+    isBattery,
+    submitting,
+    handleSubmit,
+    onValuesChange,
+    postTypeOpen,
+    setPostTypeOpen,
+    status,
+    rejectedReason,
+    rejectedAt,
   } = useListingEdit({ userId, listingId: id });
 
   const [rejectOpen, setRejectOpen] = useState(false);
@@ -49,18 +62,34 @@ export default function ListingEdit() {
   }
 
   return (
-    <Layout style={{ minHeight: "100vh", background: "#f0f2f5" }}>
+    <Layout
+      className={styles.layoutContainer}
+      style={{ boxShadow: "none", padding: 0 }}
+    >
       {contextHolder}
-      <div style={{ maxWidth: PAGE_WIDTH, margin: "16px auto", padding: "0 16px", width: "100%" }}>
+      <div className={styles.breadcrumbSection}>
         <DynamicBreadcrumb />
       </div>
 
-      <Content style={{ maxWidth: PAGE_WIDTH, margin: "0 auto", padding: "0 16px", paddingBottom: "100px", width: "100%" }}>
+      <Content
+        className={styles.content}
+        style={{
+          backgroundColor: "#E9F2FF",
+          padding: "0px",
+          marginBottom: "58px",
+        }}
+      >
         <Card
-          style={{ marginBottom: 16 }}
-          variant="bordered"
+          style={{
+            marginBottom: "16px",
+            borderTopRightRadius: 0,
+            borderTopLeftRadius: 0,
+            width: "100%",
+            borderTop: "1px solid rgb(0,0,0,0.1)",
+          }}
+          variant="borderless"
           title="Chỉnh sửa tin đăng"
-          extra={(
+          extra={
             <div style={{ display: "flex", gap: 8 }}>
               {isRejected && (
                 <Button danger ghost onClick={() => setRejectOpen(true)}>
@@ -71,7 +100,7 @@ export default function ListingEdit() {
                 Quay lại
               </Button>
             </div>
-          )}
+          }
         />
 
         <Card variant="bordered" style={{ marginBottom: 0 }}>
@@ -83,7 +112,11 @@ export default function ListingEdit() {
               <Col xs={24} md={16}>
                 <CategoryBrandModel form={form} tax={tax} disableCategory />
                 <YearColorFields isBattery={isBattery} />
-                {isBattery ? <SectionDetailBattery /> : <SectionDetailVehicle />}
+                {isBattery ? (
+                  <SectionDetailBattery />
+                ) : (
+                  <SectionDetailVehicle />
+                )}
               </Col>
             </Row>
 

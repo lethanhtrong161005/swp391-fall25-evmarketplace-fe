@@ -11,6 +11,7 @@ import YearColorFields from "@components/YearColorFields";
 import CreateListingFooter from "@components/CreateListingFooter";
 import PostTypeModal from "@components/PostTypeModal";
 import DynamicBreadcrumb from "@components/Breadcrumb/Breadcrumb";
+import styles from "../shared/ListingPage.module.scss";
 
 import { useListingCreate } from "@hooks/useListingCreate";
 import { useAuth } from "@contexts/AuthContext";
@@ -61,13 +62,13 @@ export default function ListingCreate() {
   }
 
   return (
-    <Layout style={{ minHeight: "100vh", background: "#f0f2f5" }}>
+    <Layout className={styles.layoutContainer} style={{boxShadow:"none", padding:0}} >
       {contextHolder}
-      <div style={{ maxWidth: PAGE_WIDTH, margin: "16px auto", padding: "0 16px", width: "100%" }}>
+      <div className={styles.breadcrumbSection}>
         <DynamicBreadcrumb />
       </div>
-      <Content style={{ maxWidth: PAGE_WIDTH, margin: "0 auto", padding: "0 16px", paddingBottom: "100px", width: "100%" }}>
-        <Card variant="bordered" style={{ marginBottom: 0 }}>
+      <Content className={styles.content} style={{backgroundColor:"#E9F2FF", padding: "0px", marginBottom:"58px" }}>
+        <Card variant="borderless" style={{ margin: 0, borderTopRightRadius:0, borderTopLeftRadius:0, width:"100%", borderTop:"1px solid rgb(0,0,0,0.1)"}}>
           <Form form={form} layout="vertical" onValuesChange={onValuesChange}>
             <Row gutter={16}>
               <Col xs={24} md={8}>
@@ -82,7 +83,11 @@ export default function ListingCreate() {
               <Col xs={24} md={16}>
                 <CategoryBrandModel form={form} tax={tax} />
                 <YearColorFields isBattery={isBattery} />
-                {isBattery ? <SectionDetailBattery /> : <SectionDetailVehicle />}
+                {isBattery ? (
+                  <SectionDetailBattery />
+                ) : (
+                  <SectionDetailVehicle />
+                )}
               </Col>
             </Row>
 

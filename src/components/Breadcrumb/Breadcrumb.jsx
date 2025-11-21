@@ -21,6 +21,7 @@ export default function DynamicBreadcrumb({ customTitle }) {
     consignment: "Quản lý ký gửi",
     "consignment-listings": "Tin ký gửi",
     new: "Tạo tin đăng",
+    newcons: "Tạo yêu cầu ký gửi",
     "info-user": "Thông tin cá nhân",
     listing: "Tin đăng",
     listings: "Tất cả tin đăng",
@@ -31,6 +32,7 @@ export default function DynamicBreadcrumb({ customTitle }) {
     availability: "Lên lịch",
     "my-ads": "Quản lý tin",
     chat: "Tin nhắn",
+    searchresults: "Kết quả tìm kiếm"
   };
 
   // Custom URL mapping cho các route đặc biệt

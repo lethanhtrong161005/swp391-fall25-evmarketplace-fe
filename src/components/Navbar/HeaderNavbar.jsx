@@ -11,6 +11,7 @@ import PhoneResetPasswordModal from "@components/Modal/PhoneResetPasswordModal";
 import ResetPasswordModal from "@components/Modal/ResetPasswordModal";
 import OtpVerifyModal from "@components/Modal/OtpVerifyModal";
 import RegisterModal from "@components/Modal/RegisterModal";
+import SearchBar from "@components/SearchBar/SearchBar";
 
 const items = [
   { key: "home", label: "Trang chủ", path: "/" },
@@ -38,7 +39,13 @@ const HeaderNavbar = () => {
     handleOtpStart,
     handleLoginSubmit,
   } = useHeaderAction();
-  const { isLoggedIn, user, handleLoginRequire, getMenuItems, handleMenuClick } = auth;
+  const {
+    isLoggedIn,
+    user,
+    handleLoginRequire,
+    getMenuItems,
+    handleMenuClick,
+  } = auth;
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
 
   const MANAGE_LISTINGS_PATH = "/my-ads";
@@ -152,6 +159,17 @@ const HeaderNavbar = () => {
               minWidth: 0, // Cho phép shrink
             }}
           />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+              flexShrink: 0, // Không cho shrink để đảm bảo header action luôn visible
+              minWidth: "fit-content", // Đảm bảo có đủ không gian
+            }}
+          >
+            <SearchBar />
+          </div>
           <div
             style={{
               display: "flex",

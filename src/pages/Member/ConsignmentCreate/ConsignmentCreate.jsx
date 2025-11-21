@@ -9,7 +9,8 @@ import SectionDetailVehicle from "@/components/SectionDetailVehicle";
 import SectionDetailBattery from "@/components/SectionDetailBattery";
 import SectionMedia from "@/components/SectionMedia";
 import BranchAddressField from "@/components/BranchAddressField/BranchAddressField";
-import styles from "./style.module.scss";
+import style from "./style.module.scss";
+import styles from "../shared/ListingPage.module.scss";
 import DynamicBreadcrumb from "../../../components/Breadcrumb/Breadcrumb";
 
 const ConsignmentForm = ({
@@ -44,25 +45,48 @@ const ConsignmentForm = ({
 
   if (isUpdate && !data) {
     return (
-      <div className={styles.wrapper}>
-        <div className={styles.breadcrumb}>
+      <div
+        className={styles.layoutContainer}
+        style={{ boxShadow: "none", padding: 0 }}
+      >
+        <div className={styles.breadcrumbSection}>
           <DynamicBreadcrumb />
         </div>
-        <Card className={styles.card}>Đang tải dữ liệu ký gửi...</Card>
+        <Card
+          variant="borderless"
+          style={{
+            margin: 0,
+            borderTopRightRadius: 0,
+            borderTopLeftRadius: 0,
+            width: "100%",
+            borderTop: "1px solid rgb(0,0,0,0.1)",
+          }}
+        >
+          Đang tải dữ liệu ký gửi...
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={styles.layoutContainer}
+      style={{ boxShadow: "none", padding: 0 }}
+    >
       {contextHolder}
-      <div className={styles.breadcrumb}>
+      <div className={styles.breadcrumbSection}>
         <DynamicBreadcrumb />
       </div>
       <Card
         title={isUpdate ? "Chỉnh sửa yêu cầu ký gửi" : "Tạo yêu cầu ký gửi"}
-        bordered={false}
-        className={styles.card}
+        variant="borderless"
+        style={{
+          margin: 0,
+          borderTopRightRadius: 0,
+          borderTopLeftRadius: 0,
+          width: "100%",
+          borderTop: "1px solid rgb(0,0,0,0.1)",
+        }}
       >
         <Form
           layout="vertical"
@@ -104,7 +128,7 @@ const ConsignmentForm = ({
           <CategoryBrandModel form={form} tax={tax} />
           <YearColorFields isBattery={isBattery} mode="consignment" />
           {isBattery ? (
-            <SectionDetailBattery mode="consignment"/>
+            <SectionDetailBattery mode="consignment" />
           ) : (
             <SectionDetailVehicle mode="consignment" />
           )}
@@ -123,7 +147,7 @@ const ConsignmentForm = ({
           <Form.Item name="note" label="Ghi chú" className="no-optional">
             <textarea
               placeholder="Nhập ghi chú thêm (nếu có)..."
-              className={styles.textareaCustom}
+              className={style.textareaCustom}
             />
           </Form.Item>
 

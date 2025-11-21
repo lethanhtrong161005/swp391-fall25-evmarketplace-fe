@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./InspectionAvailabilityPage.scss";
 import DynamicBreadcrumb from "../../../../components/Breadcrumb/Breadcrumb";
 import BookScheduleModal from "./BookingModal";
+// import styles from "../../shared/ListingPage.module.scss";
 
 const { Title } = Typography;
 
@@ -123,8 +124,11 @@ export default function InspectionAvailabilityPage() {
 
   if (!requestId) {
     return (
-      <div className="inspection-page">
-        <Card className="inspection-card">
+      <div className="inspectionPage">
+        <Card
+          className="inspectionCard"
+          variant="borderless"
+        >
           <Title level={4} className="inspection-title">
             Thiếu dữ liệu ký gửi
           </Title>
@@ -138,50 +142,62 @@ export default function InspectionAvailabilityPage() {
   }
 
   return (
-    <div className="inspection-page">
-      <div className="breadcrumb">
+    <div className="inspectionPage">
+      {/* Breadcrumb giống ReEV */}
+      <div className="breadcrumbSection">
         <DynamicBreadcrumb />
       </div>
-      <Card className="inspection-card">
-        <Title level={3} className="inspection-title">
-          Kiểm tra lịch hẹn khả dụng
-        </Title>
 
-        <div className="inspection-controls">
-          <Input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="date-input"
-            min={minDate}
-            max={maxDate}
-          />
-          <Button
-            type="primary"
-            onClick={handleFetchAvailability}
-            loading={loading}
-            className="fetch-btn"
+      {/* Content giống ReEV */}
+      <div className="content">
+        <div className="pageInner">
+          <Card
+            className="inspectionCard"
+            variant="borderless"
           >
-            Xem lịch hẹn khả dụng
-          </Button>
-        </div>
-
-        {availability && (
-          <div className="inspection-result">
-            <Title level={4} className="inspection-subtitle">
-              Ngày: {availability.date}
+            <Title level={3} className="inspectionTitle">
+              Kiểm tra lịch hẹn khả dụng
             </Title>
-            <Table
-              showHeader
-              columns={columns}
-              dataSource={availability.shifts}
-              rowKey="shiftId"
-              pagination={false}
-              className="inspection-table no-border"
-            />
-          </div>
-        )}
-      </Card>
+
+            <div className="inspectionControls">
+              <Input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="dateInput"
+                min={minDate}
+                max={maxDate}
+              />
+
+              <Button
+                type="primary"
+                onClick={handleFetchAvailability}
+                loading={loading}
+                className="fetchBtn"
+              >
+                Xem lịch hẹn khả dụng
+              </Button>
+            </div>
+
+            {availability && (
+              <div className="inspectionResult">
+                <Title level={4} className="inspectionSubtitle">
+                  Ngày: {availability.date}
+                </Title>
+
+                <Table
+                  showHeader
+                  columns={columns}
+                  dataSource={availability.shifts}
+                  rowKey="shiftId"
+                  pagination={false}
+                  className="inspectionTable"
+                />
+              </div>
+            )}
+          </Card>
+        </div>
+      </div>
 
       <BookScheduleModal
         open={openBookModal}
