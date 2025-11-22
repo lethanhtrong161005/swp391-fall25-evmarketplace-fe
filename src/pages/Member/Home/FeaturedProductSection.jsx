@@ -1,11 +1,7 @@
 // src/pages/Member/Home/FeaturedProductSection.jsx
 import React, { useMemo } from "react";
 import { Typography, Empty, Button } from "antd";
-import {
-  TrophyOutlined,
-  LeftOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
+import { TrophyOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 import CardListing from "@components/CardListing";
 import ViewMoreButton from "@/components/ViewMoreButton";
@@ -78,11 +74,7 @@ export default function FeaturedProductSection({
         />
       )}
 
-      <ViewMoreButton 
-        count={total} 
-        onClick={onViewMore} 
-        loading={loading} 
-      />
+      <ViewMoreButton count={total} onClick={onViewMore} loading={loading} />
     </section>
   );
 }
