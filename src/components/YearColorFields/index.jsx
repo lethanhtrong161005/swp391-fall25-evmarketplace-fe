@@ -52,8 +52,8 @@ export default function YearColorFields({ isBattery, mode = "listing" }) {
                 min={0}
                 step={100000}
                 placeholder="VD: 15.000.000"
-                formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                parser={(v) => v.replace(/\$\s?|(,*)/g, "")}
+                formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                parser={(v) => v.replace(/\./g, "")}
               />
             </Form.Item>
           ) : (

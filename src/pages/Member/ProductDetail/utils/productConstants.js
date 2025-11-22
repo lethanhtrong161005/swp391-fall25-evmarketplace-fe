@@ -9,10 +9,10 @@ export const PRODUCT_CATEGORIES = {
 };
 
 export const CATEGORY_LABELS = {
-  [PRODUCT_CATEGORIES.EV_CAR]: "Ô tô điện",
+  [PRODUCT_CATEGORIES.EV_CAR]: "Xe ô tô điện",
   [PRODUCT_CATEGORIES.E_MOTORBIKE]: "Xe máy điện",
   [PRODUCT_CATEGORIES.E_BIKE]: "Xe đạp điện",
-  [PRODUCT_CATEGORIES.BATTERY]: "Pin/pack",
+  [PRODUCT_CATEGORIES.BATTERY]: "Pin và bộ sạc điện",
   [PRODUCT_CATEGORIES.UNKNOWN]: "Khác",
 };
 

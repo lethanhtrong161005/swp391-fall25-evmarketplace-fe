@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Avatar, Typography, Drawer, Button, Badge, App, Input, Tabs, Layout } from "antd";
+import { Avatar, Typography, Drawer, Button, Badge, App, Input, Layout } from "antd";
 import { UserOutlined, MenuOutlined, MessageOutlined, SearchOutlined } from "@ant-design/icons";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useChat } from "@hooks/useChat";
@@ -29,7 +29,6 @@ const ChatPage = () => {
   const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
   const [conversationListRefresh, setConversationListRefresh] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
   const openingConversationRef = React.useRef(false);
 
   const chat = useChat(selectedConversationId, recipientId);
@@ -53,6 +52,7 @@ const ChatPage = () => {
     latestSelectedConversationIdRef.current = selectedConversationId;
   }, [selectedConversationId]);
 
+  // Tải thông tin người nhận từ danh sách conversations
   const loadRecipientInfo = useCallback(async (userId) => {
     if (!userId) return false;
     
@@ -93,8 +93,8 @@ const ChatPage = () => {
     return false;
   }, [currentUserId]);
   
+  // Xử lý khi chọn một cuộc trò chuyện: load tin nhắn và cập nhật state
   const handleSelectConversation = useCallback(async (conversationId, otherUserId, recipientInfoFromList = null) => {
-    // Prevent duplicate calls for the same conversation
     if (selectedConversationId === conversationId && recipientId === otherUserId) {
       return;
     }
@@ -114,7 +114,6 @@ const ChatPage = () => {
     try {
       await loadMessageHistory(conversationId);
     } catch (error) {
-      console.error("[ChatPage] Error loading messages:", error);
       messageApi.error("Không thể tải tin nhắn");
     }
     
@@ -122,6 +121,7 @@ const ChatPage = () => {
     setMobileDrawerVisible(false);
   }, [selectedConversationId, recipientId, loadMessageHistory, markConversationSeen, loadRecipientInfo, messageApi, setCurrentConversationId]);
 
+  // Tự động chọn cuộc trò chuyện đầu tiên nếu chưa có conversation nào được chọn
   useEffect(() => {
     if (!selectedConversationId && !urlConversationId && !recipientId && chatConnected && currentUserId) {
       const loadAndSelectFirst = async () => {
@@ -148,7 +148,6 @@ const ChatPage = () => {
             }
           }
         } catch (e) {
-          console.error("[ChatPage] Error loading conversations for auto-select:", e);
         }
       };
       
@@ -171,6 +170,7 @@ const ChatPage = () => {
     }
   }, [location.state?.recipientId, recipientId, loadRecipientInfo]);
 
+  // Mở cuộc trò chuyện mới với recipientId nếu chưa có conversation
   useEffect(() => {
     if (openingConversationRef.current) {
       return;
@@ -271,35 +271,33 @@ const ChatPage = () => {
         }
       }).catch((error) => {
         openingConversationRef.current = false;
-        console.error("Error opening conversation:", error);
         messageApi.error("Không thể mở cuộc trò chuyện");
       });
     }
   }, [chatConnected, recipientId, selectedConversationId, currentUserId, messageApi, openConversationWithUser, loadRecipientInfo, loadMessageHistory, markConversationSeen, setCurrentConversationId]);
 
-  // Only load recipientInfo if we don't already have it
+  // Tải thông tin recipient nếu chưa có
   useEffect(() => {
     if (recipientId && !recipientInfo) {
       loadRecipientInfo(recipientId);
     }
   }, [recipientId, recipientInfo, loadRecipientInfo]);
 
-  // Sync selectedConversationId to URL (but avoid loops)
+  // Đồng bộ selectedConversationId với URL
   useEffect(() => {
     const currentUrlId = urlConversationId ? parseInt(urlConversationId) : null;
     const selectedId = selectedConversationId ? parseInt(selectedConversationId) : null;
     
-    // Only navigate if there's a real change and we're not already in the middle of loading from URL
     if (selectedId && selectedId !== currentUrlId && selectedId !== latestSelectedConversationIdRef.current) {
       navigate(`/chat/${selectedId}`, { replace: true });
     } else if (!selectedId && currentUrlId) {
-      // Only clear URL if we explicitly cleared the selection (not during initial load)
       if (latestSelectedConversationIdRef.current === null) {
         navigate("/chat", { replace: true });
       }
     }
   }, [selectedConversationId, navigate, urlConversationId]);
 
+  // Load conversation từ URL khi component mount hoặc URL thay đổi
   useEffect(() => {
     if (urlConversationId) {
       const cid = parseInt(urlConversationId);
@@ -308,7 +306,6 @@ const ChatPage = () => {
         setCurrentConversationId(cid);
         
         loadMessageHistory(cid).catch((error) => {
-          console.error("[ChatPage] Error loading messages:", error);
           messageApi.error("Không thể tải tin nhắn");
         });
         
@@ -332,7 +329,6 @@ const ChatPage = () => {
               }
             }
           } catch (e) {
-            console.error("[ChatPage] Error loading conversation info:", e);
           }
         };
         
@@ -343,6 +339,7 @@ const ChatPage = () => {
     }
   }, [urlConversationId, chatConnected, currentUserId, loadRecipientInfo, messageApi, setCurrentConversationId, loadMessageHistory, markConversationSeen]);
 
+  // Lấy recipientId từ tin nhắn đầu tiên nếu chưa có
   useEffect(() => {
     if (selectedConversationId && !recipientId && chatMessages.length > 0) {
       const firstMessage = chatMessages[0];
@@ -376,6 +373,7 @@ const ChatPage = () => {
     sendText(text, selectedConversationId, recipientId);
   };
 
+  // Gửi tin nhắn media (ảnh/video) với validation kích thước file
   const handleSendMedia = (file, type) => {
     if (!selectedConversationId) {
       messageApi.warning("Chưa chọn cuộc trò chuyện");
@@ -386,9 +384,8 @@ const ChatPage = () => {
       return;
     }
     
-    // Validate file size trước khi gửi (additional check)
-    const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
-    const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
+    const MAX_VIDEO_SIZE = 50 * 1024 * 1024;
     
     const formatFileSize = (bytes) => {
       if (bytes === 0) return "0 Bytes";
@@ -420,6 +417,7 @@ const ChatPage = () => {
     }, 500);
   };
 
+  // Tạo URL đầy đủ cho avatar từ filename
   const getAvatarUrl = (filename) => {
     if (!filename) return null;
     const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8089";
@@ -427,7 +425,6 @@ const ChatPage = () => {
   };
 
   const recipientName = recipientInfo?.name || recipientInfo?.fullName || "Người dùng";
-  // Prioritize avatarUrl directly from API, fallback to getAvatarUrl(avatarFilename)
   const recipientAvatar = recipientInfo?.avatarUrl || getAvatarUrl(recipientInfo?.avatarFilename);
 
   const quickReplies = [
@@ -441,10 +438,12 @@ const ChatPage = () => {
     "Có hỗ trợ vay ngân hàng không bạn?",
   ];
 
+  // Xử lý khi click vào quick reply button
   const handleQuickReply = (text) => {
     handleSendText(text);
   };
 
+  // Render header của chat panel (tên người nhận hoặc placeholder)
   const renderHeaderContent = () => {
     if (!selectedConversationId) {
       return (
@@ -491,15 +490,6 @@ const ChatPage = () => {
                 className={s.searchInput}
               />
             </div>
-            <Tabs
-              activeKey={activeTab}
-              onChange={setActiveTab}
-              items={[
-                { key: "all", label: "Tất cả tin nhắn" },
-                { key: "unread", label: "Tin chưa đọc" },
-              ]}
-              className={s.sidebarTabs}
-            />
           </div>
           <div className={s.sidebarBody}>
             <ConversationList
@@ -508,7 +498,6 @@ const ChatPage = () => {
               loading={chatLoading}
               refreshTrigger={conversationListRefresh}
               searchQuery={searchQuery}
-              filterUnread={activeTab === "unread"}
             />
           </div>
         </Sider>

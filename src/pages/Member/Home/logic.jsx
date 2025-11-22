@@ -1,4 +1,3 @@
-// src/pages/Member/Home/logic.jsx
 import { useEffect, useState } from "react";
 import {
   getLatestListings,
@@ -7,6 +6,7 @@ import {
   getAllListings,
 } from "@/services/listingHomeService";
 
+// Hook quản lý dữ liệu trang chủ: tin đăng mới nhất, tin nổi bật và tổng số lượng
 export function useHomeData() {
   const [latestListings, setLatestListings] = useState([]);
   const [featuredItems, setFeaturedItems] = useState([]);
@@ -16,6 +16,7 @@ export function useHomeData() {
   const [totalFeatured, setTotalFeatured] = useState(0);
 
   useEffect(() => {
+    // Tải dữ liệu tin đăng mới nhất, tin nổi bật và tổng số lượng
     const fetchData = async () => {
       try {
         setLoadingLatest(true);
@@ -28,35 +29,25 @@ export function useHomeData() {
         setFeaturedItems(featuredData);
         setLoadingFeatured(false);
 
-        // Lấy tổng số sản phẩm
         const totalCount = await getTotalListingsCount();
         setTotalProducts(totalCount);
 
-        // Lấy tổng số tin nổi bật (chỉ đếm ACTIVE + BOOSTED)
         try {
-          // Lấy một số lượng lớn để đếm chính xác số tin nổi bật có status ACTIVE
           const countResponse = await getAllListings({
             page: 0,
-            size: 1000, // Lấy nhiều để đếm chính xác
+            size: 1,
             isBoosted: true,
           });
-          
-          if (countResponse?.success && countResponse?.data?.items) {
-            // Đếm số lượng items có status ACTIVE
-            const activeBoostedCount = countResponse.data.items.filter(
-              (item) => item.status === "ACTIVE"
-            ).length;
-            setTotalFeatured(activeBoostedCount);
+
+          if (countResponse?.success && countResponse?.data) {
+            setTotalFeatured(countResponse.data.totalElements || 0);
           } else {
-            // Fallback: đếm từ featuredData (đã được filter ACTIVE)
             setTotalFeatured(featuredData.length);
           }
-        } catch (error) {
-          // Nếu không lấy được, dùng số lượng featured items hiện có (đã filter ACTIVE)
+        } catch {
           setTotalFeatured(featuredData.length);
         }
-      } catch (error) {
-        // swallow; UI will show empties
+      } catch {
         setLoadingLatest(false);
         setLoadingFeatured(false);
       }

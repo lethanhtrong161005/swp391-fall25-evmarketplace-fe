@@ -30,7 +30,7 @@ const toVnd = (n) =>
 
 const PaymentItem = ({ p }) => {
     return (
-        <Card size="small" bordered>
+        <Card size="small" variant="outlined">
             <Space direction="vertical" style={{ width: "100%" }}>
                 <Space wrap>
                     <Tag color={STATUS_COLOR[p.status] || "default"}>{p.status}</Tag>

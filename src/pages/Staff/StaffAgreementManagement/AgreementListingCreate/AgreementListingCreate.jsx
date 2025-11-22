@@ -125,6 +125,15 @@ export default function AgreementListingCreate({
       footer={null}
       centered
       destroyOnHidden
+      styles={{
+        mask: {
+          zIndex: 1001,
+        },
+        wrapper: {
+          zIndex: 1001,
+        },
+      }}
+      zIndex={1001}
     >
       {contextHolder}
       {loading ? (
@@ -199,6 +208,7 @@ export default function AgreementListingCreate({
               })
             }
             submitting={submitting}
+            inModal={true}
           />
         </>
       )}

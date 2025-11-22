@@ -2,6 +2,7 @@
 import React from "react";
 import { Card, List, Typography } from "antd";
 import { BranchesOutlined } from "@ant-design/icons";
+import { formatNumberWithUnit } from "@utils/numberFormatter";
 import "./CompatibleModels.styles.scss";
 
 const { Title } = Typography;
@@ -22,7 +23,7 @@ export default function CompatibleModels({ product, isBattery }) {
           <List.Item className="compatible-models__item">
             <BranchesOutlined className="compatible-models__icon" />
             <span className="compatible-models__text">
-              {item.brand} {item.model} – Tầm hoạt động {item.rangeKm} km
+              {item.brand} {item.model} – Tầm hoạt động {formatNumberWithUnit(item.rangeKm, "km")}
             </span>
           </List.Item>
         )}

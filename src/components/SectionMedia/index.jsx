@@ -34,12 +34,6 @@ export default function SectionMedia({ messageApi }) {
         <Typography.Text className={styles.header}>
           Hình ảnh và Video sản phẩm
         </Typography.Text>
-        <Typography.Paragraph className={styles.subtle}>
-          Xem thêm về{" "}
-          <a href="#" onClick={(e) => e.preventDefault()}>
-            Quy định ảnh và video
-          </a>
-        </Typography.Paragraph>
       </div>
 
       <div className={styles.box}>

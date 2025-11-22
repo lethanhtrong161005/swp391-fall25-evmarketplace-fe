@@ -32,7 +32,7 @@ const useManagerConsignmentsAssign = () => {
 
       setConsignmentsAssign(items);
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
       message.error("Đã xảy ra lỗi khi tải danh sách ký gửi");
     } finally {
       setLoading(false);

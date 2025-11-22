@@ -40,12 +40,12 @@ export default function ProductBatteryModal({
                 <Select
                   showSearch
                   placeholder="Chọn hoặc tìm model có pin"
-                  optionFilterProp="label" 
+                  optionFilterProp="label"
                   filterOption={(input, option) =>
                     option.label.toLowerCase().includes(input.toLowerCase())
                   }
                   options={models.map((m) => ({
-                    label: `${m.name} (${m.year})`, 
+                    label: `${m.name} (${m.year})`,
                     value: m.id,
                   }))}
                 >
@@ -75,7 +75,18 @@ export default function ProductBatteryModal({
               name="capacityKwh"
               rules={[{ required: true, message: "Nhập dung lượng" }]}
             >
-              <InputNumber style={{ width: "100%" }} step={0.1} />
+              <InputNumber
+                style={{ width: "100%" }}
+                step={0.1}
+                formatter={(v) => {
+                  if (!v) return "";
+                  return String(v).replace(".", ",");
+                }}
+                parser={(v) => {
+                  if (!v) return "";
+                  return v.replace(",", ".");
+                }}
+              />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -84,7 +95,18 @@ export default function ProductBatteryModal({
               name="voltage"
               rules={[{ required: true, message: "Nhập điện áp" }]}
             >
-              <InputNumber style={{ width: "100%" }} step={0.1} />
+              <InputNumber
+                style={{ width: "100%" }}
+                step={0.1}
+                formatter={(v) => {
+                  if (!v) return "";
+                  return String(v).replace(".", ",");
+                }}
+                parser={(v) => {
+                  if (!v) return "";
+                  return v.replace(",", ".");
+                }}
+              />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -93,7 +115,18 @@ export default function ProductBatteryModal({
               name="weightKg"
               rules={[{ required: true, message: "Nhập khối lượng" }]}
             >
-              <InputNumber style={{ width: "100%" }} step={0.1} />
+              <InputNumber
+                style={{ width: "100%" }}
+                step={0.1}
+                formatter={(v) => {
+                  if (!v) return "";
+                  return String(v).replace(".", ",");
+                }}
+                parser={(v) => {
+                  if (!v) return "";
+                  return v.replace(",", ".");
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>

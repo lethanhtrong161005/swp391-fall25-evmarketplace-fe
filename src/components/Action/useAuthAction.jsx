@@ -1,7 +1,7 @@
 import React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
-import { useState } from "react";
 import { hasDashboardAccess, getDashboardPath } from "@config/roles";
 import {
   UserOutlined,
@@ -47,7 +47,6 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
   const getMenuItems = () => {
     const items = [];
 
-    // Dashboard section for roles with dashboard access
     if (hasDashboardAccess(user?.role)) {
       const dashboardPath = getDashboardPath(user?.role);
       if (dashboardPath) {
@@ -66,7 +65,6 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
       }
     }
 
-    // Personal section
     items.push(
       {
         key: "profile",
@@ -110,7 +108,6 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
       }
     );
 
-    // Logout section
     items.push({
       key: "logout",
       label: (

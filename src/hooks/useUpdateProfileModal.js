@@ -140,7 +140,6 @@ export default function useUpdateProfileModal({
         }
         setOtpSending(true);
         const type = "REGISTER"
-        console.log(type, phone)
         
         const res = await requestPhoneOpt(phone, type);
         if (res?.success === false) {

@@ -188,7 +188,18 @@ export default function ProductVehicleModal({
           </Col>
           <Col span={8}>
             <Form.Item label="Dung lượng pin (kWh)" name="batteryCapacityKwh">
-              <InputNumber style={{ width: "100%" }} step={0.1} />
+              <InputNumber
+                style={{ width: "100%" }}
+                step={0.1}
+                formatter={(v) => {
+                  if (!v) return "";
+                  return String(v).replace(".", ",");
+                }}
+                parser={(v) => {
+                  if (!v) return "";
+                  return v.replace(",", ".");
+                }}
+              />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -201,17 +212,50 @@ export default function ProductVehicleModal({
         <Row gutter={16}>
           <Col span={8}>
             <Form.Item label="Công suất (kW)" name="motorPowerKw">
-              <InputNumber style={{ width: "100%" }} step={0.1} />
+              <InputNumber
+                style={{ width: "100%" }}
+                step={0.1}
+                formatter={(v) => {
+                  if (!v) return "";
+                  return String(v).replace(".", ",");
+                }}
+                parser={(v) => {
+                  if (!v) return "";
+                  return v.replace(",", ".");
+                }}
+              />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="Sạc AC (kW)" name="acChargingKw">
-              <InputNumber style={{ width: "100%" }} step={0.1} />
+              <InputNumber
+                style={{ width: "100%" }}
+                step={0.1}
+                formatter={(v) => {
+                  if (!v) return "";
+                  return String(v).replace(".", ",");
+                }}
+                parser={(v) => {
+                  if (!v) return "";
+                  return v.replace(",", ".");
+                }}
+              />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="Sạc DC (kW)" name="dcChargingKw">
-              <InputNumber style={{ width: "100%" }} step={0.1} />
+              <InputNumber
+                style={{ width: "100%" }}
+                step={0.1}
+                formatter={(v) => {
+                  if (!v) return "";
+                  return String(v).replace(".", ",");
+                }}
+                parser={(v) => {
+                  if (!v) return "";
+                  return v.replace(",", ".");
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -317,7 +361,18 @@ export default function ProductVehicleModal({
               </Col>
               <Col span={12}>
                 <Form.Item label="Khối lượng (kg)" name="weightKg">
-                  <InputNumber style={{ width: "100%" }} step={0.1} />
+                  <InputNumber
+                    style={{ width: "100%" }}
+                    step={0.1}
+                    formatter={(v) => {
+                      if (!v) return "";
+                      return String(v).replace(".", ",");
+                    }}
+                    parser={(v) => {
+                      if (!v) return "";
+                      return v.replace(",", ".");
+                    }}
+                  />
                 </Form.Item>
               </Col>
             </Row>
@@ -346,7 +401,18 @@ export default function ProductVehicleModal({
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item label="Khối lượng (kg)" name="weightKg">
-                  <InputNumber style={{ width: "100%" }} step={0.1} />
+                  <InputNumber
+                    style={{ width: "100%" }}
+                    step={0.1}
+                    formatter={(v) => {
+                      if (!v) return "";
+                      return String(v).replace(".", ",");
+                    }}
+                    parser={(v) => {
+                      if (!v) return "";
+                      return v.replace(",", ".");
+                    }}
+                  />
                 </Form.Item>
               </Col>
               <Col span={12}>

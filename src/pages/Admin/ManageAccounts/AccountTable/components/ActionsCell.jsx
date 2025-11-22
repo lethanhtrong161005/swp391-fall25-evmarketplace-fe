@@ -84,7 +84,7 @@ const ActionsCell = ({
     >
       <Tooltip title={getActionTooltip("lock", user, record)}>
         <ActionButton
-          variant={isActive ? "danger" : "primary"}
+          variant={isActive ? "danger" : "success"}
           size="medium"
           icon={isActive ? <LockOutlined /> : <UnlockOutlined />}
         >
@@ -95,7 +95,7 @@ const ActionsCell = ({
   ) : (
     <Tooltip title={getActionTooltip("lock", user, record)}>
       <ActionButton
-        variant={isActive ? "danger" : "primary"}
+        variant={isActive ? "danger" : "success"}
         size="medium"
         icon={isActive ? <LockOutlined /> : <UnlockOutlined />}
         disabled={true}

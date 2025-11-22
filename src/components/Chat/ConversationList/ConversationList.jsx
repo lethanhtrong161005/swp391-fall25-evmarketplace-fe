@@ -32,6 +32,7 @@ const ConversationList = ({
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const loadConversationsRef = useRef(null);
 
+  // Tải danh sách cuộc trò chuyện từ API và áp dụng filter tìm kiếm/unread
   const loadConversations = useCallback(
     async (retryCount = 0) => {
       if (!user && retryCount < 4) {
@@ -94,15 +95,6 @@ const ConversationList = ({
         if (filteredItems.length > 0) {
           setConversations(filteredItems);
         } else {
-          console.warn(
-            "[ConversationList] No conversations found. Response structure:",
-            {
-              hasSuccess: res?.success !== undefined,
-              hasData: !!res?.data,
-              isArray: Array.isArray(res),
-              responseKeys: res ? Object.keys(res) : null,
-            }
-          );
           if (
             res &&
             (res.success !== undefined ||
@@ -115,20 +107,6 @@ const ConversationList = ({
           }
         }
       } catch (e) {
-        console.error("[ConversationList] Load conversations error:", e);
-        console.error("[ConversationList] Error stack:", e.stack);
-        console.error("[ConversationList] Error message:", e.message);
-        console.error("[ConversationList] Error response:", e.response);
-
-        if (
-          e.response ||
-          e.message?.includes("InvalidDataAccessApiUsageException") ||
-          e.message?.includes("Sort expression")
-        ) {
-          console.error(
-            "[ConversationList] Backend error detected - this is a backend issue, not frontend"
-          );
-        }
       } finally {
         setLoadingConversations(false);
       }
@@ -136,25 +114,27 @@ const ConversationList = ({
     [user, currentUserId, searchQuery, filterUnread]
   );
 
-  // Keep ref updated with latest loadConversations function
+  // Cập nhật ref với hàm loadConversations mới nhất
   useEffect(() => {
     loadConversationsRef.current = loadConversations;
   }, [loadConversations]);
 
+  // Tải danh sách conversations lần đầu khi user đã sẵn sàng
   useEffect(() => {
-    // Only load once when user is available and hasn't loaded yet
     if (!hasLoadedOnce && user && currentUserId) {
       loadConversations();
       setHasLoadedOnce(true);
     }
-  }, [user, currentUserId, hasLoadedOnce, loadConversations]); // Added currentUserId to ensure we have valid user ID
+  }, [user, currentUserId, hasLoadedOnce, loadConversations]);
 
+  // Tải lại danh sách khi có refreshTrigger
   useEffect(() => {
     if (refreshTrigger !== null && refreshTrigger > 0 && user) {
       loadConversations();
     }
   }, [refreshTrigger, user, loadConversations]);
 
+  // Filter conversations theo searchQuery và filterUnread
   useEffect(() => {
     if (allConversations.length > 0) {
       let filteredItems = [...allConversations];
@@ -187,6 +167,7 @@ const ConversationList = ({
     }
   }, [searchQuery, filterUnread, allConversations, currentUserId]);
 
+  // Tự động refresh danh sách conversations mỗi 30 giây
   useEffect(() => {
     if (!user) {
       return;
@@ -199,8 +180,9 @@ const ConversationList = ({
     }, 30000);
 
     return () => clearInterval(interval);
-  }, [user, currentUserId]); // Removed loadConversations from deps
+  }, [user, currentUserId]);
 
+  // Lắng nghe events để refresh danh sách khi có tin nhắn mới
   useEffect(() => {
     if (!user) return;
 
@@ -234,8 +216,9 @@ const ConversationList = ({
       );
       window.removeEventListener("chat-message-sent", handleMessageSent);
     };
-  }, [user]); // Removed loadConversations from deps - use closure to access latest function
+  }, [user]);
 
+  // Định dạng timestamp thành chuỗi thời gian dễ đọc (HH:mm, Hôm qua, thứ X, DD/MM/YYYY)
   const formatTime = (timestamp) => {
     if (!timestamp) return "";
     const date = dayjs(timestamp);
@@ -252,24 +235,30 @@ const ConversationList = ({
     }
   };
 
+  // Lấy preview tin nhắn cuối cùng (text, ảnh, video hoặc "Chưa có tin nhắn")
   const getLastMessagePreview = (conversation) => {
     const lastMessage = conversation?.lastMessage;
 
-    if (!lastMessage && conversation?.lastMessageId) {
-      return "Có tin nhắn";
-    }
-
     if (!lastMessage) {
+      if (conversation?.lastMessageId) {
+        return "Tin nhắn";
+      }
       return "Chưa có tin nhắn";
     }
 
     const type = lastMessage?.type?.toUpperCase();
     if (type === "IMAGE") return "📷 Ảnh";
     if (type === "VIDEO") return "🎥 Video";
+    
     const text = lastMessage?.textContent || lastMessage?.content || "";
-    return text || "Tin nhắn";
+    if (text) {
+      return text.length > 50 ? text.substring(0, 50) + "..." : text;
+    }
+    
+    return "Tin nhắn";
   };
 
+  // Tạo URL đầy đủ cho avatar từ filename
   const getAvatarUrl = (filename) => {
     if (!filename) return null;
     const API_BASE =
@@ -310,7 +299,6 @@ const ConversationList = ({
             otherParticipant?.fullName ||
             otherParticipant?.name ||
             (recipientId ? `User ${recipientId}` : "Người dùng");
-          // Use avatarUrl directly if available, otherwise try to extract from avatarFilename
           const recipientAvatar =
             otherParticipant?.avatarUrl ||
             getAvatarUrl(otherParticipant?.avatarFilename);
@@ -320,7 +308,6 @@ const ConversationList = ({
             conversation?.lastMessageAt ||
             conversation?.updatedAt ||
             conversation?.createdAt;
-          // Use conversation.id as primary key, with fallback to ensure uniqueness
           const itemKey = conversation?.id
             ? `conv-${conversation.id}`
             : `conv-fallback-${recipientId || "unknown"}-${index}`;
