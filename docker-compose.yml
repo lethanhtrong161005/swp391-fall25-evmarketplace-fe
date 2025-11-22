@@ -1,10 +1,16 @@
 services:
   evmarketplace-frontend:
     build:
-      context: .          
+      context: .
       dockerfile: Dockerfile
-    image: evmarketplace-frontend:latest
+    image: lethanhtrong/evmarketplace-frontend:latest
     container_name: evmarketplace-fe
     restart: always
     ports:
-      - "5173:80"         
+      - "5173:80"
+    networks:
+      - evmarketplace-app-network
+
+networks:
+  evmarketplace-app-network:
+    driver: bridge
