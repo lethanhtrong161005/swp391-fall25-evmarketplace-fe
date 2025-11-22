@@ -4,6 +4,7 @@ import { Card, Typography } from "antd";
 import { formatMileage, formatPercentage } from "../../utils/productFormatters";
 import { SPECIFICATION_LABELS, CATEGORY_LABELS } from "../../utils/productConstants";
 import { CATEGORIES } from "@utils/constants";
+import { formatNumberWithUnit } from "@utils/numberFormatter";
 import "./ProductSpecifications.styles.scss";
 
 const { Title } = Typography;
@@ -47,7 +48,7 @@ export default function ProductSpecifications({ product, isBattery }) {
       if (capacityKwh != null) {
         specs.push({
           label: SPECIFICATION_LABELS.CAPACITY,
-          value: `${capacityKwh} kWh`,
+          value: formatNumberWithUnit(capacityKwh, "kWh"),
         });
       }
       
@@ -55,7 +56,7 @@ export default function ProductSpecifications({ product, isBattery }) {
       if (voltage != null) {
         specs.push({
           label: SPECIFICATION_LABELS.VOLTAGE,
-          value: `${voltage} V`,
+          value: formatNumberWithUnit(voltage, "V"),
         });
       }
       
@@ -63,7 +64,7 @@ export default function ProductSpecifications({ product, isBattery }) {
       if (weightKg != null) {
         specs.push({
           label: SPECIFICATION_LABELS.WEIGHT,
-          value: `${weightKg} kg`,
+          value: formatNumberWithUnit(weightKg, "kg"),
         });
       }
       
@@ -93,7 +94,7 @@ export default function ProductSpecifications({ product, isBattery }) {
       if (product.powerKw != null) {
         specs.push({
           label: SPECIFICATION_LABELS.POWER,
-          value: `${product.powerKw} kW`,
+          value: formatNumberWithUnit(product.powerKw, "kW"),
         });
       }
       
@@ -101,7 +102,7 @@ export default function ProductSpecifications({ product, isBattery }) {
       if (product.batteryCapacityKwh != null) {
         specs.push({
           label: SPECIFICATION_LABELS.BATTERY_CAPACITY,
-          value: `${product.batteryCapacityKwh} kWh`,
+          value: formatNumberWithUnit(product.batteryCapacityKwh, "kWh"),
         });
       }
 
@@ -111,19 +112,19 @@ export default function ProductSpecifications({ product, isBattery }) {
       if (vehicle?.rangeKm != null) {
         specs.push({
           label: SPECIFICATION_LABELS.RANGE,
-          value: `${vehicle.rangeKm} km`,
+          value: formatNumberWithUnit(vehicle.rangeKm, "km"),
         });
       }
       if (vehicle?.acChargingKw != null) {
         specs.push({
           label: SPECIFICATION_LABELS.AC_CHARGING,
-          value: `${vehicle.acChargingKw} kW`,
+          value: formatNumberWithUnit(vehicle.acChargingKw, "kW"),
         });
       }
       if (vehicle?.dcChargingKw != null) {
         specs.push({
           label: SPECIFICATION_LABELS.DC_CHARGING,
-          value: `${vehicle.dcChargingKw} kW`,
+          value: formatNumberWithUnit(vehicle.dcChargingKw, "kW"),
         });
       }
       if (vehicle?.acConnector) {
@@ -164,7 +165,7 @@ export default function ProductSpecifications({ product, isBattery }) {
         if (bike.weightKg != null) {
           specs.push({
             label: SPECIFICATION_LABELS.BIKE_WEIGHT,
-            value: `${bike.weightKg} kg`,
+            value: formatNumberWithUnit(bike.weightKg, "kg"),
           });
         }
       }

@@ -50,7 +50,7 @@ export const mileageRule = [
         return Promise.reject(new Error("Số Km phải ≥ 0"));
       }
       if (n > 1_000_000) {
-        return Promise.reject(new Error("Km không hợp lệ (> 1,000,000)"));
+        return Promise.reject(new Error("Km không hợp lệ (> 1.000.000)"));
       }
       return Promise.resolve();
     },
@@ -64,7 +64,7 @@ export const vehiclePriceRule = [
     validator: (_, v) => {
       const n = Number(v);
       if (Number.isNaN(n) || n < 1_000_000) {
-        return Promise.reject(new Error("Giá bán phải ≥ 1,000,000 VND"));
+        return Promise.reject(new Error("Giá bán phải ≥ 1.000.000 VND"));
       }
       if (n > 50_000_000_000) {
         return Promise.reject(new Error("Giá bán quá lớn (tối đa 50 tỷ VND)"));

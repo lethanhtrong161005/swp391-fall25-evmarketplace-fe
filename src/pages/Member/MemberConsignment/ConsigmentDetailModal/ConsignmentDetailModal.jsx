@@ -37,6 +37,8 @@ const CATEGORY_LABEL = {
   BATTERY: "Pin",
 };
 
+import { formatNumberWithUnit } from "@utils/numberFormatter";
+
 const fmtVND = (n) =>
   Number(n).toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
@@ -456,7 +458,7 @@ const ConsignmentDetailModal = ({ item, onClose, loading = false }) => {
               {
                 key: "batteryCapacity",
                 label: "Dung lượng pin (kWh)",
-                children: item.batteryCapacityKwh || "—",
+                children: item.batteryCapacityKwh ? formatNumberWithUnit(item.batteryCapacityKwh, "kWh") : "—",
               },
               {
                 key: "sohPercent",

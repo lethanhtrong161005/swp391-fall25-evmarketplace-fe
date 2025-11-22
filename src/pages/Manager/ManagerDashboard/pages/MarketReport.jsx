@@ -3,6 +3,7 @@ import { Card, Row, Col, Skeleton, Alert, Button, Space } from "antd";
 import { ReloadOutlined, DownloadOutlined } from "@ant-design/icons";
 import { Pie, Column, Bar } from "@ant-design/plots";
 import { useResponsive } from "@/utils/responsive";
+import { formatNumberVN } from "@utils/numberFormatter";
 
 const CATEGORY_LABELS = {
   BATTERY: "Pin",
@@ -30,22 +31,22 @@ const NoDataPlaceholder = React.memo(({ height }) => (
 const formatCurrencyAxis = (value) => {
   if (!Number.isFinite(value)) return "0";
   if (value >= 1_000_000_000) {
-    const formatted = value / 1_000_000_000;
-    return `${
-      Number.isInteger(formatted) ? formatted : formatted.toFixed(1)
-    } tỷ`;
+    const formatted = formatNumberVN(value / 1_000_000_000, {
+      maximumFractionDigits: 1,
+    });
+    return `${formatted} tỷ`;
   }
   if (value >= 1_000_000) {
-    const formatted = value / 1_000_000;
-    return `${
-      Number.isInteger(formatted) ? formatted : formatted.toFixed(1)
-    } triệu`;
+    const formatted = formatNumberVN(value / 1_000_000, {
+      maximumFractionDigits: 1,
+    });
+    return `${formatted} triệu`;
   }
   if (value >= 1_000) {
-    const formatted = value / 1_000;
-    return `${
-      Number.isInteger(formatted) ? formatted : formatted.toFixed(1)
-    } nghìn`;
+    const formatted = formatNumberVN(value / 1_000, {
+      maximumFractionDigits: 1,
+    });
+    return `${formatted} nghìn`;
   }
   return value.toLocaleString("vi-VN");
 };
@@ -54,13 +55,22 @@ const formatCurrencyDetailed = (value) => {
   if (!Number.isFinite(value)) return "0";
   if (value === 0) return "0 VND";
   if (value >= 1_000_000_000) {
-    return `${(value / 1_000_000_000).toFixed(2).replace(/\\.00$/, "")} tỷ VND`;
+    const formatted = formatNumberVN(value / 1_000_000_000, {
+      maximumFractionDigits: 2,
+    });
+    return `${formatted} tỷ VND`;
   }
   if (value >= 1_000_000) {
-    return `${(value / 1_000_000).toFixed(2).replace(/\\.00$/, "")} triệu VND`;
+    const formatted = formatNumberVN(value / 1_000_000, {
+      maximumFractionDigits: 2,
+    });
+    return `${formatted} triệu VND`;
   }
   if (value >= 1_000) {
-    return `${(value / 1_000).toFixed(2).replace(/\\.00$/, "")} nghìn VND`;
+    const formatted = formatNumberVN(value / 1_000, {
+      maximumFractionDigits: 2,
+    });
+    return `${formatted} nghìn VND`;
   }
   return `${value.toLocaleString("vi-VN")} VND`;
 };
@@ -73,15 +83,21 @@ const formatCurrencyTooltip = (value) => {
 const formatCurrencyLabel = (value) => {
   if (!Number.isFinite(value) || value === 0) return "";
   if (value >= 1_000_000_000) {
-    const formatted = (value / 1_000_000_000).toFixed(2).replace(/\.00$/, "");
+    const formatted = formatNumberVN(value / 1_000_000_000, {
+      maximumFractionDigits: 2,
+    });
     return `${formatted} tỷ`;
   }
   if (value >= 1_000_000) {
-    const formatted = (value / 1_000_000).toFixed(2).replace(/\.00$/, "");
+    const formatted = formatNumberVN(value / 1_000_000, {
+      maximumFractionDigits: 2,
+    });
     return `${formatted} triệu`;
   }
   if (value >= 1_000) {
-    const formatted = (value / 1_000).toFixed(1).replace(/\.0$/, "");
+    const formatted = formatNumberVN(value / 1_000, {
+      maximumFractionDigits: 1,
+    });
     return `${formatted}K`;
   }
   return value.toLocaleString("vi-VN");
@@ -106,19 +122,19 @@ const MarketReport = ({ state, onRetry, onExport }) => {
 
   const data = state.data || {
     currency: "VND",
-    postTypeBreakdown: {},
-    categoryBreakdown: {},
+    postType: {},
+    categoryCount: {},
     topBrands: [],
     topModels: [],
-    avgListingPriceByCategory: {},
+    avgPriceByCategory: {},
   };
 
   const {
-    postTypeBreakdown = {},
-    categoryBreakdown = {},
+    postType = {},
+    categoryCount = {},
     topBrands = [],
     topModels = [],
-    avgListingPriceByCategory = {},
+    avgPriceByCategory = {},
   } = data;
 
   const postTypeData = useMemo(
@@ -126,19 +142,19 @@ const MarketReport = ({ state, onRetry, onExport }) => {
       [
         {
           type: "Thường",
-          value: postTypeBreakdown.NORMAL || 0,
+          value: postType.NORMAL || 0,
         },
         {
           type: "Nổi bật",
-          value: postTypeBreakdown.BOOSTED || 0,
+          value: postType.BOOSTED || 0,
         },
       ].filter((item) => item.value > 0),
-    [postTypeBreakdown]
+    [postType]
   );
 
   const postTypeTotal = useMemo(
-    () => (postTypeBreakdown.NORMAL || 0) + (postTypeBreakdown.BOOSTED || 0),
-    [postTypeBreakdown]
+    () => (postType.NORMAL || 0) + (postType.BOOSTED || 0),
+    [postType]
   );
 
   const postTypeConfig = useMemo(
@@ -188,9 +204,9 @@ const MarketReport = ({ state, onRetry, onExport }) => {
     () =>
       ALL_CATEGORIES.map((key) => ({
         category: CATEGORY_LABELS[key],
-        value: categoryBreakdown[key] || 0,
+        value: categoryCount[key] || 0,
       })),
-    [categoryBreakdown]
+    [categoryCount]
   );
 
   const categoryConfig = useMemo(
@@ -269,7 +285,7 @@ const MarketReport = ({ state, onRetry, onExport }) => {
   const avgPriceData = useMemo(
     () =>
       ALL_CATEGORIES.map((key) => {
-        const priceValue = Number(avgListingPriceByCategory[key]) || 0;
+        const priceValue = Number(avgPriceByCategory[key]) || 0;
         return {
           category: CATEGORY_LABELS[key],
           value: priceValue,
@@ -277,7 +293,7 @@ const MarketReport = ({ state, onRetry, onExport }) => {
           labelValue: formatCurrencyLabel(priceValue),
         };
       }),
-    [avgListingPriceByCategory]
+    [avgPriceByCategory]
   );
 
   const avgPriceConfig = useMemo(

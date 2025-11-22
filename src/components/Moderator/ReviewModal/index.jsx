@@ -64,6 +64,8 @@ const getStatusLabel = (status) => {
   return STATUS_LABEL[status] || status;
 };
 
+import { formatNumberWithUnit } from "@utils/numberFormatter";
+
 const fmtVND = (n) =>
   Number(n).toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 
@@ -742,7 +744,7 @@ export default function ReviewModal({
           specs.push({
             key: "capacity",
             label: "Dung lượng",
-            value: `${capacityKwh} kWh`,
+            value: formatNumberWithUnit(capacityKwh, "kWh"),
           });
         }
 
@@ -754,7 +756,7 @@ export default function ReviewModal({
           specs.push({
             key: "voltage",
             label: "Điện áp",
-            value: `${voltage} V`,
+            value: formatNumberWithUnit(voltage, "V"),
           });
         }
 
@@ -766,7 +768,7 @@ export default function ReviewModal({
           specs.push({
             key: "weight",
             label: "Khối lượng",
-            value: `${weightKg} kg`,
+            value: formatNumberWithUnit(weightKg, "kg"),
           });
         }
 
@@ -811,7 +813,7 @@ export default function ReviewModal({
           specs.push({
             key: "power",
             label: "Công suất",
-            value: `${powerKw} kW`,
+            value: formatNumberWithUnit(powerKw, "kW"),
           });
         }
 
@@ -823,7 +825,7 @@ export default function ReviewModal({
           specs.push({
             key: "batteryCapacity",
             label: "Dung lượng pin",
-            value: `${batteryCapacityKwh} kWh`,
+            value: formatNumberWithUnit(batteryCapacityKwh, "kWh"),
           });
         }
 
@@ -832,21 +834,21 @@ export default function ReviewModal({
             specs.push({
               key: "range",
               label: "Tầm hoạt động",
-              value: `${productVehicle.rangeKm} km`,
+              value: formatNumberWithUnit(productVehicle.rangeKm, "km"),
             });
           }
           if (productVehicle.acChargingKw != null) {
             specs.push({
               key: "acCharging",
               label: "Sạc AC",
-              value: `${productVehicle.acChargingKw} kW`,
+              value: formatNumberWithUnit(productVehicle.acChargingKw, "kW"),
             });
           }
           if (productVehicle.dcChargingKw != null) {
             specs.push({
               key: "dcCharging",
               label: "Sạc DC",
-              value: `${productVehicle.dcChargingKw} kW`,
+              value: formatNumberWithUnit(productVehicle.dcChargingKw, "kW"),
             });
           }
           if (productVehicle.acConnector) {
@@ -892,7 +894,7 @@ export default function ReviewModal({
             specs.push({
               key: "bikeWeight",
               label: "Khối lượng xe",
-              value: `${bike.weightKg} kg`,
+              value: formatNumberWithUnit(bike.weightKg, "kg"),
             });
           }
         }

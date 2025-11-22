@@ -290,10 +290,10 @@ const ManagerDashboard = () => {
         txState.data.failedOrCancelledTransactions || 0,
       ],
       ["Success Rate", txState.data.successRate || 0],
-      ["POST Transactions", txState.data.transactionTypeBreakdown?.POST || 0],
+      ["PROMOTION Transactions", txState.data.transactionType?.PROMOTION || 0],
       [
-        "CONSIGNMENT Transactions",
-        txState.data.transactionTypeBreakdown?.CONSIGNMENT || 0,
+        "ORDER Transactions",
+        txState.data.transactionType?.ORDER || 0,
       ],
     ];
     downloadCSV("transaction_report.csv", rows);
@@ -312,8 +312,8 @@ const ManagerDashboard = () => {
         "Consignment Revenue Rate",
         revState.data.consignmentListingRevenueRate || 0,
       ],
-      ["POST Revenue", revState.data.revenueBySource?.POST || 0],
-      ["CONSIGNMENT Revenue", revState.data.revenueBySource?.CONSIGNMENT || 0],
+      ["PROMOTION Revenue", revState.data.revenueBySource?.PROMOTION || 0],
+      ["ORDER Revenue", revState.data.revenueBySource?.ORDER || 0],
     ];
     downloadCSV("revenue_report.csv", rows);
   }
@@ -326,23 +326,23 @@ const ManagerDashboard = () => {
       ["Category", "Count", "Avg Price"],
       [
         "BATTERY",
-        data.categoryBreakdown?.BATTERY || 0,
-        data.avgListingPriceByCategory?.BATTERY || 0,
+        data.categoryCount?.BATTERY || 0,
+        data.avgPriceByCategory?.BATTERY || 0,
       ],
       [
         "E_BIKE",
-        data.categoryBreakdown?.E_BIKE || 0,
-        data.avgListingPriceByCategory?.E_BIKE || 0,
+        data.categoryCount?.E_BIKE || 0,
+        data.avgPriceByCategory?.E_BIKE || 0,
       ],
       [
         "EV_CAR",
-        data.categoryBreakdown?.EV_CAR || 0,
-        data.avgListingPriceByCategory?.EV_CAR || 0,
+        data.categoryCount?.EV_CAR || 0,
+        data.avgPriceByCategory?.EV_CAR || 0,
       ],
       [
         "E_MOTORBIKE",
-        data.categoryBreakdown?.E_MOTORBIKE || 0,
-        data.avgListingPriceByCategory?.E_MOTORBIKE || 0,
+        data.categoryCount?.E_MOTORBIKE || 0,
+        data.avgPriceByCategory?.E_MOTORBIKE || 0,
       ],
     ];
     downloadCSV("market_category.csv", categoryRows);

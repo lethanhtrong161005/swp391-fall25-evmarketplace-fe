@@ -86,12 +86,12 @@ const RevenueReport = ({
   const revenueData = [
     {
       type: "Đăng tin",
-      value: Number.isFinite(revenueBySource.POST) ? revenueBySource.POST : 0,
+      value: Number.isFinite(revenueBySource.PROMOTION) ? revenueBySource.PROMOTION : 0,
     },
     {
       type: "Ký gửi",
-      value: Number.isFinite(revenueBySource.CONSIGNMENT)
-        ? revenueBySource.CONSIGNMENT
+      value: Number.isFinite(revenueBySource.ORDER)
+        ? revenueBySource.ORDER
         : 0,
     },
   ];
@@ -260,7 +260,7 @@ const RevenueReport = ({
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={24} md={16} lg={16}>
             <Card title="Doanh Thu Theo Nguồn" variant="borderless">
-              {revenueData.length > 0 ? (
+              {revenueData.some((item) => item.value > 0) ? (
                 <Bar {...barChartConfig} height={450} />
               ) : (
                 <div

@@ -70,24 +70,19 @@ const TransactionReport = ({ state, onRetry, onExport }) => {
   const successfulTransactions = data.successfulTransactions || 0;
   const failedOrCancelledTransactions = data.failedOrCancelledTransactions || 0;
   const successRate = Number.isFinite(data.successRate) ? data.successRate : 0;
-  const transactionTypeBreakdown = data.transactionTypeBreakdown || {};
+  const transactionType = data.transactionType || {};
 
-  const postCount = transactionTypeBreakdown.POST || 0;
-  const consignmentCount = transactionTypeBreakdown.CONSIGNMENT || 0;
-  const otherCount = transactionTypeBreakdown.OTHER || 0;
+  const promotionCount = transactionType.PROMOTION || 0;
+  const orderCount = transactionType.ORDER || 0;
 
   const allDonutData = [
     {
       type: "Đăng tin",
-      value: postCount,
+      value: promotionCount,
     },
     {
       type: "Ký gửi",
-      value: consignmentCount,
-    },
-    {
-      type: "Khác",
-      value: otherCount,
+      value: orderCount,
     },
   ];
 
