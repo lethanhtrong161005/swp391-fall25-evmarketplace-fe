@@ -89,3 +89,22 @@ export const DURATION_LABEL = {
   SIX_MONTHS: "6 tháng",
   ONE_YEAR: "1 năm"
 }
+
+export const PAYMENT_METHODS = {
+  VNPAY: "VNPAY",
+  CASH: "Tiền mặt",
+}
+
+export const SETTLEMENT_STATUS_LABELS = {
+  PAID: "Đã thanh toán",
+  INIT: "Chưa thanh toán",
+  FAILED: "Thanh toán thất bại",
+  REFUNDED: "Đã hoàn tiền",
+}
+
+export const SETTLEMENT_STATUS_COLOR = {
+  PAID: "green",
+  INIT: "gray",
+  FAILED: "red",
+  REFUNDED: "orange",
+}
