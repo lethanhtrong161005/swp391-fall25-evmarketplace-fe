@@ -21,8 +21,6 @@ export function useManageAccounts() {
     role: "",
     status: "",
     search: "",
-    sortBy: "created_at",
-    sortOrder: "desc",
   });
   const [data, setData] = React.useState({
     items: [],
@@ -41,8 +39,6 @@ export function useManageAccounts() {
       role: "",
       status: "",
       search: "",
-      sortBy: "",
-      sortOrder: "desc",
     });
 
   // drawer states
@@ -59,8 +55,8 @@ export function useManageAccounts() {
       const params = {
         page: query.page - 1 || 0, // Backend uses 0-based pagination
         size: query.size || 10,
-        sort: "", // Force empty sort to avoid 500 error
-        dir: query.sortOrder || "desc",
+        sort: "role",
+        dir: "desc",
         role: query.role || "",
         status: query.status || "",
         verified: query.verified !== undefined ? query.verified : null,
@@ -84,29 +80,10 @@ export function useManageAccounts() {
       const rawItems = apiData?.items || [];
       const total = apiData?.totalElements || 0;
 
-      // Sort items: Admin accounts first, then Manager, Inspector, Staff, then Members
-      const sortedItems = rawItems.sort((a, b) => {
-        const roleOrder = {
-          ADMIN: 0,
-          MANAGER: 1,
-          INSPECTOR: 2,
-          STAFF: 3,
-          MEMBER: 4,
-        };
-        const roleA = roleOrder[a.role] ?? 6;
-        const roleB = roleOrder[b.role] ?? 6;
-
-        if (roleA !== roleB) {
-          return roleA - roleB;
-        }
-
-        // If same role, sort by ID or name
-        return (a.id || 0) - (b.id || 0);
-      });
-
-      setRows(sortedItems);
+      // Hiển thị data theo đúng thứ tự backend trả về, không sort lại
+      setRows(rawItems);
       setData({
-        items: sortedItems,
+        items: rawItems,
         pagination: {
           totalRecords: total,
           currentPage: query.page,
@@ -182,13 +159,13 @@ export function useManageAccounts() {
 
     try {
       const role = values.role;
-      
+
       // Validate role - chỉ cho phép STAFF hoặc MODERATOR
       if (role !== "STAFF" && role !== "MODERATOR") {
         msg.error("Chỉ có thể tạo tài khoản Staff hoặc Moderator");
         return;
       }
-      
+
       // Tạo payload với validation
       const payload = {
         phoneNumber: String(values.phone).trim(),

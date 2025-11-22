@@ -109,6 +109,26 @@
   max-width: 100%;
   box-sizing: border-box;
   transition: all 0.2s ease;
+  
+  &:has(.mediaImage), &:has(.mediaVideo) {
+    padding: 0;
+    overflow: hidden;
+    
+    .mediaImage {
+      width: 100%;
+      border-radius: inherit;
+    }
+    
+    .mediaVideo {
+      width: 100%;
+      border-radius: inherit;
+    }
+    
+    .timestamp {
+      padding: 0 14px 10px 14px;
+      margin-top: 6px;
+    }
+  }
 }
 
 .textContent {
@@ -119,41 +139,55 @@
   letter-spacing: 0.1px;
 }
 
-.mediaWrapper {
-  max-width: 100%;
-  width: fit-content;
-  display: block;
-  overflow: hidden;
-  border-radius: 12px;
-}
-
 .mediaImage {
-  max-width: 100%;
   max-width: min(350px, 100%);
   max-height: 450px;
-  width: auto;
+  width: 100%;
   height: auto;
-  border-radius: 12px;
+  border-radius: inherit;
   object-fit: contain;
   cursor: pointer;
   transition: transform 0.2s;
   display: block;
   margin: 0;
+  box-sizing: border-box;
   
   :global(.ant-image) {
     max-width: 100%;
+    width: 100%;
     display: block;
     line-height: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
   
   :global(.ant-image-img) {
     max-width: 100%;
+    width: 100%;
     max-height: 450px;
-    width: auto;
     height: auto;
     object-fit: contain;
-    border-radius: 12px;
+    border-radius: inherit;
     display: block;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  :global(.ant-image-mask) {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit;
+    box-sizing: border-box;
+  }
+  
+  :global(.ant-image-wrap) {
+    width: 100%;
+    display: block;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
   
   &:hover {
@@ -162,15 +196,15 @@
 }
 
 .mediaVideo {
-  max-width: 100%;
   max-width: min(350px, 100%);
   max-height: 450px;
-  width: auto;
+  width: 100%;
   height: auto;
-  border-radius: 12px;
+  border-radius: inherit;
   cursor: pointer;
   display: block;
   object-fit: contain;
+  box-sizing: border-box;
 }
 
 .timestamp {

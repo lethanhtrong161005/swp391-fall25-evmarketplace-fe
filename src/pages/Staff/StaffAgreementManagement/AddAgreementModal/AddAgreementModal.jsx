@@ -116,8 +116,8 @@ const AddAgreementModal = ({
             step={100000}
             style={{ width: "100%" }}
             placeholder="Nhập giá chấp nhận"
-            formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-            parser={(v) => v.replace(/,/g, "")}
+            formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+            parser={(v) => v.replace(/\./g, "")}
           />
         </Form.Item>
 

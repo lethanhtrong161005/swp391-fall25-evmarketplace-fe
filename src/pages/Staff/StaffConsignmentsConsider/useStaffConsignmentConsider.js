@@ -57,7 +57,7 @@ const useStaffConsignmentsConsider = () => {
           total: data?.totalElements || 0,
         });
       } catch (err) {
-        console.log("Fetch consignment error:", err);
+        console.error("Fetch consignment error:", err);
         message.error("Lỗi khi tải danh sách ký gửi");
       } finally {
         setLoading(false);
@@ -74,7 +74,7 @@ const useStaffConsignmentsConsider = () => {
     setLoading(true);
     try {
       const res = await considerRejected(id, rejectedReason);
-      if (res?.success) {
+      if (res?.data.success) {
         message.success("Từ chối yêu cầu ký gửi thành công!");
         fetchData();
       } else {

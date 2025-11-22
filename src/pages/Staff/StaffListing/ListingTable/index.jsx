@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Avatar, Table, Tag, Typography, Button, Space, Tooltip } from "antd";
 import { EditOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { formatNumberWithUnit } from "@utils/numberFormatter";
 import s from "./styles.module.scss";
 
 const { Text } = Typography;
@@ -87,7 +88,7 @@ export default function ListingTable({
               <Tag color="geekblue">{r.mileageKm.toLocaleString()} km</Tag>
             )}
             {r.batteryCapacityKwh != null && (
-              <Tag color="purple">{r.batteryCapacityKwh} kWh</Tag>
+              <Tag color="purple">{formatNumberWithUnit(r.batteryCapacityKwh, "kWh")}</Tag>
             )}
           </span>
         ),

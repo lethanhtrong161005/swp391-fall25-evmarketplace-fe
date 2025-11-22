@@ -1,21 +1,9 @@
 // src/pages/Member/ProductDetail/components/ProductInfo/ProductInfo.jsx
 import React, { useState } from "react";
-import {
-  Typography,
-  Tag,
-  Space,
-  Avatar,
-  Card,
-  Button,
-  Modal,
-  message,
-  Row,
-  Col,
-} from "antd";
+import { Typography, Tag, Avatar, Button, Modal, message } from "antd";
 import {
   EnvironmentOutlined,
   CheckCircleOutlined,
-  ThunderboltOutlined,
   PhoneOutlined,
   MailOutlined,
   EyeOutlined,
@@ -24,10 +12,6 @@ import {
   MessageOutlined,
 } from "@ant-design/icons";
 import { toVND, formatMileage } from "../../utils/productFormatters";
-import {
-  CATEGORY_LABELS,
-  CATEGORY_TAG_COLORS,
-} from "../../utils/productConstants";
 import FavoriteButton from "@components/FavoriteButton/FavoriteButton";
 import { useAuth } from "@hooks/useAuth";
 import UnauthenticatedChatButton from "@components/Chat/UnauthenticatedChatButton/index";
@@ -47,9 +31,12 @@ export default function ProductInfo({ product, onShowLoginModal }) {
   if (!product) return null;
 
   const seller = product.seller;
-  // Get seller ID - handle both id and accountId, ensure it's a number
   const sellerId = seller?.id || seller?.accountId;
-  const sellerIdNum = sellerId ? (typeof sellerId === "number" ? sellerId : parseInt(sellerId, 10)) : null;
+  const sellerIdNum = sellerId
+    ? typeof sellerId === "number"
+      ? sellerId
+      : parseInt(sellerId, 10)
+    : null;
   const normalizedSellerId = normalizeUserId(sellerIdNum);
   const currentUserId = getAccountDbId(user);
   const normalizedCurrentUserId = normalizeUserId(currentUserId);
@@ -62,8 +49,6 @@ export default function ProductInfo({ product, onShowLoginModal }) {
   // Lấy số điện thoại từ seller
   const phoneNumber = seller?.phone || seller?.phoneNumber;
 
-  // Removed unused getCategory function
-
   // Navigate to chat page with seller
   const handleChatClick = () => {
     if (isOwner) {
@@ -72,7 +57,6 @@ export default function ProductInfo({ product, onShowLoginModal }) {
     }
 
     if (sellerIdNum) {
-      console.log("Navigating to chat with seller ID:", sellerIdNum);
       navigate("/chat", { state: { recipientId: sellerIdNum } });
     } else {
       message.error("Không tìm thấy thông tin người bán");
@@ -150,12 +134,6 @@ export default function ProductInfo({ product, onShowLoginModal }) {
         <Title level={1} className="product-info__price">
           {toVND(product.price)}
         </Title>
-        {product.listingExtra?.aiSuggestedPrice && (
-          <Text className="product-info__installment">
-            (Trả góp từ {toVND(product.listingExtra.aiSuggestedPrice / 12)}
-            /tháng)
-          </Text>
-        )}
       </div>
 
       {/* Nút liên hệ */}
@@ -179,9 +157,9 @@ export default function ProductInfo({ product, onShowLoginModal }) {
             </Button>
           )
         ) : (
-          <UnauthenticatedChatButton 
+          <UnauthenticatedChatButton
             variant="detail"
-            onLoginClick={onShowLoginModal} 
+            onLoginClick={onShowLoginModal}
           />
         )}
 
@@ -264,34 +242,12 @@ export default function ProductInfo({ product, onShowLoginModal }) {
                 type="secondary"
                 className="product-info__seller-location-text"
               >
-                {seller?.province}, {seller?.addressLine}
+                {seller?.addressLine}
               </Text>
             </div>
-            {seller?.rating && (
-              <div className="product-info__seller-stats">
-                <Text type="secondary" className="product-info__seller-rating">
-                  ⭐ {seller.rating} ({seller.reviewCount || 0} đánh giá)
-                </Text>
-              </div>
-            )}
           </div>
         </div>
       </div>
-
-      {/* Chat nhanh */}
-      {!isOwner && (
-        <div className="product-info__quick-chat">
-          <Text className="product-info__quick-chat-label">Chat nhanh:</Text>
-          <div className="product-info__quick-chat-buttons">
-            <Button size="small" className="product-info__quick-chat-btn">
-              Xe này còn không ạ?
-            </Button>
-            <Button size="small" className="product-info__quick-chat-btn">
-              Xe chính chủ hay đư...
-            </Button>
-          </div>
-        </div>
-      )}
 
       {/* Modal hiển thị khi không có thông tin liên hệ */}
       <Modal

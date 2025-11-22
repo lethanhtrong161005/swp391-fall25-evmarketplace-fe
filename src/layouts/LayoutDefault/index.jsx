@@ -26,19 +26,18 @@ const LayoutDefault = () => {
           style={{
             background: "#fff",
             padding: 0,
-            height: "138px",
             lineHeight: "normal",
             gap: "64px",
             flexShrink: 0,
           }}
         >
           <DefaultHeader />
-          <SearchBar />
+          {/* <SearchBar /> */}
         </Header>
 
         <Content
           style={{
-            padding: "16px 40px",
+            padding: "16px",
             background: "#E9F2FF",
             flex: 1,
             display: "flex",

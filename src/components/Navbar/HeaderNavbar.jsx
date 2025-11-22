@@ -11,6 +11,7 @@ import PhoneResetPasswordModal from "@components/Modal/PhoneResetPasswordModal";
 import ResetPasswordModal from "@components/Modal/ResetPasswordModal";
 import OtpVerifyModal from "@components/Modal/OtpVerifyModal";
 import RegisterModal from "@components/Modal/RegisterModal";
+import SearchBar from "@components/SearchBar/SearchBar";
 
 const items = [
   { key: "home", label: "Trang chủ", path: "/" },
@@ -36,9 +37,15 @@ const HeaderNavbar = () => {
     reset,
     handleOtpSuccess,
     handleOtpStart,
-    handleLoginSubmit,
   } = useHeaderAction();
-  const { isLoggedIn, user, handleLoginRequire, getMenuItems, handleMenuClick } = auth;
+  const {
+    isLoggedIn,
+    user,
+    handleLoginRequire,
+    getMenuItems,
+    handleMenuClick,
+    handleLoginSubmit,
+  } = auth;
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
 
   const MANAGE_LISTINGS_PATH = "/my-ads";
@@ -161,14 +168,32 @@ const HeaderNavbar = () => {
               minWidth: "fit-content", // Đảm bảo có đủ không gian
             }}
           >
-            <HeaderAction />
+            <SearchBar />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+              flexShrink: 0, // Không cho shrink để đảm bảo header action luôn visible
+              minWidth: "fit-content", // Đảm bảo có đủ không gian
+            }}
+          >
+            <HeaderAction
+              isLoggedIn={isLoggedIn}
+              user={user}
+              contextHolder={auth.contextHolder}
+              getMenuItems={getMenuItems}
+              handleMenuClick={handleMenuClick}
+              handleLoginRequire={handleLoginRequire}
+              onLoginClick={() => auth.setOpenLogin?.(true)}
+            />
           </div>
         </div>
       )}
 
-      {/* Auth Modals for mobile */}
-      {!screens.lg && (
-        <>
+      {/* Auth Modals for both desktop and mobile */}
+      <>
           <LoginModal
             open={auth.openLogin}
             onClose={() => auth.setOpenLogin(false)}
@@ -253,8 +278,7 @@ const HeaderNavbar = () => {
               auth.setOpenLogin(true);
             }}
           />
-        </>
-      )}
+      </>
     </>
   );
 };

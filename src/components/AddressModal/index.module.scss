@@ -78,10 +78,14 @@ $input-height: 40px;
         padding: 0 11px;
     }
 
-    :global(.ant-select-selection-item),
     :global(.ant-select-selection-placeholder) {
         line-height: $input-height;
         color: $text-2;
+    }
+
+    :global(.ant-select-selection-item) {
+        line-height: $input-height;
+        color: rgba(0, 0, 0, 0.85);
     }
 
     :global(.ant-input:focus),

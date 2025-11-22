@@ -15,6 +15,7 @@ const CreateListingFooter = ({
   maxWidth = 1024,
   isEdit = false,
   mode = "normal", // normal | agreement | agreement-update
+  inModal = false, // Nếu Footer nằm trong Modal
 }) => {
   const displayMode = currentPostType || currentMode || "NORMAL";
   const label =
@@ -43,7 +44,10 @@ const CreateListingFooter = ({
     !isEdit && mode !== "agreement" && mode !== "agreement-update";
 
   return (
-    <Footer className={styles.footer} style={{ "--max-w": `${maxWidth}px` }}>
+    <Footer 
+      className={`${styles.footer} ${inModal ? styles.footerInModal : ''}`} 
+      style={{ "--max-w": `${maxWidth}px` }}
+    >
       <div className={styles.footerContent}>
         <Space size="middle" wrap className={styles.footerActions}>
           {onChoosePostType && (

@@ -222,7 +222,6 @@ export async function fetchConsignmentListings({
   };
 }
 
-//Manager listing
 export async function getManagerListings({ status, q, page = 0, size = 10 }) {
   const params = {
     status: status,
@@ -230,9 +229,6 @@ export async function getManagerListings({ status, q, page = 0, size = 10 }) {
     page: page,
     size: size
   };
-
-
-  console.log("📡 Sending request with params:", params);
 
   const res = await api.get("/api/manager/listing", {params});
 

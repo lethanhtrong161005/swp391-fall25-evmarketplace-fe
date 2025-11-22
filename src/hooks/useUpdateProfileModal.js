@@ -140,7 +140,6 @@ export default function useUpdateProfileModal({
         }
         setOtpSending(true);
         const type = "REGISTER"
-        console.log(type, phone)
         
         const res = await requestPhoneOpt(phone, type);
         if (res?.success === false) {
@@ -159,34 +158,43 @@ export default function useUpdateProfileModal({
     [initialData.phoneNumber, msgApi]
   );
 
-  const handleVerifyOtp = useCallback(
-    async (form) => {
-      try {
-        const phone =
-          form.getFieldValue("phoneNumber") || initialData.phoneNumber;
-        const otp = form.getFieldValue("otpCode");
-        if (!otp) {
-          msgApi?.warning("Vui lòng nhập mã OTP");
-          return;
-        }
-        setOtpVerifying(true);
-        const res = await verifyPhoneOtp({ phoneNumber: phone, otp });
-        if (res?.success === false) {
-          msgApi?.error(res?.message || "Xác thực mã OTP thất bại");
-          return;
-        }
-        setPhoneVerified(true);
-        msgApi?.success("Xác thực số điện thoại thành công");
-      } catch (err) {
-        const errMsg = getAxiosErrorMessage(err);
-        msgApi?.error(errMsg || "Xác thực mã OTP thất bại");
-      } finally {
-        setOtpVerifying(false);
-      }
-    },
-    [initialData.phoneNumber, msgApi]
-  );
+const handleVerifyOtp = useCallback(
+  async (form) => {
+    try {
+      const phone =
+        form.getFieldValue("phoneNumber") || initialData.phoneNumber;
+      const otp = form.getFieldValue("otpCode");
 
+      if (!otp) {
+        msgApi?.warning("Vui lòng nhập mã OTP");
+        return;
+      }
+
+      setOtpVerifying(true);
+
+      const res = await verifyPhoneOtp({
+        phoneNumber: phone,
+        otp,
+        type: "UPDATE_PHONE",
+      });
+
+      if (res?.success === false) {
+        msgApi?.error(res?.message || "Xác thực mã OTP thất bại");
+        return;
+      }
+
+      setPhoneVerified(true);
+      setOtpRequested(false);
+      msgApi?.success("Xác thực số điện thoại thành công");
+    } catch (err) {
+      const errMsg = getAxiosErrorMessage(err);
+      msgApi?.error(errMsg || "Xác thực mã OTP thất bại");
+    } finally {
+      setOtpVerifying(false);
+    }
+  },
+  [initialData.phoneNumber, msgApi]
+);
   const handleResendEmailOtp = useCallback(
     async (email) => {
       try {

@@ -55,6 +55,7 @@ const PhoneRegisterModal = forwardRef(function PhoneRegisterModal(
                         style={{ marginBottom: 12 }}
                     >
                         <Input
+                            id="register-phoneNumber"
                             size="large"
                             placeholder="Nhập số điện thoại"
                             addonBefore={<span style={{ color: token.colorTextSecondary }}>+84</span>}

@@ -87,7 +87,7 @@ function getTimeAgo(listing) {
   if (!listing?.createdAt) return null;
   try {
     return dayjs(listing.createdAt).fromNow();
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -175,26 +175,28 @@ export default function CardListing({ listing, onClick }) {
         <div className="card-listing__content">
           <h3 className="card-listing__title">{title}</h3>
 
-          {location && (
-            <div className="card-listing__location">
-              <EnvironmentOutlined />
-              <Text type="secondary">{location}</Text>
-            </div>
-          )}
+          <div className="card-listing__info-group">
+            {location && (
+              <div className="card-listing__location">
+                <EnvironmentOutlined />
+                <Text type="secondary">{location}</Text>
+              </div>
+            )}
 
-          {timeAgo && (
-            <div className="card-listing__time">
-              <ClockCircleOutlined />
-              <Text type="secondary">{timeAgo}</Text>
-            </div>
-          )}
+            {timeAgo && (
+              <div className="card-listing__time">
+                <ClockCircleOutlined />
+                <Text type="secondary">{timeAgo}</Text>
+              </div>
+            )}
 
-          {year && (
-            <div className="card-listing__year">
-              <CalendarOutlined />
-              <Text type="secondary">Năm {year}</Text>
-            </div>
-          )}
+            {year && (
+              <div className="card-listing__year">
+                <CalendarOutlined />
+                <Text type="secondary">Năm {year}</Text>
+              </div>
+            )}
+          </div>
 
           <div className="card-listing__price">
             {price.value}

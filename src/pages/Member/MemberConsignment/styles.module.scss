@@ -1,5 +1,5 @@
 .wrapper {
-    padding: 16px 24px 48px;
+    padding: 0;
     background: #f5f7fa;
     min-height: 100%;
 }
@@ -10,7 +10,8 @@
 }
 
 .card {
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 1440px;
+    width: 100%  !important;
+    margin: 0;
     border-radius: 12px;
 }

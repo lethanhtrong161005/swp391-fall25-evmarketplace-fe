@@ -237,7 +237,7 @@ const useManagerConsignment = (tabs) => {
 
   const onViewDetail = (item) => setSelectedItem(item);
   const onCloseDetail = () => setSelectedItem(null);
-  const goCreateConsignment = () => navigate("/consignment/new");
+  const goCreateConsignment = () => navigate("/consignment/newcons");
 
   return {
     loading,

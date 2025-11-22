@@ -419,6 +419,16 @@ const determineCategory = (brand, model) => {
   return "EV_CAR"; // Default
 };
 
+// Helper function: Ưu tiên giá trị người dùng nhập, nếu null/undefined/empty thì lấy từ catalog
+const getValueWithFallback = (userValue, catalogValue) => {
+  // Nếu userValue có giá trị (không null, undefined, empty string), dùng userValue
+  if (userValue != null && userValue !== "") {
+    return userValue;
+  }
+  // Ngược lại, dùng catalogValue
+  return catalogValue ?? null;
+};
+
 // Chuẩn hoá dữ liệu chi tiết cho trang ProductDetail
 const transformListingDetail = (apiData) => {
   // apiData chính là ListingDetailResponseDto từ BE
@@ -459,11 +469,49 @@ const transformListingDetail = (apiData) => {
     .filter((m) => m?.mediaType === "VIDEO" && typeof m?.mediaUrl === "string")
     .map((m) => normalizeUrl(m.mediaUrl));
 
+  // Áp dụng logic ưu tiên: listing (user input) > catalog (productVehicle/productBattery)
+  const brand = getValueWithFallback(
+    listing?.brand,
+    productVehicle?.brand || productBattery?.brand
+  );
+  const model = getValueWithFallback(
+    listing?.model,
+    productVehicle?.model || productBattery?.model
+  );
+  const year = getValueWithFallback(
+    listing?.year,
+    productVehicle?.releaseYear
+  );
+  const batteryCapacityKwh = getValueWithFallback(
+    listing?.batteryCapacityKwh,
+    productVehicle?.batteryCapacityKwh || productBattery?.capacityKwh || productBattery?.batteryCapacityKwh
+  );
+  const voltage = getValueWithFallback(
+    listing?.voltage,
+    productVehicle?.voltage || productBattery?.voltage
+  );
+  const batteryChemistry = getValueWithFallback(
+    listing?.batteryChemistry,
+    productBattery?.chemistry || productBattery?.batteryChemistry
+  );
+  const massKg = getValueWithFallback(
+    listing?.massKg,
+    productVehicle?.massKg || productVehicle?.weightKg || productBattery?.weightKg || productBattery?.massKg
+  );
+  const dimensions = getValueWithFallback(
+    listing?.dimensions,
+    productVehicle?.dimensions || productBattery?.dimension || productBattery?.dimensions
+  );
+  const powerKw = getValueWithFallback(
+    null, // listing không có powerKw, chỉ có từ catalog
+    productVehicle?.motorPowerKw
+  );
+
   const base = {
     id: String(listing?.id ?? ""),
     title:
       listing?.title ||
-      `${listing?.brand ?? ""} ${listing?.model ?? ""}`.trim(),
+      `${brand ?? ""} ${model ?? ""}`.trim(),
     category:
       mapCategoryIdToName(listing?.categoryId) ||
       listing?.categoryName ||
@@ -471,14 +519,14 @@ const transformListingDetail = (apiData) => {
     categoryName: listing?.categoryName || "",
     category_id:
       typeof listing?.categoryId === "number" ? listing?.categoryId : undefined,
-    brand: listing?.brand || "",
-    model: listing?.model || "",
-    year: listing?.year ?? null,
+    brand: brand || "",
+    model: model || "",
+    year: year,
     color: listing?.color || null,
-    batteryCapacityKwh: listing?.batteryCapacityKwh ?? null,
+    batteryCapacityKwh: batteryCapacityKwh,
     sohPercent: listing?.sohPercent ?? null,
     mileageKm: listing?.mileageKm ?? null,
-    powerKw: null,
+    powerKw: powerKw,
     price: listing?.price ?? 0,
     description:
       typeof listing?.description === "string" ? listing.description : "",
@@ -492,11 +540,11 @@ const transformListingDetail = (apiData) => {
     verified: !!listing?.verified,
     isConsigned: !!listing?.isConsigned,
     expiresAt: listing?.expiresAt || null,
-    // Thông tin pin từ listing (nếu có)
-    voltage: listing?.voltage ?? null,
-    batteryChemistry: listing?.batteryChemistry || null,
-    massKg: listing?.massKg ?? null,
-    dimensions: listing?.dimensions || null,
+    // Thông tin pin từ listing (ưu tiên) hoặc catalog (fallback)
+    voltage: voltage,
+    batteryChemistry: batteryChemistry,
+    massKg: massKg,
+    dimensions: dimensions,
     images,
     videos,
     createdAt:
@@ -522,21 +570,12 @@ const transformListingDetail = (apiData) => {
       ...base,
       category: "BATTERY",
       productBattery: {
-        capacityKwh:
-          productBattery?.capacityKwh ||
-          productBattery?.batteryCapacityKwh ||
-          base.batteryCapacityKwh,
-        voltage: productBattery?.voltage || base.voltage,
-        weightKg:
-          productBattery?.weightKg || productBattery?.massKg || base.massKg,
-        dimension:
-          productBattery?.dimension ||
-          productBattery?.dimensions ||
-          base.dimensions,
-        chemistry:
-          productBattery?.chemistry ||
-          productBattery?.batteryChemistry ||
-          base.batteryChemistry,
+        // Ưu tiên giá trị từ listing (đã được xử lý ở base), sau đó mới lấy từ catalog
+        capacityKwh: base.batteryCapacityKwh ?? productBattery?.capacityKwh ?? productBattery?.batteryCapacityKwh ?? null,
+        voltage: base.voltage ?? productBattery?.voltage ?? null,
+        weightKg: base.massKg ?? productBattery?.weightKg ?? productBattery?.massKg ?? null,
+        dimension: base.dimensions ?? productBattery?.dimension ?? productBattery?.dimensions ?? null,
+        chemistry: base.batteryChemistry ?? productBattery?.chemistry ?? productBattery?.batteryChemistry ?? null,
       },
     };
   }
@@ -555,16 +594,12 @@ const transformListingDetail = (apiData) => {
           dcChargingKw: productVehicle?.dcChargingKw,
           acConnector: productVehicle?.acConnector,
           dcConnector: productVehicle?.dcConnector,
+          rangeKm: productVehicle?.rangeKm,
+          voltage: productVehicle?.voltage,
+          massKg: productVehicle?.massKg,
+          weightKg: productVehicle?.weightKg,
+          dimensions: productVehicle?.dimensions,
         }
       : null,
-    // Gán các thông số kỹ thuật tổng hợp từ productVehicle nếu có
-    powerKw:
-      productVehicle && productVehicle.motorPowerKw != null
-        ? productVehicle.motorPowerKw
-        : base.powerKw,
-    batteryCapacityKwh:
-      productVehicle && productVehicle.batteryCapacityKwh != null
-        ? productVehicle.batteryCapacityKwh
-        : base.batteryCapacityKwh,
   };
 };

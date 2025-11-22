@@ -18,7 +18,7 @@ export default function SiteFooter() {
   return (
     <Footer className={styles.footer}>
       <div className={styles.container}>
-        <Row gutter={[32, 48]}>
+        <Row gutter={[32, 48]} justify={"center"}>
           {/* Brand Section - Spans 2 columns on mobile, full width on tablet, 1 col on desktop */}
           <Col xs={24} sm={24} md={12} lg={24} xl={4}>
             <Space

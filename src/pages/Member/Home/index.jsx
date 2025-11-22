@@ -37,9 +37,8 @@ const Home = () => {
 
   return (
     <div style={{ minHeight: "100vh" }}>
+      <HeroHeader />
       <main style={{ padding: "24px 40px 40px", maxWidth, margin: "0 auto" }}>
-        <HeroHeader />
-
         <LatestListingsSection
           listings={latestListings}
           totalCount={totalProducts}
@@ -55,9 +54,8 @@ const Home = () => {
           onViewMore={handleViewMoreFeatured}
           onItemClick={handleItemClick}
         />
-
-        <CTABanner />
       </main>
+      <CTABanner />
     </div>
   );
 };

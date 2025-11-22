@@ -18,6 +18,7 @@ const MessageItem = ({ message, isOwnMessage = false, senderInfo = null }) => {
   const createdAt = message?.createdAt;
   const senderName = senderInfo?.name || message?.senderName || "Người dùng";
 
+  // Định dạng timestamp thành giờ:phút (HH:mm)
   const formatTime = (timestamp) => {
     if (!timestamp) return "";
     return dayjs(timestamp).format("HH:mm");
@@ -44,16 +45,15 @@ const MessageItem = ({ message, isOwnMessage = false, senderInfo = null }) => {
           )}
           
           {messageType === "IMAGE" && mediaUrl && (
-            <div className={s.mediaWrapper}>
-              <Image
-                src={mediaUrl}
-                alt="Image"
-                className={s.mediaImage}
-                preview={{
-                  mask: "Xem ảnh",
-                }}
-              />
-            </div>
+            <Image
+              src={mediaUrl}
+              alt="Image"
+              className={s.mediaImage}
+              preview={{
+                mask: "Xem ảnh",
+              }}
+              style={{ display: 'block' }}
+            />
           )}
           
           {messageType === "VIDEO" && mediaUrl && (
@@ -72,13 +72,6 @@ const MessageItem = ({ message, isOwnMessage = false, senderInfo = null }) => {
           )}
         </div>
       </div>
-      {isOwnMessage && (
-        <Avatar
-          src={senderInfo?.avatarUrl}
-          icon={!senderInfo?.avatarUrl && <UserOutlined />}
-          className={s.avatar}
-        />
-      )}
     </div>
   );
 };
