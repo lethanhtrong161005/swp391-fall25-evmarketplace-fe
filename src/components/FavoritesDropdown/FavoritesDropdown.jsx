@@ -61,7 +61,7 @@ const FavoritesDropdown = () => {
   };
 
   const handleViewAll = () => {
-    navigate("/my-favorites");
+    navigate("/myfavorites");
   };
 
   const renderFavoriteItem = (item) => {

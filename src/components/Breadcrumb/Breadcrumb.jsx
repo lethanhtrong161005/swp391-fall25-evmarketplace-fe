@@ -32,7 +32,8 @@ export default function DynamicBreadcrumb({ customTitle }) {
     availability: "Lên lịch",
     "my-ads": "Quản lý tin",
     chat: "Tin nhắn",
-    searchresults: "Kết quả tìm kiếm"
+    searchresults: "Kết quả tìm kiếm",
+    myfavorites: "Tin đã lưu",
   };
 
   // Custom URL mapping cho các route đặc biệt
