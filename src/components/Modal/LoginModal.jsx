@@ -95,7 +95,7 @@ const LoginModal = ({
     >
       {contextHolder}
       {/* Header */}
-      <div style={{ textAlign: "center", marginTop: -8 }}>
+      <div style={{ textAlign: "center" }}>
         <div style={{ fontSize: 24, fontWeight: 800, lineHeight: "28px" }}>
           Đăng nhập
         </div>

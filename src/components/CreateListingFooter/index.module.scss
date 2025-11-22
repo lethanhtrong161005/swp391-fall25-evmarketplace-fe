@@ -24,6 +24,16 @@ $tablet: 768px;
     }
 }
 
+// Khi footer nằm trong Modal, thay đổi position để không che Modal
+.footerInModal {
+    position: relative !important;
+    z-index: auto !important;
+    width: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+}
+
 .footerContent {
     max-width: var(--max-w, 1024px);
     margin: 0 auto;
