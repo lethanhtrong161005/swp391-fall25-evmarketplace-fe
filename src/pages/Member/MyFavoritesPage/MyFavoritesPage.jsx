@@ -24,6 +24,8 @@ import {
 import { toVND } from "@pages/Member/ProductDetail/utils/productFormatters";
 import { useFavorites } from "./hooks/useFavorites";
 import "./MyFavoritesPage.styles.scss";
+import styles from "../shared/ListingPage.module.scss";
+import DynamicBreadcrumb from "../../../components/Breadcrumb/Breadcrumb";
 
 const { Title, Text } = Typography;
 
@@ -69,8 +71,11 @@ export default function MyFavoritesPage() {
   }
 
   return (
-    <div className="favorites-page">
+    <div className={styles.layoutContainer} style={{boxShadow:"none", padding:0, backgroundColor:"#E9F2FF"}}>
       {/* Header */}
+      <div className={styles.breadcrumbSection}>
+        <DynamicBreadcrumb />
+      </div>
       <div className="favorites-page__header">
         <Title level={2}>
           <HeartOutlined /> Tin đăng đã lưu ({favorites.length} / 50)
