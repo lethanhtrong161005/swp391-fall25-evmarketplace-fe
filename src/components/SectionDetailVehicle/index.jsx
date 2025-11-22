@@ -12,9 +12,7 @@ const SectionDetailVehicle = ({ mode = "listing" }) => {
     mode === "consignment" ? "ownerExpectedPrice" : "price";
 
   const priceLabel =
-    mode === "consignment"
-      ? "Giá dự kiến (VND)"
-      : "Giá bán (VND)";
+    mode === "consignment" ? "Giá dự kiến (VND)" : "Giá bán (VND)";
 
   const isPriceDisabled = mode === "agreement-update";
 
@@ -34,6 +32,14 @@ const SectionDetailVehicle = ({ mode = "listing" }) => {
               step={0.1}
               className={styles.number}
               placeholder="VD: 42"
+              formatter={(v) => {
+                if (!v) return "";
+                return String(v).replace(".", ",");
+              }}
+              parser={(v) => {
+                if (!v) return "";
+                return v.replace(",", ".");
+              }}
             />
           </Form.Item>
         </Col>
@@ -51,7 +57,15 @@ const SectionDetailVehicle = ({ mode = "listing" }) => {
               max={100}
               step={0.1}
               className={styles.number}
-              placeholder="VD: 95.5"
+              placeholder="VD: 95,5"
+              formatter={(v) => {
+                if (!v) return "";
+                return String(v).replace(".", ",");
+              }}
+              parser={(v) => {
+                if (!v) return "";
+                return v.replace(",", ".");
+              }}
             />
           </Form.Item>
         </Col>
@@ -69,7 +83,9 @@ const SectionDetailVehicle = ({ mode = "listing" }) => {
               controls={false}
               min={0}
               className={styles.number}
-              placeholder="VD: 15000"
+              placeholder="VD: 15.000"
+              formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              parser={(v) => v.replace(/\./g, "")}
             />
           </Form.Item>
         </Col>
@@ -87,11 +103,9 @@ const SectionDetailVehicle = ({ mode = "listing" }) => {
               min={0}
               step={100000}
               className={styles.number}
-              placeholder="VD: 460000000"
-              formatter={(v) =>
-                `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              parser={(v) => v.replace(/\$\s?|(,*)/g, "")}
+              placeholder="VD: 460.000.000"
+              formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              parser={(v) => v.replace(/\./g, "")}
             />
           </Form.Item>
         </Col>

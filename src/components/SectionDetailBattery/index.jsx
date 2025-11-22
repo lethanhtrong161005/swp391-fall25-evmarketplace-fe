@@ -29,6 +29,14 @@ const SectionDetailBattery = ({ mode = "listing" }) => {
               step={0.1}
               className={styles.number}
               placeholder="VD: 52"
+              formatter={(v) => {
+                if (!v) return "";
+                return String(v).replace(".", ",");
+              }}
+              parser={(v) => {
+                if (!v) return "";
+                return v.replace(",", ".");
+              }}
             />
           </Form.Item>
         </Col>
@@ -46,7 +54,15 @@ const SectionDetailBattery = ({ mode = "listing" }) => {
               max={100}
               step={0.1}
               className={styles.number}
-              placeholder="VD: 95"
+              placeholder="VD: 95,5"
+              formatter={(v) => {
+                if (!v) return "";
+                return String(v).replace(".", ",");
+              }}
+              parser={(v) => {
+                if (!v) return "";
+                return v.replace(",", ".");
+              }}
             />
           </Form.Item>
         </Col>
@@ -101,6 +117,14 @@ const SectionDetailBattery = ({ mode = "listing" }) => {
                   step={0.1}
                   className={styles.number}
                   placeholder="VD: 220"
+                  formatter={(v) => {
+                    if (!v) return "";
+                    return String(v).replace(".", ",");
+                  }}
+                  parser={(v) => {
+                    if (!v) return "";
+                    return v.replace(",", ".");
+                  }}
                 />
               </Form.Item>
             </Col>
