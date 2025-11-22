@@ -66,6 +66,7 @@ const PhoneResetPasswordModal = forwardRef(function PhoneResetPasswordModal(
                         style={{ marginBottom: 12 }}
                     >
                         <Input
+                            id="reset-phoneNumber"
                             size="large"
                             placeholder="Nhập số điện thoại"
                             addonBefore={<span style={{ color: token.colorTextSecondary }}>+84</span>}

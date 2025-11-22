@@ -121,7 +121,6 @@ const MarketReport = ({ state, onRetry, onExport }) => {
     avgListingPriceByCategory = {},
   } = data;
 
-  // Prepare data for Post Type Donut Chart
   const postTypeData = useMemo(
     () =>
       [
@@ -162,47 +161,6 @@ const MarketReport = ({ state, onRetry, onExport }) => {
           rowPadding: 5,
         },
       },
-      tooltip: ({ type, value }) => {
-        return { type, value };
-      },
-      interaction: {
-        tooltip: {
-          render: (e, { items }) => {
-            return (
-              <React.Fragment>
-                {items.map((item) => {
-                  const { type, value, color } = item;
-                  return (
-                    <div
-                      key={type}
-                      style={{
-                        margin: 0,
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <div>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: 6,
-                            height: 6,
-                            borderRadius: "50%",
-                            backgroundColor: color,
-                            marginRight: 6,
-                          }}
-                        ></span>
-                        <span>{type}</span>
-                      </div>
-                      <b>{value}</b>
-                    </div>
-                  );
-                })}
-              </React.Fragment>
-            );
-          },
-        },
-      },
       annotations: [
         {
           type: "text",
@@ -216,17 +174,16 @@ const MarketReport = ({ state, onRetry, onExport }) => {
           },
         },
       ],
-      color: ({ type }) => {
-        // Modern gradient colors for donut chart
-        if (type === "Thường") return "l(270) 0:#1890ff 1:#096dd9"; // Blue gradient
-        if (type === "Nổi bật") return "l(270) 0:#ff4d4f 1:#cf1322"; // Red gradient
-        return "#8c8c8c";
+      scale: {
+        color: {
+          domain: ["Thường", "Nổi bật"],
+          range: ["#808080", "#1B2A41"],
+        },
       },
     }),
     [postTypeData, postTypeTotal]
   );
 
-  // Prepare data for Category Column Chart - INCLUDE ALL CATEGORIES
   const categoryData = useMemo(
     () =>
       ALL_CATEGORIES.map((key) => ({
@@ -241,6 +198,13 @@ const MarketReport = ({ state, onRetry, onExport }) => {
       data: categoryData,
       xField: "category",
       yField: "value",
+      colorField: "category",
+      scale: {
+        color: {
+          domain: ["Ô tô điện", "Xe máy điện", "Xe đạp điện", "Pin"],
+          range: ["#1B2A41", "#457B9D", "#2A9D8F", "#E9C46A"],
+        },
+      },
       height: 280,
       columnWidthRatio: isMobile ? 0.5 : 0.6,
       minColumnWidth: 35,
@@ -259,7 +223,6 @@ const MarketReport = ({ state, onRetry, onExport }) => {
           return datum.value > 0 ? datum.value.toLocaleString("vi-VN") : "";
         },
       },
-      color: "l(270) 0:#52c41a 1:#389e0d", // Green gradient
       columnStyle: {
         radius: [10, 10, 0, 0],
         shadowBlur: 6,
@@ -303,7 +266,6 @@ const MarketReport = ({ state, onRetry, onExport }) => {
     [categoryData, isMobile]
   );
 
-  // Prepare data for Average Price Column Chart - INCLUDE ALL CATEGORIES
   const avgPriceData = useMemo(
     () =>
       ALL_CATEGORIES.map((key) => {
@@ -323,6 +285,13 @@ const MarketReport = ({ state, onRetry, onExport }) => {
       data: avgPriceData,
       xField: "category",
       yField: "value",
+      colorField: "category",
+      scale: {
+        color: {
+          domain: ["Ô tô điện", "Xe máy điện", "Xe đạp điện", "Pin"],
+          range: ["#1B2A41", "#457B9D", "#2A9D8F", "#E9C46A"],
+        },
+      },
       tooltip: {
         title: "Giá trung bình",
         customContent: (_, items) => {
@@ -338,21 +307,7 @@ const MarketReport = ({ state, onRetry, onExport }) => {
       },
       height: 280,
       appendPadding: [20, 10, 40, 20],
-      label: {
-        position: "top",
-        offsetY: 6,
-        content: ({ labelValue }) => {
-          // Chỉ hiển thị label nếu giá trị > 0 và không phải mobile
-          return !isMobile ? labelValue : "";
-        },
-        style: {
-          fill: "#fff",
-          fontSize: isMobile ? 10 : 12,
-          fontWeight: 600,
-          textShadow: "0 1px 2px rgba(0,0,0,0.3)",
-        },
-      },
-      color: "l(270) 0:#faad14 1:#d48806", // Orange gradient
+      label: false,
       columnStyle: {
         radius: [10, 10, 0, 0],
         shadowBlur: 6,
@@ -397,48 +352,68 @@ const MarketReport = ({ state, onRetry, onExport }) => {
     [avgPriceData, isMobile]
   );
 
-  // Prepare data for Top Brands Bar Chart
   const topBrandsData = useMemo(
     () =>
       topBrands
-        .slice(0, 10)
+        .slice(0, 5)
         .map((item) => ({
           brand: item.name || "N/A",
           count: item.count || 0,
         }))
-        .sort((a, b) => b.count - a.count),
+        .sort((a, b) => b.count - a.count)
+        .map((item, index) => ({
+          ...item,
+          rank: index + 1,
+        })),
     [topBrands]
   );
 
   const topBrandsConfig = useMemo(
     () => ({
       data: topBrandsData,
-      xField: "count",
-      yField: "brand",
+      xField: "brand",
+      yField: "count",
+      colorField: "rank",
+      scale: {
+        color: {
+          domain: [1, 2, 3, 4, 5],
+          range: ["#3D5A80", "#98C1D9", "#2A9D8F", "#EE6C4D", "#293241"],
+        },
+      },
       height: 350,
-      barWidthRatio: 0.6,
-      appendPadding: [10, 10, 10, 60],
+      barWidthRatio: isMobile ? 0.5 : 0.6,
+      appendPadding: [20, 20, 40, 20],
       label: {
-        position: "right",
-        offsetX: 8,
+        position: "top",
+        offsetY: 6,
         style: {
-          fill: "#000",
-          opacity: 0.7,
-          fontSize: isMobile ? 10 : 11,
-          fontWeight: 500,
+          fill: "#fff",
+          fontSize: isMobile ? 10 : 12,
+          fontWeight: 600,
+          textShadow: "0 1px 2px rgba(0,0,0,0.3)",
         },
         formatter: (datum) => {
           return datum.count > 0 ? datum.count.toLocaleString("vi-VN") : "";
         },
       },
-      color: "l(90) 0:#1890ff 1:#096dd9", // Blue gradient (horizontal)
       barStyle: {
-        radius: [0, 8, 8, 0],
-        shadowBlur: 4,
+        radius: [10, 10, 0, 0],
+        shadowBlur: 6,
         shadowColor: "rgba(24,144,255,0.2)",
       },
       legend: false,
       xAxis: {
+        label: {
+          autoRotate: false,
+          autoHide: false,
+          style: {
+            fill: "#333",
+            fontSize: isMobile ? 11 : 12,
+            fontWeight: 500,
+          },
+        },
+      },
+      yAxis: {
         grid: {
           line: {
             style: {
@@ -454,19 +429,10 @@ const MarketReport = ({ state, onRetry, onExport }) => {
           },
         },
       },
-      yAxis: {
-        label: {
-          style: {
-            fill: "#333",
-            fontSize: isMobile ? 11 : 12,
-            fontWeight: 500,
-          },
-        },
-      },
       interactions: [{ type: "element-active" }],
       animation: {
         appear: {
-          animation: "scale-in-x",
+          animation: "scale-in-y",
           duration: 800,
         },
       },
@@ -474,48 +440,68 @@ const MarketReport = ({ state, onRetry, onExport }) => {
     [topBrandsData, isMobile]
   );
 
-  // Prepare data for Top Models Bar Chart
   const topModelsData = useMemo(
     () =>
       topModels
-        .slice(0, 10)
+        .slice(0, 5)
         .map((item) => ({
           model: item.name || "N/A",
           count: item.count || 0,
         }))
-        .sort((a, b) => b.count - a.count),
+        .sort((a, b) => b.count - a.count)
+        .map((item, index) => ({
+          ...item,
+          rank: index + 1,
+        })),
     [topModels]
   );
 
   const topModelsConfig = useMemo(
     () => ({
       data: topModelsData,
-      xField: "count",
-      yField: "model",
+      xField: "model",
+      yField: "count",
+      colorField: "rank",
+      scale: {
+        color: {
+          domain: [1, 2, 3, 4, 5],
+          range: ["#3D5A80", "#98C1D9", "#2A9D8F", "#EE6C4D", "#293241"],
+        },
+      },
       height: 350,
-      barWidthRatio: 0.6,
-      appendPadding: [10, 10, 10, 80],
+      barWidthRatio: isMobile ? 0.5 : 0.6,
+      appendPadding: [20, 20, 40, 20],
       label: {
-        position: "right",
-        offsetX: 8,
+        position: "top",
+        offsetY: 6,
         style: {
-          fill: "#000",
-          opacity: 0.7,
-          fontSize: isMobile ? 10 : 11,
-          fontWeight: 500,
+          fill: "#fff",
+          fontSize: isMobile ? 10 : 12,
+          fontWeight: 600,
+          textShadow: "0 1px 2px rgba(0,0,0,0.3)",
         },
         formatter: (datum) => {
           return datum.count > 0 ? datum.count.toLocaleString("vi-VN") : "";
         },
       },
-      color: "l(90) 0:#52c41a 1:#389e0d", // Green gradient (horizontal)
       barStyle: {
-        radius: [0, 8, 8, 0],
-        shadowBlur: 4,
+        radius: [10, 10, 0, 0],
+        shadowBlur: 6,
         shadowColor: "rgba(82,196,26,0.2)",
       },
       legend: false,
       xAxis: {
+        label: {
+          autoRotate: false,
+          autoHide: false,
+          style: {
+            fill: "#333",
+            fontSize: isMobile ? 11 : 12,
+            fontWeight: 500,
+          },
+        },
+      },
+      yAxis: {
         grid: {
           line: {
             style: {
@@ -531,19 +517,10 @@ const MarketReport = ({ state, onRetry, onExport }) => {
           },
         },
       },
-      yAxis: {
-        label: {
-          style: {
-            fill: "#333",
-            fontSize: isMobile ? 11 : 12,
-            fontWeight: 500,
-          },
-        },
-      },
       interactions: [{ type: "element-active" }],
       animation: {
         appear: {
-          animation: "scale-in-x",
+          animation: "scale-in-y",
           duration: 800,
         },
       },

@@ -2,7 +2,8 @@
 import React from "react";
 import { Card, Typography } from "antd";
 import { formatMileage, formatPercentage } from "../../utils/productFormatters";
-import { SPECIFICATION_LABELS } from "../../utils/productConstants";
+import { SPECIFICATION_LABELS, CATEGORY_LABELS } from "../../utils/productConstants";
+import { CATEGORIES } from "@utils/constants";
 import "./ProductSpecifications.styles.scss";
 
 const { Title } = Typography;
@@ -17,11 +18,18 @@ export default function ProductSpecifications({ product, isBattery }) {
       { label: SPECIFICATION_LABELS.MODEL, value: product.model },
     ];
 
-    // Thêm danh mục nếu có
+    // Thêm danh mục nếu có - map từ code sang tên hiển thị
     if (product.categoryName) {
+      // Map category code (E_BIKE, EV_CAR, etc.) sang tên hiển thị
+      const categoryCode = product.categoryName.toUpperCase();
+      const categoryLabel = 
+        CATEGORY_LABELS[categoryCode] || 
+        CATEGORIES[categoryCode] || 
+        product.categoryName;
+      
       specs.push({
         label: SPECIFICATION_LABELS.CATEGORY,
-        value: product.categoryName,
+        value: categoryLabel,
       });
     }
 
@@ -34,34 +42,41 @@ export default function ProductSpecifications({ product, isBattery }) {
     }
 
     if (isBattery) {
-      // Thông số pin
-      if (product.productBattery?.capacityKwh != null) {
+      // Thông số pin - ưu tiên từ listing (root level), sau đó từ productBattery (catalog)
+      const capacityKwh = product.batteryCapacityKwh ?? product.productBattery?.capacityKwh;
+      if (capacityKwh != null) {
         specs.push({
           label: SPECIFICATION_LABELS.CAPACITY,
-          value: `${product.productBattery.capacityKwh} kWh`,
+          value: `${capacityKwh} kWh`,
         });
       }
-      if (product.productBattery?.voltage != null) {
+      
+      const voltage = product.voltage ?? product.productBattery?.voltage;
+      if (voltage != null) {
         specs.push({
           label: SPECIFICATION_LABELS.VOLTAGE,
-          value: `${product.productBattery.voltage} V`,
+          value: `${voltage} V`,
         });
       }
-      if (product.productBattery?.weightKg != null) {
+      
+      const weightKg = product.massKg ?? product.productBattery?.weightKg;
+      if (weightKg != null) {
         specs.push({
           label: SPECIFICATION_LABELS.WEIGHT,
-          value: `${product.productBattery.weightKg} kg`,
+          value: `${weightKg} kg`,
         });
       }
-      if (product.productBattery?.dimension) {
+      
+      const dimension = product.dimensions ?? product.productBattery?.dimension;
+      if (dimension) {
         specs.push({
           label: SPECIFICATION_LABELS.DIMENSION,
-          value: product.productBattery.dimension,
+          value: dimension,
         });
       }
-      // Hóa học pin - ưu tiên từ productBattery, sau đó từ listing
-      const chemistry =
-        product.productBattery?.chemistry || product.batteryChemistry;
+      
+      // Hóa học pin - ưu tiên từ listing, sau đó từ productBattery (catalog)
+      const chemistry = product.batteryChemistry ?? product.productBattery?.chemistry;
       if (chemistry) {
         specs.push({
           label: SPECIFICATION_LABELS.CHEMISTRY,
@@ -69,16 +84,20 @@ export default function ProductSpecifications({ product, isBattery }) {
         });
       }
     } else {
-      // Thông số xe
+      // Thông số xe - ưu tiên từ listing (root level), sau đó từ productVehicle (catalog)
       if (product.year != null) {
         specs.push({ label: SPECIFICATION_LABELS.YEAR, value: product.year });
       }
+      
+      // powerKw chỉ có từ catalog (productVehicle), không có trong listing
       if (product.powerKw != null) {
         specs.push({
           label: SPECIFICATION_LABELS.POWER,
           value: `${product.powerKw} kW`,
         });
       }
+      
+      // batteryCapacityKwh - đã được ưu tiên trong transform function
       if (product.batteryCapacityKwh != null) {
         specs.push({
           label: SPECIFICATION_LABELS.BATTERY_CAPACITY,
@@ -86,34 +105,34 @@ export default function ProductSpecifications({ product, isBattery }) {
         });
       }
 
-      // Thông số xe - từ productVehicle hoặc root level
-      const vehicle = product.productVehicle || product;
+      // Các thông số chỉ có trong catalog (productVehicle)
+      const vehicle = product.productVehicle;
       
-      if (vehicle.rangeKm != null) {
+      if (vehicle?.rangeKm != null) {
         specs.push({
           label: SPECIFICATION_LABELS.RANGE,
           value: `${vehicle.rangeKm} km`,
         });
       }
-      if (vehicle.acChargingKw != null) {
+      if (vehicle?.acChargingKw != null) {
         specs.push({
           label: SPECIFICATION_LABELS.AC_CHARGING,
           value: `${vehicle.acChargingKw} kW`,
         });
       }
-      if (vehicle.dcChargingKw != null) {
+      if (vehicle?.dcChargingKw != null) {
         specs.push({
           label: SPECIFICATION_LABELS.DC_CHARGING,
           value: `${vehicle.dcChargingKw} kW`,
         });
       }
-      if (vehicle.acConnector) {
+      if (vehicle?.acConnector) {
         specs.push({
           label: SPECIFICATION_LABELS.AC_CONNECTOR,
           value: vehicle.acConnector,
         });
       }
-      if (vehicle.dcConnector) {
+      if (vehicle?.dcConnector) {
         specs.push({
           label: SPECIFICATION_LABELS.DC_CONNECTOR,
           value: vehicle.dcConnector,

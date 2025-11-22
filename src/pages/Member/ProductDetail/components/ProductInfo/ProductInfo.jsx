@@ -57,7 +57,6 @@ export default function ProductInfo({ product, onShowLoginModal }) {
     }
 
     if (sellerIdNum) {
-      console.log("Navigating to chat with seller ID:", sellerIdNum);
       navigate("/chat", { state: { recipientId: sellerIdNum } });
     } else {
       message.error("Không tìm thấy thông tin người bán");

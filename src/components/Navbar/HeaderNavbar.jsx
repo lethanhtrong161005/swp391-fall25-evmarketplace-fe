@@ -37,7 +37,6 @@ const HeaderNavbar = () => {
     reset,
     handleOtpSuccess,
     handleOtpStart,
-    handleLoginSubmit,
   } = useHeaderAction();
   const {
     isLoggedIn,
@@ -45,6 +44,7 @@ const HeaderNavbar = () => {
     handleLoginRequire,
     getMenuItems,
     handleMenuClick,
+    handleLoginSubmit,
   } = auth;
   const isMember = !user?.role || user?.role?.toUpperCase() === "MEMBER";
 
@@ -179,14 +179,21 @@ const HeaderNavbar = () => {
               minWidth: "fit-content", // Đảm bảo có đủ không gian
             }}
           >
-            <HeaderAction />
+            <HeaderAction
+              isLoggedIn={isLoggedIn}
+              user={user}
+              contextHolder={auth.contextHolder}
+              getMenuItems={getMenuItems}
+              handleMenuClick={handleMenuClick}
+              handleLoginRequire={handleLoginRequire}
+              onLoginClick={() => auth.setOpenLogin?.(true)}
+            />
           </div>
         </div>
       )}
 
-      {/* Auth Modals for mobile */}
-      {!screens.lg && (
-        <>
+      {/* Auth Modals for both desktop and mobile */}
+      <>
           <LoginModal
             open={auth.openLogin}
             onClose={() => auth.setOpenLogin(false)}
@@ -271,8 +278,7 @@ const HeaderNavbar = () => {
               auth.setOpenLogin(true);
             }}
           />
-        </>
-      )}
+      </>
     </>
   );
 };

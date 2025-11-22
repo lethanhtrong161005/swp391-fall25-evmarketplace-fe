@@ -18,7 +18,7 @@ import { useResponsive } from "@/utils/responsive";
  * Transaction Report Page - Báo cáo Giao Dịch
  * Phân tích sâu dữ liệu từ API transaction-counts
  */
-const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
+const TransactionReport = ({ state, onRetry, onExport }) => {
   const { isMobile } = useResponsive();
 
   if (state.loading) {
@@ -72,12 +72,10 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
   const successRate = Number.isFinite(data.successRate) ? data.successRate : 0;
   const transactionTypeBreakdown = data.transactionTypeBreakdown || {};
 
-  // Prepare data for Donut Chart
   const postCount = transactionTypeBreakdown.POST || 0;
   const consignmentCount = transactionTypeBreakdown.CONSIGNMENT || 0;
   const otherCount = transactionTypeBreakdown.OTHER || 0;
 
-  // Always create full data array for consistent coloring
   const allDonutData = [
     {
       type: "Đăng tin",
@@ -93,10 +91,8 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
     },
   ];
 
-  // Filter out zero values for display
   const filteredDonutData = allDonutData.filter((item) => item.value > 0);
 
-  // Calculate total from breakdown (should equal totalTransactions now)
   const breakdownTotal = filteredDonutData.reduce(
     (sum, item) => sum + item.value,
     0
@@ -120,47 +116,6 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
         rowPadding: 5,
       },
     },
-    tooltip: ({ type, value }) => {
-      return { type, value };
-    },
-    interaction: {
-      tooltip: {
-        render: (e, { items }) => {
-          return (
-            <React.Fragment>
-              {items.map((item) => {
-                const { type, value, color } = item;
-                return (
-                  <div
-                    key={type}
-                    style={{
-                      margin: 0,
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          width: 6,
-                          height: 6,
-                          borderRadius: "50%",
-                          backgroundColor: color,
-                          marginRight: 6,
-                        }}
-                      ></span>
-                      <span>{type}</span>
-                    </div>
-                    <b>{value}</b>
-                  </div>
-                );
-              })}
-            </React.Fragment>
-          );
-        },
-      },
-    },
     annotations: [
       {
         type: "text",
@@ -174,14 +129,14 @@ const TransactionReport = ({ state, onRetry, onExport, formatPercent }) => {
         },
       },
     ],
-    color: ({ type }) => {
-      if (type === "Đăng tin") return "#1677ff";
-      if (type === "Ký gửi") return "#52c41a";
-      return "#8c8c8c";
+    scale: {
+      color: {
+        domain: ["Đăng tin", "Ký gửi"],
+        range: ["#1B2A41", "#808080"],
+      },
     },
   };
 
-  // Calculate success rate display values
   const successRatePercent = (successRate * 100).toFixed(2);
   const successRateColor =
     successRate >= 0.7 ? "#52c41a" : successRate >= 0.5 ? "#faad14" : "#ff4d4f";

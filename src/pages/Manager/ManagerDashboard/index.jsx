@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Card, theme, Form, DatePicker } from "antd";
 import dayjs from "dayjs";
 import { get } from "@/utils/apiCaller";
@@ -90,9 +90,8 @@ const ManagerDashboard = () => {
     return "transaction"; // default
   };
 
-  const currentPage = getCurrentPage(); // Re-calculate on every render when location changes
+  const currentPage = getCurrentPage();
 
-  // Shared filter state - only date range now
   const [filters, setFilters] = useState(() => {
     const to = dayjs();
     const from = to.subtract(29, "day");
@@ -103,22 +102,15 @@ const ManagerDashboard = () => {
     };
   });
 
-  // Initialize form values
   useEffect(() => {
-    console.log("🚀 [Dashboard] Component mounted");
-    console.log("📅 [Dashboard] Initial filters:", filters);
     form.setFieldsValue({
       range: [dayjs(filters.from), dayjs(filters.to)],
     });
-
-    return () => {
-      console.log("👋 [Dashboard] Component unmounting");
-    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const debouncedFilters = useDebouncedValue(filters, 450);
 
-  // Data states per widget
   const [txState, setTxState] = useState({
     loading: false,
     error: null,
@@ -135,29 +127,20 @@ const ManagerDashboard = () => {
     data: null,
   });
 
-  // Fetch helpers
-  async function fetchWithCache(endpoint, params) {
+  const fetchWithCache = useCallback(async (endpoint, params) => {
     const mappedParams = mapToApiParams(params);
     const cleanedParams = cleanParams(mappedParams);
     const key = buildKey(endpoint, cleanedParams);
     const cached = getCache(key);
     if (cached) {
-      console.log(`💾 [Cache HIT] ${endpoint}`);
       return cached;
     }
-    console.log(`🌐 [Cache MISS] Fetching ${endpoint}`, cleanedParams);
-    try {
-      const data = await get(endpoint, cleanedParams);
-      if (data != null) {
-        setCache(key, data);
-        console.log(`✅ [Cache SET] ${endpoint}`);
-      }
-      return data;
-    } catch (error) {
-      console.error(`❌ [API Error] ${endpoint}`, error);
-      throw error;
+    const data = await get(endpoint, cleanedParams);
+    if (data != null) {
+      setCache(key, data);
     }
-  }
+    return data;
+  }, []);
 
   function abortPrev(name) {
     const c = abortRef.current[name];
@@ -167,32 +150,23 @@ const ManagerDashboard = () => {
     return controller.signal;
   }
 
-  // Parallel fetch on debounced filter change
   useEffect(() => {
-    console.log(
-      "📊 [Dashboard] Fetching statistics with filters:",
-      debouncedFilters
-    );
-    const startTime = Date.now();
-
-    const txSignal = abortPrev("tx");
-    const revSignal = abortPrev("rev");
-    const mkSignal = abortPrev("mk");
+    abortPrev("tx");
+    abortPrev("rev");
+    abortPrev("mk");
 
     setTxState((s) => ({ ...s, loading: true, error: null }));
     setRevState((s) => ({ ...s, loading: true, error: null }));
     setMarketState((s) => ({ ...s, loading: true, error: null }));
 
+    const marketFilters = { ...debouncedFilters, topLimit: 5 };
+
     Promise.allSettled([
       fetchWithCache("/api/reports/transaction-counts", debouncedFilters),
       fetchWithCache("/api/reports/revenue", debouncedFilters),
-      fetchWithCache("/api/reports/market", debouncedFilters),
+      fetchWithCache("/api/reports/market", marketFilters),
     ]).then((results) => {
       const [txRes, revRes, mkRes] = results;
-      const endTime = Date.now();
-      const duration = endTime - startTime;
-
-      console.log(`⏱️ [Dashboard] Fetch completed in ${duration}ms`);
 
       const getErrorMessage = (reason) => {
         if (!reason) return "Unknown error";
@@ -208,11 +182,6 @@ const ManagerDashboard = () => {
 
       if (txRes.status === "fulfilled") {
         const txData = txRes.value ?? null;
-        console.log("✅ [Transaction] Data loaded:", {
-          totalTransactions: txData?.totalTransactions,
-          successRate: txData?.successRate,
-          breakdown: txData?.transactionTypeBreakdown,
-        });
         setTxState({
           loading: false,
           error: null,
@@ -220,17 +189,11 @@ const ManagerDashboard = () => {
         });
       } else {
         const errorMsg = getErrorMessage(txRes.reason);
-        console.error("❌ [Transaction] Error:", errorMsg);
         setTxState({ loading: false, error: errorMsg, data: null });
       }
 
       if (revRes.status === "fulfilled") {
         const revData = revRes.value ?? null;
-        console.log("✅ [Revenue] Data loaded:", {
-          totalRevenue: revData?.totalRevenue,
-          currency: revData?.currency,
-          revenueBySource: revData?.revenueBySource,
-        });
         setRevState({
           loading: false,
           error: null,
@@ -238,18 +201,11 @@ const ManagerDashboard = () => {
         });
       } else {
         const errorMsg = getErrorMessage(revRes.reason);
-        console.error("❌ [Revenue] Error:", errorMsg);
         setRevState({ loading: false, error: errorMsg, data: null });
       }
 
       if (mkRes.status === "fulfilled") {
         const mkData = mkRes.value ?? null;
-        console.log("✅ [Market] Data loaded:", {
-          postTypes: mkData?.postTypeBreakdown,
-          categories: mkData?.categoryBreakdown,
-          topBrands: mkData?.topBrands?.length,
-          topModels: mkData?.topModels?.length,
-        });
         setMarketState({
           loading: false,
           error: null,
@@ -257,13 +213,11 @@ const ManagerDashboard = () => {
         });
       } else {
         const errorMsg = getErrorMessage(mkRes.reason);
-        console.error("❌ [Market] Error:", errorMsg);
         setMarketState({ loading: false, error: errorMsg, data: null });
       }
     });
-  }, [debouncedFilters]);
+  }, [debouncedFilters, fetchWithCache]);
 
-  // Map frontend filter params to backend API params - simplified
   function mapToApiParams(filters) {
     return { ...filters };
   }
@@ -278,7 +232,6 @@ const ManagerDashboard = () => {
     return cleaned;
   }
 
-  // Handlers
   function onFilterChange(_, allValues) {
     const range = allValues.range || [];
     const [from, to] =
@@ -288,29 +241,24 @@ const ManagerDashboard = () => {
       to: toLocalDate(to.endOf("day")),
       timezone: timezoneDefault,
     };
-    console.log("🔄 [Dashboard] Filter changed:", newFilters);
     setFilters((f) => ({ ...f, ...newFilters }));
   }
 
   function retryTx() {
-    console.log("🔄 [Transaction] Retry requested");
     setTxState((s) => ({ ...s, data: null }));
     setFilters((f) => ({ ...f }));
   }
 
   function retryRev() {
-    console.log("🔄 [Revenue] Retry requested");
     setRevState((s) => ({ ...s, data: null }));
     setFilters((f) => ({ ...f }));
   }
 
   function retryMarket() {
-    console.log("🔄 [Market] Retry requested");
     setMarketState((s) => ({ ...s, data: null }));
     setFilters((f) => ({ ...f }));
   }
 
-  // CSV helpers
   function downloadCSV(filename, rows) {
     const csv = rows
       .map((r) => r.map((cell) => formatCSVCell(cell)).join(","))
@@ -333,7 +281,6 @@ const ManagerDashboard = () => {
 
   function exportTxData() {
     if (!txState.data) return;
-    console.log("📥 [Transaction] Exporting CSV");
     const rows = [
       ["Metric", "Value"],
       ["Total Transactions", txState.data.totalTransactions || 0],
@@ -350,12 +297,10 @@ const ManagerDashboard = () => {
       ],
     ];
     downloadCSV("transaction_report.csv", rows);
-    console.log("✅ [Transaction] CSV exported");
   }
 
   function exportRevData() {
     if (!revState.data) return;
-    console.log("📥 [Revenue] Exporting CSV");
     const rows = [
       ["Metric", "Value"],
       ["Currency", revState.data.currency || "VND"],
@@ -371,15 +316,12 @@ const ManagerDashboard = () => {
       ["CONSIGNMENT Revenue", revState.data.revenueBySource?.CONSIGNMENT || 0],
     ];
     downloadCSV("revenue_report.csv", rows);
-    console.log("✅ [Revenue] CSV exported");
   }
 
   function exportMarketData() {
     if (!marketState.data) return;
-    console.log("📥 [Market] Exporting CSV");
     const data = marketState.data;
 
-    // Export category breakdown
     const categoryRows = [
       ["Category", "Count", "Avg Price"],
       [
@@ -405,25 +347,20 @@ const ManagerDashboard = () => {
     ];
     downloadCSV("market_category.csv", categoryRows);
 
-    // Export top brands
     const brandRows = [
       ["Brand", "Count"],
       ...(data.topBrands || []).map((b) => [b.name, b.count]),
     ];
     downloadCSV("market_top_brands.csv", brandRows);
 
-    // Export top models
     const modelRows = [
       ["Model", "Count"],
       ...(data.topModels || []).map((m) => [m.name, m.count]),
     ];
     downloadCSV("market_top_models.csv", modelRows);
-    console.log("✅ [Market] CSV exported (3 files)");
   }
 
-  // Render current page based on URL
   const renderPage = () => {
-    console.log("🎯 [Dashboard] Rendering page:", currentPage);
     switch (currentPage) {
       case "transaction":
         return (
@@ -431,7 +368,6 @@ const ManagerDashboard = () => {
             state={txState}
             onRetry={retryTx}
             onExport={exportTxData}
-            formatPercent={formatPercent}
           />
         );
       case "revenue":
@@ -459,7 +395,6 @@ const ManagerDashboard = () => {
             state={txState}
             onRetry={retryTx}
             onExport={exportTxData}
-            formatPercent={formatPercent}
           />
         );
     }

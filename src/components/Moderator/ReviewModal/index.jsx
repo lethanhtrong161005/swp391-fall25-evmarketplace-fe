@@ -167,7 +167,6 @@ export default function ReviewModal({
     </div>
   );
 
-  // Component hiển thị thư viện media
   const renderMediaGallery = () => {
     if (!item.media || item.media.length === 0) {
       return (
@@ -468,7 +467,6 @@ export default function ReviewModal({
     );
   };
 
-  // Tab 1: Tổng quan & Media
   const renderOverviewTab = () => {
     const listing = item.listing || item;
     return (
@@ -599,7 +597,6 @@ export default function ReviewModal({
     );
   };
 
-  // Tab 2: Thông tin người bán
   const renderSellerTab = () => {
     const seller = item.sellerId;
     if (!seller) {
@@ -689,10 +686,248 @@ export default function ReviewModal({
     );
   };
 
-  // Tab 3: Thông số kỹ thuật
+  // Logic tương tự ProductSpecifications
   const renderTechnicalTab = () => {
+    const listing = item.listing || item;
     const productVehicle = item.productVehicle;
-    if (!productVehicle) {
+    const productBattery = item.productBattery;
+    
+    // Xác định loại sản phẩm
+    const categoryId = listing?.categoryId ?? listing?.category_id;
+    const categoryName = listing?.categoryName ?? listing?.category;
+    const isBattery = categoryId === 4 || categoryName === "BATTERY";
+    
+    // Helper: Ưu tiên giá trị từ listing, sau đó từ catalog
+    const getValueWithFallback = (userValue, catalogValue) => {
+      if (userValue != null && userValue !== "") {
+        return userValue;
+      }
+      return catalogValue ?? null;
+    };
+
+    const getSpecifications = () => {
+      const specs = [];
+      
+      const brand = getValueWithFallback(
+        listing?.brand,
+        productVehicle?.brand || productBattery?.brand
+      );
+      if (brand) {
+        specs.push({ key: "brand", label: "Thương hiệu", value: brand });
+      }
+
+      const model = getValueWithFallback(
+        listing?.model,
+        productVehicle?.model || productBattery?.model
+      );
+      if (model) {
+        specs.push({ key: "model", label: "Model", value: model });
+      }
+
+      if (categoryName) {
+        const categoryLabel = CATEGORY_LABEL[categoryName] || categoryName;
+        specs.push({ key: "category", label: "Danh mục", value: categoryLabel });
+      }
+
+      if (listing?.color) {
+        specs.push({ key: "color", label: "Màu sắc", value: listing.color });
+      }
+
+      if (isBattery) {
+        const capacityKwh = getValueWithFallback(
+          listing?.batteryCapacityKwh,
+          productBattery?.capacityKwh || productBattery?.batteryCapacityKwh
+        );
+        if (capacityKwh != null) {
+          specs.push({
+            key: "capacity",
+            label: "Dung lượng",
+            value: `${capacityKwh} kWh`,
+          });
+        }
+
+        const voltage = getValueWithFallback(
+          listing?.voltage,
+          productBattery?.voltage
+        );
+        if (voltage != null) {
+          specs.push({
+            key: "voltage",
+            label: "Điện áp",
+            value: `${voltage} V`,
+          });
+        }
+
+        const weightKg = getValueWithFallback(
+          listing?.massKg,
+          productBattery?.weightKg || productBattery?.massKg
+        );
+        if (weightKg != null) {
+          specs.push({
+            key: "weight",
+            label: "Khối lượng",
+            value: `${weightKg} kg`,
+          });
+        }
+
+        const dimension = getValueWithFallback(
+          listing?.dimensions,
+          productBattery?.dimension || productBattery?.dimensions
+        );
+        if (dimension) {
+          specs.push({
+            key: "dimension",
+            label: "Kích thước",
+            value: dimension,
+          });
+        }
+
+        const chemistry = getValueWithFallback(
+          listing?.batteryChemistry,
+          productBattery?.chemistry || productBattery?.batteryChemistry
+        );
+        if (chemistry) {
+          specs.push({
+            key: "chemistry",
+            label: "Hóa học pin",
+            value: chemistry,
+          });
+        }
+      } else {
+        const year = getValueWithFallback(
+          listing?.year,
+          productVehicle?.releaseYear
+        );
+        if (year != null) {
+          specs.push({
+            key: "year",
+            label: "Năm sản xuất",
+            value: year,
+          });
+        }
+
+        const powerKw = productVehicle?.motorPowerKw;
+        if (powerKw != null) {
+          specs.push({
+            key: "power",
+            label: "Công suất",
+            value: `${powerKw} kW`,
+          });
+        }
+
+        const batteryCapacityKwh = getValueWithFallback(
+          listing?.batteryCapacityKwh,
+          productVehicle?.batteryCapacityKwh
+        );
+        if (batteryCapacityKwh != null) {
+          specs.push({
+            key: "batteryCapacity",
+            label: "Dung lượng pin",
+            value: `${batteryCapacityKwh} kWh`,
+          });
+        }
+
+        if (productVehicle) {
+          if (productVehicle.rangeKm != null) {
+            specs.push({
+              key: "range",
+              label: "Tầm hoạt động",
+              value: `${productVehicle.rangeKm} km`,
+            });
+          }
+          if (productVehicle.acChargingKw != null) {
+            specs.push({
+              key: "acCharging",
+              label: "Sạc AC",
+              value: `${productVehicle.acChargingKw} kW`,
+            });
+          }
+          if (productVehicle.dcChargingKw != null) {
+            specs.push({
+              key: "dcCharging",
+              label: "Sạc DC",
+              value: `${productVehicle.dcChargingKw} kW`,
+            });
+          }
+          if (productVehicle.acConnector) {
+            specs.push({
+              key: "acConnector",
+              label: "Cổng AC",
+              value: productVehicle.acConnector,
+            });
+          }
+          if (productVehicle.dcConnector) {
+            specs.push({
+              key: "dcConnector",
+              label: "Cổng DC",
+              value: productVehicle.dcConnector,
+            });
+          }
+        }
+
+        const bike = listing?.bike || productVehicle?.bike || productVehicle?.bikeDetail;
+        if (bike) {
+          if (bike.motorLocation) {
+            specs.push({
+              key: "motorLocation",
+              label: "Vị trí động cơ",
+              value: bike.motorLocation,
+            });
+          }
+          if (bike.wheelSize) {
+            specs.push({
+              key: "wheelSize",
+              label: "Kích thước bánh xe",
+              value: bike.wheelSize,
+            });
+          }
+          if (bike.brakeType) {
+            specs.push({
+              key: "brakeType",
+              label: "Loại phanh",
+              value: bike.brakeType,
+            });
+          }
+          if (bike.weightKg != null) {
+            specs.push({
+              key: "bikeWeight",
+              label: "Khối lượng xe",
+              value: `${bike.weightKg} kg`,
+            });
+          }
+        }
+      }
+
+      return specs;
+    };
+
+    const getVehicleCondition = () => {
+      const conditions = [];
+      const listing = item.listing || item;
+
+      if (listing.sohPercent != null) {
+        conditions.push({
+          key: "soh",
+          label: "Tình trạng sức khỏe của pin(%SOH)",
+          value: `${listing.sohPercent}%`,
+        });
+      }
+
+      if (listing.mileageKm != null) {
+        conditions.push({
+          key: "mileage",
+          label: "Số Km đã đi",
+          value: `${listing.mileageKm.toLocaleString()} km`,
+        });
+      }
+
+      return conditions;
+    };
+
+    const specifications = getSpecifications();
+    const vehicleConditions = getVehicleCondition();
+
+    if (specifications.length === 0 && vehicleConditions.length === 0) {
       return (
         <div style={{ textAlign: "center", padding: "40px 0" }}>
           <Text type="secondary">Không có thông số kỹ thuật</Text>
@@ -701,97 +936,37 @@ export default function ReviewModal({
     }
 
     return (
-      <Card title="Thông số kỹ thuật" size="small">
-        <Descriptions
-          bordered
-          size="small"
-          column={screens.md ? 2 : 1} // Responsive columns
-          items={[
-            {
-              key: "category",
-              label: "Loại xe",
-              children:
-                CATEGORY_LABEL[productVehicle.category] ||
-                productVehicle.category,
-            },
-            {
-              key: "brand",
-              label: "Hãng",
-              children: productVehicle.brand,
-            },
-            {
-              key: "model",
-              label: "Model",
-              children: productVehicle.model,
-            },
-            {
-              key: "releaseYear",
-              label: "Năm ra mắt",
-              children: productVehicle.releaseYear,
-            },
-            {
-              key: "batteryCapacity",
-              label: "Dung lượng pin (kWh)",
-              children: productVehicle.batteryCapacityKwh
-                ? `${productVehicle.batteryCapacityKwh} kWh`
-                : "—",
-            },
-            {
-              key: "range",
-              label: "Tầm hoạt động (km)",
-              children: productVehicle.rangeKm
-                ? `${productVehicle.rangeKm} km`
-                : "—",
-            },
-            {
-              key: "motorPower",
-              label: "Công suất động cơ (kW)",
-              children: productVehicle.motorPowerKw
-                ? `${productVehicle.motorPowerKw} kW`
-                : "—",
-            },
-            {
-              key: "acCharging",
-              label: "Sạc AC (kW)",
-              children: productVehicle.acChargingKw
-                ? `${productVehicle.acChargingKw} kW`
-                : "—",
-            },
-            {
-              key: "dcCharging",
-              label: "Sạc DC (kW)",
-              children: productVehicle.dcChargingKw
-                ? `${productVehicle.dcChargingKw} kW`
-                : "—",
-            },
-            {
-              key: "acConnector",
-              label: "Cổng sạc AC",
-              children: productVehicle.acConnector || "—",
-            },
-            {
-              key: "dcConnector",
-              label: "Cổng sạc DC",
-              children: productVehicle.dcConnector || "—",
-            },
-            {
-              key: "status",
-              label: "Trạng thái sản phẩm",
-              children: (
-                productVehicle.status ? (
-                  <Tag
-                    color={productVehicle.status === "ACTIVE" ? "green" : "red"}
-                  >
-                    {getStatusLabel(productVehicle.status)}
-                  </Tag>
-                ) : (
-                  "—"
-                )
-              ),
-            },
-          ]}
-        />
-      </Card>
+      <Space direction="vertical" size={16} style={{ width: "100%" }}>
+        {specifications.length > 0 && (
+          <Card title="Thông số kỹ thuật" size="small">
+            <Descriptions
+              bordered
+              size="small"
+              column={screens.md ? 2 : 1}
+              items={specifications.map((spec) => ({
+                key: spec.key,
+                label: spec.label,
+                children: spec.value,
+              }))}
+            />
+          </Card>
+        )}
+
+        {vehicleConditions.length > 0 && (
+          <Card title="Tình trạng Xe" size="small">
+            <Descriptions
+              bordered
+              size="small"
+              column={screens.md ? 2 : 1}
+              items={vehicleConditions.map((condition) => ({
+                key: condition.key,
+                label: condition.label,
+                children: condition.value,
+              }))}
+            />
+          </Card>
+        )}
+      </Space>
     );
   };
 

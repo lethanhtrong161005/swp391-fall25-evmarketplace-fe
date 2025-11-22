@@ -32,13 +32,17 @@ export default function DynamicBreadcrumb({ customTitle }) {
     availability: "Lên lịch",
     "my-ads": "Quản lý tin",
     chat: "Tin nhắn",
-    searchresults: "Kết quả tìm kiếm"
+    searchresults: "Kết quả tìm kiếm",
   };
 
   // Custom URL mapping cho các route đặc biệt
   const getCustomUrl = (segment, segments, index) => {
     // Nếu đang ở /listing/new hoặc /listing/edit, thì "Tin đăng" link đến /my-ads
-    if (segment === "listing" && segments[index + 1] && (segments[index + 1] === "new" || segments[index + 1] === "edit")) {
+    if (
+      segment === "listing" &&
+      segments[index + 1] &&
+      (segments[index + 1] === "new" || segments[index + 1] === "edit")
+    ) {
       return "/my-ads";
     }
     // Nếu đang ở /detail/:id, thì "detail" link đến /all-listings
@@ -57,7 +61,10 @@ export default function DynamicBreadcrumb({ customTitle }) {
     const url = getCustomUrl(filteredSnippets[index], filteredSnippets, index);
     const isLast = index === filteredSnippets.length - 1;
     // Sử dụng customTitle nếu có và đây là item cuối cùng
-    const label = isLast && customTitle ? customTitle : (nameMap[filteredSnippets[index]] || filteredSnippets[index]);
+    const label =
+      isLast && customTitle
+        ? customTitle
+        : nameMap[filteredSnippets[index]] || filteredSnippets[index];
 
     return {
       title: isLast ? (

@@ -3,8 +3,7 @@ import React from "react";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import s from "./HeroHeader.module.scss";
-
-const bannerUrl = "https://idsb.tmgrup.com.tr/ly/uploads/images/2021/09/17/145313.jpg";
+import heroBannerImage from "@assets/images/Banner/HeroBanner.jpg";
 
 export default function HeroHeader() {
   const navigate = useNavigate();
@@ -15,7 +14,7 @@ export default function HeroHeader() {
 
   return (
     <section className={s.heroSection}>
-      <div className={s.hero} style={{ backgroundImage: `url(${bannerUrl})` }}>
+      <div className={s.hero} style={{ backgroundImage: `url(${heroBannerImage})` }}>
         <div className={s.overlay} />
         <div className={s.content}>
           <h1 className={s.title}>Lái Tương Lai, Bền Vững</h1>

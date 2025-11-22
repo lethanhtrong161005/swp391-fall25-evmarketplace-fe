@@ -2,7 +2,7 @@ export const CATEGORIES = {
   EV_CAR: "Xe ô tô điện",
   E_MOTORBIKE: "Xe máy điện",
   E_BIKE: "Xe đạp điện",
-  BATTERY: "Pin",
+  BATTERY: "Pin và bộ sạc điện",
 };
 
 export const BRANDS_BY_CATEGORY = {

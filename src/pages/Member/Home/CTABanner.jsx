@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@hooks/useAuth";
 import LoginModal from "@components/Modal/LoginModal";
 import styles from "./CTABanner.module.scss";
-
-const ctaBannerImage = "https://www.hdcarwallpapers.com/walls/lexus_bev_electric_cars_concept-HD.jpg";
+import ctaBannerImage from "@assets/images/Banner/CTABanner.jpg";
 
 const { Title, Paragraph } = Typography;
 
