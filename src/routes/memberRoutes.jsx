@@ -63,7 +63,7 @@ export default [
           { path: "listing/new", element: <ListingCreate /> },
           { path: "listing/edit/:id", element: <ListingEdit /> },
           { path: "my-ads", element: <ManagerListing /> },
-          { path: "my-favorites", element: <MyFavoritesPage /> },
+          { path: "myfavorites", element: <MyFavoritesPage /> },
           { path: "my-order", element: <MyOrder /> },
           { path: "chat", element: <Chat /> },
           { path: "chat/:conversationId", element: <Chat /> },

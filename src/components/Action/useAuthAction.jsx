@@ -104,7 +104,7 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
             Tin đăng đã lưu
           </span>
         ),
-        path: "/my-favorites",
+        path: "/myfavorites",
       }
     );
 
@@ -131,7 +131,7 @@ export const useAuthAction = ({ isLoggedIn, user, login, logout }) => {
     } else if (key === "my-ads") {
       navigate("/my-ads");
     } else if (key === "favorites") {
-      navigate("/my-favorites");
+      navigate("/myfavorites");
     } else if (key === "history-transaction") {
       navigate("/history/transactions");
     } else if (key == "order") {

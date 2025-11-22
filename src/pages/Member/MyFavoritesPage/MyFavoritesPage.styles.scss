@@ -1,15 +1,18 @@
 .favorites-page {
   padding: 24px;
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
-  background-color: #f5f5f5;
-  min-height: 100vh;
+  background-color: #E9F2FF;
+  min-height: auto;
 
   &__header {
     margin-bottom: 16px;
     text-align: left;
     background: white;
     padding: 12px 16px;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-top: 1px solid rgb(0,0,0,0.1);
     border-radius: 6px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
